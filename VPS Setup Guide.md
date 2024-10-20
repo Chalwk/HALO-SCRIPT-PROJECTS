@@ -8,10 +8,10 @@ Copy & paste commands into the SSH Terminal by highlighting the command/text blo
 ---
 
 ## Prerequisite Applications
-| Application                                                                                       | Description                                                     |
-|---------------------------------------------------------------------------------------------------|-----------------------------------------------------------------|
-| [BitVise SSH Client](https://www.bitvise.com/ssh-client-download)                                 | For remote access to the terminal and to upload files via SFTP. |
-| [TightVNC (client)](https://www.tightvnc.com/download.php)                                        | For remote desktop connections.                                 |
+| Application                                                                                     | Description                                                     |
+|-------------------------------------------------------------------------------------------------|-----------------------------------------------------------------|
+| [BitVise SSH Client](https://www.bitvise.com/ssh-client-download)                               | For remote access to the terminal and to upload files via SFTP. |
+| [TightVNC (client)](https://www.tightvnc.com/download.php)                                      | For remote desktop connections.                                 |
 | [HPC/CE Server Template](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/ReadyToGo) | These are compatible with Linux.                                |
 
 ### Technical Note on [Vultr](https://www.vultr.com/) Subscription Plans

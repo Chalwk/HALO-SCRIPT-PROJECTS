@@ -481,8 +481,8 @@ local function restartMapCycle()
 end
 
 local function getNextMap()
-    mapcycleIndex = (mapcycleIndex % #config.mapcycle[mapcycleType]) + 1
-    local mapInfo = config.mapcycle[mapcycleType][mapcycleIndex]
+    local nextIndex = (mapcycleIndex % #config.mapcycle[mapcycleType]) + 1
+    local mapInfo = config.mapcycle[mapcycleType][nextIndex]
     return mapInfo[1], mapInfo[2]
 end
 
@@ -526,6 +526,7 @@ local function handleMapCycle(playerId)
 end
 
 local function handleNextMap(playerId)
+    mapcycleIndex = (mapcycleIndex % #config.mapcycle[mapcycleType]) + 1
     local map, gametype = getNextMap()
     loadNextMap()
     inform(playerId, config.messages.loading_next_map, {

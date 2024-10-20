@@ -26,13 +26,13 @@ You can also support me by clicking the 👁️ **Watch** and ⭐ **Star** butto
 
 ### **Explore My Projects:**
 
-| **Category**                | **Description**                                                                                                  |
-|-----------------------------|------------------------------------------------------------------------------------------------------------------|
-| [**SAPP Scripts**](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/tree/master/SAPP%20SCRIPTS)   | Collection of Lua scripts for the Halo PC (retail) and Halo CE (Custom Edition) SAPP dedicated server.        |
-| [**Phasor Scripts**](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/tree/master/PHASOR%20SCRIPTS)  | Collection of Lua scripts for the Halo PC (retail) and Halo CE (Custom Edition) Phasor dedicated server.     |
-| [**Releases**](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases)                     | Collection of larger SAPP projects that are more complex than the scripts in the SAPP Scripts folder.        |
-| [**Chimera Scripts**](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/tree/master/CHIMERA/GLOBAL)   | Not currently public. Check back here soon!                                                                   |
-| [**HSP Wiki**](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/wiki)                     | Documentation and community contributions.                                                                      |
+| **Category**                                                                                      | **Description**                                                                                          |
+|---------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
+| [**SAPP Scripts**](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/tree/master/SAPP%20SCRIPTS)     | Collection of Lua scripts for the Halo PC (retail) and Halo CE (Custom Edition) SAPP dedicated server.   |
+| [**Phasor Scripts**](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/tree/master/PHASOR%20SCRIPTS) | Collection of Lua scripts for the Halo PC (retail) and Halo CE (Custom Edition) Phasor dedicated server. |
+| [**Releases**](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases)                           | Collection of larger SAPP projects that are more complex than the scripts in the SAPP Scripts folder.    |
+| [**Chimera Scripts**](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/tree/master/CHIMERA/GLOBAL)  | Not currently public. Check back here soon!                                                              |
+| [**HSP Wiki**](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/wiki)                               | Documentation and community contributions.                                                               |
 
 ---
 
@@ -70,14 +70,14 @@ To streamline the process of submitting issues, please use the following forms:
 
 ### 🌐 Recommended Communities
 
-| **Website**                                                                                         | **Discord**                                     |
-|-----------------------------------------------------------------------------------------------------|-------------------------------------------------|
-| [Open Carnage](https://opencarnage.net)                                                            | [Join Discord](https://discord.gg/9HMDFa)      |
-| [Chimera](https://opencarnage.net/index.php?/topic/6916-chimera-download-source-code-and-discord/) | [Join Discord](https://discord.gg/ZwQeBE2)     |
-| [Halo Net](https://opencarnage.net)                                                                | [Join Discord](https://discord.gg/9HMDFa)      |
-| [XG Gaming](https://www.xgclan.com)                                                                | [Join Discord](https://discord.gg/djqM24x8)    |
+| **Website**                                                                                        | **Discord**                                        |
+|----------------------------------------------------------------------------------------------------|----------------------------------------------------|
+| [Open Carnage](https://opencarnage.net)                                                            | [Join Discord](https://discord.gg/9HMDFa)          |
+| [Chimera](https://opencarnage.net/index.php?/topic/6916-chimera-download-source-code-and-discord/) | [Join Discord](https://discord.gg/ZwQeBE2)         |
+| [Halo Net](https://opencarnage.net)                                                                | [Join Discord](https://discord.gg/9HMDFa)          |
+| [XG Gaming](https://www.xgclan.com)                                                                | [Join Discord](https://discord.gg/djqM24x8)        |
 | [POQ Clan](http://poqclan.com/)                                                                    | [Join Discord](https://discord.com/invite/pTsKsEm) |
-| [JeriCraft](https://discord.gg/vcyM6epaqg)                                                         | [Join Discord](https://discord.gg/vcyM6epaqg)  |
+| [JeriCraft](https://discord.gg/vcyM6epaqg)                                                         | [Join Discord](https://discord.gg/vcyM6epaqg)      |
 
 ---
 
