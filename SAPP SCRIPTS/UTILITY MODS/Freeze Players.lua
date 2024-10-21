@@ -292,6 +292,49 @@ function HasAccess(Executor)
     end
 end
 
+local function saveInventory(playerId, type)
+    local dynamic_player = get_dynamic_player(playerId)
+    if not player_alive(playerId) or dynamic_player == 0 then
+        return
+    end
+    for i = 0,3 do
+        local equipment = get_object_memory(read_dword(dynamic_player + 0x2F8 + i * 4))
+        if (equipment ~= 0) then
+            players[playerId][type].inventory[i + 1] = {
+                ["id"] = read_dword(equipment),
+                ["ammo"] = read_word(equipment + 0x2B6),
+                ["clip"] = read_word(equipment + 0x2B8),
+                ["ammo2"] = read_word(equipment + 0x2C6),
+                ["clip2"] = read_word(equipment + 0x2C8),
+                ["age"] = read_float(equipment + 0x240),
+                ['frags'] = read_byte(dynamic_player + 0x31E),
+                ['plasmas'] = read_byte(dynamic_player + 0x31F)
+            }
+        end
+    end
+end
+
+local function loadInventory(playerId, type)
+    local dynamic_player = get_dynamic_player(playerId)
+    if not player_alive(playerId) or dynamic_player == 0 then
+        return
+    end
+    local inventory = players[playerId][type].inventory
+    for i = 0,3 do
+        local equipment = get_object_memory(read_dword(dynamic_player + 0x2F8 + i * 4))
+        if (equipment ~= 0) then
+            write_dword(equipment, inventory[i + 1].id)
+            write_word(equipment + 0x2B6, inventory[i + 1].ammo)
+            write_word(equipment + 0x2B8, inventory[i + 1].clip)
+            write_word(equipment + 0x2C6, inventory[i + 1].ammo2)
+            write_word(equipment + 0x2C8, inventory[i + 1].clip2)
+            write_float(equipment + 0x240, inventory[i + 1].age)
+        end
+    end
+    write_byte(dynamic_player + 0x31E, inventory.frags)
+    write_byte(dynamic_player + 0x31F, inventory.plasmas)
+end
+
 function TakeWeapons(TargetID, DynamicPlayer)
 
     for i = 0, 3 do
