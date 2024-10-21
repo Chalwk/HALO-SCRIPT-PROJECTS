@@ -43,7 +43,13 @@ Weapon tags are stored in a table at the beginning of the script. Each loadout r
 -----------------------------------------------------------------------------------------------------
 ]]
 
+-----------------------------------
 -- config starts
+-----------------------------------
+
+-- Cooldown duration in seconds
+local cooldown_time = 5
+
 local weapon_tags = {
     pistol = 'weapons\\pistol\\pistol',
     sniper_rifle = 'weapons\\sniper rifle\\sniper rifle',
@@ -186,7 +192,7 @@ local loadouts = {
             [weapon_tags.assault_rifle] = {
                 label = 'Assault Rifle',
                 clip = 60,
-                ammo = 120,
+                ammo = 120
             },
             [weapon_tags.pistol] = {
                 label = 'Pistol',
@@ -228,6 +234,7 @@ local loadouts = {
             }
         }
     },
+
     PlasmaFury = {
         id = 9,
         frags = 0,
@@ -270,9 +277,12 @@ local loadouts = {
     }
 }
 
+-----------------------------------
 -- config ends
+-----------------------------------
 
-local players = {}
+local players
+local command_cooldown = {}  -- Stores the cooldown state for each player
 
 api_version = '1.12.0.0'
 
@@ -288,12 +298,12 @@ function OnScriptLoad()
     register_callback(cb['EVENT_SPAWN'], 'OnSpawn')
     register_callback(cb['EVENT_COMMAND'], 'OnCommand')
     register_callback(cb['EVENT_GAME_START'], 'OnStart')
-
     OnStart()
 end
 
 function OnStart()
     if get_var(0, '$gt') ~= 'n/a' then
+        players = {}
         for i = 1,16 do
             if player_present(i) then
                 OnJoin(i)
@@ -310,8 +320,7 @@ local function setGrenades(dynamic_player, grenade_type, amount)
     write_byte(dynamic_player + (grenade_type == 1 and 0x31E or 0x31F), amount)
 end
 
-local function AssignWeapons(playerId)
-
+function OnSpawn(playerId)
     local dynamic_player = get_dynamic_player(playerId)
     if (dynamic_player == 0) then
         return
@@ -319,7 +328,7 @@ local function AssignWeapons(playerId)
 
     execute_command('wdel ' .. playerId)
 
-    local current_loadout = players[playerId].inventory.current_loadout
+    local current_loadout = players[playerId]
     local weapons = loadouts[current_loadout].weapons
     local frags = loadouts[current_loadout].frags
     local plasmas = loadouts[current_loadout].plasmas
@@ -328,47 +337,35 @@ local function AssignWeapons(playerId)
 
     for weapon_tag, attributes in pairs(weapons) do
         local tag = getTag('weap', weapon_tag)
+        if tag then
+            local weapon = spawn_object('', '', 0, 0, 0, 0, tag)
+            local weapon_object_memory = get_object_memory(weapon)
+            if weapon_object_memory ~= 0 then
+                slot = slot + 1
+                write_word(weapon_object_memory + 0x2B6, attributes.ammo)
+                write_word(weapon_object_memory + 0x2B8, attributes.clip)
+                sync_ammo(weapon)
 
-        if not tag then
-            goto next
-        end
-
-        local weapon = spawn_object('', '', 0, 0, 0, 0, tag)
-        local weapon_object_memory = get_object_memory(weapon)
-
-        if weapon_object_memory ~= 0 then
-            slot = slot + 1
-            write_word(weapon_object_memory + 0x2B6, attributes.ammo)
-            write_word(weapon_object_memory + 0x2B8, attributes.clip)
-            sync_ammo(weapon)
-
-            if slot <= 2 then
-                assignWeapon(playerId, weapon) -- Primary and secondary weapons
-            else
-                timer(250, 'assignWeapon', playerId, weapon) -- Tertiary and quaternary weapons must have a delay
+                if slot <= 2 then
+                    assignWeapon(playerId, weapon) -- Primary and secondary weapons
+                else
+                    timer(250, 'assignWeapon', playerId, weapon) -- Tertiary and quaternary weapons must have a delay
+                end
             end
         end
-        :: next ::
     end
 
     setGrenades(dynamic_player, 1, frags)
     setGrenades(dynamic_player, 2, plasmas)
 end
 
-function OnSpawn(playerId)
-    AssignWeapons(playerId)
-end
-
 function OnJoin(playerId)
-    players[playerId] = {
-        inventory = {
-            current_loadout = 'default'
-        }
-    }
+    players[playerId] = 'default'
 end
 
 function OnQuit(playerId)
     players[playerId] = nil
+    command_cooldown[playerId] = nil  -- Clear cooldown on player quit
 end
 
 local function getLoadouts()
@@ -395,11 +392,20 @@ end
 
 function OnCommand(playerId, command)
     local command_num = tonumber(command:match("^(%d+)"))
-    if command_num then
+    if command_num and playerId ~= 0 then
+
+        local current_time = os.time()
+        if command_cooldown[playerId] and current_time < command_cooldown[playerId] then
+            local remaining_time = command_cooldown[playerId] - current_time
+            rprint(playerId, "You must wait " .. remaining_time .. " seconds before using that command again.")
+            return false
+        end
+
         for loadout_name, loadout in pairs(loadouts) do
             if loadout.id == command_num then
-                players[playerId].inventory.current_loadout = loadout_name
+                players[playerId] = loadout_name
                 rprint(playerId, "Loadout [" .. loadout_name .. "] selected! It will take effect upon respawn.")
+                command_cooldown[playerId] = current_time + cooldown_time
                 return false
             end
         end
