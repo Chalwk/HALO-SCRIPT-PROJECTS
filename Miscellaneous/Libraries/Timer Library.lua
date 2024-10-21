@@ -1,6 +1,6 @@
 --[[
 --=====================================================================================================--
-Script Name: Timer Library, for SAPP (PC & CE)
+Script Name: Timer Library for SAPP (PC & CE)
 Description: This library provides a simple timer utility for use in other scripts.
 
 Usage:
@@ -25,6 +25,10 @@ local clock = os.clock
 function Timer:new()
     local instance = setmetatable({}, self)
     self.__index = self
+    -- Initialize timer properties
+    instance.start_time = nil
+    instance.paused_time = 0
+    instance.paused = false
     return instance
 end
 
@@ -44,7 +48,7 @@ end
 
 -- Pauses the timer
 function Timer:pause()
-    if not self.paused then
+    if not self.paused and self.start_time then
         self.paused_time = clock()
         self.paused = true
     end
@@ -64,7 +68,7 @@ function Timer:get()
     if self.start_time then
         return self.paused and (self.paused_time - self.start_time) or (clock() - self.start_time)
     end
-    return 0
+    return 0  -- Or return nil if not started
 end
 
 return Timer

@@ -97,11 +97,13 @@ end
 -- @param file_path The path to the file.
 -- @param content The content to write to the file.
 local function write_to_file(file_path, content)
-    local file = io.open(file_path, 'a+')
-    if file then
-        file:write(content .. '\n')
-        file:close()
+    local file, err = io.open(file_path, 'a+')
+    if not file then
+        print("Error opening log file: " .. err) -- Error handling for file operations
+        return
     end
+    file:write(content .. '\n')
+    file:close()
 end
 
 -- Logs an event to the server log file.

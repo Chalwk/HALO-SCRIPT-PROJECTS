@@ -1,43 +1,28 @@
 api_version = "1.12.0.0"
 
+-- Constants
+local TOTAL_FLAGS = 16
+local HEIGHT = 2
+local RADIUS = 3
+local CENTER_X, CENTER_Y, CENTER_Z = 79.48, -118.68, 0.24
+local ANGLE_STEP = 360 / TOTAL_FLAGS
+
 function OnScriptLoad()
     register_callback(cb["EVENT_GAME_START"], "OnGameStart")
 end
 
 function OnGameStart()
+    -- Loop through the number of flags and spawn them in a circle
+    for i = 0, TOTAL_FLAGS - 1 do
+        local angle = i * ANGLE_STEP * math.pi / 180  -- Convert angle to radians
 
-    -- Number of flags to spawn:
-    local total_flags = 16
+        -- Calculate the x, y, and z coordinates for the flag:
+        local x = CENTER_X + RADIUS * math.cos(angle)
+        local y = CENTER_Y + RADIUS * math.sin(angle)
+        local z = CENTER_Z + HEIGHT
 
-    -- height added to the z-axis:
-    local height = 2
-
-    -- Spacing between flags:
-    local radius = 3 --self.boundary_size
-
-    -- Circle center point:
-    local x, y, z = 79.48, -118.68, 0.24
-
-    -- Iterations is used to determine the angle of each flag:
-    local iterations = 0
-
-    -- Loop through 360 degrees and spawn a flag every 22.5 degrees:
-    for i = 0, 360 do
-        -- If the iteration is greater than 360 / total_flags, then spawn a flag:
-        if (i > iterations) then
-            iterations = iterations + 360 / total_flags
-
-            -- Convert the angle to radians:
-            local angle = i * math.pi / 180
-
-            -- Calculate the x, y, and z coordinates for the flag:
-            local x1 = x + radius * math.cos(angle)
-            local y1 = y + radius * math.sin(angle)
-            local z1 = z + height
-
-            -- Spawn the flag:
-            spawn_object('weap', 'weapons\\flag\\flag', x1, y1, z1)
-        end
+        -- Spawn the flag:
+        spawn_object('weap', 'weapons\\flag\\flag', x, y, z)
     end
 end
 

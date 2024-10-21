@@ -30,24 +30,21 @@ local PageBrowser = {}
 
 --- Calculates the start and end index for the given page number.
 -- @param page Number: The page number to calculate indices for.
--- @param maxResults Number: The maximum number of results per page.
+-- @param max_results Number: The maximum number of results per page.
 -- @return Number, Number: The start and end indices for the page.
-local function GetPage(page, maxResults)
-    local start = maxResults * page
-    local startPage = start - maxResults + 1
-    local endPage = start
-    return startPage, endPage
+local function GetPage(page, max_results)
+    local start = max_results * page
+    return start - max_results + 1, start
 end
 
 local floor = math.floor
 
 --- Calculates the total number of pages based on total items and max results per page.
 -- @param total Number: The total number of items.
--- @param maxResults Number: The maximum results per page.
+-- @param max_results Number: The maximum results per page.
 -- @return Number: The total number of pages.
-local function GetPageCount(total, maxResults)
-    local pages = total / maxResults
-    return pages == floor(pages) and pages or floor(pages) + 1
+local function GetPageCount(total, max_results)
+    return floor((total - 1) / max_results) + 1  -- Avoid division for better precision
 end
 
 --- Generates spacing for table formatting.
@@ -60,75 +57,73 @@ end
 local concat = table.concat
 
 --- Formats a table of results into a string for display.
--- @param dataTable Table: The table to format.
--- @param maxResults Number: The maximum results per page.
+-- @param data_table Table: The table to format.
+-- @param max_results Number: The maximum results per page.
 -- @param spaces Number: The spaces between table elements.
 -- @return String: Formatted string for display.
-local function FormatTable(dataTable, maxResults, spaces)
+local function FormatTable(data_table, max_results, spaces)
     local longest = 0
-    for _, value in ipairs(dataTable) do
+    for _, value in ipairs(data_table) do
         longest = math.max(longest, #value)  -- Find the length of the longest string
     end
 
     local rows = {}
-    local count = 1
-    for i = 1, #dataTable do
-        if (count % maxResults == 0) or (i == #dataTable) then
-            rows[#rows + 1] = dataTable[i]  -- Add the last entry of the row
-        else
-            rows[#rows + 1] = dataTable[i] .. Spacing(longest - #dataTable[i] + spaces)  -- Format current entry
+    for i = 1, #data_table do
+        rows[#rows + 1] = data_table[i] .. Spacing(longest - #data_table[i] + spaces)  -- Format current entry
+        if i % max_results == 0 or i == #data_table then
+            rows[#rows + 1] = "\n"  -- Add a newline at the end of the row
         end
-        count = count + 1
     end
 
     return concat(rows)  -- Concatenate all rows into a single string
 end
 
 --- Sends a message to the player or console.
--- @param playerID Number: The player ID to send the message to.
+-- @param player_id Number: The player ID to send the message to.
 -- @param message String: The message content to display.
-local function Respond(playerID, message)
-    if playerID == 0 then
+local function Respond(player_id, message)
+    if player_id == 0 then
         cprint(message)  -- Print to console
     else
-        rprint(playerID, message)  -- Send RCON message to player
+        rprint(player_id, message)  -- Send RCON message to player
     end
 end
 
 --- Displays paginated results to a player.
--- @param playerID Number: The player ID to show results to.
+-- @param player_id Number: The player ID to show results to.
 -- @param page Number: The current page number to display.
--- @param maxResults Number: The maximum results per page.
--- @param maxColumns Number: The maximum number of columns to display.
+-- @param max_results Number: The maximum results per page.
+-- @param max_columns Number: The maximum number of columns to display.
 -- @param spaces Number: The number of spaces between table elements.
--- @param dataTable Table: The data table to show results from.
-function PageBrowser:ShowResults(playerID, page, maxResults, maxColumns, spaces, dataTable)
-    local totalPages = GetPageCount(#dataTable, maxResults)
+-- @param data_table Table: The data table to show results from.
+function PageBrowser:ShowResults(player_id, page, max_results, max_columns, spaces, data_table)
+    -- Validate parameters
+    max_results = math.max(1, max_results or 1)
+    max_columns = math.max(1, max_columns or 1)
+    spaces = math.max(0, spaces or 0)
 
-    if page > 0 and page <= totalPages then
-        local startPage, endPage = GetPage(page, maxResults)
+    local total_items = #data_table
+    local total_pages = GetPageCount(total_items, max_results)
+
+    if page > 0 and page <= total_pages then
+        local start_page, end_page = GetPage(page, max_results)
         local results = {}
 
-        for i = startPage, endPage do
-            if dataTable[i] then
-                results[#results + 1] = dataTable[i]
+        for i = start_page, end_page do
+            if data_table[i] then
+                results[#results + 1] = data_table[i]
             end
         end
 
-        local startIndex, endIndex = 1, maxColumns
-        while endIndex <= #results do
-            local row = FormatTable(results, maxColumns, spaces)
-            if row and row ~= "" then
-                Respond(playerID, row)  -- Send formatted row to player
-            end
-            startIndex = endIndex + 1
-            endIndex = endIndex + maxColumns
+        local row = FormatTable(results, max_columns, spaces)  -- Format results into rows
+        if row and row ~= "" then
+            Respond(player_id, row)  -- Send formatted rows to player
         end
 
         -- Send footer with page info
-        Respond(playerID, '[Page ' .. page .. '/' .. totalPages .. '] Showing ' .. #results .. '/' .. #dataTable .. ' results')
+        Respond(player_id, '[Page ' .. page .. '/' .. total_pages .. '] Showing ' .. #results .. '/' .. total_items .. ' results')
     else
-        Respond(playerID, 'Invalid Page ID. Please enter a page between 1-' .. totalPages)
+        Respond(player_id, 'Invalid Page ID. Please enter a page between 1 and ' .. total_pages)
     end
 end
 
