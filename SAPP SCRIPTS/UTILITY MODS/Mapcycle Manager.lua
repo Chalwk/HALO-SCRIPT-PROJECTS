@@ -77,7 +77,7 @@ Prerequisites:
 
 Copyright (c) 2024, Jericho Crosby <jericho.crosby227@gmail.com>
 * Notice: You can use this document subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+https://github.com/Chalwk77/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--
 ]]--
 
@@ -120,6 +120,7 @@ local config = {
     -- Allows enabling/disabling randomization for each map cycle type:
     mapcycle_randomization = {
         shuffle_on_load = false,
+        -- Only applies to these commands: /classic, /custom, /small, /medium, /large
         shuffle_on_command = true,
         cycles = {
             CLASSIC = false,
@@ -166,6 +167,8 @@ local config = {
             { 'longest', 'race' },
             { 'prisoner', 'slayer' },
             { 'wizard', 'king' },
+
+
         },
         MEDIUM = {
             { 'carousel', 'king' },
@@ -192,9 +195,9 @@ local config = {
     -- Enables or disables automatic map cycle adjustments based on player count.
     automatic_map_adjustments = {
         enabled = false,
-        small = { min = 1, max = 4 }, -- Player count range for small maps
-        medium = { min = 5, max = 10 }, -- Player count range for medium maps
-        large = { min = 11, max = 16 }  -- Player count range for large maps
+        small = { min = 1, max = 4 },  -- 1 to 4 players for small maps
+        medium = { min = 5, max = 10 }, -- 5 to 10 players for medium maps
+        large = { min = 11, max = 16 }  -- 11 to 16 players for large maps
     },
 
     --------------------------
@@ -203,14 +206,17 @@ local config = {
     messages = {
         permission_denied = "You do not have permission to execute this command!",
         command_on_cooldown = "Command is on cooldown! Please wait {seconds} seconds.",
-        invalid_map_cycle_type = "Invalid map cycle type: {cycle_type}",
-        map_loaded = "Loading map [{map_name}] with gametype [{gametype}] from the [{cycle_type}] cycle.",
-        map_not_found = "Map {map_name} with gametype {gametype} not found in {cycle_type} cycle.",
-        next_map_info = "Next map in [{cycle_type}] cycle: [{map_name}/{gametype}] -> {time_remaining}",
-        map_cycle_set = { "Map cycle set to [{cycle_type}].", "Map cycle set to [{cycle_type}] and was shuffled" },
-        loading_next_map = "Loading next map [{map_name}/{gametype}] in [{cycle_type}] cycle.",
-        loading_previous_map = "Loading previous map [{map_name}] in [{cycle_type}] cycle.",
-        map_cycle_restarted = "Map cycle [{cycle_type}] has been restarted.",
+        invalid_map_cycle_type = "Invalid map cycle type: [{cycle_type}]",
+        map_loaded = "Loading [{map_name}/{gametype}] in [{cycle_type}] cycle.",
+        map_not_found = "[{map_name}/{gametype}] not found in [{cycle_type}] cycle.",
+        next_map_info = "Next map: [{map_name}/{gametype}] -> {time_remaining} in [{cycle_type}] cycle.",
+        map_cycle_set = {
+            "Cycle set to [{cycle_type}]. Loading [{map_name}/{gametype}]",
+            "Cycle set to [{cycle_type} (shuffled)]. Loading [{map_name}/{gametype}]"
+        },
+        loading_next_map = "Loading next map: [{map_name}/{gametype}] in [{cycle_type}] cycle.",
+        loading_previous_map = "Loading previous map: [{map_name}] in [{cycle_type}] cycle.",
+        map_cycle_restarted = "Cycle [{cycle_type}] has been restarted.",
         loadmap_usage = "Usage: /loadmap <map_name> <gametype_name> <mapcycle_type>"
     }
 }
@@ -262,8 +268,7 @@ local function shuffleAllMapCycles()
 end
 
 local function loadMapAndGametype(type, index)
-    local map = config.mapcycle[type][index][1]
-    local gametype = config.mapcycle[type][index][2]
+    local map, gametype = unpack(config.mapcycle[type][index])
     execute_command('map ' .. map .. ' ' .. gametype)
 end
 
@@ -357,22 +362,23 @@ local function inform(playerId, message, placeholders)
 end
 
 local function loadSpecificMap(playerId, map_name, gametype_name, mapcycle_type)
-
     next_map_flag = false
 
     local cycle_type = mapcycle_type:upper()
-    if not config.mapcycle[cycle_type] then
+    local cycle = config.mapcycle[cycle_type]
+
+    if not cycle then
         inform(playerId, config.messages.invalid_map_cycle_type, { cycle_type = mapcycle_type })
         return false
     end
 
-    local cycle = config.mapcycle[cycle_type]
-    for i = 1, #cycle do
-        local map, gametype = cycle[i][1], cycle[i][2]
+    for i, entry in ipairs(cycle) do
+        local map, gametype = entry[1], entry[2]
         if map == map_name and gametype == gametype_name then
             mapcycleIndex = i
             mapcycleType = cycle_type
             loadMapAndGametype(mapcycleType, mapcycleIndex)
+
             inform(playerId, config.messages.map_loaded, {
                 map_name = map_name,
                 gametype = gametype_name,
@@ -390,25 +396,24 @@ local function loadSpecificMap(playerId, map_name, gametype_name, mapcycle_type)
     return false
 end
 
-local function loadMap(direction)
+local function loadMap(playerId, direction)
     next_map_flag = false
 
     local count = #config.mapcycle[mapcycleType]
     mapcycleIndex = (mapcycleIndex + (direction == 'next' and 1 or -1)) % count
+    mapcycleIndex = mapcycleIndex < 1 and count or mapcycleIndex  -- Handle index wrap-around
 
-    if mapcycleIndex < 1 then
-        mapcycleIndex = count
+    if playerId then
+        local map, gametype = unpack(config.mapcycle[mapcycleType][mapcycleIndex])
+        local msg = config.messages[direction == 'next' and 'loading_next_map' or 'loading_previous_map']
+        inform(playerId, msg, {
+            map_name = map,
+            gametype = gametype,
+            cycle_type = mapcycleType
+        })
     end
 
     loadMapAndGametype(mapcycleType, mapcycleIndex)
-end
-
-local function loadNextMap()
-    loadMap('next')
-end
-
-local function loadPrevMap()
-    loadMap('prev')
 end
 
 local function adjustMapCycleBasedOnPlayerCount()
@@ -417,12 +422,12 @@ local function adjustMapCycleBasedOnPlayerCount()
     end
 
     local playerCount = tonumber(get_var(0, '$pn'))
-    local t = config.automatic_map_adjustments
+    local adjustments = config.automatic_map_adjustments
 
     local cycles = {
-        { type = 'SMALL', min = t.small.min, max = t.small.max },
-        { type = 'MEDIUM', min = t.medium.min, max = t.medium.max },
-        { type = 'LARGE', min = t.large.min, max = t.large.max },
+        { type = 'SMALL', min = adjustments.small.min, max = adjustments.small.max },
+        { type = 'MEDIUM', min = adjustments.medium.min, max = adjustments.medium.max },
+        { type = 'LARGE', min = adjustments.large.min, max = adjustments.large.max },
     }
 
     for _, cycle in ipairs(cycles) do
@@ -438,7 +443,7 @@ end
 function OnGameEnd()
     adjustMapCycleBasedOnPlayerCount()
     if next_map_flag then
-        loadNextMap()
+        loadMap(nil, 'next')
     end
     next_map_flag = false
 end
@@ -482,14 +487,7 @@ end
 
 local function getNextMap()
     local nextIndex = (mapcycleIndex % #config.mapcycle[mapcycleType]) + 1
-    local mapInfo = config.mapcycle[mapcycleType][nextIndex]
-    return mapInfo[1], mapInfo[2]
-end
-
-local function getPreviousMap()
-    mapcycleIndex = (mapcycleIndex - 2) % #config.mapcycle[mapcycleType] + 1
-    local mapInfo = config.mapcycle[mapcycleType][mapcycleIndex]
-    return mapInfo[1], mapInfo[2]
+    return unpack(config.mapcycle[mapcycleType][nextIndex])
 end
 
 local function commandOnCooldown(playerId, key, cmdInfo)
@@ -510,40 +508,24 @@ local function commandOnCooldown(playerId, key, cmdInfo)
     return false
 end
 
-local function handleMapCycle(playerId)
-    local do_shuffle = config.mapcycle_randomization.cycles[mapcycleType]
+local function changeMapCycle(playerId, type)
+
+    next_map_flag = false
+    mapcycleType = type:upper()
+
+    local isShuffleEnabled = config.mapcycle_randomization.cycles[mapcycleType]
             and config.mapcycle_randomization.shuffle_on_command
 
-    if do_shuffle then
+    local message = isShuffleEnabled and config.messages.map_cycle_set[2] or config.messages.map_cycle_set[1]
+
+    if isShuffleEnabled then
         shuffle(config.mapcycle[mapcycleType])
     end
 
-    local cycle_message = do_shuffle and config.messages.map_cycle_set[2]
-            or config.messages.map_cycle_set[1]
+    local map, gametype = unpack(config.mapcycle[mapcycleType][mapcycleIndex])
 
-    inform(playerId, cycle_message, { cycle_type = mapcycleType })
+    inform(playerId, message, { cycle_type = mapcycleType, map_name = map, gametype = gametype})
     loadMapAndGametype(mapcycleType, mapcycleIndex)
-end
-
-local function handleNextMap(playerId)
-    mapcycleIndex = (mapcycleIndex % #config.mapcycle[mapcycleType]) + 1
-    local map, gametype = getNextMap()
-    loadNextMap()
-    inform(playerId, config.messages.loading_next_map, {
-        map_name = map,
-        gametype = gametype,
-        cycle_type = mapcycleType
-    })
-end
-
-local function handlePreviousMap(playerId)
-    local map, gametype = getPreviousMap()
-    loadPrevMap()
-    inform(playerId, config.messages.loading_previous_map, {
-        map_name = map,
-        gametype = gametype,
-        cycle_type = mapcycleType
-    })
 end
 
 local function handleWhatIs(playerId)
@@ -582,20 +564,15 @@ function OnCommand(playerId, command)
             end
 
             if key == 'custom' or key == 'classic' or key == 'small' or key == 'medium' or key == 'large' then
-                handleMapCycle(playerId)
-
+                changeMapCycle(playerId, key)
             elseif key == 'next' then
-                handleNextMap(playerId)
-
+                loadMap(playerId, 'next')
             elseif key == 'prev' then
-                handlePreviousMap(playerId)
-
+                loadMap(playerId, 'prev')
             elseif key == 'whatis' then
                 handleWhatIs(playerId)
-
             elseif key == 'restart' then
                 handleRestart(playerId)
-
             elseif key == 'loadmap' then
                 handleLoadMap(playerId, args)
             end
