@@ -282,7 +282,7 @@ local loadouts = {
 -----------------------------------
 
 local players
-local command_cooldown = {}  -- Stores the cooldown state for each player
+local command_cooldown = {}
 
 api_version = '1.12.0.0'
 
@@ -304,7 +304,7 @@ end
 function OnStart()
     if get_var(0, '$gt') ~= 'n/a' then
         players = {}
-        for i = 1,16 do
+        for i = 1, 16 do
             if player_present(i) then
                 OnJoin(i)
             end
@@ -365,7 +365,7 @@ end
 
 function OnQuit(playerId)
     players[playerId] = nil
-    command_cooldown[playerId] = nil  -- Clear cooldown on player quit
+    command_cooldown[playerId] = nil
 end
 
 local function getLoadouts()
@@ -390,14 +390,30 @@ local function showLoadouts(playerId)
     end
 end
 
-function OnCommand(playerId, command)
-    local command_num = tonumber(command:match("^(%d+)"))
-    if command_num and playerId ~= 0 then
+local function handleCooldown(playerId, current_time)
+    if command_cooldown[playerId] and current_time < command_cooldown[playerId] then
+        local remaining_time = command_cooldown[playerId] - current_time
+        rprint(playerId, "You must wait " .. remaining_time .. " seconds before using that command again.")
+        return true
+    end
+    return false
+end
 
-        local current_time = os.time()
-        if command_cooldown[playerId] and current_time < command_cooldown[playerId] then
-            local remaining_time = command_cooldown[playerId] - current_time
-            rprint(playerId, "You must wait " .. remaining_time .. " seconds before using that command again.")
+local function checkAndSetCooldown(playerId)
+    local current_time = os.time()
+    if handleCooldown(playerId, current_time) then
+        return false
+    end
+    command_cooldown[playerId] = current_time + cooldown_time
+    return true
+end
+
+function OnCommand(playerId, command)
+    if playerId == 0 then return true end
+
+    local command_num = tonumber(command:match("^(%d+)"))
+    if command_num then
+        if not checkAndSetCooldown(playerId) then
             return false
         end
 
@@ -405,17 +421,19 @@ function OnCommand(playerId, command)
             if loadout.id == command_num then
                 players[playerId] = loadout_name
                 rprint(playerId, "Loadout [" .. loadout_name .. "] selected! It will take effect upon respawn.")
-                command_cooldown[playerId] = current_time + cooldown_time
                 return false
             end
         end
         rprint(playerId, "Invalid loadout number!")
+
     elseif command:lower() == "loadouts" then
+        if not checkAndSetCooldown(playerId) then
+            return false
+        end
         showLoadouts(playerId)
         return false
     end
 end
-
 
 function OnDeath(playerId)
     showLoadouts(playerId)
