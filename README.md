@@ -77,7 +77,7 @@ To streamline the process of submitting issues, please use the following forms:
 | [Halo Net](https://opencarnage.net)                                                                | [Join Discord](https://discord.gg/9HMDFa)          |
 | [XG Gaming](https://www.xgclan.com)                                                                | [Join Discord](https://discord.gg/djqM24x8)        |
 | [POQ Clan](http://poqclan.com/)                                                                    | [Join Discord](https://discord.com/invite/pTsKsEm) |
-| [JeriCraft](https://discord.gg/vcyM6epaqg)                                                         | [Join Discord](https://discord.gg/vcyM6epaqg)      |
+| [JeriCraft](https://discord.gg/wuVcM9AZrr)                                                         | [Join Discord](https://discord.gg/wuVcM9AZrr)      |
 
 ---
 
@@ -96,7 +96,8 @@ To streamline the process of submitting issues, please use the following forms:
 ### 📧 Contact Me
 
 - **Email:** [jericho.crosby227@gmail.com](mailto:jericho.crosby227@gmail.com)
-- **Discord:** **Chalwk**
+- **Add me on Discord:** **Chalwk**
+- **Join my Discord Server:** [Click here to join](https://discord.gg/wuVcM9AZrr)
 
 ---
 
