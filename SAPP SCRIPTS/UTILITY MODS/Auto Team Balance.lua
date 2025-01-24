@@ -14,10 +14,11 @@ api_version = "1.12.0.0"
 -- Configuration
 local config = {
     delay = 5, -- How often to balance teams in seconds
-    minPlayersPerTeam = 2, -- Minimum number of players needed before balancing
-    maxTeamDifference = 2, -- Maximum difference allowed between teams before balancing
+    minPlayersPerTeam = 4, -- Minimum number of players needed before balancing
+    maxTeamDifference = 8, -- Maximum difference allowed between teams before balancing
     switchingPriority = "smaller" -- Options: "smaller" or "larger"
 }
+-- End Configurations
 
 local lastBalanceTime = 0
 
