@@ -12,23 +12,21 @@ https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 -- config starts --
 
 -- Valid actions: "kick" or "ban"
---
 local action = 'kick'
 
 -- Ban time (in minutes), requires action to be set to "ban".
---
 local time = 10
 
 -- Grace period (in seconds).
---
-local grace = 30
+local grace = 5
 
 -- Action reason:
---
-local reason = 'Sorry! Default names not allowed! You will be kicked in %d seconds.'
+local reason = "Default names not allowed!"
+
+-- Warning message:
+local warning = "Default names are not allowed! You will be kicked in %d seconds."
 
 -- List of names to kick/ban:
---
 local banned_names = {
     'Butcher', 'Caboose', 'Crazy', 'Cupid', 'Darling', 'Dasher',
     'Disco', 'Donut', 'Dopey', 'Ghost', 'Goat', 'Grumpy',
@@ -48,11 +46,16 @@ api_version = "1.12.0.0"
 local players = {}
 
 function OnScriptLoad()
-    action = (action == "kick" and 'k $n' or 'ipban $n ' .. time) .. ' "' .. reason .. '"'
-    players = {}
+    action = (action == "kick" and "k $n" or "ipban $n " .. time) .. ' "' .. reason .. '"'
     register_callback(cb["EVENT_JOIN"], "OnJoin")
-    register_callback(cb["EVENT_LEAVE"], "OnQuit")
     register_callback(cb["EVENT_TICK"], "OnTick")
+    register_callback(cb["EVENT_LEAVE"], "OnQuit")
+    register_callback(cb["EVENT_GAME_START"], "OnStart")
+    OnStart()
+end
+
+function OnStart()
+    players = {}
 end
 
 function OnJoin(playerId)
@@ -60,8 +63,7 @@ function OnJoin(playerId)
     for _, banned_name in ipairs(banned_names) do
         if name:lower() == banned_name:lower() then
             players[playerId] = {
-                timer = os.clock() + grace,
-                action_taken = false
+                timer = os.clock() + grace
             }
             break
         end
@@ -69,18 +71,20 @@ function OnJoin(playerId)
 end
 
 local function inform(playerId, data)
+    for _ = 1, 25 do
+        rprint(playerId, " ")
+    end
     local time_left = math.ceil(data.timer - os.clock())
-    rprint(playerId, string.format(reason, time_left))
+    rprint(playerId, string.format(warning, time_left))
 end
 
 function OnTick()
     for playerId, data in pairs(players) do
-        if player_present(playerId) and not data.action_taken then
-            if os.clock() >= data.timer then
-                execute_command(string.format("%s %d", action, playerId))
-                data.action_taken = true
-            else
-                inform(playerId, data)
+        if player_present(playerId) and data.timer then
+            inform(playerId, data)
+            if os.clock() > data.timer then
+                data.timer = nil
+                execute_command(action:gsub("$n", playerId))
             end
         end
     end
