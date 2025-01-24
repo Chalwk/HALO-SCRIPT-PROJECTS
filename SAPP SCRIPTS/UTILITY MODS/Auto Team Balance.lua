@@ -11,16 +11,22 @@ https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 
 api_version = "1.12.0.0"
 
--- config starts
-local delay = 5 -- How often to balance teams in seconds
--- config ends
+-- Configuration
+local config = {
+    delay = 5, -- How often to balance teams in seconds
+    minPlayersPerTeam = 2, -- Minimum number of players needed before balancing
+    maxTeamDifference = 2, -- Maximum difference allowed between teams before balancing
+    switchingPriority = "smaller" -- Options: "smaller" or "larger"
+}
+
+local lastBalanceTime = 0
 
 function OnScriptLoad()
     register_callback(cb['EVENT_TICK'], "OnTick")
 end
 
 local function getTeamCounts()
-    local reds, blues = 0, 0
+    local reds, blues
     for i = 1, 16 do
         if player_present(i) then
             local team = get_var(i, "$team")
@@ -44,28 +50,30 @@ end
 
 local function balanceTeams()
     local reds, blues = getTeamCounts()
+    local totalPlayers = reds + blues
 
-    if reds > blues then
-        for i = 1, 16 do
-            if player_present(i) and switchTeam(i, "red", "blue") then
-                break
-            end
-        end
-    elseif blues > reds then
-        for i = 1, 16 do
-            if player_present(i) and switchTeam(i, "blue", "red") then
-                break
-            end
+    if totalPlayers < config.minPlayersPerTeam * 2 or math.abs(reds - blues) <= config.maxTeamDifference then
+        return
+    end
+
+    local fromTeam, toTeam
+    if config.switchingPriority == "smaller" then
+        fromTeam, toTeam = reds > blues and "red" or "blue", reds > blues and "blue" or "red"
+    else
+        fromTeam, toTeam = reds < blues and "blue" or "red", reds < blues and "red" or "blue"
+    end
+
+    for i = 1, 16 do
+        if player_present(i) and switchTeam(i, fromTeam, toTeam) then
+            break
         end
     end
 end
 
-local lastBalanceTime = 0
-
 function OnTick()
     local currentTime = os.clock()
-    if currentTime - lastBalanceTime >= delay then
-        lastBalanceTime = currentTime  -- Update last balance time
+    if currentTime - lastBalanceTime >= config.delay then
+        lastBalanceTime = currentTime
         if tonumber(get_var(0, "$pn")) > 0 then
             balanceTeams()
         end
