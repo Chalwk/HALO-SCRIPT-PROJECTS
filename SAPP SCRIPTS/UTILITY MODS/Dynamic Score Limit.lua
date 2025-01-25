@@ -1,6 +1,6 @@
 --[[
 --=====================================================================================================--
-Script Name: Dynamic Scoring, for SAPP (PC & CE)
+Script Name: Dynamic Score Limit, for SAPP (PC & CE)
 Description: Automatically adjusts the score limit based on the current number of online players.
 
             Supports custom game mode overrides.
