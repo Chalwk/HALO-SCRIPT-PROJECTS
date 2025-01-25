@@ -7,20 +7,16 @@ Description: Automatically adjusts the score limit based on the current number o
             If your game mode isn't listed in the `score_limits` table,
             the server will default to pre-configured game type values.
 
-Enhancements:
-- Refactored code for clarity and optimization.
-- Enhanced logging and structured output for better user experience.
-- Introduced helper functions for readability.
-
-Copyright (c) 2022-2024, Jericho Crosby <jericho.crosby227@gmail.com>
+Copyright (c) 2022-2025, Jericho Crosby <jericho.crosby227@gmail.com>
 Notice: You can use this script under the following conditions:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--
 ]]--
 
-api_version = "1.12.0.0"
-
--- Configuration section
+-----------------------------------------
+-- Config starts here, edit as needed --
+-----------------------------------------
+---
 local config = {
     -- Messages can use the following variables:
     -- $limit   = the new score limit
@@ -86,16 +82,23 @@ local config = {
     }
 }
 
+-----------------------------------------
+-- Config ends here, do not edit below --
+-----------------------------------------
+
+api_version = "1.12.0.0"
+
+
 -- Variables to hold dynamic values:
 local score_table, current_limit
 
 -- Register script events:
 function OnScriptLoad()
-    register_callback(cb['EVENT_JOIN'], 'OnPlayerJoin')
-    register_callback(cb['EVENT_LEAVE'], 'OnPlayerQuit')
-    register_callback(cb['EVENT_GAME_END'], 'OnGameEnd')
-    register_callback(cb['EVENT_GAME_START'], 'OnGameStart')
-    OnGameStart()
+    register_callback(cb['EVENT_JOIN'], 'OnJoin')
+    register_callback(cb['EVENT_LEAVE'], 'OnQuit')
+    register_callback(cb['EVENT_GAME_END'], 'OnEnd')
+    register_callback(cb['EVENT_GAME_START'], 'OnStart')
+    OnStart()
 end
 
 -- Set the score table based on game mode or type:
@@ -135,8 +138,7 @@ local function ModifyScoreLimit(isPlayerQuitting)
     end
 end
 
--- Event: On game start:
-function OnGameStart()
+function OnStart()
     score_table, current_limit = nil, nil
     local game_type = get_var(0, '$gt')
     local mode = get_var(0, '$mode')
@@ -147,22 +149,18 @@ function OnGameStart()
     end
 end
 
--- Event: On game end:
-function OnGameEnd()
+function OnEnd()
     score_table = nil
 end
 
--- Event: On player join:
-function OnPlayerJoin()
+function OnJoin()
     ModifyScoreLimit()
 end
 
--- Event: On player quit:
-function OnPlayerQuit()
+function OnQuit()
     ModifyScoreLimit(true)
 end
 
--- Placeholder function for script unload event:
 function OnScriptUnload()
-    -- No actions needed for unload
+    -- N/A
 end
