@@ -1,23 +1,20 @@
 --[[
 --=====================================================================================================--
 Script Name: Name Replacer, for SAPP (PC & CE)
-Description: Change blacklisted names into something funny!
+Description: Replaces player names with random names from a predefined list.
 
-During pre-join, a player's name is cross-checked against a blacklist table.
-If a match is made, their name will be changed to a random one from a table called 'random_names'.
-
-As random names get assigned, they become marked as 'used' until the player quits the server.
-This is to prevent someone else from being assigned the same random name.
-
-Copyright (c) 2023, Jericho Crosby <jericho.crosby227@gmail.com>
+Copyright (c) 2025, Jericho Crosby <jericho.crosby227@gmail.com>
 Notice: You can use this script subject to the following conditions:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--
 ]]--
 
-api_version = '1.12.0.0'
+-----------------------------------------
+-- Config starts here, edit as needed --
+-----------------------------------------
 
--- Configuration for blacklisted names and random names
+-- List of blacklisted names that should be replaced.
+-- Players with any of these names will have their names changed.
 local blacklist = {
     'Butcher', 'Caboose', 'Crazy', 'Cupid', 'Darling', 'Dasher',
     'Disco', 'Donut', 'Dopey', 'Ghost', 'Goat', 'Grumpy',
@@ -29,6 +26,7 @@ local blacklist = {
     'Wilshire'
 }
 
+-- List of random names that can be assigned to players.
 local random_names = {
     'Liam', 'Noah', 'Oliver', 'Elijah', 'William', 'James',
     'Benjamin', 'Lucas', 'Henry', 'Alexander', 'Mason',
@@ -40,76 +38,101 @@ local random_names = {
     'Jayden', 'Gabriel', 'Isaac', 'Lincoln', 'Anthony'
 }
 
-local players = {}
+-- Maximum allowed name length.
+-- Names longer than this limit will be truncated.
+-- Ensure this matches the in-game name length limit (default: 11).
+-- Do not set this value higher than 11, as it may cause issues with in-game display.
+local MAX_NAME_LENGTH = 11
+
+-----------------------------------------
+-- Config ends here, do not edit below --
+-----------------------------------------
+
+api_version = "1.12.0.0"
+
+local random_names_status = {} -- Holds name usage status (used flag).
+local players = {} -- Tracks players and their assigned names.
 local network_struct
 local ce
 local byte = string.byte
 local char = string.char
 
+-- Script initialization logic.
 function OnScriptLoad()
+    -- Register callbacks for various game events.
     register_callback(cb['EVENT_LEAVE'], 'OnQuit')
     register_callback(cb['EVENT_PREJOIN'], 'OnPreJoin')
     register_callback(cb['EVENT_GAME_START'], 'OnStart')
 
+    players = {}
     network_struct = read_dword(sig_scan('F3ABA1????????BA????????C740??????????E8????????668B0D') + 3)
     ce = (halo_type == 'PC' and 0x0 or 0x40)
+
+    -- Initialize the random_names_status table.
+    for _, name in ipairs(random_names) do
+        random_names_status[name] = {used = false}
+    end
 
     OnStart()
 end
 
--- Get a random name for the player
-local function getRandomName(player)
-    local availableNames = {}
-
-    for i, name in ipairs(random_names) do
-        if not players[name] then
-            table.insert(availableNames, {name = name, index = i})
-        end
-    end
-
-    if #availableNames > 0 then
-        local randomIndex = rand(1, #availableNames)
-        local chosenName = availableNames[randomIndex].name
-        local nameIndex = availableNames[randomIndex].index
-
-        players[player] = nameIndex
-        random_names[nameIndex].used = true
-
-        return chosenName
-    end
-
-    return generateRandomString(11)
-end
-
--- Generate a random string of a specified length
+-- Generate a random string of a specified length (fallback for random names).
+-- Used when no clean random names are available.
 local function generateRandomString(length)
     local name = ''
     for _ = 1, length do
-        name = name .. char(rand(97, 123)) -- lowercase letters a-z
+        name = name .. char(rand(97, 123)) -- Generate lowercase letters a-z.
     end
     return name
 end
 
--- Mark a name as 'used' if it exists in the random names table
-local function checkName(name)
-    for _, v in ipairs(random_names) do
-        if name == v then
-            players[name] = true
+-- Get an available random name for a player or fallback to a generated string.
+local function getRandomName(player)
+    local availableNames = {}
+
+    -- Collect all unused names from the random_names table.
+    for name, status in pairs(random_names_status) do
+        if not status.used then
+            table.insert(availableNames, name)
         end
+    end
+
+    -- If there are available names, pick one randomly.
+    if #availableNames > 0 then
+        local randomIndex = rand(1, #availableNames)
+        local chosenName = availableNames[randomIndex]
+
+        players[player] = chosenName
+        random_names_status[chosenName].used = true
+
+        return chosenName
+    end
+
+    -- If no clean names are available, generate a random string.
+    return generateRandomString(MAX_NAME_LENGTH)
+end
+
+-- Mark a name as used in the random_names_status table.
+local function checkName(name)
+    if random_names_status[name] then
+        random_names_status[name].used = true
+        players[name] = true
     end
 end
 
--- Set a player's name to a new random name
+-- Assign a new name to a player and update the in-game display.
 local function setNewName(id, newName)
     local count = 0
     local address = network_struct + 0x1AA + ce + to_real_index(id) * 0x20
 
+    -- Clear the player's existing name.
     for _ = 1, 12 do
-        write_byte(address + count, 0) -- Clear existing name
+        write_byte(address + count, 0)
         count = count + 2
     end
 
-    local str = newName:sub(1, 11) -- Limit to 11 characters
+    -- Apply the new name (truncate if longer than MAX_NAME_LENGTH).
+    local str = newName:sub(1, MAX_NAME_LENGTH)
     local length = str:len()
 
     for j = 1, length do
@@ -119,11 +142,12 @@ local function setNewName(id, newName)
     end
 end
 
--- Handle player pre-join events
+-- Handle the pre-join event to check and replace blacklisted names.
 function OnPreJoin(player)
     local name = get_var(player, '$name')
     checkName(name)
 
+    -- Check if the player's name is blacklisted.
     for _, blacklisted_name in ipairs(blacklist) do
         if name == blacklisted_name then
             local new_name = getRandomName(player)
@@ -134,25 +158,27 @@ function OnPreJoin(player)
     end
 end
 
--- Handle player quit events
+-- Handle player quit events to free up their name.
 function OnQuit(player)
-    local id = players[player]
+    local name = players[player]
 
-    if id then
-        random_names[id].used = false
+    if name then
+        random_names_status[name].used = false
         players[player] = nil
     end
 end
 
--- Initialize the script and reset names for all players
+-- Initialize the script and reset name states at the start of a game.
 function OnStart()
     if get_var(0, '$gt') ~= 'n/a' then
         players = {}
 
-        for _, v in ipairs(random_names) do
-            v.used = false
+        -- Reset all names to unused.
+        for _, status in pairs(random_names_status) do
+            status.used = false
         end
 
+        -- Check the names of currently present players.
         for i = 1, 16 do
             if player_present(i) then
                 checkName(get_var(i, '$name'))
