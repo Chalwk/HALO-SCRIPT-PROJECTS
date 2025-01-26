@@ -3,7 +3,31 @@
 Script Name: AntiImpersonator for SAPP (PC & CE)
 Description: Prevent other players from impersonating your community members.
 
-Copyright (c) 2019-2024, Jericho Crosby <jericho.crosby227@gmail.com>
+-------------------------
+IMPORTANT NOTE
+-------------------------
+
+* Shared Hashes and Dynamic IPs:
+
+If a community member has a shared hash or uses a dynamic IP address, this system may not work effectively for them.
+
+Shared Hashes: Some players may share the same hash (e.g., cracked/pirated account), which means
+               multiple legitimate users might have the same hash. This could lead to false positives,
+               where one player is mistakenly flagged as an impersonator.
+
+Dynamic IPs: If a member’s IP address changes frequently (e.g., due to using dynamic IPs provided by their ISP),
+             the system could mistakenly flag players as impersonators if their IP address
+             doesn't match the one originally listed for them.
+
+To Protect a Community Member:
+    1. Static IP:
+        If possible, ensure that the member uses a static IP address. This will allow their IP to remain consistent and reliably be recognized as theirs.
+
+    2. Legitimate Hash:
+        If the member uses a legitimate, unique player hash, that will be more reliable than relying on IP alone.
+        Player hashes are more consistent and tied to their specific Halo account, so they are less prone to change than IP addresses.
+
+Copyright (c) 2019-2025, Jericho Crosby <jericho.crosby227@gmail.com>
 Notice: You can use this script subject to the following conditions:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--
@@ -13,79 +37,98 @@ https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 api_version = "1.12.0.0"
 
 local config = {
-    -- Default action against impersonators (valid actions: 'kick' or 'ban'):
-    action = 'kick',
+    -- Action to take when an impersonator is detected ('kick' or 'ban'):
+    action = 'kick',  -- Default action against impersonators.
 
-    -- Default ban duration for impersonators (in minutes). Set to 0 for permanent ban:
-    ban_duration = 10,
+    -- Ban duration in minutes (0 for permanent ban):
+    ban_duration = 10,  -- Default ban duration.
 
     -- Reason for punishment:
-    punishment_reason = 'Impersonating',
+    punishment_reason = 'Impersonating',  -- Reason shown when a player is kicked or banned.
 
-    -- Community members list with their corresponding IPs and hashes:
+    -- Community members list with corresponding IPs or hashes (at least one required):
     members = {
-        -- Example:
+        -- Example structure for a community member
         ['ExampleGamerTag'] = {
-            ['127.0.0.1'] = true,
-            ['127.0.0.2'] = true,
-            ['xxxxxxxxxxxxxxxxxxxxxxxxxxxx01'] = true,
-            ['xxxxxxxxxxxxxxxxxxxxxxxxxxxx02'] = true,
+            '127.0.0.1',  -- IP address of the member (optional)
+            'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',  -- Player hash of the member (optional)
         },
 
-        -- Add more members with this structure:
-        ['name_here'] = {
-            ['ip1'] = true,
-            ['ip2'] = true,
-            ['hash1'] = true,
-            ['hash2'] = true,
-            ['hash3'] = true,
+        -- Additional members can be added in the same format:
+        ['someone'] = {
+            'ip1',  -- IP address (optional)
+            'hash1', -- Player hash (optional)
+            'hash2', -- Additional hashes (optional)
         }
-    }
+    },
+
+    -- Enable logging of impersonator actions (true/false):
+    log = true,  -- Set to true to log impersonator actions.
+
+    -- Log file path for impersonator actions:
+    log_file_path = "anti_impersonator_log.txt"  -- Path to the log file.
 }
 -- End of configuration ------------------------------------------------------------
 
--- Called when the script loads
-function OnScriptLoad()
-    -- Register the join event callback:
-    register_callback(cb['EVENT_JOIN'], 'OnPlayerJoin')
+local function getDate()
+    return os.date("%d-%m-%Y %H:%M:%S")
 end
 
--- Helper function to handle kicking or banning a player:
-local function perform_action(player_id, action, reason, ban_duration)
-    if action == 'kick' then
-        -- Kick the player:
-        execute_command('k ' .. player_id .. ' "' .. reason .. '"')
-        cprint('Player ID: ' .. player_id .. ' was kicked for ' .. reason, 12)
-    elseif action == 'ban' then
-        -- Ban the player:
-        execute_command('b ' .. player_id .. ' ' .. ban_duration .. ' "' .. reason .. '"')
-        cprint('Player ID: ' .. player_id .. ' was banned for ' .. ban_duration .. ' minutes for ' .. reason, 12)
-    end
-end
+local function perform_action(playerId, name, hash, ip, action, reason, ban_duration)
 
--- Helper function to extract the player's IP address:
-local function extract_ip(ip_address)
-    return ip_address:match('%d+%.%d+%.%d+%.%d+')
-end
+    local log_message = string.format(
+            "Player ID: %d | Name: %s | Hash: %s | IP: %s | Action: %s | Reason: %s",
+            playerId, name, hash, ip, action, reason
+    )
 
--- Called when a player joins the server:
-function OnPlayerJoin(player_id)
-    local player_name = get_var(player_id, '$name')
-    local player_hash = get_var(player_id, '$hash')
-    local player_ip = extract_ip(get_var(player_id, "$ip"))
-
-    -- Check if the player's name matches a registered community member:
-    local member_data = config.members[player_name]
-    if member_data then
-        -- Check if the IP or hash matches the registered member's data:
-        if member_data[player_hash] or member_data[player_ip] then
-            -- Player's identity is valid, no action required:
-            return
+    -- Log to file if enabled
+    if config.log then
+        local log_file, err = io.open(config.sapp_path, "a")
+        if log_file then
+            log_file:write(string.format("%s - %s\n", getDate(), log_message))
+            log_file:close()
+        else
+            error("Error opening log file: " .. err)
         end
-
-        -- If we reach this point, the player is impersonating a registered member.
-        perform_action(player_id, config.action, config.punishment_reason, config.ban_duration)
     end
+
+    -- Perform the kick or ban action
+    if action == 'kick' then
+        execute_command('k ' .. playerId .. ' "' .. reason .. '"')
+        cprint(log_message, 12)
+    elseif action == 'ban' then
+        execute_command('b ' .. playerId .. ' ' .. ban_duration .. ' "' .. reason .. '"')
+        cprint(string.format("%s - Ban duration: %d minutes", log_message, ban_duration), 12)
+    else
+        cprint("Invalid action specified: " .. action, 12)
+    end
+end
+
+local function is_impersonator(name, hash, ip)
+    local member_data = config.members[name]
+    if member_data then
+        for _, value in ipairs(member_data) do
+            if value == hash or value == ip then
+                return false -- Not an impersonator
+            end
+        end
+        return true -- Impersonator detected
+    end
+    return false -- Name not found in members list
+end
+
+function OnJoin(playerId)
+    local name = get_var(playerId, '$name')
+    local hash = get_var(playerId, '$hash')
+    local ip = get_var(playerId, '$ip'):match('%d+%.%d+%.%d+%.%d+')
+    if is_impersonator(name, hash, ip) then
+        perform_action(playerId, name, hash, ip, config.action, config.punishment_reason, config.ban_duration)
+    end
+end
+
+function OnScriptLoad()
+    config.sapp_path = read_string(read_dword(sig_scan('68??????008D54245468') + 0x1)) .. '\\sapp\\' .. config.log_file_path
+    register_callback(cb['EVENT_JOIN'], 'OnJoin')
 end
 
 function OnScriptUnload()
