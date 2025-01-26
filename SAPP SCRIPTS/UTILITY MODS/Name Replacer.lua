@@ -59,18 +59,18 @@ local char = string.char
 
 -- Script initialization logic.
 function OnScriptLoad()
-    -- Register callbacks for various game events.
+
     register_callback(cb['EVENT_LEAVE'], 'OnQuit')
     register_callback(cb['EVENT_PREJOIN'], 'OnPreJoin')
     register_callback(cb['EVENT_GAME_START'], 'OnStart')
 
     players = {}
-    network_struct = read_dword(sig_scan('F3ABA1????????BA????????C740??????????E8????????668B0D') + 3)
-    ce = (halo_type == 'PC' and 0x40 or 0x0)
+    network_struct = read_dword(sig_scan("F3ABA1????????BA????????C740??????????E8????????668B0D") + 3)
+    ce = (halo_type == 'PC' and 0x0 or 0x40)
 
     -- Initialize the random_names_status table.
     for _, name in ipairs(random_names) do
-        random_names_status[name] = {used = false}
+        random_names_status[name] = { used = false }
     end
 
     OnStart()
@@ -99,12 +99,9 @@ local function getRandomName(player)
 
     -- If there are available names, pick one randomly.
     if #availableNames > 0 then
-        local randomIndex = rand(1, #availableNames)
-        local chosenName = availableNames[randomIndex]
-
-        players[player] = chosenName
+        local chosenName = availableNames[rand(1, #availableNames + 1)]
         random_names_status[chosenName].used = true
-
+        players[player] = chosenName
         return chosenName
     end
 
@@ -121,51 +118,41 @@ local function checkName(name)
 end
 
 -- Assign a new name to a player and update the in-game display.
-local function setNewName(id, newName)
-    local count = 0
-    local address = network_struct + 0x1AA + ce + to_real_index(id) * 0x20
+local function setNewName(playerId, old_name, new_name)
 
-    -- Clear the player's existing name.
-    for _ = 1, 12 do
-        write_byte(address + count, 0)
-        count = count + 2
+    local address = network_struct + 0x1AA + ce + to_real_index(playerId) * 0x20
+
+    for i = 0, 12 - 1 do
+        write_byte(address + i * 2, 0)
+    end
+    for i = 1, #new_name do
+        write_byte(address + (i - 1) * 2, byte(new_name, i))
     end
 
-    -- Apply the new name (truncate if longer than MAX_NAME_LENGTH).
-    local str = newName:sub(1, MAX_NAME_LENGTH)
-    local length = str:len()
-
-    for j = 1, length do
-        local new_byte = byte(str:sub(j, j))
-        write_byte(address + count, new_byte)
-        count = count + 2
-    end
+    cprint(string.format("[Name Replacer] Player %s's name [%s] changed to %s.", playerId, old_name, new_name), 10)
 end
 
 -- Handle the pre-join event to check and replace blacklisted names.
-function OnPreJoin(player)
-    local name = get_var(player, '$name')
+function OnPreJoin(playerId)
+    local name = get_var(playerId, '$name')
     checkName(name)
 
     -- Check if the player's name is blacklisted.
     for _, blacklisted_name in ipairs(blacklist) do
         if name == blacklisted_name then
-            local new_name = getRandomName(player)
-            print("The new name is: ", new_name)
-            setNewName(player, new_name)
-            cprint(string.format("[Name Replacer] Player %s's name changed to %s.", name, new_name))
+            local new_name = getRandomName(playerId)
+            setNewName(playerId, name, new_name)
             break
         end
     end
 end
 
 -- Handle player quit events to free up their name.
-function OnQuit(player)
-    local name = players[player]
-
+function OnQuit(playerId)
+    local name = players[playerId]
     if name then
         random_names_status[name].used = false
-        players[player] = nil
+        players[playerId] = nil
     end
 end
 
@@ -173,12 +160,10 @@ end
 function OnStart()
     if get_var(0, '$gt') ~= 'n/a' then
         players = {}
-
         -- Reset all names to unused.
         for _, status in pairs(random_names_status) do
             status.used = false
         end
-
         -- Check the names of currently present players.
         for i = 1, 16 do
             if player_present(i) then
