@@ -66,7 +66,7 @@ function OnScriptLoad()
 
     players = {}
     network_struct = read_dword(sig_scan('F3ABA1????????BA????????C740??????????E8????????668B0D') + 3)
-    ce = (halo_type == 'PC' and 0x0 or 0x40)
+    ce = (halo_type == 'PC' and 0x40 or 0x0)
 
     -- Initialize the random_names_status table.
     for _, name in ipairs(random_names) do
@@ -151,6 +151,7 @@ function OnPreJoin(player)
     for _, blacklisted_name in ipairs(blacklist) do
         if name == blacklisted_name then
             local new_name = getRandomName(player)
+            print("The new name is: ", new_name)
             setNewName(player, new_name)
             cprint(string.format("[Name Replacer] Player %s's name changed to %s.", name, new_name))
             break
