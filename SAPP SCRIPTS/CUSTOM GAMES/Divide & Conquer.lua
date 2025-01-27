@@ -7,13 +7,16 @@ Description: When you kill someone on the opposing team, the victim is switched 
 
 Copyright (c) 2023-2024, Jericho Crosby <jericho.crosby227@gmail.com>
 * Notice: You can use this document subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+https://github.com/Chalwk77/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--
 ]]--
 
 api_version = '1.12.0.0'
 
---- Configuration ---
+--- Configuration settings for the game.
+--- @field delay number The delay in seconds before the game starts.
+--- @field required_players number The minimum number of players required to start the game.
+--- @field prefix string The prefix used for in-game messages.
 local config = {
     delay = 5,
     required_players = 3,
@@ -269,39 +272,19 @@ function OnScriptLoad()
 
     game = Game:new()
 
-    _G['onStart'] = function()
-        game:start()
+    for event, method in pairs({
+        EVENT_DIE = 'onDeath',
+        EVENT_DAMAGE_APPLICATION = 'onDeath',
+        EVENT_TICK = 'onTick',
+        EVENT_TEAM_SWITCH = 'onTeamSwitch',
+        EVENT_JOIN = 'addPlayer',
+        EVENT_LEAVE = 'removePlayer',
+        EVENT_GAME_END = 'endGame',
+        EVENT_GAME_START = 'start'
+    }) do
+        _G[method] = function(...) return game[method](game, ...) end
+        register_callback(cb[event], method)
     end
-    _G['onEnd'] = function()
-        game:endGame()
-    end
-    _G['onJoin'] = function(...)
-        game:addPlayer(...)
-    end
-    _G['onQuit'] = function(...)
-        game:removePlayer(...)
-    end
-    _G['onDeath'] = function(...)
-        game:onDeath(...)
-    end
-    _G['onTick'] = function()
-        game:onTick()
-    end
-    _G['onTeamSwitch'] = function(...)
-        game:onTeamSwitch(...)
-    end
-
-    register_callback(cb['EVENT_DIE'], 'onDeath')
-    register_callback(cb['EVENT_DAMAGE_APPLICATION'], 'onDeath')
-
-    register_callback(cb['EVENT_TICK'], 'onTick')
-    register_callback(cb['EVENT_TEAM_SWITCH'], 'onTeamSwitch')
-
-    register_callback(cb['EVENT_JOIN'], 'onJoin')
-    register_callback(cb['EVENT_LEAVE'], 'onQuit')
-
-    register_callback(cb['EVENT_GAME_END'], 'onEnd')
-    register_callback(cb['EVENT_GAME_START'], 'onStart')
 
     game:start()
 end
