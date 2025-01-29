@@ -1,181 +1,82 @@
 --[[
 --=====================================================================================================--
 Script Name: Random Grenades, for SAPP (PC & CE)
-Implementing API version: 1.11.0.0
-Description:    Every time you spawn, this script will generate a random number 
-                between the value of Min_Frags/Max_Frags and/or Min_Plasmas/Max_Plasmas,
-                and this will be the number of grenades you spawn with.
-                
-                In other words, it will generate a random number between 1 and 4 by default.
-                The number it chooses will be the amount you spawn with.
-                    
-                If you do not wish to spawn with a random number of grenades,
-                you can manually define (hard code) how many you spawn with (on a per map basis) from line 117 onwards.
+Description: Generates a random number of grenades when a player spawns,
+             based on defined minimum and maximum values.
 
-    ** IMPORTANT **
-    If for example, you're using a custom map, i.e, DustBeta, and you haven't listed it in the grenade table(s),
-    then the script will throw an error and you will spawn with the default amount of grenades, rather than a custom amount.
-    When adding maps to the grenade table(s), note that the map names themselves are character/case sensitive.
-                    
-Copyright (c) 2016-2018, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+             Allows manual configuration for specific maps.
+
+Copyright (c) 2016-2025, Jericho Crosby
+License: https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--
 ]]--
 
 api_version = "1.12.0.0"
-frags = { }
-plasmas = { }
 
--- Configuration Starts --
-Min_Frags = 1 -- Minimum number of frag grenades to spawn with
-Max_Frags = 4 -- Maximum number of frag grenades to spawn with
+-- Configuration --
+local MIN_FRAGS, MAX_FRAGS = 1, 4
+local MIN_PLASMAS, MAX_PLASMAS = 1, 4
 
-Min_Plasmas = 1 -- Minimum number of plasma grenades to spawn with
-Max_Plasmas = 4 -- Maximum number of plasma grenades to spawn with
-
--- Toggle UseRandom (option), true|false, True = yes, False = no.
-gamesettings = {
-    ["RANDOM_FRAGS"] = true, -- If false, it will refer to Manual Configuration,  (line 114)
-    ["RANDOM_PLASMAS"] = true -- If false, it will refer to Manual Configuration,  (line 137)
+local random_grenades = {
+    FRAGS = true, -- If false, uses manual configuration
+    PLASMAS = true   -- If false, uses manual configuration
 }
--- Configuration Ends --
+
+-- Manual Configuration --
+local manual_grenades = {
+    ['beavercreek'] = { frags = 3, plasmas = 1 },
+    ['bloodgulch'] = { frags = 4, plasmas = 2 },
+    ['boardingaction'] = { frags = 1, plasmas = 3 },
+    ['carousel'] = { frags = 3, plasmas = 3 },
+    ['dangercanyon'] = { frags = 4, plasmas = 4 },
+    ['deathisland'] = { frags = 1, plasmas = 1 },
+    ['gephyrophobia'] = { frags = 3, plasmas = 3 },
+    ['icefields'] = { frags = 1, plasmas = 1 },
+    ['infinity'] = { frags = 2, plasmas = 4 },
+    ['sidewinder'] = { frags = 3, plasmas = 2 },
+    ['timberland'] = { frags = 2, plasmas = 4 },
+    ['hangemhigh'] = { frags = 3, plasmas = 3 },
+    ['ratrace'] = { frags = 3, plasmas = 2 },
+    ['damnation'] = { frags = 1, plasmas = 3 },
+    ['putput'] = { frags = 4, plasmas = 1 },
+    ['prisoner'] = { frags = 2, plasmas = 1 },
+    ['wizard'] = { frags = 1, plasmas = 2 }
+}
+
+-- Configuration End --
+
+local map
 
 function OnScriptLoad()
     register_callback(cb['EVENT_SPAWN'], "OnPlayerSpawn")
-    -- Debugging --
-    --  register_callback(cb['EVENT_DIE'], "OnPlayerKill")
+    register_callback(cb['EVENT_GAME_START'], "OnStart")
 end
 
-function OnScriptUnload()
-    frags = { }
-    plasmas = { }
-end
-
-function OnPlayerSpawn(PlayerIndex)
-    if player_alive(PlayerIndex) then
-        local RandomFR = math.random(tonumber(Min_Frags), tonumber(Max_Frags))
-        local RandomPL = math.random(tonumber(Min_Plasmas), tonumber(Max_Plasmas))
-        local player_object = get_dynamic_player(PlayerIndex)
-        local mapname = get_var(0, "$map")
-        if (player_object ~= 0) then
-            if (gamesettings["RANDOM_FRAGS"]) == true then
-                frags = {
-                    beavercreek = RandomFR,
-                    bloodgulch = RandomFR,
-                    boardingaction = RandomFR,
-                    carousel = RandomFR,
-                    dangercanyon = RandomFR,
-                    deathisland = RandomFR,
-                    gephyrophobia = RandomFR,
-                    icefields = RandomFR,
-                    infinity = RandomFR,
-                    sidewinder = RandomFR,
-                    timberland = RandomFR,
-                    hangemhigh = RandomFR,
-                    ratrace = RandomFR,
-                    damnation = RandomFR,
-                    putput = RandomFR,
-                    prisoner = RandomFR,
-                    wizard = RandomFR -- Make sure the last entry in the table doesn't have a comma at the end. 
-                }
-            end
-            if (gamesettings["RANDOM_PLASMAS"]) == true then
-                plasmas = {
-                    beavercreek = RandomPL,
-                    bloodgulch = RandomPL,
-                    boardingaction = RandomPL,
-                    carousel = RandomPL,
-                    dangercanyon = RandomPL,
-                    deathisland = RandomPL,
-                    gephyrophobia = RandomPL,
-                    icefields = RandomPL,
-                    infinity = RandomPL,
-                    sidewinder = RandomPL,
-                    timberland = RandomPL,
-                    hangemhigh = RandomPL,
-                    ratrace = RandomPL,
-                    damnation = RandomPL,
-                    putput = RandomPL,
-                    prisoner = RandomPL,
-                    wizard = RandomPL -- Make sure the last entry in the table doesn't have a comma at the end. 
-                }
-            end
-            --=======================================================================================--
-            -- [MANUAL CONFIG START] --
-            -- Manually define number of frag grenades given on spawn --
-            if (gamesettings["RANDOM_FRAGS"]) == false then
-                frags = {
-                    -- The number is the total value of frags that you will spawn with for a given map.
-                    beavercreek = 3, -- Spawn with 3 Frags on the map beavercreek
-                    bloodgulch = 4,
-                    boardingaction = 1,
-                    carousel = 3,
-                    dangercanyon = 4,
-                    deathisland = 1,
-                    gephyrophobia = 3,
-                    icefields = 1,
-                    infinity = 2,
-                    sidewinder = 3,
-                    timberland = 2,
-                    hangemhigh = 3,
-                    ratrace = 3,
-                    damnation = 1,
-                    putput = 4,
-                    prisoner = 2,
-                    wizard = 1 -- Make sure the last entry in the table doesn't have a comma at the end. 
-                }
-            end
-            -- Manually define number of plasma grenades given on spawn --
-            if (gamesettings["RANDOM_PLASMAS"]) == false then
-                plasmas = {
-                    -- The number is the total value of plasmas that you will spawn with for a given map.
-                    beavercreek = 1, -- Spawn with 1 Plasma on the map beavercreek
-                    bloodgulch = 2,
-                    boardingaction = 3,
-                    carousel = 3,
-                    dangercanyon = 4,
-                    deathisland = 1,
-                    gephyrophobia = 3,
-                    icefields = 1,
-                    infinity = 4,
-                    sidewinder = 2,
-                    timberland = 4,
-                    hangemhigh = 3,
-                    ratrace = 2,
-                    damnation = 3,
-                    putput = 1,
-                    prisoner = 1,
-                    wizard = 2 -- Make sure the last entry in the table doesn't have a comma at the end. 
-                    -- [MANUAL CONFIG END] --
-                }
-            end
-            --===============================================================================================--
-            -- DO NOT TOUCH ---------------------------------------
-            if (frags[mapname] == nil) then
-                cprint("Frags not defined for " .. mapname)
-            else
-                write_word(player_object + 0x31E, frags[mapname])
-            end
-            if (plasmas[mapname] == nil) then
-                cprint("Plasmas not defined for " .. mapname)
-            else
-                write_word(player_object + 0x31F, plasmas[mapname])
-            end
-            -- Debugging --
-            -- Uncomment the 'cprint' element for debugging.
-            -- cprint("Spawning with " .. frags[mapname] .. " frags and " .. plasmas[mapname] .. " plasmas", 2+8)
-        end
+function OnStart()
+    if get_var(0, "$gt") ~= "n/a" then
+        map = get_var(0, "$map")
     end
 end
 
--- Debugging --
-function OnPlayerKill(PlayerIndex)
-    local player = get_player(PlayerIndex)
-    -- Instantaneous spawn time - use this in conjunction with the /kill command for faster debugging.
-    write_dword(player + 0x2C, 0 * 33)
+local function getGrenades(type)
+    if random_grenades[type] then
+        return math.random(_G["MIN_" .. type], _G["MAX_" .. type])
+    end
+    return manual_grenades[type:lower()][map] or 0
 end
 
-function OnError(Message)
-    print(debug.traceback())
-end  
+function OnPlayerSpawn(PlayerIndex)
+    local dyn = get_dynamic_player(PlayerIndex)
+    if dyn == 0 then
+        return
+    end
+
+    local frags, plasmas = getGrenades("FRAGS"), getGrenades("PLASMAS")
+
+    write_word(dyn + 0x31E, frags)
+    write_word(dyn + 0x31F, plasmas)
+end
+
+function OnScriptUnload()
+
+end
