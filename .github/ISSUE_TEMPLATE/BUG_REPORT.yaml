@@ -17,7 +17,7 @@ body:
   - type: textarea
     id: description-the-bug
     attributes:
-      label: 🔄 **Bug Description**
+      label: 🔄 Bug Description
       description: |
         Provide a **detailed description** of the bug. Be as specific as possible, and include:
         - What happened.
@@ -30,7 +30,7 @@ body:
   - type: textarea
     id: expected-behavior
     attributes:
-      label: 🎯 **Expected Behavior**
+      label: 🎯 Expected Behavior
       description: |
         Describe what **should have happened** if the bug hadn’t occurred. Be clear and concise.
       placeholder: "Explain the expected behavior clearly."
@@ -40,7 +40,7 @@ body:
   - type: textarea
     id: additional-context
     attributes:
-      label: 📝 **Additional Context**
+      label: 📝 Additional Context
       description: |
         Provide any **additional context** that might help us understand or reproduce the bug. For example:
         - The script or feature where the bug occurred.
@@ -62,7 +62,7 @@ body:
   - type: checkboxes
     id: game-type
     attributes:
-      label: 🎮 **Target Game**
+      label: 🎮 Target Game
       description: "Select the applicable game(s) where the bug occurred."
       options:
         - label: Halo PC (Retail)
@@ -72,7 +72,7 @@ body:
   - type: checkboxes
     id: server-extension
     attributes:
-      label: 🛠️ **Server Extension**
+      label: 🛠️ Server Extension
       description: "Indicate the server extension you are using."
       options:
         - label: SAPP

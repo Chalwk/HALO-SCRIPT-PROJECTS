@@ -1,44 +1,3 @@
---[[
---=====================================================================================================--
-Script Name: Anti AFK, for SAPP (PC & CE)
-Description:
-This script robustly detects and manages players who are idle or away from their keyboards (AFK),
-ensuring a more engaging and active gameplay experience on the server.
-
-Key Features:
-1. **Comprehensive Activity Monitoring**: The script continuously monitors a wide range of player activities to determine AFK status. It tracks:
-   - Mouse movements to detect user input.
-   - Weapon firing to identify active engagement in combat.
-   - Player movement in all cardinal directions (forward, backward, left, right).
-   - Grenade throwing and weapon switching actions.
-   - Grenade switching and reloading to assess combat readiness.
-   - Zooming capabilities to check for sniper or scoped weapon usage.
-   - Melee attacks, flashlight activation, and action key presses to gauge player interactivity.
-   - Crouching and jumping to monitor dynamic player movements.
-
-2. **AFK Detection Logic**:
-The script utilizes a configurable maximum AFK time (in seconds) to define when a player is considered AFK.
-If the player does not perform any monitored actions within this time frame, they are marked as AFK.
-
-3. **Dynamic Player Management**:
-Upon detecting a player as AFK, the script issues a kick command with a customizable reason.
-This helps maintain server activity by removing inactive players, thereby enhancing the overall gaming environment.
-
-4. **Efficient Resource Utilization**:
-Designed to run efficiently within the SAPP framework, the script minimizes overhead and ensures that only
-essential operations are performed during the game loop, thus preserving server performance.
-
-5. **Customizable Parameters**:
-Server administrators can easily modify key parameters such as `max_afk_time` and `kick_reason` to
-tailor the script's behavior to their specific server environment.
-
-Copyright (c) 2024, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
-
-
 -- Configuration settings:
 local max_afk_time = 300                    -- Maximum allowed AFK time in seconds
 local kick_reason = 'AFK for too long!'     -- Reason displayed when kicking an AFK player
@@ -47,6 +6,10 @@ local threshold = 0.001                     -- Threshold for checking aim differ
 local warning_message = "Warning: You will be kicked in $time_until_kick seconds for being AFK."
 local kick_message = 'You have been kicked for being AFK!'
 local server_prefix = '**SAPP**'
+local warning_interval = 30                 -- Interval in seconds to send warnings
+local afk_immunity = {                      -- List of players with AFK immunity
+    -- Example: ["Player1"] = true,
+}
 api_version = '1.12.0.0'                    -- API version used by the script
 -- Configuration ends here.
 
@@ -63,8 +26,10 @@ Player.__index = Player
 -- Constructor for Player class
 function Player:new(id)
     local instance = setmetatable({}, Player)
+    instance.name = get_var(id, '$name')
     instance.id = id
     instance.last_active = clock()
+    instance.last_warning = 0
     instance.camera_old = { 0, 0, 0 }
     instance.inputs = {
         { read_float, 0x490, state = 0 }, -- shooting
@@ -93,9 +58,10 @@ function Player:isAfk()
     if time_until_afk <= 0 then
         return true
     elseif time_until_kick <= 0 then
-        self:broadcast(warning_message:gsub('$time_until_kick', -time_until_kick))
-    else
-        --print("Time until AFK for player " .. self.id .. ": " .. time_until_afk .. " seconds")
+        if clock() - self.last_warning >= warning_interval then
+            self:broadcast(warning_message:gsub('$time_until_kick', -time_until_kick))
+            self.last_warning = clock()
+        end
     end
 
     return false
@@ -148,6 +114,9 @@ function OnScriptLoad()
     register_callback(cb['EVENT_JOIN'], 'OnJoin')
     register_callback(cb['EVENT_LEAVE'], 'OnQuit')
     register_callback(cb['EVENT_GAME_START'], 'OnStart')
+    register_callback(cb['EVENT_COMMAND'], 'OnChatOrCommand')
+    register_callback(cb['EVENT_CHAT'], 'OnChatOrCommand')
+    OnStart()
 end
 
 -- Initialize the players' data when a game starts
@@ -164,29 +133,35 @@ end
 
 -- Update player inputs and last_active timestamp, kick AFK players
 function OnTick()
-
     for id, player in pairs(players) do
-
-        local dyn = get_dynamic_player(id)
-        if dyn ~= 0 and player_alive(id) then
-
-            if player:isAfk(max_afk_time) then
-                player:kick(kick_reason)
-                goto continue
-            end
-
-            -- Update player inputs and last_active timestamp
-            player:checkInputs(dyn)
-
-            -- Check and update player's aim
-            local current_aim = getCameraCurrent(dyn)
-            local old_aim = player.camera_old
-            if not player:checkAim(old_aim[1], old_aim[2], old_aim[3], current_aim[1], current_aim[2], current_aim[3]) then
-                player:update(current_aim) -- Update player data if aim has changed
-            end
-
-            :: continue ::
+        -- Ensure the player exists and is not immune
+        if not player or afk_immunity[player.name] then
+            goto continue
         end
+
+        -- Check if the player is AFK
+        if player:isAfk(max_afk_time) then
+            player:kick(kick_reason)
+            goto continue
+        end
+
+        -- Check if the player is alive and has a valid dynamic address
+        local dyn = get_dynamic_player(id)
+        if dyn == 0 or not player_alive(id) then
+            goto continue
+        end
+
+        -- Update player inputs and last_active timestamp
+        player:checkInputs(dyn)
+
+        -- Check and update player's aim
+        local current_aim = getCameraCurrent(dyn)
+        local old_aim = player.camera_old
+        if not player:checkAim(old_aim[1], old_aim[2], old_aim[3], current_aim[1], current_aim[2], current_aim[3]) then
+            player:update(current_aim) -- Update player data if aim has changed
+        end
+
+        :: continue ::
     end
 end
 
@@ -201,8 +176,8 @@ function OnQuit(id)
 end
 
 -- Update the player's last_active timestamp when they send a chat message/command
-function ChatCommand(id)
-    if (id > 0) then
+function OnChatOrCommand(id)
+    if id > 0 and players[id] then
         players[id].last_active = clock()
     end
 end
