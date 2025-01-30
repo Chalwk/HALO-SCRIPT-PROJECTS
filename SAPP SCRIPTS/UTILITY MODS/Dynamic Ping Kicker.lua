@@ -24,9 +24,9 @@ local PingKicker = {
     immune_admins = { "Admin1", "Admin2" }, -- List of admins with name-based immunity
     kick_message = "Ping too high! Limit: $limit ms, Your Ping: $ping ms.",
     warning_message = {
-        "--- [ ^1HIGH PING WARNING^7 ] ---",
-        "Ping limit: ^3$limit ms^7, Your Ping: ^1$ping ms^7.",
-        "Please reduce your ping. Warnings Left: ^5$strikes/$max_warnings^7"
+        "--- [ HIGH PING WARNING ] ---",
+        "Ping limit: $limit ms, Your Ping: $ping ms.",
+        "Please reduce your ping. Warnings Left: $strikes/$max_warnings"
     },
     reset_on_player_change = true, -- Reset player warnings when player count changes
     limits = {                     -- Dynamic ping limits by player count
