@@ -1,5 +1,5 @@
 name: 🐞 Bug Report
-description: ⚠️ Report bugs, glitches, or issues encountered in my scripts.
+description: ⚠️ Report bugs, glitches, or issues encountered in SAPP/PHASOR Lua scripts for Halo.
 title: "[BUG] <title>"
 labels: [ "Bug", "Needs Triage" ]
 assignees: Chalwk
@@ -7,14 +7,22 @@ body:
   - type: markdown
     attributes:
       value: |
-        **📌 Bug Overview**
-        > Please provide a clear and concise description of the bug you encountered, including steps to reproduce it and any relevant details. Use headers (`#`) or lists (`-`) to organize your thoughts effectively.
+        **📌 Bug Report Submission**
+        > Thank you for taking the time to report a bug! 
+        > Your feedback is crucial in helping us improve the quality of our SAPP/PHASOR Lua scripts for Halo.
+        > Please provide a clear and detailed description of the issue, including steps to reproduce it and any relevant information.
+
+        ---
 
   - type: textarea
     id: description-the-bug
     attributes:
-      label: 🔄 Bug Description
-      description: A detailed description of the bug.
+      label: 🔄 **Bug Description**
+      description: |
+        Provide a **detailed description** of the bug. Be as specific as possible, and include:
+        - What happened.
+        - When and where the bug occurred.
+        - Any error messages or unusual behavior.
       placeholder: "Describe the bug in detail, including the steps to reproduce it."
     validations:
       required: true
@@ -22,8 +30,9 @@ body:
   - type: textarea
     id: expected-behavior
     attributes:
-      label: 🎯 Expected Behavior
-      description: Describe what should have happened if the bug hadn't occurred.
+      label: 🎯 **Expected Behavior**
+      description: |
+        Describe what **should have happened** if the bug hadn’t occurred. Be clear and concise.
       placeholder: "Explain the expected behavior clearly."
     validations:
       required: true
@@ -31,18 +40,48 @@ body:
   - type: textarea
     id: additional-context
     attributes:
-      label: 📝 Additional Context
-      description: Provide any other context or information about the bug here.
+      label: 📝 **Additional Context**
+      description: |
+        Provide any **additional context** that might help us understand or reproduce the bug. For example:
+        - The script or feature where the bug occurred.
+        - The game mode or map being used.
+        - Any recent changes to your server setup.
       placeholder: "Include further context or relevant information."
     validations:
-      required: true
+      required: false
 
   - type: markdown
     attributes:
       value: |
-        **📷 Screenshots**
-        > If applicable, please include any relevant screenshots to help illustrate the bug. 
-        >
-        > 🙌 Thank you for your contribution!
-        >
-        > **Your effort in reporting bugs is invaluable to improving the quality of our scripts!**
+        **📷 Screenshots or Logs**
+        > If applicable, please include any **screenshots**, **logs**, or **error messages** to help illustrate the bug. 
+        > You can drag and drop images or files directly into this text box.
+
+        ---
+
+  - type: checkboxes
+    id: game-type
+    attributes:
+      label: 🎮 **Target Game**
+      description: "Select the applicable game(s) where the bug occurred."
+      options:
+        - label: Halo PC (Retail)
+        - label: Halo Custom Edition (CE)
+        - label: Both (Cross-Compatibility)
+
+  - type: checkboxes
+    id: server-extension
+    attributes:
+      label: 🛠️ **Server Extension**
+      description: "Indicate the server extension you are using."
+      options:
+        - label: SAPP
+        - label: PHASOR
+
+  - type: markdown
+    attributes:
+      value: |
+        **🙏 Thank You for Your Contribution!**  
+        Your bug report will be reviewed by the team, and we’ll get back to you as soon as possible. If you have any questions, feel free to reach out to us on [Discord](https://discord.gg/wuVcM9AZrr) or via email at [jericho.crosby227@gmail.com](mailto:jericho.crosby227@gmail.com).
+
+        **Your effort in reporting bugs is invaluable to improving the quality of our scripts!**

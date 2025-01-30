@@ -11,7 +11,7 @@ A function to split a string into an array of substrings based on a specified de
 -- @param s (string) String to tokenize
 -- @param d (string) String delimiter
 -- @return table of strings
-local function StrSplit(s, d)
+function string.split(s, d)
     local args = {}
     for arg in s:gmatch('([^' .. d .. ']+)') do
         args[#args + 1] = arg
@@ -21,7 +21,7 @@ end
 
 -- Example usage:
 local content = "This is an example string."
-local t = StrSplit(content, '%s')
+local t = string.split(content, '%s')
 -- output: [table] {'This', 'is', 'an', 'example', 'string'}
 ```
 
