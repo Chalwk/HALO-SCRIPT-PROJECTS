@@ -1,5 +1,5 @@
 name: ✨ Feature Request
-description: 💡 Suggest enhancements for Halo PC (SAPP/Phasor).
+description: 💡 Suggest enhancements for Halo PC (SAPP/Phasor) to improve gameplay, server performance, or functionality.
 title: '[FEATURE] <title>'
 labels: [ 'Feature', 'Needs Review' ]
 assignees:
@@ -9,24 +9,26 @@ body:
     attributes:
       value: |
         **📋 Feature Request Submission**
-        > Thank you for your interest in enhancing Halo PC (SAPP/Phasor). Please provide a clear and detailed description of your feature request. Your input is invaluable to improving the experience for all players.
-        
+        > Thank you for taking the time to suggest an enhancement for SAPP/Phasor!
+        > Your input is invaluable in helping us improve the experience for all players.
+        > Please provide a clear and detailed description of your feature request below.
+      
         ---
 
   - type: checkboxes
     id: game-type
     attributes:
-      label: 🎮 Target Game
+      label: 🎮 **Target Game**
       description: "Select the applicable game(s) for your feature request."
       options:
-        - label: Halo PC (retail)
+        - label: Halo PC (Retail)
         - label: Halo Custom Edition (CE)
-        - label: Both (cross-compatibility)
+        - label: Both (Cross-Compatibility)
 
   - type: checkboxes
     id: server-extension
     attributes:
-      label: 🛠️ Server Extension
+      label: 🛠️ **Server Extension**
       description: "Indicate the server extension you are utilizing."
       options:
         - label: SAPP
@@ -35,7 +37,7 @@ body:
   - type: checkboxes
     id: custom-map
     attributes:
-      label: 🗺️ Custom Map Usage
+      label: 🗺️ **Custom Map Usage**
       description: "Will the script be executed on a custom (non-stock) map?"
       options:
         - label: Yes 👍
@@ -45,7 +47,7 @@ body:
   - type: checkboxes
     id: gametype-specific
     attributes:
-      label: 🎯 Gametype Specificity
+      label: 🎯 **Gametype Specificity**
       description: "Does your feature request require map or gametype specificity?"
       options:
         - label: Yes 👍
@@ -55,26 +57,44 @@ body:
   - type: textarea
     id: feature-description
     attributes:
-      label: 📝 Feature Details
-      description: "Provide a comprehensive description of your feature request. Include any relevant use cases or examples."
-      placeholder: "Write your feature description here..."
+      label: 📝 **Feature Details**
+      description: |
+        Provide a **comprehensive description** of your feature request. Be as detailed as possible, and include:
+        - The purpose of the feature.
+        - How it should work.
+        - Any relevant use cases or examples.
+      placeholder: "Describe your feature request here..."
     validations:
       required: true
 
   - type: textarea
     id: potential-impact
     attributes:
-      label: 📈 Potential Impact
-      description: "Describe how this feature could enhance the gameplay experience or server performance."
-      placeholder: "Explain the potential impact..."
+      label: 📈 **Potential Impact**
+      description: |
+        Describe how this feature could **enhance gameplay**, **improve server performance**, or **add value** to the community. Consider the following:
+        - Will it improve player engagement?
+        - Does it solve a specific problem?
+        - How will it benefit the community?
+      placeholder: "Explain the potential impact of this feature..."
     validations:
       required: false
 
   - type: textarea
     id: additional-notes
     attributes:
-      label: 🗒️ Additional Notes
-      description: "Any other information that might be relevant to your feature request."
-      placeholder: "Include any other notes here..."
+      label: 🗒️ **Additional Notes**
+      description: |
+        Include any **additional information** that might be relevant to your feature request. For example:
+        - Links to similar features in other games.
+        - Technical considerations or constraints.
+        - Any other context that could help us understand your request better.
+      placeholder: "Add any other notes here..."
     validations:
       required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        **🙏 Thank You for Your Contribution!**  
+        Your feature request will be reviewed by the team, and we’ll get back to you as soon as possible. If you have any questions, feel free to reach out to us on [Discord](https://discord.gg/wuVcM9AZrr) or via email at [jericho.crosby227@gmail.com](mailto:jericho.crosby227@gmail.com).
