@@ -33,7 +33,7 @@ The "Config" table defines which weapons players spawn with on a per-map, per-ga
    - You can assign up to **4 weapons** per player.
 
 Example:
-   - "beavercreek": The "default" setup gives both Red and Blue teams the pistol (1) and sniper rifle (2).
+   - "bloodgulch": The "default" setup gives both Red and Blue teams the pistol (1) and sniper rifle (2).
    - "example_game_mode": Red team gets three weapons (pistol, sniper, plasma cannon), Blue gets four weapons, and FFA gets three.
 
 How to customize:
