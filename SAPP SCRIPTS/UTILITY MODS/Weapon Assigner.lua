@@ -154,5 +154,5 @@ function OnScriptLoad()
 end
 
 function OnScriptUnload()
-    -- Cleanup if necessary
+    -- N/A
 end
