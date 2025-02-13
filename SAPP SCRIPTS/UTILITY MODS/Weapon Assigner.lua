@@ -85,9 +85,14 @@ local function tagsToID()
     weapons = {}
 
     local weaponList = Config.maps[map] and (Config.maps[map][mode] or Config.maps[map].default)
+
     if not weaponList then
         cprint("[Weapon Assigner] -> ERROR: No configuration found for map '" .. map .. "' and mode '" .. mode .. "'.", 12)
         return false
+    end
+
+    if not Config.maps[map][mode] then
+        cprint("[Weapon Assigner] -> WARNING: Game-mode '" .. mode .. "' is not configured for map '" .. map .. "'. Falling back to default weapons table.", 12)
     end
 
     local temp = {}
