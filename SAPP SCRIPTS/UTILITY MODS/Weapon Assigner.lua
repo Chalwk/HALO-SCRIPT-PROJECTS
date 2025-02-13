@@ -33,8 +33,8 @@ The "Config" table defines which weapons players spawn with on a per-map, per-ga
    - You can assign up to **4 weapons** per player.
 
 Example:
-   - "bloodgulch": The "default" setup gives both Red and Blue teams the pistol (1) and sniper rifle (2).
-   - "example_game_mode": Red team gets three weapons (pistol, sniper, plasma cannon), Blue gets four weapons, and FFA gets three.
+   - "bloodgulch": The "["default"]" setup gives both Red and Blue teams the pistol (1) and sniper rifle (2).
+   - "["example_game_mode"]": Red team gets three weapons (pistol, sniper, plasma cannon), Blue gets four weapons, and FFA gets three.
 
 How to customize:
 1. To change weapon loadouts, modify the numerical indices inside the team tables.
@@ -62,18 +62,17 @@ local Config = {
     },
     maps = {
         bloodgulch = {
-            default = { red = {1, 2}, blue = {1, 2}, ffa = {1, 2} },
-            example_game_mode = { red = {1, 2, 3}, blue = {4, 1, 8, 10}, ffa = {5, 6, 7} }
+            default = { red = { 1, 2 }, blue = { 1, 2 }, ffa = { 1, 2 } },
+            ["example_game_mode"] = { red = { 1, 2, 3 }, blue = { 4, 1, 8, 10 }, ffa = { 5, 6, 7 } }
         },
         another_map = {
-            default = { red = {1, 2, 7}, blue = {1, 2, 7}, ffa = {1, 2, 7} },
-            custom_game_mode = { red = {5, 6, 3, 8}, blue = {5, 6, 3, 8}, ffa = {1, 7, 2} }
+            default = { red = { 1, 2, 7 }, blue = { 1, 2, 7 }, ffa = { 1, 2, 7 } },
+            ["custom_game_mode"] = { red = { 5, 6, 3, 8 }, blue = { 5, 6, 3, 8 }, ffa = { 1, 7, 2 } }
         }
     }
 }
 
 local loadout
-local players = {}
 local weapons = {}
 local map, mode, isFFA
 
@@ -82,8 +81,9 @@ local function GetTag(class, name)
     return Tag ~= 0 and read_dword(Tag + 0xC) or nil
 end
 
-local function tagsToID(map)
+local function tagsToID()
     weapons = {}
+
     local weaponList = Config.maps[map] and (Config.maps[map][mode] or Config.maps[map].default)
     if not weaponList then
         cprint("[Weapon Assigner] -> ERROR: No configuration found for map '" .. map .. "' and mode '" .. mode .. "'.", 12)
@@ -109,6 +109,7 @@ local function tagsToID(map)
             end
         end
     end
+
     weapons = temp
     return true
 end
@@ -117,48 +118,33 @@ function AssignWeapon(weaponID, player)
     assign_weapon(weaponID, player)
 end
 
-function OnJoin(player)
-    players[player] = true
-end
-
-function OnQuit(player)
-    players[player] = nil
-end
-
 function OnSpawn(player)
-    if players[player] then
-        local team = get_var(player, '$team')
-        loadout = weapons[isFFA and 'ffa' or team]
-        execute_command("wdel " .. player)
-        local assigned = 0
-        for meta_id, _ in pairs(loadout) do
-            if assigned < 4 then
-                local weapon = spawn_object('', '', 0, 0, 0, 0, meta_id)
-                if assigned < 2 then
-                    AssignWeapon(weapon, player)
-                else
-                    timer(250, 'AssignWeapon', weapon, player)
-                end
-                assigned = assigned + 1
+    local team = get_var(player, '$team')
+    loadout = weapons[isFFA and 'ffa' or team]
+    execute_command("wdel " .. player)
+    local assigned = 0
+    for meta_id, _ in pairs(loadout) do
+        if assigned < 4 then
+            local weapon = spawn_object('', '', 0, 0, 0, 0, meta_id)
+            if assigned < 2 then
+                AssignWeapon(weapon, player)
+            else
+                timer(250, 'AssignWeapon', weapon, player)
             end
+            assigned = assigned + 1
         end
     end
 end
 
 function OnStart()
     if get_var(0, '$gt') ~= 'n/a' then
-        players = {}
         map = get_var(0, '$map')
         mode = get_var(0, '$mode')
         isFFA = (get_var(0, '$ffa') == '1')
         if tagsToID(map) then
-            register_callback(cb['EVENT_JOIN'], 'OnJoin')
-            register_callback(cb['EVENT_LEAVE'], 'OnQuit')
             register_callback(cb['EVENT_SPAWN'], 'OnSpawn')
         else
-            unregister_callback(cb['EVENT_JOIN'])
             unregister_callback(cb['EVENT_SPAWN'])
-            unregister_callback(cb['EVENT_LEAVE'])
         end
     end
 end
