@@ -1,13 +1,13 @@
 --[[
 --=====================================================================================================--
-Script Name: Command Spy (Enhanced Version), for SAPP (PC & CE)
+Script Name: Command Spy, for SAPP (PC & CE)
 Description: Get notified when a player executes a command. Admins with level 1 or higher will be notified
              when a player executes a command from RCON or chat.
 
 Admins can toggle the command spy functionality on/off using /spy. Blacklisted commands like login or admin
 password changes are excluded from monitoring to protect sensitive information.
 
-Copyright (c) 2022-2024, Jericho Crosby
+Copyright (c) 2022-2025, Jericho Crosby
 Notice: You can use this script subject to the following conditions:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--
@@ -176,7 +176,6 @@ function OnStart()
     end
 end
 
--- Script load callback:
 function OnScriptLoad()
     register_callback(cb["EVENT_JOIN"], "OnJoin")
     register_callback(cb["EVENT_LEAVE"], "OnQuit")
@@ -185,7 +184,6 @@ function OnScriptLoad()
     OnStart()
 end
 
--- Script unload callback:
 function OnScriptUnload()
-    -- No specific actions required on script unload.
+    -- N/A
 end
