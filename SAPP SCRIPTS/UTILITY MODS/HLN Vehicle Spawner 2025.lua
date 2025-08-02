@@ -44,7 +44,7 @@ end
 
 local function GetTag(class, name)
     if not class or not name then
-        error(string.format("[ERROR] Invalid parameter to GetTag: name=%s", tostring(name)))
+        error(string.format("[ERROR] Invalid parameter to GetTag: class=%s, name=%s", tostring(name)))
         return nil
     end
 
