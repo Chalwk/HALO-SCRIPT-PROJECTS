@@ -20,8 +20,8 @@ local DESPAWN_DELAY_SECONDS = 30
 -- Define per-map vehicle commands
 local map_vehicles = {
     ["bloodgulch"] = {
-        ["hog1"]  = { path = "vehicles\\warthog\\mp_warthog", seat = 0 },
-        ["hog2"]  = { path = "vehicles\\warthog\\mp_warthog", seat = 7 },
+        ["hog1"] = { path = "vehicles\\warthog\\mp_warthog", seat = 0 },
+        ["hog2"] = { path = "vehicles\\warthog\\mp_warthog", seat = 7 },
         ["rhog1"] = { path = "vehicles\\rwarthog\\rwarthog", seat = 0 },
         ["rhog2"] = { path = "vehicles\\rwarthog\\rwarthog", seat = 7 },
         -- Add more commands here
@@ -84,7 +84,9 @@ function OnGameStart()
             error(string.format("[ERROR] Missing vehicle path for command '%s'", command))
         else
             local meta_id = GetTag("vehi", data.path)
-            if meta_id then
+            if not meta_id then
+                error(string.format("[ERROR] Failed to get meta ID for vehicle: %s (%s)", command, data.path))
+            else
                 active_vehicles[meta_id] = {
                     command = command,
                     path = data.path,
@@ -141,7 +143,9 @@ function OnCommand(player, command)
     for meta_id, data in pairs(active_vehicles) do
         if data.command == command then
             local x, y, z = GetPlayerPosition(player)
-            if not x then return false end
+            if not x then
+                return false
+            end
 
             local height_offset = 0.3
             local object_id = spawn_object("", "", x, y, z + height_offset, meta_id)
@@ -166,7 +170,9 @@ function OnCommand(player, command)
 end
 
 local function IsVehicleOccupied(vehicle_object)
-    if vehicle_object == 0 then return false end
+    if vehicle_object == 0 then
+        return false
+    end
 
     for i = 1, 16 do
         if player_present(i) and player_alive(i) then
