@@ -1,49 +1,48 @@
---[[
---=====================================================================================================--
-Script Name: VPN Blocker, for SAPP (PC & CE)
-Description: VPN Blocker will detect whether an IP Address is a Proxy, Tor, or VPN Connection
-             and retrieve an overall Fraud Score that provides accurate risk analysis.
-
-             The Fraud Score is a probability of malicious intent based on Machine Learning
-             and Data Analysis systems that are run by IP Quality Score.
-
-             For each IP lookup, an IP address and other forensic factors of the connection are analysed to
-             determine if the user is hiding behind a spoofed or anonymized IP, tunnelled connection, a botnet,
-             or attempting to frequently change their device.
-
-             Private VPNs can be detected, but it might pay to upgrade your IP Quality Score account.
-             This is at your own expense, obviously.
-             I provide the tool to connect to the API but it's up to the end-user to decide what account type they register with.
-             The Free account is pretty good in general.
-
-
-Required Plugins:
-1). SAPP HTTP Client: https://opencarnage.net/index.php?/topic/5998-sapp-http-client/
-2). Lua JSON: http://regex.info/blog/lua/json
-
-Installation:
-Download the json.lua file and extract the contents of the sapp-http-client package.
-Place the json.lua file and extracted files in your server's root directory (same folder as sapp.dll).
-
-Setting up IPQualityScore:
-- Sign up for an account at www.ipqualityscore.com.
-- Navigate to the Proxy Detection Overview page:
-  https://www.ipqualityscore.com/documentation/proxy-detection/overview
-- Copy your unique "Private Key" from that page and paste it into
-  the API_KEY field in this script (see the configuration section below).
-
-Disclaimer:
-Some players may use a VPN to protect their privacy online while gaming.
-VPN Blocker cannot differentiate between users with good or bad intentions
-and will, therefore, kick or ban players whose IP addresses are associated
-with VPN usage according to the VPN Blocker database.
-
-
-Copyright (c) 2023-2024, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+--=====================================================================================--
+-- SCRIPT NAME:      VPN Blocker
+-- DESCRIPTION:      A modular IP screening system that integrates with the IPQualityScore API
+--                   to detect and block connections using VPNs, proxies, Tor nodes, bots,
+--                   and other anonymized or high-risk IP addresses.
+--
+--                   Each player's IP is evaluated on join using HTTP requests powered by
+--                   the SAPP HTTP Client. The results include flags for VPN/proxy usage,
+--                   Tor relays, bot activity, and a calculated "Fraud Score" based on
+--                   machine learning and traffic analysis provided by IPQualityScore.
+--
+--                   Based on the configurable detection criteria and thresholds, the script
+--                   can take automated action (kick or ban) and provides real-time feedback
+--                   to players and the server console.
+--
+-- SETUP & REQUIREMENTS:
+--   1) SAPP HTTP Client:
+--      https://opencarnage.net/index.php?/topic/5998-sapp-http-client/
+--
+--   2) Lua JSON Parser:
+--      http://regex.info/blog/lua/json
+--
+--   3) IPQualityScore API Key:
+--      - Sign up at https://www.ipqualityscore.com
+--      - Navigate to the Proxy Detection Overview page.
+--      - Copy your private API key and paste it into the 'api_key' field in the config.
+--
+-- INSTALLATION:
+--   - Place `json.lua` and all HTTP client files in your server's root directory (next to sapp.dll).
+--
+-- DISCLAIMER:
+--   This tool cannot distinguish intent. While some players use VPNs for privacy or safety,
+--   others may do so to evade bans or disrupt servers. VPN Blocker treats all anonymized
+--   traffic equally and enforces policy based on the API's risk assessment.
+--
+--   For more accurate results, consider upgrading your IPQualityScore account to enable
+--   premium detection features (optional, at your own expense).
+--
+-- AUTHOR:           Chalwk (Jericho Crosby)
+-- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
+--
+-- COPYRIGHT (c) 2023–2025, Jericho Crosby <jericho.crosby227@gmail.com>
+-- NOTICE:           You may use this script subject to the following license:
+--                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+--=====================================================================================--
 
 local config = {
 
