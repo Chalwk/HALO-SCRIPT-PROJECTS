@@ -273,5 +273,5 @@ function OnTick()
 end
 
 function OnScriptUnload()
-    cprint("[Vehicle Spawner] Script unloaded")
+    -- N/A
 end
