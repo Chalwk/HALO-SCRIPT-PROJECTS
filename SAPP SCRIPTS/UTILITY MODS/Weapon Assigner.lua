@@ -1,18 +1,17 @@
---[[
---=====================================================================================================--
-Script Name: Weapon Assigner, for SAPP (PC & CE)
-
-Description:
-This script assigns weapons to players dynamically based on the map and game mode.
-It allows server owners to configure per-map, per-team loadouts with up to four weapons per player.
-Supports team-based and Free-for-All (FFA) configurations, ensuring a customizable experience.
-
-Copyright (c) 2022-2025, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
-
+--=====================================================================================--
+-- SCRIPT NAME:      Weapon Assigner
+-- DESCRIPTION:      Dynamically assigns weapons to players based on map and game mode.
+--                   Supports per-map and per-game-mode loadouts for Red, Blue, and FFA
+--                   teams with up to four weapons per player. Validates weapon tags and
+--                   provides fallback configurations.
+--
+-- AUTHOR:           Chalwk (Jericho Crosby)
+-- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
+--
+-- COPYRIGHT (c) 2022–2025, Jericho Crosby <jericho.crosby227@gmail.com>
+-- NOTICE:           You may use this script subject to the following license:
+--                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+--=====================================================================================--
 
 --[[
 CONFIGURATION GUIDE:
