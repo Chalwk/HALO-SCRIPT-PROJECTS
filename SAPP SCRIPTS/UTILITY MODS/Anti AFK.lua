@@ -1,4 +1,20 @@
--- Configuration settings:
+--=====================================================================================--
+-- SCRIPT NAME:      Anti-AFK System
+-- DESCRIPTION:      Monitors player activity and automatically kicks players
+--                   who remain AFK (Away From Keyboard) beyond a configurable
+--                   threshold. Activity includes movement, camera aim, and input.
+--                   Grace period and warning messages are included before kicking.
+--
+-- AUTHOR:           Chalwk (Jericho Crosby)
+-- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
+--
+-- COPYRIGHT (c) 2025, Jericho Crosby <jericho.crosby227@gmail.com>
+-- NOTICE:           You may use this script subject to the following license:
+--                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+--=====================================================================================--
+
+--========================= CONFIGURATION ====================================--
+
 local max_afk_time = 300                    -- Maximum allowed AFK time in seconds
 local kick_reason = 'AFK for too long!'     -- Reason displayed when kicking an AFK player
 local grace_period = 60                     -- Grace period before kicking in seconds
