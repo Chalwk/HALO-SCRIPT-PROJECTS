@@ -3,7 +3,8 @@
 -- DESCRIPTION:      Allows players to spawn and instantly enter a vehicle
 --                   at their current location using a command.
 --                   Vehicles automatically despawn after a configurable
---                   timeout if left unoccupied.
+--                   timeout if left unoccupied. Its respawn timer will reset
+--                   if the player re-enters the vehicle.
 --
 -- AUTHOR:           Chalwk (Jericho Crosby)
 -- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
