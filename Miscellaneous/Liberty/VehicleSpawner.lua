@@ -1,7 +1,7 @@
 --=====================================================================================--
 -- SCRIPT NAME:      Liberty Vehicle Spawner
 -- DESCRIPTION:      Allows players to spawn and instantly enter a vehicle
---                   at their current location using a command.
+--                   at their current location using keywords.
 --                   Vehicles automatically despawn after a configurable
 --                   timeout if left unoccupied. Its respawn timer will reset
 --                   if the player re-enters the vehicle.
@@ -18,14 +18,13 @@
 
 local DESPAWN_DELAY_SECONDS = 30
 
--- Define per-map vehicle commands
 local map_vehicles = {
 
     -- EXAMPLE MAP CONFIG:
     -- ["map_name"] = {
-    --     ["command"] = "tag_path",
-    --     ["command"] = "tag_path",
-    --     -- Add more commands here
+    --     ["keyword"] = "tag_path",
+    --     ["keyword"] = "tag_path",
+    --     -- Add more keyword here
     -- }
 
     ["bc_raceway_final_mp"] = {
@@ -67,7 +66,7 @@ local map_vehicles = {
         ["rhog"] = "vehicles\\rwarthog\\rwarthog",
     },
     ["Mongoose_Point"] = {
-        ["hog"] = "vehicles\\fwarthog\\mp_fwarthog",
+        ["hog"] = "vehicles\\m257_multvp\\m257_multvp",
     },
     ["New_Mombasa_Race_v2"] = {
         ["hog"] = "vehicles\\warthog\\mp_warthog",
@@ -97,9 +96,10 @@ local active_vehicles = {}
 api_version = "1.12.0.0"
 
 function OnScriptLoad()
-    register_callback(cb["EVENT_GAME_START"], "OnGameStart")
+    register_callback(cb["EVENT_CHAT"], "OnChat")
+    register_callback(cb["EVENT_JOIN"], "OnPlayerJoin")
     register_callback(cb["EVENT_GAME_END"], "OnGameEnd")
-    register_callback(cb["EVENT_COMMAND"], "OnCommand")
+    register_callback(cb["EVENT_GAME_START"], "OnGameStart")
     OnGameStart()
 end
 
@@ -138,16 +138,16 @@ function OnGameStart()
     end
 
     local valid_vehicles = 0
-    for command, tag_path in pairs(map_config) do
+    for keyword, tag_path in pairs(map_config) do
 
         local meta_id = GetTag("vehi", tag_path)
         if not meta_id then
-            error(string.format("[ERROR] Failed to get meta ID for vehicle: %s (%s)", command, tag_path))
+            error(string.format("[ERROR] Failed to get meta ID for vehicle: %s (%s)", keyword, tag_path))
             goto next
         end
 
         active_vehicles[meta_id] = {
-            command = command,
+            keyword = keyword,
             path = tag_path,
             object = nil,
             despawn_time = nil
@@ -162,6 +162,22 @@ function OnGameStart()
         cprint("[WARNING] No valid vehicles registered - tick callback disabled", 12)
     end
 end
+
+function OnPlayerJoin(player)
+    local map_name = get_var(0, "$map")
+    local keywords = map_vehicles[map_name]
+
+    if keywords then
+        local message = "Welcome! Type the following keywords in chat to spawn vehicles:"
+
+        for keyword, _ in pairs(keywords) do
+            message = message .. " [" .. keyword .. "]"
+        end
+
+        rprint(player, message)
+    end
+end
+
 
 function OnGameEnd()
     unregister_callback(cb["EVENT_TICK"])
@@ -216,12 +232,11 @@ local function GetPlayerPosition(player_index)
     return x, y, z
 end
 
-function OnCommand(player, command)
+function OnChat(player, message)
+    local input = message:lower():gsub("^%s*(.-)%s*$", "%1")
+
     for meta_id, data in pairs(active_vehicles) do
-
-        if data.command == command then
-
-            if player == 0 then return false end
+        if data.keyword == input then
 
             local x, y, z = GetPlayerPosition(player)
             if not x then return false end
