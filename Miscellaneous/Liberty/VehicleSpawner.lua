@@ -20,12 +20,74 @@ local DESPAWN_DELAY_SECONDS = 30
 -- Define per-map vehicle commands
 local map_vehicles = {
 
-    ["bloodgulch"] = {
+    -- EXAMPLE MAP CONFIG:
+    -- ["map_name"] = {
+    --     ["command"] = "tag_path",
+    --     ["command"] = "tag_path",
+    --     -- Add more commands here
+    -- }
+
+    ["ciffhanger"] = {
         ["hog"] = "vehicles\\warthog\\mp_warthog",
         ["rhog"] = "vehicles\\rwarthog\\rwarthog",
-        -- Add more commands here
     },
-    -- Add additional maps here
+    ["bc_raceway_final_mp"] = {
+        ["hog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_blue",
+    },
+    ["LostCove_Race"] = {
+        ["hog"] = "vehicles\\warthog\\mp_warthog",
+        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+    },
+    ["timberland"] = {
+        ["hog"] = "vehicles\\warthog\\mp_warthog",
+        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+    },
+    ["massacre_mountain_race_v2"] = {
+        ["hog"] = "vehicles\\warthog\\mp_warthog",
+        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+    },
+    ["TLSstronghold"] = {
+        ["hog"] = "vehicles\\warthog\\mp_warthog",
+        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+    },
+    ["hypothermia_race"] = {
+        ["hog"] = "vehicles\\g_warthog\\g_warthog",
+    },
+    ["hornets_nest"] = {
+        ["hog"] = "halo3\\vehicles\\warthog\\mp_warthog",
+        ["rhog"] = "halo3\\vehicles\\warthog\\rwarthog",
+    },
+    ["equinox_v2"] = {
+        ["hog"] = "vehicles\\warthog\\mp_warthog",
+        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+    },
+    ["Mongoose_Point"] = {
+        ["hog"] = "vehicles\\fwarthog\\mp_fwarthog",
+    },
+    ["dessication_pb1"] = {
+        ["hog"] = "vehicles\\warthog\\mp_warthog",
+        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+    },
+    ["Camtrack-Arena-Race"] = {
+        ["hog"] = "vehicles\\warthog\\mp_warthog",
+        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+    },
+    ["Prime_C3_Race"] = {
+        ["hog"] = "vehicles\\warthog\\mp_warthog",
+        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+    },
+    ["New_Mombasa_Race_v2"] = {
+        ["hog"] = "vehicles\\warthog\\mp_warthog",
+        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+    },
+    ["wpitest1_race"] = {
+        ["hog"] = "vehicles\\warthog\\mp_warthog",
+        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+    },
+    ["Gauntlet_Race"] = {
+        ["hog"] = "vehicles\\warthog\\mp_warthog",
+        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+    }
 }
 
 -- CONFIG ENDS
