@@ -1,5 +1,5 @@
 --=====================================================================================--
--- SCRIPT NAME:      HLN Vehicle Spawner
+-- SCRIPT NAME:      Liberty Vehicle Spawner
 -- DESCRIPTION:      Allows players to spawn and instantly enter a vehicle
 --                   at their current location using a command.
 --                   Vehicles automatically despawn after a configurable
@@ -19,11 +19,10 @@ local DESPAWN_DELAY_SECONDS = 30
 
 -- Define per-map vehicle commands
 local map_vehicles = {
+
     ["bloodgulch"] = {
-        ["hog1"] = { path = "vehicles\\warthog\\mp_warthog", seat = 0 },
-        ["hog2"] = { path = "vehicles\\warthog\\mp_warthog", seat = 7 },
-        ["rhog1"] = { path = "vehicles\\rwarthog\\rwarthog", seat = 0 },
-        ["rhog2"] = { path = "vehicles\\rwarthog\\rwarthog", seat = 7 },
+        ["hog"] = "vehicles\\warthog\\mp_warthog",
+        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
         -- Add more commands here
     },
     -- Add additional maps here
@@ -35,7 +34,7 @@ local active_vehicles = {}
 api_version = "1.12.0.0"
 
 function OnScriptLoad()
-    cprint("[HLN Vehicle Spawner] Script loaded successfully", 10)
+    cprint("[Vehicle Spawner] Script loaded successfully", 10)
     register_callback(cb["EVENT_GAME_START"], "OnGameStart")
     register_callback(cb["EVENT_GAME_END"], "OnGameEnd")
     register_callback(cb["EVENT_COMMAND"], "OnCommand")
@@ -44,7 +43,7 @@ end
 
 local function GetTag(class, name)
     if not class or not name then
-        error(string.format("[ERROR] Invalid parameter to GetTag: class=%s, name=%s", tostring(name)))
+        error(string.format("[ERROR] Invalid parameter to GetTag: class=%s, name=%s", class, name))
         return nil
     end
 
@@ -79,24 +78,20 @@ function OnGameStart()
     end
 
     local valid_vehicles = 0
-    for command, data in pairs(map_config) do
-        if not data.path then
-            error(string.format("[ERROR] Missing vehicle path for command '%s'", command))
+    for command, tag_path in pairs(map_config) do
+
+        local meta_id = GetTag("vehi", tag_path)
+        if not meta_id then
+            error(string.format("[ERROR] Failed to get meta ID for vehicle: %s (%s)", command, tag_path))
         else
-            local meta_id = GetTag("vehi", data.path)
-            if not meta_id then
-                error(string.format("[ERROR] Failed to get meta ID for vehicle: %s (%s)", command, data.path))
-            else
-                active_vehicles[meta_id] = {
-                    command = command,
-                    path = data.path,
-                    seat = data.seat,
-                    object = nil,
-                    despawn_time = nil
-                }
-                valid_vehicles = valid_vehicles + 1
-                --cprint(string.format("Registered vehicle: %s (%s)", command, data.path), 10)
-            end
+            active_vehicles[meta_id] = {
+                command = command,
+                path = tag_path,
+                object = nil,
+                despawn_time = nil
+            }
+            valid_vehicles = valid_vehicles + 1
+            --cprint(string.format("Registered vehicle: %s (%s)", command, tag_path), 10)
         end
     end
 
@@ -142,9 +137,10 @@ end
 function OnCommand(player, command)
     for meta_id, data in pairs(active_vehicles) do
         if data.command == command then
+
             local x, y, z = GetPlayerPosition(player)
             if not x then
-                return false
+                goto continue
             end
 
             local height_offset = 0.3
@@ -156,16 +152,14 @@ function OnCommand(player, command)
             end
 
             data.object = object_id
+            enter_vehicle(object_id, player, 0)
 
-            if tonumber(data.seat) == 7 then
-                enter_vehicle(object_id, player, 0)
-                enter_vehicle(object_id, player, 2)
-            else
-                enter_vehicle(object_id, player, tonumber(data.seat) or 0)
-            end
             return false
         end
+
+        ::continue::
     end
+
     return true
 end
 
@@ -220,5 +214,5 @@ function OnTick()
 end
 
 function OnScriptUnload()
-    cprint("[HLN Vehicle Spawner] Script unloaded")
+    cprint("[Vehicle Spawner] Script unloaded")
 end
