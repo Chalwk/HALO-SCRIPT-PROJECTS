@@ -1,13 +1,16 @@
---[[
---=====================================================================================================--
-Script Name: Auto Message for SAPP (PC & CE)
-Description: This script will periodically broadcast pre-defined messages to all players.
-
-Copyright (c) 2024, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]
+--=====================================================================================--
+-- SCRIPT NAME:      Auto Message
+-- DESCRIPTION:      Periodically broadcasts pre-defined announcements to all players.
+--                   Supports multi-line messages, configurable intervals, and optional
+--                   console output. Designed to help servers share info, rules, or ads.
+--
+-- AUTHOR:           Chalwk (Jericho Crosby)
+-- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
+--
+-- COPYRIGHT (c) 2024, Jericho Crosby <jericho.crosby227@gmail.com>
+-- NOTICE:           You may use this script subject to the following license:
+--                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+--=====================================================================================--
 
 -- Configuration table for the Auto Message script:
 local AutoMessage = {
