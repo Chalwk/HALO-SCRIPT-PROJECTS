@@ -1,37 +1,27 @@
---[[
---=====================================================================================================--
-Script Name: AntiImpersonator for SAPP (PC & CE)
-Description: Prevent other players from impersonating your community members.
+--=====================================================================================--
+-- SCRIPT NAME:      Anti-Impersonator
+-- DESCRIPTION:      Detects and removes players attempting to impersonate trusted
+--                   community members based on player hash and/or IP address.
+--                   Supports kicking or banning impersonators, with optional logging.
+--
+-- AUTHOR:           Chalwk (Jericho Crosby)
+-- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
+--
+-- IMPORTANT NOTES:
+--   * Shared Hashes: Players using cracked or shared copies of Halo may have identical
+--     hashes, resulting in false positives.
+--   * Dynamic IPs: Players with changing IPs may be incorrectly flagged unless a
+--     static IP or consistent hash is used.
+--
+-- RECOMMENDATIONS:
+--   * Use player hashes where possible (they are more stable than IPs).
+--   * Ensure trusted members use legitimate accounts and, if feasible, static IPs.
+--
+-- COPYRIGHT (c) 2019–2025, Jericho Crosby <jericho.crosby227@gmail.com>
+-- NOTICE:           You may use this script subject to the following license:
+--                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+--=====================================================================================--
 
--------------------------
-IMPORTANT NOTE
--------------------------
-
-* Shared Hashes and Dynamic IPs:
-
-If a community member has a shared hash or uses a dynamic IP address, this system may not work effectively for them.
-
-Shared Hashes: Some players may share the same hash (e.g., cracked/pirated account), which means
-               multiple legitimate users might have the same hash. This could lead to false positives,
-               where one player is mistakenly flagged as an impersonator.
-
-Dynamic IPs: If a member’s IP address changes frequently (e.g., due to using dynamic IPs provided by their ISP),
-             the system could mistakenly flag players as impersonators if their IP address
-             doesn't match the one originally listed for them.
-
-To Protect a Community Member:
-    1. Static IP:
-        If possible, ensure that the member uses a static IP address. This will allow their IP to remain consistent and reliably be recognized as theirs.
-
-    2. Legitimate Hash:
-        If the member uses a legitimate, unique player hash, that will be more reliable than relying on IP alone.
-        Player hashes are more consistent and tied to their specific Halo account, so they are less prone to change than IP addresses.
-
-Copyright (c) 2019-2025, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]
 
 -- Configuration -----------------------------------------------------------------
 api_version = "1.12.0.0"
