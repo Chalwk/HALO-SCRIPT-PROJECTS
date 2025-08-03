@@ -182,15 +182,10 @@ local function GetPlayerVehicle(player_index)
 end
 
 local function IsVehicleOccupied(vehicle_object)
-    if vehicle_object == 0 then
-        return false
-    end
-
+    if vehicle_object == 0 then  return false end
     for i = 1, 16 do
         local current_vehicle = GetPlayerVehicle(i)
-        if current_vehicle == vehicle_object then
-            return true
-        end
+        if current_vehicle == vehicle_object then return true end
     end
     return false
 end
