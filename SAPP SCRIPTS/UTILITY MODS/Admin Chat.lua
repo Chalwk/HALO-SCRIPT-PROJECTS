@@ -1,14 +1,16 @@
---[[
---=====================================================================================================--
-Script Name: Admin Chat, for SAPP (PC & CE)
-Description: This script enables a dedicated Admin Chat feature, allowing administrators to
-             communicate privately using a toggleable chat system.
-
-Copyright (c) 2024, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+--=====================================================================================--
+-- SCRIPT NAME:      Admin Chat
+-- DESCRIPTION:      Enables a toggleable admin-only chat system. Admins with the
+--                   required permission level can opt in/out of admin chat using
+--                   a command. Messages are sent only to other opted-in admins.
+--
+-- AUTHOR:           Chalwk (Jericho Crosby)
+-- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
+--
+-- COPYRIGHT (c) 2025, Jericho Crosby <jericho.crosby227@gmail.com>
+-- NOTICE:           You may use this script subject to the following license:
+--                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+--=====================================================================================--
 
 -- CONFIGURATION ----------------------------------------------------------------
 
