@@ -1,31 +1,17 @@
---[[
---=====================================================================================================--
-Script Name: Notify Me, for SAPP (PC & CE)
-Description: This script will beautify the server terminal during certain events:
-
-            - script_load
-            - script_unload
-            - event_chat
-            - event_command
-            - event_game_start
-            - event_game_end
-            - event_prejoin
-            - event_join
-            - event_leave
-            - event_die
-            - event_snap
-            - event_spawn
-            - event_login
-            - event_map_reset
-            - event_team_switch
-
-            * This script is highly customizable. You can enable/disable certain notifications and change the color of the text.
-
-Copyright (c) 2024, Jericho Crosby <jericho.crosby227@gmail.com>
-* Notice: You can use this document subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+--=====================================================================================--
+-- SCRIPT NAME:      Notify Me
+-- DESCRIPTION:      Beautifies the SAPP server terminal by printing formatted, color-coded
+--                   notifications for a wide range of player and game events.
+--                   Includes a customizable ASCII art logo on script load, and a fully
+--                   configurable system for chat, join, leave, death events, and more.
+--
+-- AUTHOR:           Chalwk (Jericho Crosby)
+-- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
+--
+-- COPYRIGHT (c) 2025, Jericho Crosby <jericho.crosby227@gmail.com>
+-- NOTICE:           You may use this script subject to the following license:
+--                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+--=====================================================================================--
 
 --
 -- Configuration starts here -----------------------------------------------------------------------
