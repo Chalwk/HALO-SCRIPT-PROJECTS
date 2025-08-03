@@ -34,7 +34,6 @@ local active_vehicles = {}
 api_version = "1.12.0.0"
 
 function OnScriptLoad()
-    cprint("[Vehicle Spawner] Script loaded successfully", 10)
     register_callback(cb["EVENT_GAME_START"], "OnGameStart")
     register_callback(cb["EVENT_GAME_END"], "OnGameEnd")
     register_callback(cb["EVENT_COMMAND"], "OnCommand")
@@ -83,16 +82,17 @@ function OnGameStart()
         local meta_id = GetTag("vehi", tag_path)
         if not meta_id then
             error(string.format("[ERROR] Failed to get meta ID for vehicle: %s (%s)", command, tag_path))
-        else
-            active_vehicles[meta_id] = {
-                command = command,
-                path = tag_path,
-                object = nil,
-                despawn_time = nil
-            }
-            valid_vehicles = valid_vehicles + 1
-            --cprint(string.format("Registered vehicle: %s (%s)", command, tag_path), 10)
+            goto next
         end
+
+        active_vehicles[meta_id] = {
+            command = command,
+            path = tag_path,
+            object = nil,
+            despawn_time = nil
+        }
+        valid_vehicles = valid_vehicles + 1
+        :: next ::
     end
 
     if valid_vehicles > 0 then
@@ -107,27 +107,58 @@ function OnGameEnd()
     unregister_callback(cb["EVENT_TICK"])
 end
 
-local function GetPlayerPosition(player)
-    if not player_alive(player) then
-        say(player, "You must be alive to spawn a vehicle")
+local function GetPlayerVehicle(player_index)
+    if not player_present(player_index) or not player_alive(player_index) then
         return nil
     end
 
-    local player_obj = get_dynamic_player(player)
+    local player_obj = get_dynamic_player(player_index)
     if player_obj == 0 then
-        error(string.format("[ERROR] Failed to get dynamic player for ID: %s", player))
         return nil
     end
 
     local vehicle_id = read_dword(player_obj + 0x11C)
-    if vehicle_id ~= 0xFFFFFFFF then
-        say(player, "You are already in a vehicle")
+    if vehicle_id == 0xFFFFFFFF then
+        return nil
+    end
+
+    return get_object_memory(vehicle_id)
+end
+
+local function IsVehicleOccupied(vehicle_object)
+    if vehicle_object == 0 then
+        return false
+    end
+
+    for i = 1, 16 do
+        local current_vehicle = GetPlayerVehicle(i)
+        if current_vehicle == vehicle_object then
+            return true
+        end
+    end
+    return false
+end
+
+local function GetPlayerPosition(player_index)
+    if not player_alive(player_index) then
+        say(player_index, "You must be alive to spawn a vehicle")
+        return nil
+    end
+
+    if GetPlayerVehicle(player_index) then
+        say(player_index, "You are already in a vehicle")
+        return nil
+    end
+
+    local player_obj = get_dynamic_player(player_index)
+    if player_obj == 0 then
+        error(string.format("[ERROR] Failed to get dynamic player for ID: %s", player_index))
         return nil
     end
 
     local x, y, z = read_vector3d(player_obj + 0x5C)
     if not x or not y or not z then
-        error(string.format("[ERROR] Invalid position for player %s", player))
+        error(string.format("[ERROR] Invalid position for player %s", player_index))
         return nil
     end
 
@@ -136,7 +167,12 @@ end
 
 function OnCommand(player, command)
     for meta_id, data in pairs(active_vehicles) do
+
         if data.command == command then
+
+            if player == 0 then
+                return false
+            end
 
             local x, y, z = GetPlayerPosition(player)
             if not x then
@@ -144,7 +180,7 @@ function OnCommand(player, command)
             end
 
             local height_offset = 0.3
-            local object_id = spawn_object("", "", x, y, z + height_offset, meta_id)
+            local object_id = spawn_object('', '', x, y, z + height_offset, 0, meta_id)
 
             if object_id == nil or object_id == 0 then
                 error(string.format("[ERROR] Failed to spawn vehicle: %s", data.path))
@@ -159,28 +195,6 @@ function OnCommand(player, command)
     end
 
     return true
-end
-
-local function IsVehicleOccupied(vehicle_object)
-    if vehicle_object == 0 then
-        return false
-    end
-
-    for i = 1, 16 do
-        if player_present(i) and player_alive(i) then
-            local player = get_dynamic_player(i)
-            if player ~= 0 then
-                local vehicle_id = read_dword(player + 0x11C)
-                if vehicle_id ~= 0xFFFFFFFF then
-                    local object = get_object_memory(vehicle_id)
-                    if object == vehicle_object then
-                        return true
-                    end
-                end
-            end
-        end
-    end
-    return false
 end
 
 function OnTick()
