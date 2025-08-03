@@ -1,13 +1,16 @@
---[[
---=====================================================================================================--
-Script Name: Admin Messages, for SAPP (PC & CE)
-Description: A custom join message will appear based your admin level.
-
-Copyright (c) 2019-2021, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+--=====================================================================================--
+-- SCRIPT NAME:      Admin Messages
+-- DESCRIPTION:      Displays a humorous or custom join message based on a player's
+--                   admin level. Messages are configurable and can be aligned and
+--                   sent to either chat or rcon.
+--
+-- AUTHOR:           Chalwk (Jericho Crosby)
+-- COMPATIBILITY:    Halo PC/CE | SAPP 1.11.0.0
+--
+-- COPYRIGHT (c) 2019–2021, Jericho Crosby <jericho.crosby227@gmail.com>
+-- NOTICE:           You may use this script subject to the following license:
+--                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+--=====================================================================================--
 
 -- config starts --
 
