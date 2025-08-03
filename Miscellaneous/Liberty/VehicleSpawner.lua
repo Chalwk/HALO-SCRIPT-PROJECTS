@@ -97,7 +97,6 @@ function OnGameStart()
 
     if valid_vehicles > 0 then
         register_callback(cb["EVENT_TICK"], "OnTick")
-        --cprint(string.format("%d vehicles registered - tick callback enabled", valid_vehicles), 10)
     else
         cprint("[WARNING] No valid vehicles registered - tick callback disabled", 12)
     end
@@ -205,19 +204,15 @@ function OnTick()
                 if not IsVehicleOccupied(object) then
                     if not data.despawn_time then
                         data.despawn_time = os.clock() + DESPAWN_DELAY_SECONDS
-                        -- cprint(string.format("Despawn timer started for vehicle %08X", data.object))
                     elseif os.clock() >= data.despawn_time then
-                        -- cprint(string.format("Despawning vehicle %08X (%s)", data.object, data.path))
                         destroy_object(data.object)
                         data.object = nil
                         data.despawn_time = nil
                     end
                 elseif data.despawn_time then
-                    -- cprint(string.format("Resetting despawn timer for vehicle %08X", data.object))
                     data.despawn_time = nil
                 end
             else
-                -- Vehicle object is invalid (probably already destroyed)
                 data.object = nil
                 data.despawn_time = nil
             end
