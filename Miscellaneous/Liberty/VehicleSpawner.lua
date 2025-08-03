@@ -140,7 +140,7 @@ function OnCommand(player, command)
 
             local x, y, z = GetPlayerPosition(player)
             if not x then
-                goto continue
+                return false
             end
 
             local height_offset = 0.3
@@ -156,8 +156,6 @@ function OnCommand(player, command)
 
             return false
         end
-
-        ::continue::
     end
 
     return true
