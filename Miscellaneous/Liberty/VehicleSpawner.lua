@@ -27,18 +27,37 @@ local map_vehicles = {
     --     -- Add more commands here
     -- }
 
+    ["bc_raceway_final_mp"] = {
+        ["hog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_blue",
+    },
+    ["Camtrack-Arena-Race"] = {
+        ["hog"] = "vehicles\\warthog\\mp_warthog",
+        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+    },
     ["ciffhanger"] = {
         ["hog"] = "vehicles\\warthog\\mp_warthog",
         ["rhog"] = "vehicles\\rwarthog\\rwarthog",
     },
-    ["bc_raceway_final_mp"] = {
-        ["hog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_blue",
-    },
-    ["LostCove_Race"] = {
+    ["dessication_pb1"] = {
         ["hog"] = "vehicles\\warthog\\mp_warthog",
         ["rhog"] = "vehicles\\rwarthog\\rwarthog",
     },
-    ["timberland"] = {
+    ["equinox_v2"] = {
+        ["hog"] = "vehicles\\warthog\\mp_warthog",
+        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+    },
+    ["Gauntlet_Race"] = {
+        ["hog"] = "vehicles\\warthog\\mp_warthog",
+        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+    },
+    ["hornets_nest"] = {
+        ["hog"] = "halo3\\vehicles\\warthog\\mp_warthog",
+        ["rhog"] = "halo3\\vehicles\\warthog\\rwarthog",
+    },
+    ["hypothermia_race"] = {
+        ["hog"] = "vehicles\\g_warthog\\g_warthog",
+    },
+    ["LostCove_Race"] = {
         ["hog"] = "vehicles\\warthog\\mp_warthog",
         ["rhog"] = "vehicles\\rwarthog\\rwarthog",
     },
@@ -46,29 +65,10 @@ local map_vehicles = {
         ["hog"] = "vehicles\\warthog\\mp_warthog",
         ["rhog"] = "vehicles\\rwarthog\\rwarthog",
     },
-    ["TLSstronghold"] = {
-        ["hog"] = "vehicles\\warthog\\mp_warthog",
-        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
-    },
-    ["hypothermia_race"] = {
-        ["hog"] = "vehicles\\g_warthog\\g_warthog",
-    },
-    ["hornets_nest"] = {
-        ["hog"] = "halo3\\vehicles\\warthog\\mp_warthog",
-        ["rhog"] = "halo3\\vehicles\\warthog\\rwarthog",
-    },
-    ["equinox_v2"] = {
-        ["hog"] = "vehicles\\warthog\\mp_warthog",
-        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
-    },
     ["Mongoose_Point"] = {
         ["hog"] = "vehicles\\fwarthog\\mp_fwarthog",
     },
-    ["dessication_pb1"] = {
-        ["hog"] = "vehicles\\warthog\\mp_warthog",
-        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
-    },
-    ["Camtrack-Arena-Race"] = {
+    ["New_Mombasa_Race_v2"] = {
         ["hog"] = "vehicles\\warthog\\mp_warthog",
         ["rhog"] = "vehicles\\rwarthog\\rwarthog",
     },
@@ -76,7 +76,11 @@ local map_vehicles = {
         ["hog"] = "vehicles\\warthog\\mp_warthog",
         ["rhog"] = "vehicles\\rwarthog\\rwarthog",
     },
-    ["New_Mombasa_Race_v2"] = {
+    ["timberland"] = {
+        ["hog"] = "vehicles\\warthog\\mp_warthog",
+        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+    },
+    ["TLSstronghold"] = {
         ["hog"] = "vehicles\\warthog\\mp_warthog",
         ["rhog"] = "vehicles\\rwarthog\\rwarthog",
     },
@@ -84,10 +88,6 @@ local map_vehicles = {
         ["hog"] = "vehicles\\warthog\\mp_warthog",
         ["rhog"] = "vehicles\\rwarthog\\rwarthog",
     },
-    ["Gauntlet_Race"] = {
-        ["hog"] = "vehicles\\warthog\\mp_warthog",
-        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
-    }
 }
 
 -- CONFIG ENDS
@@ -125,9 +125,7 @@ end
 
 function OnGameStart()
 
-    if get_var(0, "$gt") == "n/a" then
-        return
-    end
+    if get_var(0, "$gt") == "n/a" then return end
 
     local map_name = get_var(0, "$map")
     active_vehicles = {}
@@ -174,14 +172,10 @@ local function GetPlayerVehicle(player_index)
     end
 
     local player_obj = get_dynamic_player(player_index)
-    if player_obj == 0 then
-        return nil
-    end
+    if player_obj == 0 then return nil end
 
     local vehicle_id = read_dword(player_obj + 0x11C)
-    if vehicle_id == 0xFFFFFFFF then
-        return nil
-    end
+    if vehicle_id == 0xFFFFFFFF then return nil end
 
     return get_object_memory(vehicle_id)
 end
@@ -231,14 +225,10 @@ function OnCommand(player, command)
 
         if data.command == command then
 
-            if player == 0 then
-                return false
-            end
+            if player == 0 then return false end
 
             local x, y, z = GetPlayerPosition(player)
-            if not x then
-                return false
-            end
+            if not x then return false end
 
             local height_offset = 0.3
             local object_id = spawn_object('', '', x, y, z + height_offset, 0, meta_id)
