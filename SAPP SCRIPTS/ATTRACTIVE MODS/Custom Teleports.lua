@@ -79,12 +79,13 @@ function OnStart()
     if get_var(0,' $gt') ~= 'n/a' then
         map = get_var(0, '$map')
         local config = Teleports[map]
+
         if config and #config > 0 then
-            PrintTeleportStatus(#config, map)
+            PrintTeleportStatus(#config)
             register_callback(cb['EVENT_TICK'], 'OnTick')
         else
             unregister_callback(cb['EVENT_TICK'])
-            PrintTeleportStatus(0, map)
+            PrintTeleportStatus(0)
         end
     end
 end
@@ -108,9 +109,7 @@ end
 local function getDistance(x1, y1, z1, x2, y2, z2)
 
     -- Return a large distance if x1, y1, or z1 are nil to handle edge cases
-    if not x1 or not y1 or not z1 then
-        return math.huge
-    end
+    if not x1 or not y1 or not z1 then return math.huge end
 
     local dx = x1 - x2
     local dy = y1 - y2
@@ -122,15 +121,10 @@ end
 function OnTick()
     for i = 1, 16 do
 
-        if not player_present(i) or not player_alive(i) then
-            goto continue
-        end
+        if not player_present(i) or not player_alive(i) then goto continue end
 
         local dyn = get_dynamic_player(i)
-
-        if inVehicle(dyn) then
-            goto continue
-        end
+        if inVehicle(dyn) then goto continue end
 
         local x, y, z = getXYZ(dyn)
 

@@ -16,6 +16,13 @@
         "get_object_memory",
         "spawn_object",
         "enter_vehicle",
-        "destroy_object"
+        "destroy_object",
+        "say_all",
+        "read_byte",
+        "read_float",
+        "read_word",
+        "sig_scan",
+        "write_vector3d",
+        "api_version"
     ]
 }
