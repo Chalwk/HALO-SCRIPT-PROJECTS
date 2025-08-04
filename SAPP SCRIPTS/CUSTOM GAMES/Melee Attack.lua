@@ -1,14 +1,15 @@
---[[
 --=====================================================================================================--
-Script Name: Melee Attack, for SAPP (PC & CE)
-Description: Players are limited to melee-only combat.
-             Striking your opponent with the skull will kill them instantly.
-
-Copyright (c) 2023-2024, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+-- Script Name:      Melee Attack
+-- Description:      Players are restricted to melee combat only.
+--                   Striking an opponent with the skull results in an instant kill.
+--
+-- Author:           Jericho Crosby (Chalwk)
+-- Compatibility:    Halo PC/CE | SAPP 1.12.0.0
+--
+-- Copyright (c) 2023-2024 Jericho Crosby <jericho.crosby227@gmail.com>
+-- License:          MIT License
+--                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--
-]]--
 
 --- config starts:
 
