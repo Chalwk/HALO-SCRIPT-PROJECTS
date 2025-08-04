@@ -1,11 +1,9 @@
 --=====================================================================================--
--- SCRIPT NAME:      Race Assistant (Enhanced)
+-- SCRIPT NAME:      Race Assistant
 -- DESCRIPTION:      Ensures fair racing by requiring players to use vehicles. Features:
 --                   - Configurable grace periods with visual warnings
---                   - Vehicle lock enforcement
 --                   - Safe zones protection (players in these zones will not be punished)
---                   - Player exemptions
---                   - Grace period extension option
+--                   - Admin exemptions
 --
 -- AUTHOR:           Chalwk (Jericho Crosby)
 -- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
@@ -14,10 +12,9 @@
 -- LICENSE:          https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================--
 
--- TODO: Only tell the player their strikes have been rest if they had any in the first place
+-- CONFIG:
 
 local RaceAssistant = {
-    -- Configuration Options:
     warnings = 2,                       --  Warnings before respawn
     initial_grace_period = 30,          --  Seconds to find first vehicle
     exit_grace_period = 10,             --  Seconds to re-enter after exiting
