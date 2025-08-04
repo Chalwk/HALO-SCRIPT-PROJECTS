@@ -18,100 +18,80 @@ This repo contains a curated collection of Lua scripts, utilities, and resources
 
 ---
 
-## ❤️ **Support Me** ❤️
-
-If my work has helped you in any way, consider showing your support! You can:
-- **Buy me a coffee ☕** to keep me fueled for more coding adventures.
-- **Watch 👁️** and **Star ⭐** this repository to stay updated and show your appreciation.
-
-[![Buy me a coffee](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/myaccount/transfer/pay)
-
----
-
-## 🔍 **Explore My Projects**
-
-| **Category**                                                                                      | **Description**                                                                                          |
-|---------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
-| [**SAPP Scripts**](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/tree/master/SAPP%20SCRIPTS)     | Collection of Lua scripts for the Halo PC (retail) and Halo CE (Custom Edition) SAPP dedicated server.   |
-| [**Phasor Scripts**](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/tree/master/PHASOR%20SCRIPTS) | Collection of Lua scripts for the Halo PC (retail) and Halo CE (Custom Edition) Phasor dedicated server. |
-| [**Releases**](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases)                           | Collection of larger SAPP projects that are more complex than the scripts in the SAPP Scripts folder.    |
-| [**Chimera Scripts**](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/tree/master/CHIMERA/GLOBAL)  | Not currently public. Check back here soon!                                                              |
-| [**HSP Wiki**](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/wiki)                               | Documentation and community contributions.                                                               |
+## 🔍 Explore Script Collections
+| **Category**                                                                                      | **Description**                                                           |
+|---------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------|
+| [**SAPP Scripts**](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/tree/master/SAPP%20SCRIPTS)     | Collection of Lua scripts for the Halo PC/CE SAPP servers.                |
+| [**Phasor Scripts**](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/tree/master/PHASOR%20SCRIPTS) | Collection of Lua scripts for the Halo PC/CE Phasor servers.              |
+| [**Releases**](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases)                           | Larger SAPP projects with advanced functionality beyond standard scripts. |
+| [**HSP Wiki**](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/wiki)                               | Documentation and community knowledge base.                               |
 
 ---
 
-## 🛠️ **Request an Addon**
-
-Have an idea for a new feature or script? Let me know!  
-[🛠️ Click here to submit a feature request](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/issues/new?template=FEATURE_REQUEST.yaml)
-
----
-
-## 🔥 **What's Hot Right Now?**
-
-Here are some of the most popular and recently updated projects:
-
+## 🔥 Featured Projects
 1. **[VPS Setup Instructions](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/Miscellaneous/VPS%20Setup%20Instructions.md)**  
-   Learn how to set up a Halo server on a VPS.
+   Comprehensive guide to setting up Halo servers on virtual private servers.
 
-2. **[Multi-Server (for PC & CE)](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/multi-server)**  
-   _Last Update: 15 October 2024_
+2. **[Multi-Server (PC & CE)](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/multi-server)**  
+   *Last Update: 15 October 2024*
 
-3. **[Server Templates for PC & CE](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/ReadyToGo)**  
-   _Last Update: 15 October 2024_
-
----
-
-## 📝 **Issue Submission Forms**
-
-To streamline the process of submitting issues, please use the following forms:
-
-- **Feature Request Form**: [Click here to submit a feature request](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/issues/new?assignees=Chalwk&labels=Feature%2CNeeds+Review&projects=&template=FEATURE_REQUEST.yaml&title=%5BFEATURE%5D+%3Ctitle%3E)
-- **Bug Report Form**: [Click here to report a bug](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/issues/new?assignees=Chalwk&labels=Bug%2CNeeds+Triage&projects=&template=BUG_REPORT.yaml&title=%5BBUG%5D+%3Ctitle%3E)
+3. **[Server Templates (PC & CE)](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/ReadyToGo)**  
+   *Last Update: 15 October 2024*
 
 ---
 
-## 📚 **Useful Links**
+## 💬 Contribute & Request Features
+### **Submit Ideas**
+Have an idea for a new feature or script?  
+[🛠️ Submit Feature Request](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/issues/new?template=FEATURE_REQUEST.yaml)
 
-### **SAPP Links:**
-- **Forums:** [SAPP Forums](http://halo.isimaginary.com/) (Note: The public forum is offline, but you can still download SAPP from the home page)
-- **Documentation:** [SAPP Documentation](http://halo.isimaginary.com/SAPP%20Documentation%20Revision%202.5.pdf)
-
-### **Phasor Links:**
-- **Forums:** [Phasor Forums](http://phasor.proboards.com/) (In accordance with Section 25(a) of the ProBoards Terms of Service, this forum has been taken offline)
-- **V1 Documentation:** [Phasor V1 Docs](http://phasor.halonet.net/archive/docs/05x.html)
-- **V2 Documentation:** [Phasor V2 Docs](http://phasor.halonet.net/archive/docs/200.html)
+### **Report Issues**
+- [🐞 Bug Report Form](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/issues/new?assignees=Chalwk&labels=Bug%2CNeeds+Triage&projects=&template=BUG_REPORT.yaml&title=%5BBUG%5D+%3Ctitle%3E)
+- [✨ Feature Request Form](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/issues/new?assignees=Chalwk&labels=Feature%2CNeeds+Review&projects=&template=FEATURE_REQUEST.yaml&title=%5BFEATURE%5D+%3Ctitle%3E)
 
 ---
 
-## 🌐 **Recommended Communities**
+## 📚 Resources & Documentation
+### **SAPP**
+- **Download:** [halo.isimaginary.com](http://halo.isimaginary.com)
+- **Documentation:** [SAPP Documentation (PDF)](http://halo.isimaginary.com/SAPP%20Documentation%20Revision%202.5.pdf)
 
-| **Website**                                                                                        | **Discord**                                        |
-|----------------------------------------------------------------------------------------------------|----------------------------------------------------|
-| [Open Carnage](https://opencarnage.net)                                                            | [Join Discord](https://discord.gg/9HMDFa)          |
-| [Chimera](https://opencarnage.net/index.php?/topic/6916-chimera-download-source-code-and-discord/) | [Join Discord](https://discord.gg/ZwQeBE2)         |
-| [Halo Net](https://opencarnage.net)                                                                | [Join Discord](https://discord.gg/9HMDFa)          |
-| [XG Gaming](https://www.xgclan.com)                                                                | [Join Discord](https://discord.gg/djqM24x8)        |
-| [POQ Clan](http://poqclan.com/)                                                                    | [Join Discord](https://discord.com/invite/pTsKsEm) |
-
----
-
-## 🏆 **Contributors**
-
-A big thank you to everyone who has contributed to this project! For a list of contributors, please see the [Contributing Guide](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/CONTRIBUTING.md).
+### **Phasor**
+- **V1 Docs:** [Phasor V1 Documentation](http://phasor.halonet.net/archive/docs/05x.html)
+- **V2 Docs:** [Phasor V2 Documentation](http://phasor.halonet.net/archive/docs/200.html)
 
 ---
 
-## 🛡️ **Code of Conduct**
-
-Please adhere to our community guidelines outlined in the [Code of Conduct](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/CODE_OF_CONDUCT.md).
+## 🌐 Community Hubs
+| **Community**                                                                                      | **Discord**                                |
+|----------------------------------------------------------------------------------------------------|--------------------------------------------|
+| [Open Carnage](https://opencarnage.net)                                                            | [Join](https://discord.gg/9HMDFa)          |
+| [Chimera](https://opencarnage.net/index.php?/topic/6916-chimera-download-source-code-and-discord/) | [Join](https://discord.gg/ZwQeBE2)         |
+| [Halo Net](https://opencarnage.net)                                                                | [Join](https://discord.gg/9HMDFa)          |
+| [XG Gaming](https://www.xgclan.com)                                                                | [Join](https://discord.gg/djqM24x8)        |
+| [POQ Clan](http://poqclan.com/)                                                                    | [Join](https://discord.com/invite/pTsKsEm) |
 
 ---
 
-## 📧 **Contact Me**
-
-- **Email:** [jericho.crosby227@gmail.com](mailto:jericho.crosby227@gmail.com)
+## ❤️ Support My Work
+Enjoy these projects? Help me continue development:  
+- [☕ Buy Me a Coffee](https://www.paypal.com/myaccount/transfer/pay)  
+- **Star ⭐ this repository** to show appreciation and stay updated!
 
 ---
 
-Thank you for visiting my repository! Your support and contributions mean the world to me. Happy coding! 🎮
+## 🏆 Contributors
+Special thanks to all contributors! See [👥 Contributing Guide](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/CONTRIBUTING.md)
+
+---
+
+## 🛡️ Code of Conduct
+All community interactions governed by:  
+[📜 Code of Conduct](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/CODE_OF_CONDUCT.md)
+
+---
+
+## 📧 Contact
+**Email:** [jericho.crosby227@gmail.com](mailto:jericho.crosby227@gmail.com)
+
+---
