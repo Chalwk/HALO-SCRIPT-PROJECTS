@@ -1,0 +1,21 @@
+{
+    "diagnostics.globals": [
+        "get_var",
+        "execute_command",
+        "rprint",
+        "get_dynamic_player",
+        "read_vector3d",
+        "read_dword",
+        "player_present",
+        "register_callback",
+        "cb",
+        "player_alive",
+        "lookup_tag",
+        "cprint",
+        "unregister_callback",
+        "get_object_memory",
+        "spawn_object",
+        "enter_vehicle",
+        "destroy_object"
+    ]
+}

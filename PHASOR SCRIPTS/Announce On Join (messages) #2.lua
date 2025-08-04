@@ -253,7 +253,7 @@ local function opairs(t)
 end
 
 -- Function to get the length of a table
-local function table.len(t)
+function table.len(t)
     local count = 0
     for _ in pairs(t) do
         count = count + 1
