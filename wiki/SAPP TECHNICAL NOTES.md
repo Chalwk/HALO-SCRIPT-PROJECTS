@@ -68,8 +68,8 @@ See [this script](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/Mis
 
 
 ### SAPPs **$pn** server variable:
-If you're trying to count the number of players online during EVENT_LEAVE with get_var(0, '$pn), you have to manually deduct 1 from n.
-This is because get_var(0, '$pn) does not update immediately.
+If you're trying to count the number of players online during EVENT_LEAVE with get_var(0, '\$pn), you have to manually deduct 1 from n.
+This is because get_var(0, '\$pn) does not update immediately.
 
 For example:
 ```lua
