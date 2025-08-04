@@ -14,7 +14,6 @@
 --                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================--
 
-
 -- config starts
 local Attrition = {
 

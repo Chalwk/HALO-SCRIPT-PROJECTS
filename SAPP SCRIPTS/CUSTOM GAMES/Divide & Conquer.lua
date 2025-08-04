@@ -1,15 +1,17 @@
---[[
---=====================================================================================================--
-Script Name: Divide & Conquer, for SAPP (PC & CE)
-Description: When you kill someone on the opposing team, the victim is switched to your team.
-             The main objective is to dominate the opposing team.
-             When the opposing team has no players left the game is over.
-
-Copyright (c) 2023-2025, Jericho Crosby <jericho.crosby227@gmail.com>
-* Notice: You can use this document subject to the following conditions:
-https://github.com/Chalwk77/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+--=====================================================================================--
+-- SCRIPT NAME:      Divide & Conquer
+-- DESCRIPTION:      A team conversion mini-game.
+--                   - When you kill someone on the opposing team, they join your team.
+--                   - The objective is to dominate by converting all enemy players.
+--                   - The game ends when one team has no players remaining.
+--
+-- AUTHOR:           Jericho Crosby (Chalwk)
+-- COMPATIBILITY:    Halo PC/CE | SAPP
+--
+-- COPYRIGHT © 2023-2025 Jericho Crosby <jericho.crosby227@gmail.com>
+-- LICENSE:          MIT License
+--                   https://github.com/Chalwk77/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+--=====================================================================================--
 
 api_version = '1.12.0.0'
 
