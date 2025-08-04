@@ -12,16 +12,17 @@
 -- LICENSE:          https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================--
 
--- CONFIG:
-
+---------------------------------
+-- CONFIGURATION
+---------------------------------
 local RaceAssistant = {
-    warnings = 2,                       --  Warnings before respawn
-    initial_grace_period = 30,          --  Seconds to find first vehicle
-    exit_grace_period = 10,             --  Seconds to re-enter after exiting
-    driving_grace_period = 10,          --  Seconds driving to clear warnings
-    enable_safe_zones = true,           --  Allow safe zones
-    allow_exemptions = true,            --  Admins level >= 1 won't be punished
-    safe_zones = {                      --  Map-specific safe zones {x, y, z, radius}
+    warnings = 2,                       -- Warnings before respawn
+    initial_grace_period = 30,          -- Seconds to find first vehicle
+    exit_grace_period = 10,             -- Seconds to re-enter after exiting
+    driving_grace_period = 10,          -- Seconds driving to clear warnings
+    enable_safe_zones = true,           -- Allow safe zones
+    allow_exemptions = true,            -- Admins level >= 1 won't be punished
+    safe_zones = {                      -- Map-specific safe zones {x, y, z, radius}
         -- Example: ["bloodgulch"] = {{0, 0, 0, 15}, {100, 100, 0, 10}}
     }
 }
@@ -31,30 +32,28 @@ api_version = '1.12.0.0'
 local map
 local players = {}
 local time = os.time
+local game_in_progress
 
 function OnScriptLoad()
+    register_callback(cb['EVENT_TICK'], 'OnTick')
+    register_callback(cb['EVENT_JOIN'], 'OnJoin')
+    register_callback(cb['EVENT_LEAVE'], 'OnQuit')
+    register_callback(cb['EVENT_SPAWN'], 'OnSpawn')
+    register_callback(cb['EVENT_GAME_END'], 'OnEnd')
     register_callback(cb['EVENT_GAME_START'], 'OnStart')
+    register_callback(cb['EVENT_VEHICLE_EXIT'], 'OnExit')
+    register_callback(cb['EVENT_VEHICLE_ENTER'], 'OnEnter')
+
     OnStart()
 end
 
-local function register_events(f)
-    for event, callback in pairs({
-        ['EVENT_TICK'] = 'OnTick',
-        ['EVENT_JOIN'] = 'OnJoin',
-        ['EVENT_LEAVE'] = 'OnQuit',
-        ['EVENT_SPAWN'] = 'OnSpawn',
-        ['EVENT_GAME_END'] = 'OnEnd',
-        ['EVENT_VEHICLE_EXIT'] = 'OnExit',
-        ['EVENT_VEHICLE_ENTER'] = 'OnEnter'
-    }) do
-        f(cb[event], callback)
-    end
+function OnScriptUnload()
+    -- N/A
 end
 
 function OnStart()
-    if get_var(0, "$gt") == "n/a" then
-        return
-    end
+    if get_var(0, "$gt") == "n/a" then return end
+    game_in_progress = true
     players = {}
     map = get_var(0, "$map")
 
@@ -63,11 +62,10 @@ function OnStart()
             OnJoin(i)
         end
     end
-    register_events(register_callback)
 end
 
 function OnEnd()
-    register_events(unregister_callback)
+    game_in_progress = false
 end
 
 function OnJoin(playerId)
@@ -77,7 +75,7 @@ function OnJoin(playerId)
         grace = 0,
         warned = false,
         exempt = function()
-            return RaceAssistant.allow_exemptions and tonumber(get_var(playerId, '$lvl')) >= 1 or false
+            return RaceAssistant.allow_exemptions and tonumber(get_var(playerId, '$lvl')) >= 1
         end
     }
 end
@@ -87,14 +85,13 @@ function OnQuit(playerId)
 end
 
 function OnSpawn(playerId)
+    if not game_in_progress then return end
     local p = players[playerId]
-    if p then
-        if not p.exempt() then
-            p.strikes = RaceAssistant.warnings
-            p.timer = time() + RaceAssistant.initial_grace_period
-            p.warned = false
-            rprint(playerId, "You have " .. RaceAssistant.initial_grace_period .. "s to enter a vehicle!")
-        end
+    if p and not p.exempt() then
+        p.strikes = RaceAssistant.warnings
+        p.timer = time() + RaceAssistant.initial_grace_period
+        p.warned = false
+        rprint(playerId, "You have " .. RaceAssistant.initial_grace_period .. "s to enter a vehicle!")
     end
 end
 
@@ -108,6 +105,7 @@ function OnEnter(playerId)
 end
 
 function OnExit(playerId)
+    if not game_in_progress then return end
     local p = players[playerId]
     if p and not p.exempt() then
         p.timer = time() + RaceAssistant.exit_grace_period
@@ -116,13 +114,13 @@ function OnExit(playerId)
     end
 end
 
-function in_vehicle(playerId)
+local function in_vehicle(playerId)
     local dyn = get_dynamic_player(playerId)
     if dyn == 0 then return false end
     return read_dword(dyn + 0x11C) ~= 0xFFFFFFFF
 end
 
-function in_safe_zone(playerId)
+local function in_safe_zone(playerId)
     if not RaceAssistant.enable_safe_zones then return false end
 
     local zones = RaceAssistant.safe_zones[map]
@@ -134,59 +132,59 @@ function in_safe_zone(playerId)
 
     for _, zone in ipairs(zones) do
         local zx, zy, zz, radius = unpack(zone)
-        local dist = math.sqrt((x - zx) ^ 2 + (y - zy) ^ 2 + (z - zz) ^ 2)
+        local dist = math.sqrt((x - zx)^2 + (y - zy)^2 + (z - zz)^2)
         if dist <= radius then return true end
     end
     return false
 end
 
-function OnTick()
-    local now = time()
+local function handle_penalty(playerId, playerData, currentTime)
+    playerData.strikes = playerData.strikes - 1
+    playerData.timer = currentTime + RaceAssistant.exit_grace_period
 
-    for i, p in pairs(players) do
-        if not player_present(i) or not player_alive(i) then goto continue end
-
-        -- Safe Zone Check
-        if in_safe_zone(i) then goto continue end
-
-        -- Exemption Check
-        if p.exempt() then goto continue end
-
-        -- Vehicle Check Logic
-        if not in_vehicle(i) then
-            if p.timer > 0 then
-                -- Warn when 10s remain
-                if not p.warned and (p.timer - now) <= 10 then
-                    rprint(i, "WARNING: " .. (p.timer - now) .. "s to enter a vehicle!")
-                    p.warned = true
-                end
-
-                if now >= p.timer then
-                    p.strikes = p.strikes - 1
-                    p.timer = now + RaceAssistant.exit_grace_period
-
-                    if p.strikes > 0 then
-                        rprint(i, "Enter a vehicle! Strikes left: " .. p.strikes)
-                    else
-                        execute_command('kill ' .. i)
-                        rprint(i, "Killed for not entering a vehicle!")
-                        p.strikes = RaceAssistant.warnings
-                        p.timer = now + RaceAssistant.initial_grace_period
-                    end
-                end
-            end
-        elseif p.grace > 0 and now >= p.grace then
-            local had_strikes = p.strikes < RaceAssistant.warnings
-            p.strikes = RaceAssistant.warnings
-            p.grace = 0
-            if had_strikes then
-                rprint(i, "Strikes reset - keep racing!")
-            end
-        end
-        :: continue ::
+    if playerData.strikes > 0 then
+        rprint(playerId, "Enter a vehicle! Strikes left: " .. playerData.strikes)
+    else
+        execute_command('kill ' .. playerId)
+        rprint(playerId, "Killed for not entering a vehicle!")
+        playerData.strikes = RaceAssistant.warnings
+        playerData.timer = currentTime + RaceAssistant.initial_grace_period
     end
 end
 
-function OnScriptUnload()
-    -- Cleanup if needed
+local function reset_strikes(playerId, playerData)
+    local had_strikes = playerData.strikes < RaceAssistant.warnings
+    playerData.strikes = RaceAssistant.warnings
+    playerData.grace = 0
+    if had_strikes then
+        rprint(playerId, "Strikes reset - keep racing!")
+    end
+end
+
+local function proceed(playerId, playerData)
+    return player_present(playerId)
+            and player_alive(playerId)
+            and not in_safe_zone(playerId)
+            and not playerData.exempt()
+end
+
+function OnTick()
+    if not game_in_progress then return end
+    local now = time()
+
+    for playerId, p in pairs(players) do
+        if not proceed(playerId, p) then goto continue end
+
+        if not in_vehicle(playerId) then
+            if p.timer > 0 and now >= p.timer then
+                handle_penalty(playerId, p, now)
+            elseif p.timer > 0 and not p.warned and (p.timer - now) <= 10 then
+                rprint(playerId, "WARNING: " .. (p.timer - now) .. "s to enter a vehicle!")
+                p.warned = true
+            end
+        elseif p.grace > 0 and now >= p.grace then
+            reset_strikes(playerId, p)
+        end
+        ::continue::
+    end
 end
