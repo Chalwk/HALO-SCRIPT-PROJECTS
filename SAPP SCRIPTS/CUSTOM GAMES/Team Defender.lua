@@ -1,19 +1,20 @@
---[[
 --=====================================================================================================--
-Script Name: Team Defender (v1.5), for SAPP (PC & CE)
-Description: This is Team Defender from Call of Duty: Modern Warfare 3.
-
-            * A flag will spawn somewhere on the map.
-            * One player must hold on to the flag for as long as possible while his teammates defend him.
-            * The team holding the flag receives double points towards the match score.
-            * Players holding the flag will get +20 assist points for every kill that a teammate gets.
-            * The flag respawns after 15 seconds if not held.
-
-Copyright (c) 2021, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+-- Script Name:      Team Defender (v1.5)
+-- Description:      Call of Duty: Modern Warfare 3 style Team Defender mode.
+--
+--                   * A flag spawns somewhere on the map.
+--                   * One player must hold the flag while teammates defend.
+--                   * The team holding the flag earns double points towards the match score.
+--                   * Flag holders gain +20 assist points for every teammate kill.
+--                   * The flag respawns after 15 seconds if left unheld.
+--
+-- Author:           Jericho Crosby (Chalwk)
+-- Compatibility:    Halo PC/CE | SAPP 1.12.0.0
+--
+-- Copyright (c) 2021 Jericho Crosby <jericho.crosby227@gmail.com>
+-- License:          MIT License
+--                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--
-]]--
 
 -- config starts --
 local TD = {

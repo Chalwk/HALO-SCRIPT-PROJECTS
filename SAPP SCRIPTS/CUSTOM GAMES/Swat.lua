@@ -1,18 +1,21 @@
---[[
 --=====================================================================================================--
-Script Name: Swat, for SAPP (PC & CE)
-Description: Players spawn with a sniper rifle and pistol, headshots only, 25 to win.
-
-             * Other weapons & vehicles do not spawn.
-             * You can use powerups (i.e, camo, os).
-             * Optional infinite ammo, bottomless clip and ability to disable grenades.
-             * Set the default score limit.
-
-Copyright (c) 2022, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+-- Script Name:      Swat
+-- Description:      Players spawn armed with a sniper rifle and pistol.
+--                   Only headshots count for kills.
+--                   First to 25 kills wins the match.
+--
+--                   * Other weapons and vehicles are disabled.
+--                   * Powerups (like camo, overshield) are enabled.
+--                   * Options for infinite ammo, bottomless clip, and grenade disabling.
+--                   * Configurable default score limit.
+--
+-- Author:           Jericho Crosby (Chalwk)
+-- Compatibility:    Halo PC/CE | SAPP 1.12.0.0
+--
+-- Copyright (c) 2022 Jericho Crosby <jericho.crosby227@gmail.com>
+-- License:          MIT License
+--                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--
-]]--
 
 api_version = '1.12.0.0'
 

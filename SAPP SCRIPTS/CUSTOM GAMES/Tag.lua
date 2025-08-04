@@ -1,35 +1,28 @@
---[[
 --=====================================================================================================--
-Script Name: Tag, for SAPP (PC & CE)
-Description: Tag, you're it!
-
-This is a game involving two or more players.
-An initial game of tag is started by whacking a player.
-This player will become 'it' (the tagger).
-Their turn ends when they tag their first victim or their turn time is up;
-If the turn time lapses before they tag someone, a new random player will be chosen to be the new tagger.
-
-** FEATURES **
-
-- All runners have plasma rifles and the taggers have an oddball.
-  The plasma rifle was a design choice, not a random decision, as it slows down the tagger when shot at.
-
-- You will accumulate 5 points every 10 seconds as a runner.
-- The score limit is 10,000.
-- Taggers get a 1.5x speed boost, runners have normal speed.
-- Tagging someone earns you 500 points.
-- Runners cannot earn points for killing.
-
-- This game mode is best played on medium & small maps:
-  timberland      bloodgulch      damnation   longest
-  chillout        carousel        ratrace     putput
-  prisoner        wizard          beavercreek hangemhigh
-
-Copyright (c) 2022-2024, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+-- Script Name:      Tag
+-- Description:      Classic game of tag with a twist!
+--
+--                   - Start by hitting a player to make them 'it' (the tagger).
+--                   - Taggers wield an oddball with a 1.5x speed boost.
+--                   - Runners carry plasma rifles (slows taggers when shot).
+--                   - Runners earn 5 points every 10 seconds; tagging grants 500 points.
+--                   - Runners cannot earn points by killing.
+--                   - Score limit set at 10,000.
+--                   - Turn ends when tagger tags someone or time runs out.
+--                   - If time lapses without tagging, a new tagger is randomly chosen.
+--
+--                   Recommended for medium & small maps:
+--                   timberland, bloodgulch, damnation, longest,
+--                   chillout, carousel, ratrace, putput,
+--                   prisoner, wizard, beavercreek, hangemhigh
+--
+-- Author:           Jericho Crosby (Chalwk)
+-- Compatibility:    Halo PC/CE | SAPP 1.12.0.0
+--
+-- Copyright (c) 2022-2024 Jericho Crosby <jericho.crosby227@gmail.com>
+-- License:          MIT License
+--                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--
-]]--
 
 -- Configuration table for the Tag game mode
 local Tag = {

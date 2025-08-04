@@ -1,15 +1,16 @@
---[[
 --=====================================================================================================--
-Script Name: Survival Slayer, for SAPP (PC & CE)
-Description: All players spawn with a limited life cycle.
-             Each kill rewards 10 bonus seconds towards your life.
-             First player to 15 kills wins.
-
-Copyright (c) 2022, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+-- Script Name:      Survival Slayer
+-- Description:      Players have a limited lifespan that decreases over time.
+--                   Each kill adds 10 extra seconds to your remaining life.
+--                   The first player to reach 15 kills wins the game.
+--
+-- Author:           Jericho Crosby (Chalwk)
+-- Compatibility:    Halo PC/CE | SAPP 1.12.0.0
+--
+-- Copyright (c) 2022 Jericho Crosby <jericho.crosby227@gmail.com>
+-- License:          MIT License
+--                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--
-]]--
 
 -- Configuration table for the Survival Slayer game mode
 local SurvivalSlayer = {

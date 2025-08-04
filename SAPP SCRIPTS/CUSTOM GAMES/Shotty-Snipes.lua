@@ -1,17 +1,18 @@
---[[
 --=====================================================================================================--
-Script Name: Shotty-Snipes, for SAPP (PC & CE)
-Description: Players are limited to the use of shotguns & snipers.
-
-             * Other weapons & vehicles do not spawn.
-             * You can use equipment (i.e, grenades & powerups).
-             * Optional infinite ammo and bottomless clip
-
-Copyright (c) 2022-2024, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+-- Script Name:      Shotty-Snipes
+-- Description:      Players are limited to shotguns and snipers only.
+--
+--                   * Other weapons and vehicles will not spawn.
+--                   * Equipment such as grenades and powerups remain usable.
+--                   * Optional features include infinite ammo and bottomless clip.
+--
+-- Author:           Jericho Crosby (Chalwk)
+-- Compatibility:    Halo PC/CE | SAPP 1.12.0.0
+--
+-- Copyright (c) 2022-2024 Jericho Crosby <jericho.crosby227@gmail.com>
+-- License:          MIT License
+--                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--
-]]--
 
 api_version = '1.12.0.0'
 

@@ -1,17 +1,18 @@
---[[
 --=====================================================================================================--
-Script Name: Needler-Galore, for SAPP (PC & CE)
-Description: Players are limited to the use of needlers.
-
-             * Other weapons & vehicles do not spawn.
-             * You can use equipment (i.e, grenades & powerups).
-             * Optional infinite ammo and bottomless clip
-
-Copyright (c) 2022, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+-- Script Name:      Needler-Galore
+-- Description:      Players are restricted to using needlers only.
+--
+--                   * Other weapons and vehicles do not spawn.
+--                   * Equipment like grenades and powerups are allowed.
+--                   * Optional infinite ammo and bottomless clip features.
+--
+-- Author:           Jericho Crosby (Chalwk)
+-- Compatibility:    Halo PC/CE | SAPP 1.12.0.0
+--
+-- Copyright (c) 2022 Jericho Crosby <jericho.crosby227@gmail.com>
+-- License:          MIT License
+--                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--
-]]--
 
 api_version = '1.12.0.0'
 

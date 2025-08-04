@@ -1,18 +1,19 @@
---[[
 --=====================================================================================================--
-Script Name: Sabotage, for SAPP (PC & CE)
-Description: In Sabotage, a bomb spawns in the middle of the map.
-             Both teams have to simultaneously try to destroy the opposing team's base.
-             The team that destroys the opposing team's base wins.
-
-             To plant or defuse the bomb:
-             * Hold crouch key while standing on top of the flag podium.
-
-Copyright (c) 2022, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+-- Script Name:      Sabotage
+-- Description:      A bomb spawns at the center of the map.
+--                   Both teams race to destroy the opposing team's base.
+--                   The team that successfully destroys the enemy base wins.
+--
+--                   To plant or defuse the bomb:
+--                   * Hold the crouch key while standing on the flag podium.
+--
+-- Author:           Jericho Crosby (Chalwk)
+-- Compatibility:    Halo PC/CE | SAPP 1.12.0.0
+--
+-- Copyright (c) 2022 Jericho Crosby <jericho.crosby227@gmail.com>
+-- License:          MIT License
+--                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--
-]]--
 
 local Sabotage = {
 

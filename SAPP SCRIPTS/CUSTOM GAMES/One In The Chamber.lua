@@ -1,17 +1,19 @@
---[[
 --=====================================================================================================--
-Script Name: One In The Chamber, for SAPP (PC & CE)
-Description: Each player is given a pistol - and only a pistol - with one bullet.
-             Use it wisely. Every shot kills.
-             If you miss, you're limited to Melee-Combat.
-             Every time you kill a player, you get a bullet.
-             Success requires a combination of precision and reflexes. Know when to go for the shot or close in for the kill.
-
-Copyright (c) 2023-2024, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+-- Script Name:      One In The Chamber
+-- Description:      Each player starts with a pistol loaded with a single bullet.
+--                   - Every shot is a guaranteed kill.
+--                   - Miss a shot, and you're down to melee combat only.
+--                   - Each kill awards you one bullet.
+--                   - Mastery demands precision and quick reflexes.
+--                   - Choose your shots wisely: snipe or close in for the kill.
+--
+-- Author:           Jericho Crosby (Chalwk)
+-- Compatibility:    Halo PC/CE | SAPP 1.12.0.0
+--
+-- Copyright (c) 2023-2024 Jericho Crosby <jericho.crosby227@gmail.com>
+-- License:          MIT License
+--                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--
-]]--
 
 api_version = '1.12.0.0'
 
