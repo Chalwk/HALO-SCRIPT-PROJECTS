@@ -1,20 +1,19 @@
---[[
---=====================================================================================================--
-Script Name: Attrition, for SAPP (PC & CE)
-Description: A mini-game inspired by Halo: Infinite's Attrition mode.
+--=====================================================================================--
+-- SCRIPT NAME:      Attrition
+-- DESCRIPTION:      A mini-game inspired by Halo Infinite’s Attrition mode.
+--                   - Players have limited lives.
+--                   - The objective is to deplete the opposing team’s pool of lives.
+--                   - Teammates can revive each other by crouching over their orb.
+--                   - Orbs appear as floating skulls above dead players.
+--
+-- AUTHOR:           Jericho Crosby (Chalwk)
+-- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
+--
+-- COPYRIGHT © 2022 Jericho Crosby <jericho.crosby227@gmail.com>
+-- LICENSE:          MIT License
+--                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+--=====================================================================================--
 
-             Players have limited lives.
-             The objective is to deplete the other team's pool of lives.
-             When a teammate dies, you can revive them.
-
-             An orb (skull) will float above their body to represent
-             that this player can be revived.
-
-Copyright (c) 2022, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
 
 -- config starts
 local Attrition = {
