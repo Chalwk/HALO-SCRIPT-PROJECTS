@@ -1,28 +1,27 @@
---[[
 --=====================================================================================================--
-Script Name: Juggernaut, for SAPP (PC & CE)
-Description: Juggernauts are very powerful players that have special attributes.
-
-             Attributes:
-             - Health boost
-             - Speed boost
-             - Shield boost
-             - Damage boost
-             - Regenerating health
-
-             At the beginning of the game, a random player will be selected as the Juggernaut.
-             When the Juggernaut dies, the next player in the queue will be selected as the Juggernaut.
-
-             They have a set amount of time to kill as many players as possible.
-             When the timer runs out, a random player in the queue will be selected as the Juggernaut.
-
-             * Compatible with all game types.
-
-Copyright (c) 2019-2023, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+-- Script Name:      Juggernaut
+-- Description:      A dynamic power-player game.
+--
+--                   Juggernauts have enhanced attributes:
+--                   - Health boost
+--                   - Speed boost
+--                   - Shield boost
+--                   - Damage boost
+--                   - Regenerating health
+--
+--                   Gameplay:
+--                   - At game start, a random player becomes the Juggernaut.
+--                   - Juggernaut tries to kill as many players as possible within their time limit.
+--                   - When the Juggernaut dies or time expires, the next player or a random player becomes Juggernaut.
+--                   - Compatible with all game types.
+--
+-- Author:           Jericho Crosby (Chalwk)
+-- Compatibility:    Halo PC/CE | SAPP 1.12.0.0
+--
+-- Copyright (c) 2019-2023 Jericho Crosby <jericho.crosby227@gmail.com>
+-- License:          MIT License
+--                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--
-]]--
 
 --[[
     Configuration table for the Juggernaut game mode.
