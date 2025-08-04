@@ -10,7 +10,7 @@
 --
 -- COPYRIGHT © 2023-2025 Jericho Crosby <jericho.crosby227@gmail.com>
 -- LICENSE:          MIT License
---                   https://github.com/Chalwk77/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+--                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================--
 
 api_version = '1.12.0.0'
