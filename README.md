@@ -1,19 +1,20 @@
 ![Logo](https://i.imgur.com/t0W5aJe.png)
 
-# 👾 **Halo Script Projects (HSP)**
+# 👾 Halo Script Projects (HSP)
 
-Welcome to the **Halo Script Projects (HSP)** repository! I'm **Chalwk**, an independent game developer and open-source enthusiast from New Zealand. Here, you'll find a collection of Lua scripts, tools, and resources for **Halo: PC (Retail)** and **Halo: Custom Edition (CE)** dedicated servers. Whether you're a server admin, modder, or just a Halo fan, this repository is your one-stop shop for enhancing your Halo experience.
+Welcome to the **Halo Script Projects (HSP)** repository! I'm **Chalwk**, an independent game developer and open-source enthusiast from New Zealand. I've been writing Lua scripts for Halo since **2009**, creating everything from custom game modes and server tools to libraries and quality-of-life enhancements.
+
+This repo contains a curated collection of Lua scripts, utilities, and resources for **Halo: PC (Retail)** and **Halo: Custom Edition (CE)** dedicated servers. If you're a server admin or operator using **SAPP** or **Phasor**, you'll find a wide range of scripts here to enhance, customize, and extend your multiplayer server experience.
 
 ---
 
-## 🚀 **What is HSP?**
+### **💡 What are SAPP & Phasor?**
 
-The **HSP (Halo Script Projects)** repository is where I upload all my Lua scripts for **SAPP** and **Phasor**, two powerful server extensions for Halo dedicated servers.
-
-### **What are SAPP & Phasor?**
-> SAPP and Phasor are server extensions that allow for advanced customization of Halo: PC and Halo: CE dedicated servers. They enable features like custom game modes, server utilities, and enhanced gameplay mechanics through Lua scripting.
-
-I’ve been writing Lua scripts for Halo since **2009**, creating everything from custom games and utilities to libraries and server enhancements. This repository is a culmination of my passion for Halo and game development.
+> **SAPP** and **Phasor** are server-side extensions that provide advanced scripting and customization for **Halo: PC** and **Halo: CE** dedicated servers.
+>
+> **SAPP**, developed and maintained by **sehé** ([halo.isimaginary.com](http://halo.isimaginary.com)), is the most feature-rich and widely used extension. It provides powerful Lua scripting support, anti-cheat tools, event hooks, command handling, player management, logging, and countless under-the-hood features.
+>
+> **Phasor** was an earlier server extension with similar goals. Though no longer actively maintained, it remains compatible with many scripts and still sees use in some legacy setups.
 
 ---
 
