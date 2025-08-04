@@ -178,7 +178,6 @@ function OnPlayerJoin(player)
     end
 end
 
-
 function OnGameEnd()
     unregister_callback(cb["EVENT_TICK"])
 end
