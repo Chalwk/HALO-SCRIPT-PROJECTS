@@ -17,7 +17,7 @@
 -- CONFIGURATION
 ---------------------------------
 local RaceAssistant = {
-    warnings = 2,                       -- Warnings before respawn
+    warnings = 2,                       -- Warnings before penalty
     initial_grace_period = 10,          -- Seconds to find first vehicle
     exit_grace_period = 10,             -- Seconds to re-enter after exiting
     driving_grace_period = 10,          -- Seconds driving to clear warnings
