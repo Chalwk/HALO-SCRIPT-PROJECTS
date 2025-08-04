@@ -1,16 +1,16 @@
---=====================================================================================--
+--=====================================================================================================--
 -- SCRIPT NAME:      Admin Chat
--- DESCRIPTION:      Enables a toggleable admin-only chat system. Admins with the
---                   required permission level can opt in/out of admin chat using
---                   a command. Messages are sent only to other opted-in admins.
+-- DESCRIPTION:      Enables a toggleable admin-only chat system.
+--                   Admins with required permission levels can opt in/out using a command.
+--                   Messages sent in admin chat are visible only to other opted-in admins.
 --
--- AUTHOR:           Chalwk (Jericho Crosby)
+-- AUTHOR:           Jericho Crosby (Chalwk)
 -- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
 --
--- COPYRIGHT (c) 2025, Jericho Crosby <jericho.crosby227@gmail.com>
--- NOTICE:           You may use this script subject to the following license:
+-- Copyright (c) 2025 Jericho Crosby <jericho.crosby227@gmail.com>
+-- LICENSE:          MIT License
 --                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================--
+--=====================================================================================================--
 
 -- CONFIGURATION ----------------------------------------------------------------
 

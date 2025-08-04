@@ -1,5 +1,5 @@
 --=====================================================================================================--
--- Script Name: Show Admin Names for SAPP (PC & CE)
+-- SCRIPT NAME: Show Admin Names for SAPP (PC & CE)
 -- Description: Prints the name and level of admins who are currently online.
 --
 -- Copyright (c) 2021-2022, Jericho Crosby <jericho.crosby227@gmail.com>

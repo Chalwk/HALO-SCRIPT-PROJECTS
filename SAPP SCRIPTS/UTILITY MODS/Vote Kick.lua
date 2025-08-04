@@ -1,5 +1,5 @@
 --=====================================================================================================--
--- Script Name: Vote Kick Manager for SAPP (PC & CE)
+-- SCRIPT NAME: Vote Kick Manager for SAPP (PC & CE)
 -- Description: Manage vote kicks for disruptive players on the server.
 --              Command syntax for voting: /votekick (player id)
 --              Command syntax for vote list: /votelist

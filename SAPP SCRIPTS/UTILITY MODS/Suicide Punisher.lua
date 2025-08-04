@@ -1,5 +1,5 @@
 --=====================================================================================================--
--- Script Name: Suicide Punisher for SAPP (PC & CE)
+-- SCRIPT NAME: Suicide Punisher for SAPP (PC & CE)
 -- Description: If a player excessively commits suicide, this script will kick or ban them (see config).
 --
 -- Copyright (c) 2022-2024, Jericho Crosby <jericho.crosby227@gmail.com>

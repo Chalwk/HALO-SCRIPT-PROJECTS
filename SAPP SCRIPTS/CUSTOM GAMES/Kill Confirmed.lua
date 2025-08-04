@@ -1,6 +1,6 @@
 --=====================================================================================================--
--- Script Name:      Kill Confirmed
--- Description:      Inspired by Call of Duty: Modern Warfare 3.
+-- SCRIPT NAME:      Kill Confirmed
+-- DESCRIPTION:      Inspired by Call of Duty: Modern Warfare 3.
 --
 --                   - Teams score by collecting enemy dog tags (skulls) dropped on death.
 --                   - First team to 65 points wins or highest score when time runs out.
@@ -9,11 +9,11 @@
 --
 --                   NOTE: Must be run on Team Slayer game mode.
 --
--- Author:           Jericho Crosby (Chalwk)
--- Compatibility:    Halo PC/CE | SAPP 1.12.0.0
+-- AUTHOR:           Jericho Crosby (Chalwk)
+-- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
 --
 -- Copyright (c) 2021 Jericho Crosby <jericho.crosby227@gmail.com>
--- License:          MIT License
+-- LICENSE:          MIT License
 --                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--
 

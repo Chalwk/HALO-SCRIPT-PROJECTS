@@ -1,17 +1,17 @@
 --=====================================================================================================--
--- Script Name:      One In The Chamber
--- Description:      Each player starts with a pistol loaded with a single bullet.
+-- SCRIPT NAME:      One In The Chamber
+-- DESCRIPTION:      Each player starts with a pistol loaded with a single bullet.
 --                   - Every shot is a guaranteed kill.
 --                   - Miss a shot, and you're down to melee combat only.
 --                   - Each kill awards you one bullet.
 --                   - Mastery demands precision and quick reflexes.
 --                   - Choose your shots wisely: snipe or close in for the kill.
 --
--- Author:           Jericho Crosby (Chalwk)
--- Compatibility:    Halo PC/CE | SAPP 1.12.0.0
+-- AUTHOR:           Jericho Crosby (Chalwk)
+-- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
 --
 -- Copyright (c) 2023-2024 Jericho Crosby <jericho.crosby227@gmail.com>
--- License:          MIT License
+-- LICENSE:          MIT License
 --                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--
 

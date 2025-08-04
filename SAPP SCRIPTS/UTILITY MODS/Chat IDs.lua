@@ -1,5 +1,5 @@
 --=====================================================================================================--
--- Script Name: Chat IDs, for SAPP (PC & CE)
+-- SCRIPT NAME: Chat IDs, for SAPP (PC & CE)
 -- Description: Appends the player id to their message.
 --
 -- Copyright (c) 2014-2024, Jericho Crosby <jericho.crosby227@gmail.com>

@@ -1,6 +1,6 @@
 --=====================================================================================================--
--- Script Name:      Juggernaut
--- Description:      A dynamic power-player game.
+-- SCRIPT NAME:      Juggernaut
+-- DESCRIPTION:      A dynamic power-player game.
 --
 --                   Juggernauts have enhanced attributes:
 --                   - Health boost
@@ -15,11 +15,11 @@
 --                   - When the Juggernaut dies or time expires, the next player or a random player becomes Juggernaut.
 --                   - Compatible with all game types.
 --
--- Author:           Jericho Crosby (Chalwk)
--- Compatibility:    Halo PC/CE | SAPP 1.12.0.0
+-- AUTHOR:           Jericho Crosby (Chalwk)
+-- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
 --
 -- Copyright (c) 2019-2023 Jericho Crosby <jericho.crosby227@gmail.com>
--- License:          MIT License
+-- LICENSE:          MIT License
 --                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--
 

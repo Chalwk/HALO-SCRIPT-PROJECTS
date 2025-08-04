@@ -1,6 +1,6 @@
 --=====================================================================================================--
--- Script Name:      Swat
--- Description:      Players spawn armed with a sniper rifle and pistol.
+-- SCRIPT NAME:      Swat
+-- DESCRIPTION:      Players spawn armed with a sniper rifle and pistol.
 --                   Only headshots count for kills.
 --                   First to 25 kills wins the match.
 --
@@ -9,11 +9,11 @@
 --                   * Options for infinite ammo, bottomless clip, and grenade disabling.
 --                   * Configurable default score limit.
 --
--- Author:           Jericho Crosby (Chalwk)
--- Compatibility:    Halo PC/CE | SAPP 1.12.0.0
+-- AUTHOR:           Jericho Crosby (Chalwk)
+-- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
 --
 -- Copyright (c) 2022 Jericho Crosby <jericho.crosby227@gmail.com>
--- License:          MIT License
+-- LICENSE:          MIT License
 --                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--
 

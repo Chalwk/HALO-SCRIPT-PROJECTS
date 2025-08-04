@@ -1,13 +1,13 @@
 --=====================================================================================================--
--- Script Name:      Melee Attack
--- Description:      Players are restricted to melee combat only.
+-- SCRIPT NAME:      Melee Attack
+-- DESCRIPTION:      Players are restricted to melee combat only.
 --                   Striking an opponent with the skull results in an instant kill.
 --
--- Author:           Jericho Crosby (Chalwk)
--- Compatibility:    Halo PC/CE | SAPP 1.12.0.0
+-- AUTHOR:           Jericho Crosby (Chalwk)
+-- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
 --
 -- Copyright (c) 2023-2024 Jericho Crosby <jericho.crosby227@gmail.com>
--- License:          MIT License
+-- LICENSE:          MIT License
 --                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--
 

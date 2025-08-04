@@ -1,6 +1,6 @@
 --=====================================================================================================--
--- Script Name:      Tag
--- Description:      Classic game of tag with a twist!
+-- SCRIPT NAME:      Tag
+-- DESCRIPTION:      Classic game of tag with a twist!
 --
 --                   - Start by hitting a player to make them 'it' (the tagger).
 --                   - Taggers wield an oddball with a 1.5x speed boost.
@@ -16,11 +16,11 @@
 --                   chillout, carousel, ratrace, putput,
 --                   prisoner, wizard, beavercreek, hangemhigh
 --
--- Author:           Jericho Crosby (Chalwk)
--- Compatibility:    Halo PC/CE | SAPP 1.12.0.0
+-- AUTHOR:           Jericho Crosby (Chalwk)
+-- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
 --
 -- Copyright (c) 2022-2024 Jericho Crosby <jericho.crosby227@gmail.com>
--- License:          MIT License
+-- LICENSE:          MIT License
 --                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--
 

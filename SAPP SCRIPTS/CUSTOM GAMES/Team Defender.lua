@@ -1,6 +1,6 @@
 --=====================================================================================================--
--- Script Name:      Team Defender (v1.5)
--- Description:      Call of Duty: Modern Warfare 3 style Team Defender mode.
+-- SCRIPT NAME:      Team Defender (v1.5)
+-- DESCRIPTION:      Call of Duty: Modern Warfare 3 style Team Defender mode.
 --
 --                   * A flag spawns somewhere on the map.
 --                   * One player must hold the flag while teammates defend.
@@ -8,11 +8,11 @@
 --                   * Flag holders gain +20 assist points for every teammate kill.
 --                   * The flag respawns after 15 seconds if left unheld.
 --
--- Author:           Jericho Crosby (Chalwk)
--- Compatibility:    Halo PC/CE | SAPP 1.12.0.0
+-- AUTHOR:           Jericho Crosby (Chalwk)
+-- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
 --
 -- Copyright (c) 2021 Jericho Crosby <jericho.crosby227@gmail.com>
--- License:          MIT License
+-- LICENSE:          MIT License
 --                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--
 
