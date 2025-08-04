@@ -9,9 +9,9 @@
 -- AUTHOR:           Chalwk (Jericho Crosby)
 -- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
 --
--- COPYRIGHT (c) 2025, Jericho Crosby <jericho.crosby227@gmail.com>
--- NOTICE:           You may use this script subject to the following license:
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+-- COPYRIGHT © 2025 Jericho Crosby <jericho.crosby227@gmail.com>
+-- LICENSE: MIT License
+--          See: https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================--
 
 --========================= CONFIGURATION ====================================--
