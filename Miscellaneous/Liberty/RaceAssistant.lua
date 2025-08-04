@@ -17,11 +17,13 @@
 ---------------------------------
 local RaceAssistant = {
     warnings = 2,                       -- Warnings before respawn
-    initial_grace_period = 30,          -- Seconds to find first vehicle
+    initial_grace_period = 10,          -- Seconds to find first vehicle
     exit_grace_period = 10,             -- Seconds to re-enter after exiting
     driving_grace_period = 10,          -- Seconds driving to clear warnings
     enable_safe_zones = true,           -- Allow safe zones
-    allow_exemptions = true,            -- Admins level >= 1 won't be punished
+    allow_exemptions = true,            -- Admins won't be punished
+    punishment = "kill",                -- kill or kick
+
     safe_zones = {                      -- Map-specific safe zones {x, y, z, radius}
         -- Example: ["bloodgulch"] = {{0, 0, 0, 15}, {100, 100, 0, 10}}
     }
@@ -109,7 +111,6 @@ function OnExit(playerId)
     local p = players[playerId]
     if p and not p.exempt() then
         p.timer = time() + RaceAssistant.exit_grace_period
-        rprint(playerId, "Re-enter vehicle within " .. RaceAssistant.exit_grace_period .. "s!")
         p.grace = 0
     end
 end
@@ -145,10 +146,12 @@ local function handle_penalty(playerId, playerData, currentTime)
     if playerData.strikes > 0 then
         rprint(playerId, "Enter a vehicle! Strikes left: " .. playerData.strikes)
     else
-        execute_command('kill ' .. playerId)
-        rprint(playerId, "Killed for not entering a vehicle!")
-        playerData.strikes = RaceAssistant.warnings
-        playerData.timer = currentTime + RaceAssistant.initial_grace_period
+        if RaceAssistant.punishment == "kill" then
+            execute_command('kill ' .. playerId)
+            rprint(playerId, "Killed for not entering a vehicle!")
+        elseif RaceAssistant.punishment == "kick" then
+            execute_command('k ' .. playerId .. ' "Not entering a vehicle within the required time"')
+        end
     end
 end
 
