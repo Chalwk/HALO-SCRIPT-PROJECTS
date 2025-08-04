@@ -1,16 +1,17 @@
---[[
---=====================================================================================================--
-Script Name: Race Assistant, for SAPP (PC & CE)
-Description: This script will ensure all players are racing.
-             Players not in a vehicle will be warned to enter one.
-             If they do not enter a vehicle, they will be respawned.
-
-Copyright (c) 2020-2022, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
-
+--=====================================================================================--
+-- SCRIPT NAME:      Race Assistant
+-- DESCRIPTION:      Monitors player behavior to encourage participation in racing.
+--                   Players are warned if not in a vehicle after a delay, and are
+--                   respawned if they exceed a configurable number of warnings.
+--                   Strikes reset after a grace period of vehicle usage.
+--
+-- AUTHOR:           Chalwk (Jericho Crosby)
+-- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
+--
+-- COPYRIGHT (c) 2025, Jericho Crosby <jericho.crosby227@gmail.com>
+-- NOTICE:           You may use this script subject to the following license:
+--                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+--=====================================================================================--
 
 local RaceAssistant = {
 
@@ -123,8 +124,7 @@ local function InVehicle(Ply)
 
         local vehicle = read_dword(dyn + 0x11C)
         local object = get_object_memory(vehicle)
-        local in_vehicle = (vehicle ~= 0xFFFFFFFF and object ~= 0)
-        return (in_vehicle)
+        return vehicle ~= 0xFFFFFFFF and object ~= 0
     end
 
     p.grace = nil -- just in case
