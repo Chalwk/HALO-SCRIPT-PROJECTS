@@ -23,11 +23,7 @@ local RaceAssistant = {
     --
     time_until_warn = 3,
 
-    -- If true, admins will be exempt from being warned:
-    --
-    ignore_admins = false,
-
-    -- Number of seconds a player must been driving before their warnings are reset:
+    -- Number of seconds a player must be driving before their warnings are reset:
     --
     grace_period = 10,
 }
@@ -55,6 +51,7 @@ function RaceAssistant:NewTimer(finish)
     }
 end
 
+-- Important to register and unregister callbacks before and after the game starts for technical reasons
 local function RegSAPPEvents(f)
     for event, callback in pairs({
         ['EVENT_TICK'] = 'OnTick',
@@ -131,15 +128,9 @@ local function InVehicle(Ply)
     return false
 end
 
-local function IgnoreAdmin(Ply)
-    return (tonumber(get_var(Ply, '$lvl')) >= 1)
-end
-
 function OnTick()
     for i, v in pairs(players) do
-        if (v.ignore_admins and IgnoreAdmin(i)) then
-            goto next
-        elseif (v.timer and player_alive(i) and not InVehicle(i)) then
+        if (v.timer and player_alive(i) and not InVehicle(i)) then
             if (v.timer.start() >= v.timer.finish) then
                 if (v.strikes > 0) then
                     v.strikes = v.strikes - 1
@@ -154,7 +145,6 @@ function OnTick()
                 v.strikes = v.warnings
             end
         end
-        :: next ::
     end
 end
 
