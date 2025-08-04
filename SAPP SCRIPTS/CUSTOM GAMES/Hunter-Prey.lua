@@ -1,13 +1,19 @@
---=====================================================================================================--
--- Script Name: Hunter-Prey, for SAPP (PC & CE)
--- Description: The flag is placed in the middle of the map.
---              Survive for as long as possible with the flag.
---              The player that had the flag for the longest time wins.
+--=====================================================================================--
+-- SCRIPT NAME:      Hunter-Prey
+-- DESCRIPTION:      A free-for-all flag survival game.
+--                   - The flag spawns in the center of the map.
+--                   - Players try to hold the flag as long as possible.
+--                   - The player with the longest flag-holding time wins.
+--                   - Flag respawns after a set delay if dropped.
+--                   - Supports multiple classic Halo maps with preset flag locations.
 --
--- Copyright (c) 2022, Jericho Crosby <jericho.crosby227@gmail.com>
--- Notice: You can use this script subject to the following conditions:
---         https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
+-- AUTHOR:           Jericho Crosby (Chalwk)
+-- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
+--
+-- COPYRIGHT © 2022 Jericho Crosby <jericho.crosby227@gmail.com>
+-- LICENSE:          MIT License
+--                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+--=====================================================================================--
 
 -- Configuration table for the Hunter-Prey script
 local HunterPrey = {

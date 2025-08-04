@@ -1,13 +1,19 @@
---[[
---=====================================================================================================--
-Script Name: Gun Game (v1.9), for SAPP (PC & CE)
-Description: A simple progression based game inspired by Call of Duty's Gun Game mode.
-
-Copyright (c) 2022, Jericho Crosby <jericho.crosby227@gmail.com>
-* Notice: You can use this document subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+--=====================================================================================--
+-- SCRIPT NAME:      Gun Game
+-- DESCRIPTION:      A progression-based game inspired by Call of Duty’s Gun Game mode.
+--                   - Players level up through a predefined weapon list by scoring kills.
+--                   - Infinite ammo option available.
+--                   - Players are demoted on backstab kills.
+--                   - Weapons and grenades are managed per level.
+--                   - Supports disabling specific weapons and vehicles.
+--
+-- AUTHOR:           Jericho Crosby (Chalwk)
+-- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
+--
+-- COPYRIGHT © 2022 Jericho Crosby <jericho.crosby227@gmail.com>
+-- LICENSE:          MIT License
+--                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+--=====================================================================================--
 
 -- config starts --
 
