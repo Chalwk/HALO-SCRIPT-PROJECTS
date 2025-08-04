@@ -1,32 +1,22 @@
---[[
 --=====================================================================================================--
-Script Name: Kill Confirmed, for SAPP (PC & CE)
-Description: This is Kill Confirmed from Call of Duty: Modern Warfare 3.
-
-             * Teams score by collecting dog tags (skulls) that enemies drop upon death.
-			 * The first team to 65 points wins (or the team with the most points after the game time runs out).
-			 * Dog tags (skulls) will despawn after 30 seconds (configurable).
-             * Players will not be penalized points for suicide.
-
-             NOTE: This script must be run on team slayer.
-
-Copyright (c) 2021, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+-- Script Name:      Kill Confirmed
+-- Description:      Inspired by Call of Duty: Modern Warfare 3.
+--
+--                   - Teams score by collecting enemy dog tags (skulls) dropped on death.
+--                   - First team to 65 points wins or highest score when time runs out.
+--                   - Dog tags despawn after 30 seconds (configurable).
+--                   - No penalty points for suicide.
+--
+--                   NOTE: Must be run on Team Slayer game mode.
+--
+-- Author:           Jericho Crosby (Chalwk)
+-- Compatibility:    Halo PC/CE | SAPP 1.12.0.0
+--
+-- Copyright (c) 2021 Jericho Crosby <jericho.crosby227@gmail.com>
+-- License:          MIT License
+--                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--
-]]--
 
---- Configuration table for the Kill Confirmed game mode script.
--- @field score_limit The score limit to win the game.
--- @field points_on_confirm The points awarded for confirming a kill.
--- @field despawn_delay The delay in seconds before a dog tag despawns.
--- @field block_friendly_fire Whether friendly fire is blocked.
--- @field dog_tag_object The object used as a dog tag.
--- @field on_confirm Messages displayed when a kill is confirmed.
--- @field on_deny Message displayed when a kill is denied.
--- @field server_prefix The prefix for server messages.
--- @field error_file The file where errors are logged.
--- @field script_version The version of the script.
 local KillConfirmed = {
     score_limit = 65,
     points_on_confirm = 2,
@@ -45,7 +35,6 @@ local KillConfirmed = {
 
 api_version = "1.12.0.0"
 
--- Utility Functions
 local function GetPlayerCoordinates(player)
     local dynamic_player = get_dynamic_player(player)
     if dynamic_player ~= 0 then
@@ -105,7 +94,6 @@ local function GetTagID(object)
     return nil
 end
 
--- Main Functions
 function KillConfirmed:Init()
     self.game_started = false
     self.dog_tags = {}
@@ -150,7 +138,6 @@ function KillConfirmed:SpawnNewTag(victim, killer)
     end
 end
 
--- Event Handlers
 function OnScriptLoad()
     register_callback(cb["EVENT_GAME_END"], "OnGameEnd")
     register_callback(cb["EVENT_GAME_START"], "OnNewGame")
