@@ -6,13 +6,11 @@
 --                   - Admin exemptions
 --
 -- AUTHOR:           Jericho Crosby (Chalwk)
--- VERSION:          1.0
--- CREATED:          2025-08-04
 -- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
 --
 -- COPYRIGHT © 2025 Jericho Crosby <jericho.crosby227@gmail.com>
--- LICENSE: MIT License
---          See: https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+-- LICENSE:         MIT License
+--                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================--
 
 ---------------------------------
