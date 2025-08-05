@@ -27,7 +27,7 @@ local RaceAssistant = {
         [1] = false,
         [2] = false,
         [3] = true,
-        [4] = true,
+        [4] = true
     },
     punishment = "kill",            -- kill or kick
     safe_zones = {                  -- Map-specific safe zones {x, y, z, radius}
