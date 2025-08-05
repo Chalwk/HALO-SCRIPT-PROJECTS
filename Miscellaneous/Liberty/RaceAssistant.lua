@@ -17,15 +17,20 @@
 -- CONFIGURATION
 ---------------------------------
 local RaceAssistant = {
-    warnings = 2,                       -- Warnings before penalty
-    initial_grace_period = 10,          -- Seconds to find first vehicle
-    exit_grace_period = 10,             -- Seconds to re-enter after exiting
-    driving_grace_period = 10,          -- Seconds driving to clear warnings
-    enable_safe_zones = true,           -- Allow safe zones
-    allow_exemptions = true,            -- Admins won't be punished
-    punishment = "kill",                -- kill or kick
-
-    safe_zones = {                      -- Map-specific safe zones {x, y, z, radius}
+    warnings = 2,                   -- Warnings before penalty
+    initial_grace_period = 10,      -- Seconds to find first vehicle
+    exit_grace_period = 10,         -- Seconds to re-enter after exiting
+    driving_grace_period = 10,      -- Seconds driving to clear warnings
+    enable_safe_zones = true,       -- Allow safe zones
+    allow_exemptions = true,        -- Admins won't be punished
+    exempt_admin_levels = {         -- Configurable exemption levels.
+        [1] = false,
+        [2] = false,
+        [3] = true,
+        [4] = true,
+    },
+    punishment = "kill",            -- kill or kick
+    safe_zones = {                  -- Map-specific safe zones {x, y, z, radius}
         -- Example: ["bloodgulch"] = {{0, 0, 0, 15}, {100, 100, 0, 10}}
     }
 }
@@ -77,8 +82,10 @@ function OnJoin(playerId)
         timer = time() + RaceAssistant.initial_grace_period,
         grace = 0,
         warned = false,
-        exempt = function()
-            return RaceAssistant.allow_exemptions and tonumber(get_var(playerId, '$lvl')) >= 1
+        exempt = function()  -- MODIFIED: Now uses configurable levels
+            if not RaceAssistant.allow_exemptions then return false end
+            local level = tonumber(get_var(playerId, '$lvl'))
+            return RaceAssistant.exempt_admin_levels[level] or false
         end
     }
 end

@@ -23,6 +23,10 @@
         "read_word",
         "sig_scan",
         "write_vector3d",
-        "api_version"
+        "api_version",
+        "write_float",
+        "spawn_projectile",
+        "safe_write",
+        "write_dword"
     ]
 }
