@@ -82,7 +82,7 @@ function OnJoin(playerId)
         timer = time() + RaceAssistant.initial_grace_period,
         grace = 0,
         warned = false,
-        exempt = function()  -- MODIFIED: Now uses configurable levels
+        exempt = function()
             if not RaceAssistant.allow_exemptions then return false end
             local level = tonumber(get_var(playerId, '$lvl'))
             return RaceAssistant.exempt_admin_levels[level] or false
