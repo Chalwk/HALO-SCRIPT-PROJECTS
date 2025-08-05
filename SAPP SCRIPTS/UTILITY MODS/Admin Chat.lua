@@ -36,7 +36,6 @@ local AdminChat = {
     }
 }
 
--- Internal state management
 local cooldowns = {}
 local command_map = {}
 local active_players = {}
