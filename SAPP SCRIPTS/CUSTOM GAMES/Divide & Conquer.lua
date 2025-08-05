@@ -16,9 +16,6 @@
 api_version = '1.12.0.0'
 
 --- Configuration settings for the game.
---- @field delay number The delay in seconds before the game starts.
---- @field required_players number The minimum number of players required to start the game.
---- @field prefix string The prefix used for in-game messages.
 local config = {
     delay = 5,
     required_players = 3,
