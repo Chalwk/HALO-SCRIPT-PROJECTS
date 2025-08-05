@@ -35,6 +35,8 @@ local RaceAssistant = {
     }
 }
 
+-- Do not edit below this line unless you know what you're doing.
+
 api_version = '1.12.0.0'
 
 local map
