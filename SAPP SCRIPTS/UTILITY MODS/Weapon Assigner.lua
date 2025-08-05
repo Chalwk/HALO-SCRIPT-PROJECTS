@@ -8,8 +8,8 @@
 -- AUTHOR:           Chalwk (Jericho Crosby)
 -- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
 --
--- COPYRIGHT (c) 2022–2025, Jericho Crosby <jericho.crosby227@gmail.com>
--- NOTICE:           You may use this script subject to the following license:
+-- Copyright (c) 2022-2025 Jericho Crosby <jericho.crosby227@gmail.com>
+-- LICENSE:          MIT License
 --                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================--
 
@@ -145,7 +145,7 @@ function OnStart()
         map = get_var(0, '$map')
         mode = get_var(0, '$mode')
         isFFA = (get_var(0, '$ffa') == '1')
-        if tagsToID(map) then
+        if tagsToID() then
             register_callback(cb['EVENT_SPAWN'], 'OnSpawn')
         else
             unregister_callback(cb['EVENT_SPAWN'])

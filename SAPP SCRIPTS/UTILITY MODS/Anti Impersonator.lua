@@ -17,11 +17,10 @@
 --   * Use player hashes where possible (they are more stable than IPs).
 --   * Ensure trusted members use legitimate accounts and, if feasible, static IPs.
 --
--- COPYRIGHT (c) 2019–2025, Jericho Crosby <jericho.crosby227@gmail.com>
--- NOTICE:           You may use this script subject to the following license:
+-- Copyright (c) 2019-2025 Jericho Crosby <jericho.crosby227@gmail.com>
+-- LICENSE:          MIT License
 --                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================--
-
 
 -- Configuration -----------------------------------------------------------------
 api_version = "1.12.0.0"

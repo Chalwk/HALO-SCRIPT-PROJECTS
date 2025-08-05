@@ -8,8 +8,8 @@
 -- AUTHOR:           Chalwk (Jericho Crosby)
 -- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
 --
--- COPYRIGHT (c) 2025, Jericho Crosby <jericho.crosby227@gmail.com>
--- NOTICE:           You may use this script subject to the following license:
+-- Copyright (c) 2025 Jericho Crosby <jericho.crosby227@gmail.com>
+-- LICENSE:          MIT License
 --                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================--
 
@@ -29,13 +29,8 @@ local afk_immunity = {                      -- List of players with AFK immunity
 api_version = '1.12.0.0'                    -- API version used by the script
 -- Configuration ends here.
 
--- Empty table for storing player instances
 local players = {}
-
--- Importing necessary functions and variables from external libraries
 local abs, clock, pairs, ipairs = math.abs, os.clock, pairs, ipairs
-
--- Player class
 local Player = {}
 Player.__index = Player
 
@@ -48,13 +43,13 @@ function Player:new(id)
     instance.last_warning = 0
     instance.camera_old = { 0, 0, 0 }
     instance.inputs = {
-        { read_float, 0x490, state = 0 }, -- shooting
-        { read_byte, 0x2A3, state = 0 }, -- forward, backward, left, right, grenade throw
-        { read_byte, 0x47C, state = 0 }, -- weapon switch
-        { read_byte, 0x47E, state = 0 }, -- grenade switch
-        { read_byte, 0x2A4, state = 0 }, -- weapon reload
-        { read_word, 0x480, state = 0 }, -- zoom
-        { read_word, 0x208, state = 0 }   -- melee, flashlight, action, crouch, jump
+        { read_float, 0x490, state = 0 },   -- shooting
+        { read_byte, 0x2A3, state = 0 },    -- forward, backward, left, right, grenade throw
+        { read_byte, 0x47C, state = 0 },    -- weapon switch
+        { read_byte, 0x47E, state = 0 },    -- grenade switch
+        { read_byte, 0x2A4, state = 0 },    -- weapon reload
+        { read_word, 0x480, state = 0 },    -- zoom
+        { read_word, 0x208, state = 0 }     -- melee, flashlight, action, crouch, jump
     }
     return instance
 end
@@ -120,10 +115,6 @@ local function getCameraCurrent(dyn)
         read_float(dyn + 0x238)
     }
 end
-
---================--
--- SAPP functions:
---================--
 
 function OnScriptLoad()
     register_callback(cb['EVENT_TICK'], 'OnTick')
