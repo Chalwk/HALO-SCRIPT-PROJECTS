@@ -98,7 +98,7 @@ end
 local function set_position(player, x, y, z)
     local dyn = get_dynamic_player(player)
     if dyn ~= 0 then
-        write_vector3d(dyn + 0x5C, x, y, x)
+        write_vector3d(dyn + 0x5C, x, y, z)
     end
 end
 
@@ -174,6 +174,23 @@ function OnTick()
                     if dist <= CHECKPOINT_RADIUS then
                         active_runs[i].last_checkpoint = next_index
                         say(i, "✓ Checkpoint " .. next_index .. " of " .. #map_data.checkpoints .. " reached!")
+                    end
+                end
+            end
+
+            if active_runs[i] and map_data.checkpoints then
+                local next_index = active_runs[i].last_checkpoint + 1
+                if next_index <= #map_data.checkpoints then
+                    local cp = map_data.checkpoints[next_index]
+                    local dist = distance(x, y, z, cp.x, cp.y, cp.z)
+                    if dist <= CHECKPOINT_RADIUS then
+                        -- Prevent skipping checkpoints
+                        if next_index == active_runs[i].last_checkpoint + 1 then
+                            active_runs[i].last_checkpoint = next_index
+                            say(i, "✓ Checkpoint " .. next_index .. " of " .. #map_data.checkpoints .. " reached!")
+                        else
+                            say(i, "✗ Complete checkpoints in order!")
+                        end
                     end
                 end
             end
