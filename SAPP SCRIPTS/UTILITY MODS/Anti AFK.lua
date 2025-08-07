@@ -66,7 +66,18 @@ function Player:new(id)
         { read_word,  0x208 } -- melee, flashlight, action, crouch, jump
     }
 
+    player:initInputStates()
     return player
+end
+
+function Player:initInputStates()
+    local dynamicAddress = get_dynamic_player(self.id)
+    if dynamicAddress ~= 0 then
+        for _, input in ipairs(self.inputStates) do
+            input[3] = input[1](dynamicAddress + input[2])
+        end
+        self.inputStatesInitialized = true
+    end
 end
 
 function Player:broadcast(message, public)
@@ -94,6 +105,9 @@ end
 function Player:isAFK()
     -- Skip AFK checks if player is voluntarily AFK
     if self.voluntaryAFK then return false end
+
+    -- Pause AFK timer when player is dead
+    if not player_alive(self.id) then return false end
 
     local current_time = time()
     local inactiveDuration = current_time - self.lastActive
@@ -126,13 +140,12 @@ function Player:hasCameraMoved(currentCamera)
 end
 
 function Player:processInputs(dynamicAddress)
-    -- Initialize input states on first run
+    if dynamicAddress == 0 then return end
+
+    -- Initialize input states if needed
     if not self.inputStatesInitialized then
-        for _, input in ipairs(self.inputStates) do
-            input[3] = input[1](dynamicAddress + input[2])
-        end
-        self.inputStatesInitialized = true
-        return
+        self:initInputStates()
+        if not self.inputStatesInitialized then return end
     end
 
     for _, input in ipairs(self.inputStates) do
@@ -155,6 +168,7 @@ end
 
 -- Helper function to get current camera position
 local function getCurrentCamera(dynamicAddress)
+    if dynamicAddress == 0 then return {0,0,0} end
     return {
         read_float(dynamicAddress + 0x230),
         read_float(dynamicAddress + 0x234),
@@ -195,7 +209,7 @@ function OnTick()
         end
 
         local dynamicAddress = get_dynamic_player(id)
-        if dynamicAddress == 0 or not player_alive(id) then goto continue end
+        if dynamicAddress == 0 then goto continue end
 
         player:processInputs(dynamicAddress)
         local currentCamera = getCurrentCamera(dynamicAddress)
