@@ -1,5 +1,5 @@
 --=====================================================================================--
--- SCRIPT NAME:      Anti-AFK System
+-- SCRIPT NAME:      AFK System
 -- DESCRIPTION:      Monitors player activity and automatically kicks players
 --                   who remain AFK (Away From Keyboard) beyond a configurable
 --                   threshold. Activity includes movement, camera aim, and input.
