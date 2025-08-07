@@ -16,18 +16,18 @@
 --========================= CONFIGURATION ====================================--
 
 local max_afk_time = 300                    -- Maximum allowed AFK time in seconds
-local kick_reason = 'AFK for too long!'     -- Reason displayed when kicking an AFK player
 local grace_period = 60                     -- Grace period before kicking in seconds
 local threshold = 0.001                     -- Threshold for checking aim differences (only change if necessary)
 local warning_message = "Warning: You will be kicked in $time_until_kick seconds for being AFK."
-local kick_message = 'You have been kicked for being AFK!'
+local kick_message = 'Kicked for being AFK!'
 local server_prefix = '**SAPP**'
 local warning_interval = 30                 -- Interval in seconds to send warnings
 local afk_immunity = {                      -- List of players with AFK immunity
     -- Example: ["Player1"] = true,
 }
-api_version = '1.12.0.0'                    -- API version used by the script
 -- Configuration ends here.
+
+api_version = '1.12.0.0'                    -- API version used by the script
 
 local players = {}
 local abs, clock, pairs, ipairs = math.abs, os.clock, pairs, ipairs
@@ -36,13 +36,13 @@ Player.__index = Player
 
 -- Constructor for Player class
 function Player:new(id)
-    local instance = setmetatable({}, Player)
-    instance.name = get_var(id, '$name')
-    instance.id = id
-    instance.last_active = clock()
-    instance.last_warning = 0
-    instance.camera_old = { 0, 0, 0 }
-    instance.inputs = {
+    local player = setmetatable({}, Player)
+    player.name = get_var(id, '$name')
+    player.id = id
+    player.last_active = clock()
+    player.last_warning = 0
+    player.camera_old = { 0, 0, 0 }
+    player.inputs = {
         { read_float, 0x490, state = 0 },   -- shooting
         { read_byte, 0x2A3, state = 0 },    -- forward, backward, left, right, grenade throw
         { read_byte, 0x47C, state = 0 },    -- weapon switch
@@ -51,7 +51,7 @@ function Player:new(id)
         { read_word, 0x480, state = 0 },    -- zoom
         { read_word, 0x208, state = 0 }     -- melee, flashlight, action, crouch, jump
     }
-    return instance
+    return player
 end
 
 function Player:broadcast(msg)
@@ -121,8 +121,8 @@ function OnScriptLoad()
     register_callback(cb['EVENT_JOIN'], 'OnJoin')
     register_callback(cb['EVENT_LEAVE'], 'OnQuit')
     register_callback(cb['EVENT_GAME_START'], 'OnStart')
-    register_callback(cb['EVENT_COMMAND'], 'OnChatOrCommand')
     register_callback(cb['EVENT_CHAT'], 'OnChatOrCommand')
+    register_callback(cb['EVENT_COMMAND'], 'OnChatOrCommand')
     OnStart()
 end
 
@@ -148,7 +148,7 @@ function OnTick()
 
         -- Check if the player is AFK
         if player:isAfk(max_afk_time) then
-            player:kick(kick_reason)
+            player:kick(kick_message)
             goto continue
         end
 
