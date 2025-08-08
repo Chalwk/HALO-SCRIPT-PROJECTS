@@ -122,8 +122,11 @@ end
 -- Returns true if shuffle succeeded, false if not enough players
 local function shuffleTeams()
     local players = {}
+    local original_teams = {} -- Store original team for each player
+
     for i = 1, 16 do
         if player_present(i) then
+            original_teams[i] = get_var(i, "$team")
             table.insert(players, i)
         end
     end
@@ -136,10 +139,26 @@ local function shuffleTeams()
     end
 
     players = shuffle(players)
+
+    -- Check if new assignment is identical to original
+    local identical = true
+    for i, id in ipairs(players) do
+        local new_team = (i <= #players / 2) and "red" or "blue"
+        if new_team ~= original_teams[id] then
+            identical = false
+            break
+        end
+    end
+
+    -- Force change by swapping first/last players if identical
+    if identical then
+        players[1], players[#players] = players[#players], players[1]
+    end
+
     disableDeathMessages()
     for i, id in ipairs(players) do
-        local desired_team = (i <= #players / 2) and 'red' or 'blue'
-        execute_command('st ' .. id .. ' ' .. desired_team)
+        local desired_team = (i <= #players / 2) and "red" or "blue"
+        execute_command("st " .. id .. " " .. desired_team)
     end
     restoreDeathMessages()
     return true
