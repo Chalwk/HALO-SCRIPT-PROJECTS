@@ -27,6 +27,7 @@
         "write_float",
         "spawn_projectile",
         "safe_write",
-        "write_dword"
+        "write_dword",
+        "read_bit"
     ]
 }
