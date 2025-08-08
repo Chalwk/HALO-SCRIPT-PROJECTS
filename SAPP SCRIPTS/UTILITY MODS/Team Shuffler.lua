@@ -136,21 +136,18 @@ local function shuffleTeams()
     end
 
     players = shuffle(players)
-
+    disableDeathMessages()
     for i, id in ipairs(players) do
-        local team = (i <= #players / 2) and 'red' or 'blue'
-        execute_command('st ' .. id .. ' ' .. team)
+        local desired_team = (i <= #players / 2) and 'red' or 'blue'
+        execute_command('st ' .. id .. ' ' .. desired_team)
     end
-
+    restoreDeathMessages()
     return true
 end
 
 function DelayedShuffle()
     if not is_team_game() then return end
-
-    disableDeathMessages()
     local success = shuffleTeams()
-    restoreDeathMessages()
 
     if success and show_shuffle_message then
         say_all(messages.shuffle_auto)
@@ -183,9 +180,7 @@ function OnCommand(id, command)
         end
 
         if has_permission(id) then
-            disableDeathMessages()
             local success = shuffleTeams()
-            restoreDeathMessages()
 
             if success and show_shuffle_message then
                 say_all(messages.shuffle_manual:gsub('$name', get_var(id, '$name')))
