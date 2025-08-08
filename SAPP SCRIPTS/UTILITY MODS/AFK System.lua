@@ -21,7 +21,7 @@ local WARNING_INTERVAL = 30 -- Warning frequency (seconds)
 local AIM_THRESHOLD = 0.001 -- Camera aim detection sensitivity (adjust as needed)
 local WARNING_MESSAGE = "Warning: You will be kicked in $time_until_kick seconds for being AFK."
 local KICK_MESSAGE = "$name was kicked for being AFK!"
-local AFK_IMMUNITY = { -- Admin levels with immunity
+local AFK_IMMUNITY = {      -- Admin levels with immunity
     [1] = true,
     [2] = true,
     [3] = true,
@@ -29,7 +29,7 @@ local AFK_IMMUNITY = { -- Admin levels with immunity
 }
 -- Voluntary AFK
 local VOLUNTARY_AFK_COMMAND = "afk" -- Command to toggle AFK status
-local VOLUNTARY_AFK_ACTIVATE_MSG = "$name is AFK."
+local VOLUNTARY_AFK_ACTIVATE_MSG = "$name is now AFK."
 local VOLUNTARY_AFK_DEACTIVATE_MSG = "$name is no longer AFK."
 -- Configuration ends here.
 
@@ -63,7 +63,7 @@ function Player:new(id)
         { read_byte,  0x47E }, -- grenade switch
         { read_byte,  0x2A4 }, -- weapon reload
         { read_word,  0x480 }, -- zoom
-        { read_word,  0x208 } -- melee, flashlight, action, crouch, jump
+        { read_word,  0x208 }  -- melee, flashlight, action, crouch, jump
     }
 
     player:initInputStates()
@@ -82,7 +82,13 @@ end
 
 function Player:broadcast(message, public)
     local msg = message:gsub("$name", self.name)
-    return public and say_all(msg) or rprint(self.id, msg)
+
+    if (public) then
+        say_all(msg)
+        return
+    end
+
+    rprint(self.id, msg)
 end
 
 -- Toggle voluntary AFK status
@@ -162,13 +168,13 @@ end
 function Player:terminate()
     local kick_msg = KICK_MESSAGE:gsub("$name", self.name)
     execute_command("k " .. self.id)
-    say_all(kick_msg)
+    self:broadcast(kick_msg, true)
     players[self.id] = nil
 end
 
 -- Helper function to get current camera position
 local function getCurrentCamera(dynamicAddress)
-    if dynamicAddress == 0 then return {0,0,0} end
+    if dynamicAddress == 0 then return { 0, 0, 0 } end
     return {
         read_float(dynamicAddress + 0x230),
         read_float(dynamicAddress + 0x234),
@@ -201,21 +207,21 @@ end
 
 function OnTick()
     for id, player in pairs(players) do
-        if not player or player.immune() then goto continue end
+        if not player then goto continue end
 
-        if player:isAFK() then
-            player:terminate()
-            goto continue
+        -- Process activity for ALL players (including immune)
+        local dynamicAddress = get_dynamic_player(id)
+        if dynamicAddress ~= 0 then
+            player:processInputs(dynamicAddress)
+            local currentCamera = getCurrentCamera(dynamicAddress)
+            if player:hasCameraMoved(currentCamera) then
+                player:updateCamera(currentCamera)
+            end
         end
 
-        local dynamicAddress = get_dynamic_player(id)
-        if dynamicAddress == 0 then goto continue end
-
-        player:processInputs(dynamicAddress)
-        local currentCamera = getCurrentCamera(dynamicAddress)
-
-        if player:hasCameraMoved(currentCamera) then
-            player:updateCamera(currentCamera)
+        -- Skip AFK checks only for immune players
+        if not player.immune() and player:isAFK() then
+            player:terminate()
         end
 
         ::continue::
@@ -236,6 +242,7 @@ function OnCommand(id, command)
 
         if command:lower() == VOLUNTARY_AFK_COMMAND then
             players[id]:toggleVoluntaryAFK()
+            return false
         else
             players[id]:checkVoluntaryAFKActivity()
         end
