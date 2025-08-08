@@ -21,7 +21,7 @@ local WARNING_INTERVAL = 30 -- Warning frequency (seconds)
 local AIM_THRESHOLD = 0.001 -- Camera aim detection sensitivity (adjust as needed)
 local WARNING_MESSAGE = "Warning: You will be kicked in $time_until_kick seconds for being AFK."
 local KICK_MESSAGE = "$name was kicked for being AFK!"
-local AFK_IMMUNITY = {      -- Admin levels with immunity
+local AFK_IMMUNITY = { -- Admin levels with kick immunity
     [1] = true,
     [2] = true,
     [3] = true,
@@ -29,6 +29,7 @@ local AFK_IMMUNITY = {      -- Admin levels with immunity
 }
 -- Voluntary AFK
 local VOLUNTARY_AFK_COMMAND = "afk" -- Command to toggle AFK status
+local VOLUNTARY_AFK_PERMISSION = -1 -- Minimum admin level required (-1 = public, 1-4 = admin levels)
 local VOLUNTARY_AFK_ACTIVATE_MSG = "$name is now AFK."
 local VOLUNTARY_AFK_DEACTIVATE_MSG = "$name is no longer AFK."
 -- Configuration ends here.
@@ -236,12 +237,20 @@ function OnQuit(id)
     players[id] = nil
 end
 
+local function hasPermission(id)
+    return tonumber(get_var(id, '$lvl')) >= VOLUNTARY_AFK_PERMISSION
+end
+
 function OnCommand(id, command)
     if id > 0 and players[id] then
         players[id].lastActive = time() -- Critical reset for any command
 
         if command:lower() == VOLUNTARY_AFK_COMMAND then
-            players[id]:toggleVoluntaryAFK()
+            if hasPermission(id) then
+                players[id]:toggleVoluntaryAFK()
+            else
+                rprint(id, "You don't have permission to use this command.")
+            end
             return false
         else
             players[id]:checkVoluntaryAFKActivity()
