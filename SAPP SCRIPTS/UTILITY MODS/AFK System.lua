@@ -21,7 +21,7 @@ local WARNING_INTERVAL = 30 -- Warning frequency (seconds)
 local AIM_THRESHOLD = 0.001 -- Camera aim detection sensitivity (adjust as needed)
 local WARNING_MESSAGE = "Warning: You will be kicked in $time_until_kick seconds for being AFK."
 local KICK_MESSAGE = "$name was kicked for being AFK!"
-local AFK_IMMUNITY = { -- Admin levels with kick immunity
+local AFK_KICK_IMMUNITY = { -- Admin levels with kick immunity
     [1] = true,
     [2] = true,
     [3] = true,
@@ -29,7 +29,7 @@ local AFK_IMMUNITY = { -- Admin levels with kick immunity
 }
 -- Voluntary AFK
 local VOLUNTARY_AFK_COMMAND = "afk" -- Command to toggle AFK status
-local VOLUNTARY_AFK_PERMISSION = -1 -- Minimum admin level required (-1 = public, 1-4 = admin levels)
+local VOLUNTARY_AFK_PERMISSION = 3 -- Minimum admin level required (-1 = public, 1-4 = admin levels)
 local VOLUNTARY_AFK_ACTIVATE_MSG = "$name is now AFK."
 local VOLUNTARY_AFK_DEACTIVATE_MSG = "$name is no longer AFK."
 -- Configuration ends here.
@@ -54,7 +54,7 @@ function Player:new(id)
     player.inputStatesInitialized = false
 
     player.immune = function()
-        return AFK_IMMUNITY[tonumber(get_var(id, '$lvl'))]
+        return AFK_KICK_IMMUNITY[tonumber(get_var(id, '$lvl'))]
     end
 
     player.inputStates = {
