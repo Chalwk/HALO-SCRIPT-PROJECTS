@@ -94,6 +94,7 @@ local function restoreDeathMessages()
 end
 
 function OnScriptLoad()
+    math.randomseed(os.time()) -- Ensure proper randomness
     death_message_hook_enabled = SetupDeathMessageHook()
     register_callback(cb['EVENT_GAME_START'], 'OnStart')
     register_callback(cb['EVENT_COMMAND'], 'OnCommand')
