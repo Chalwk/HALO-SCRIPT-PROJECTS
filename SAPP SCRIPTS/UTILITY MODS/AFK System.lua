@@ -214,7 +214,6 @@ function OnStart()
     end
 end
 
--- Event handlers
 function OnTick()
     local current_time = time()
 
@@ -223,6 +222,8 @@ function OnTick()
 
         local dynamicAddress = get_dynamic_player(id)
         if dynamicAddress ~= 0 then
+
+            -- Process inputs (keyboard and mouse):
             player:processInputs(dynamicAddress)
 
             -- Update camera:
@@ -236,6 +237,7 @@ function OnTick()
             end
         end
 
+        -- Check if player is AFK:
         if not player.immune() and player:isAFK(current_time) then
             player:terminate()
         end
@@ -258,7 +260,7 @@ end
 
 function OnCommand(id, command)
     if id > 0 and players[id] then
-        players[id].lastActive = time() -- Critical reset for any command
+        players[id].lastActive = time()
 
         if command:lower() == AFK_COMMAND then
             if hasPermission(id) then
@@ -292,6 +294,6 @@ end
 function OnChat(id)
     if id > 0 and players[id] then
         players[id]:checkVoluntaryAFKActivity()
-        players[id].lastActive = time() -- Reset activity timer
+        players[id].lastActive = time()
     end
 end
