@@ -35,8 +35,16 @@ local VOLUNTARY_AFK_DEACTIVATE_MSG = "$name is no longer AFK."
 -- Configuration ends here.
 
 api_version = "1.12.0.0"
+local TOTAL_ALLOWED = MAX_AFK_TIME + GRACE_PERIOD
 local players = {}
 local abs, floor, time, pairs, ipairs = math.abs, math.floor, os.time, pairs, ipairs
+local read_float = read_float
+local read_byte = read_byte
+local read_word = read_word
+local get_dynamic_player = get_dynamic_player
+local player_alive = player_alive
+local get_var = get_var
+local player_present = player_present
 
 -- Player class definition
 local Player = {}
@@ -50,6 +58,7 @@ function Player:new(id)
     player.lastActive = time()
     player.lastWarning = 0
     player.previousCamera = { 0, 0, 0 }
+    player.currentCamera = { 0, 0, 0 }
     player.voluntaryAFK = false
     player.inputStatesInitialized = false
 
@@ -109,26 +118,22 @@ function Player:checkVoluntaryAFKActivity()
     return false
 end
 
-function Player:isAFK()
-    -- Skip AFK checks if player is voluntarily AFK
+function Player:isAFK(current_time)
     if self.voluntaryAFK then return false end
-
-    -- Pause AFK timer when player is dead
     if not player_alive(self.id) then return false end
 
-    local current_time = time()
     local inactiveDuration = current_time - self.lastActive
-    local totalAllowed = MAX_AFK_TIME + GRACE_PERIOD
+    if inactiveDuration < MAX_AFK_TIME then return false end
 
-    if inactiveDuration >= totalAllowed then
+    if inactiveDuration >= TOTAL_ALLOWED then
         return true
-    elseif inactiveDuration >= MAX_AFK_TIME then
-        local timeLeft = totalAllowed - inactiveDuration
-        if current_time - self.lastWarning >= WARNING_INTERVAL then
-            local msg = WARNING_MESSAGE:gsub("$time_until_kick", floor(timeLeft))
-            self:broadcast(msg)
-            self.lastWarning = current_time
-        end
+    end
+
+    local timeLeft = TOTAL_ALLOWED - inactiveDuration
+    if current_time - self.lastWarning >= WARNING_INTERVAL then
+        local msg = WARNING_MESSAGE:gsub("$time_until_kick", floor(timeLeft))
+        self:broadcast(msg)
+        self.lastWarning = current_time
     end
 
     return false
@@ -137,25 +142,28 @@ end
 function Player:updateCamera(cameraPosition)
     self:checkVoluntaryAFKActivity()
     self.lastActive = time()
-    self.previousCamera = { cameraPosition[1], cameraPosition[2], cameraPosition[3] }
+    local prev = self.previousCamera
+    prev[1], prev[2], prev[3] = cameraPosition[1], cameraPosition[2], cameraPosition[3]
 end
 
 function Player:hasCameraMoved(currentCamera)
-    return abs(currentCamera[1] - self.previousCamera[1]) > AIM_THRESHOLD or
-        abs(currentCamera[2] - self.previousCamera[2]) > AIM_THRESHOLD or
-        abs(currentCamera[3] - self.previousCamera[3]) > AIM_THRESHOLD
+    local prev = self.previousCamera
+    return abs(currentCamera[1] - prev[1]) > AIM_THRESHOLD or
+           abs(currentCamera[2] - prev[2]) > AIM_THRESHOLD or
+           abs(currentCamera[3] - prev[3]) > AIM_THRESHOLD
 end
 
 function Player:processInputs(dynamicAddress)
     if dynamicAddress == 0 then return end
 
-    -- Initialize input states if needed
     if not self.inputStatesInitialized then
         self:initInputStates()
         if not self.inputStatesInitialized then return end
     end
 
-    for _, input in ipairs(self.inputStates) do
+    local inputStates = self.inputStates
+    for i = 1, #inputStates do
+        local input = inputStates[i]
         local currentValue = input[1](dynamicAddress + input[2])
 
         if currentValue ~= input[3] then
@@ -171,16 +179,6 @@ function Player:terminate()
     execute_command("k " .. self.id)
     self:broadcast(kick_msg, true)
     players[self.id] = nil
-end
-
--- Helper function to get current camera position
-local function getCurrentCamera(dynamicAddress)
-    if dynamicAddress == 0 then return { 0, 0, 0 } end
-    return {
-        read_float(dynamicAddress + 0x230),
-        read_float(dynamicAddress + 0x234),
-        read_float(dynamicAddress + 0x238)
-    }
 end
 
 -- Event handlers
@@ -206,22 +204,29 @@ function OnStart()
     end
 end
 
+-- Event handlers
 function OnTick()
+    local current_time = time()
+
     for id, player in pairs(players) do
         if not player then goto continue end
 
-        -- Process activity for ALL players (including immune)
         local dynamicAddress = get_dynamic_player(id)
         if dynamicAddress ~= 0 then
             player:processInputs(dynamicAddress)
-            local currentCamera = getCurrentCamera(dynamicAddress)
-            if player:hasCameraMoved(currentCamera) then
-                player:updateCamera(currentCamera)
+
+            -- Update camera:
+            local cam = player.currentCamera
+            cam[1] = read_float(dynamicAddress + 0x230)
+            cam[2] = read_float(dynamicAddress + 0x234)
+            cam[3] = read_float(dynamicAddress + 0x238)
+
+            if player:hasCameraMoved(cam) then
+                player:updateCamera(cam)
             end
         end
 
-        -- Skip AFK checks only for immune players
-        if not player.immune() and player:isAFK() then
+        if not player.immune() and player:isAFK(current_time) then
             player:terminate()
         end
 
