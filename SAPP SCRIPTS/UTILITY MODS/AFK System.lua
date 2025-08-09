@@ -35,6 +35,7 @@ local VOLUNTARY_AFK_DEACTIVATE_MSG = "$name is no longer AFK."
 -- Configuration ends here.
 
 api_version = "1.12.0.0"
+
 local TOTAL_ALLOWED = MAX_AFK_TIME + GRACE_PERIOD
 local players = {}
 local abs, floor, time, pairs, ipairs = math.abs, math.floor, os.time, pairs, ipairs
