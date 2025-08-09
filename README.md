@@ -28,18 +28,6 @@ This repo contains a curated collection of Lua scripts, utilities, and resources
 
 ---
 
-## 🔥 Featured Projects
-1. **[VPS Setup Instructions](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/Miscellaneous/VPS%20Setup%20Instructions.md)**  
-   Comprehensive guide to setting up Halo servers on virtual private servers.
-
-2. **[Multi-Server (PC & CE)](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/multi-server)**  
-   *Last Update: 15 October 2024*
-
-3. **[Server Templates (PC & CE)](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/ReadyToGo)**  
-   *Last Update: 15 October 2024*
-
----
-
 ## 💬 Contribute & Request Features
 ### **Submit Ideas**
 Have an idea for a new feature or script?  
@@ -65,9 +53,9 @@ Have an idea for a new feature or script?
 ## 🌐 Community Hubs
 | **Community**                                                                                      | **Discord**                                |
 |----------------------------------------------------------------------------------------------------|--------------------------------------------|
-| [Open Carnage](https://opencarnage.net)                                                            | [Join](https://discord.gg/9HMDFa)          |
+| [Open Carnage](https://opencarnage.net)                                                            | [Join](https://discord.gg/2pf3Yjb)         |
 | [Chimera](https://opencarnage.net/index.php?/topic/6916-chimera-download-source-code-and-discord/) | [Join](https://discord.gg/ZwQeBE2)         |
-| [Halo Net](https://opencarnage.net)                                                                | [Join](https://discord.gg/9HMDFa)          |
+| [Halo Net](https://opencarnage.net)                                                                | [Join](https://discord.gg/sbSwAR8)         |
 | [XG Gaming](https://www.xgclan.com)                                                                | [Join](https://discord.gg/djqM24x8)        |
 | [POQ Clan](http://poqclan.com/)                                                                    | [Join](https://discord.com/invite/pTsKsEm) |
 
