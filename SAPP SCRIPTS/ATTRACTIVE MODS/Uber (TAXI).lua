@@ -30,20 +30,20 @@ local Uber = {
 
     messages = {
         -- Player-facing messages for various Uber script events and errors
-        must_be_alive             = "You must be alive to call an uber",
-        already_in_vehicle        = "You cannot call an uber while in a vehicle",
-        carrying_objective        = "You cannot call uber while carrying an objective",
-        no_calls_left             = "You have no more uber calls left",
-        cooldown_wait             = "Please wait %d seconds",
-        entering_vehicle          = "Entering %s as %s",
-        remaining_calls           = "Remaining calls: %d",
-        no_vehicles_available     = "No available vehicles or seats",
-        driver_left               = "Driver left the vehicle",
-        ejecting_in               = "Ejecting in %d seconds...",
-        ejected                   = "Ejected from vehicle",
-        vehicle_not_enabled       = "This vehicle is not enabled for uber",
-        vehicle_no_driver         = "Vehicle has no driver",
-        ejection_cancelled        = "Driver entered, ejection cancelled"
+        must_be_alive         = "You must be alive to call an uber",
+        already_in_vehicle    = "You cannot call an uber while in a vehicle",
+        carrying_objective    = "You cannot call uber while carrying an objective",
+        no_calls_left         = "You have no more uber calls left",
+        cooldown_wait         = "Please wait %d seconds",
+        entering_vehicle      = "Entering %s as %s",
+        remaining_calls       = "Remaining calls: %d",
+        no_vehicles_available = "No available vehicles or seats",
+        driver_left           = "Driver left the vehicle",
+        ejecting_in           = "Ejecting in %d seconds...",
+        ejected               = "Ejected from vehicle",
+        vehicle_not_enabled   = "This vehicle is not enabled for uber",
+        vehicle_no_driver     = "Vehicle has no driver",
+        ejection_cancelled    = "Driver entered, ejection cancelled"
     },
 
     insertion_order = { 0, 1, 2, 3, 4 }, -- Priority order for seat assignment when entering vehicles (0 = driver seat)
@@ -74,14 +74,14 @@ local Uber = {
 
     -- Settings controlling Uber script behavior:
 
-    calls_per_game = 20,                    -- Max Uber calls allowed per player per game (0 = unlimited)
-    block_objective = true,                 -- Prevent Uber calls if player is carrying an objective (e.g. flag)
-    crouch_to_uber = true,                  -- Enable Uber call when player crouches
-    cooldown_period = 10,                   -- Cooldown time (seconds) between Uber calls per player
-    eject_from_disabled_vehicle = true,     -- Eject players from vehicles that aren't enabled for Uber
-    eject_from_disabled_vehicle_time = 3,   -- Delay before ejecting from disabled vehicle (seconds)
-    eject_without_driver = true,            -- Eject passengers if vehicle has no driver
-    eject_without_driver_time = 5,          -- Delay before ejecting without driver (seconds)
+    calls_per_game = 20,                  -- Max Uber calls allowed per player per game (0 = unlimited)
+    block_objective = true,               -- Prevent Uber calls if player is carrying an objective (e.g. flag)
+    crouch_to_uber = true,                -- Enable Uber call when player crouches
+    cooldown_period = 10,                 -- Cooldown time (seconds) between Uber calls per player
+    eject_from_disabled_vehicle = true,   -- Eject players from vehicles that aren't enabled for Uber
+    eject_from_disabled_vehicle_time = 3, -- Delay before ejecting from disabled vehicle (seconds)
+    eject_without_driver = true,          -- Eject passengers if vehicle has no driver
+    eject_without_driver_time = 5,        -- Delay before ejecting without driver (seconds)
 
     ---------------------------------------------------------------------------
     -- CONFIG END -------------------------------------------------------------
@@ -297,9 +297,7 @@ end
 
 function Uber.player_mt:FindSeat(vehicle)
     for _, seat_id in ipairs(Uber.insertion_order) do
-        if not vehicle.meta.seats[seat_id] then
-            goto continue
-        end
+        if not vehicle.meta.seats[seat_id] then goto continue end
 
         local seat_free = true
         for i = 1, 16 do
