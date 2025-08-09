@@ -1,10 +1,10 @@
 --=====================================================================================--
 -- SCRIPT NAME:      Uber
--- DESCRIPTION:      Allows players to call an Uber to join teammates vehicles
+-- DESCRIPTION:      Allows players to call an Uber to join teammates' vehicles
 --                   by injecting themselves into available seats according to
 --                   configurable priority and cooldown settings. Supports vehicle
 --                   validation, auto ejection from unauthorized vehicles, crouch
---                   to uber activation, and call limits per player per game.
+--                   to Uber activation, and call limits per player per game.
 --
 -- AUTHOR:           Chalwk (Jericho Crosby)
 -- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
