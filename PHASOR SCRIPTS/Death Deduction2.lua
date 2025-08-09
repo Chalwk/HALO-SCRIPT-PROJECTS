@@ -13,6 +13,7 @@
 ANNOUNCE_LEVEL_UP = " is now a human!"
 local HUMAN_MESSAGE = "YOU ARE A HUMAN - KILL THE ZOMBIES!"
 local Human_Speed = 1.2
+
 function OnPlayerKill(killer, victim, mode)
     -- mode 0: 		Killed by server
     -- mode 1: 		Killed by fall damage
@@ -85,4 +86,5 @@ function OnPlayerKill(killer, victim, mode)
             --              Set their speed to the default human speed (Speed when not infected)
             setspeed(killer, tonumber(Human_Speed))
         end
-    end    
+    end
+end
