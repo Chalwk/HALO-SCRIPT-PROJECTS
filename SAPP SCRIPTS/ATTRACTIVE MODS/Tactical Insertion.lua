@@ -11,11 +11,19 @@
 --=====================================================================================================--
 
 -- config starts
--- Set the command you want to use to set your next spawn point:
 local command = 'ti'
-
--- Number of uses per game:
 local uses_per_game = 5
+
+-- Messages
+local messages = {
+    no_uses_left = 'You have no more uses left for this game.',
+    tac_insert_set = 'Tac-Insert set to: %s',
+    uses_left = 'You have %s uses left for this game.',
+    need_alive = 'You need to be alive to use this command.',
+    will_spawn_at_tac = 'You will spawn at your Tac-Insert point.',
+    spawn_uses_left = 'You have %s tac-insert uses left for this game.',
+    set_command_help = 'Use /%s to set your next spawn point.'
+}
 -- config ends
 
 api_version = '1.12.0.0'
@@ -97,7 +105,7 @@ function OnCommand(id, CMD)
         if player_alive(id) then
             local p = players[getIP(id)]
             if p.uses <= 0 then
-                rprint(id, 'You have no more uses left for this game.')
+                rprint(id, messages.no_uses_left)
                 return false
             end
 
@@ -105,15 +113,14 @@ function OnCommand(id, CMD)
 
             local x, y, z = GetXYZ(id)
             p.teleport = true
-            p.uses = p.uses
             p.x = x
             p.y = y
             p.z = z
 
-            rprint(id, 'Tac-Insert set to: ' .. format('%.2f, %.2f, %.2f', x, y, z))
-            rprint(id, format('You have %s uses left for this game.', p.uses))
+            rprint(id, format(messages.tac_insert_set, format('%.2f, %.2f, %.2f', x, y, z)))
+            rprint(id, format(messages.uses_left, p.uses))
         else
-            rprint(id, 'You need to be alive to use this command.')
+            rprint(id, messages.need_alive)
         end
 
         return false
@@ -123,14 +130,14 @@ end
 function OnDeath(id)
     local p = players[getIP(id)]
     if p and p.teleport then
-        rprint(id, 'You will spawn at your Tac-Insert point.')
+        rprint(id, messages.will_spawn_at_tac)
     end
 end
 
 function OnSpawn(id)
     local p = players[getIP(id)]
-    rprint(id, format('You have %s tac-insert uses left for this game.', p.uses))
-    rprint(id, 'Use /' .. command .. ' to set your next spawn point.')
+    rprint(id, format(messages.spawn_uses_left, p.uses))
+    rprint(id, format(messages.set_command_help, command))
 end
 
 function OnScriptUnload() end
