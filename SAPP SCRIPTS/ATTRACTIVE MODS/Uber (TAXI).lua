@@ -204,7 +204,9 @@ function Uber.player_mt:DoChecks()
 end
 
 function Uber.player_mt:HasObjective(dyn)
-    local base_tag_table = read_dword(0x40440000)
+    if not Uber.objective then return false end
+
+    local base_tag_table = Uber.base_tag_table
     local weapon_offset = 0x2F8
     local slot_size = 4
     local tag_entry_size = 0x20
@@ -271,24 +273,24 @@ function Uber.player_mt:GetAvailableVehicles()
     local count = 0
 
     for i = 1, 16 do
-        if self:_isValidPlayer(i) then
-            local dyn = self:_getPlayerDyn(i)
-            if dyn then
-                local vehicle_obj, vehicle_id, vehicle = self:_getVehicleIfDriver(dyn)
-                if vehicle_obj then
-                    count = count + 1
-                    available[count] = {
-                        object = vehicle_obj,
-                        id = vehicle_id,
-                        meta = vehicle,
-                        driver = i
-                    }
-                end
-            end
+        if not self:_isValidPlayer(i) then goto continue end
+        local dyn = self:_getPlayerDyn(i)
+        if not dyn then goto continue end
+
+        local vehicle_obj, vehicle_id, vehicle = self:_getVehicleIfDriver(dyn)
+        if vehicle_obj then
+            count = count + 1
+            available[count] = {
+                object = vehicle_obj,
+                id = vehicle_id,
+                meta = vehicle,
+                driver = i
+            }
         end
+        ::continue::
     end
 
-    table.sort(available, function(a, b)
+    sort(available, function(a, b)
         return a.meta.priority > b.meta.priority
     end)
 
@@ -493,18 +495,16 @@ end
 
 function OnTick()
     for id, player in pairs(Uber.players) do
-        if player_present(id) then
-            local dyn = get_dynamic_player(id)
-            if dyn ~= 0 then
-                player:UpdateVehicleState(dyn)
-                player:ProcessCooldown()
-                player:ProcessAutoEject()
+        if not player_present(id) then goto continue end
+        local dyn = get_dynamic_player(id)
+        if dyn == 0 then goto continue end
 
-                if player_alive(id) then
-                    player:CheckCrouch(dyn)
-                end
-            end
-        end
+        player:UpdateVehicleState(dyn)
+        player:ProcessCooldown()
+        player:ProcessAutoEject()
+
+        if player_alive(id) then player:CheckCrouch(dyn) end
+        ::continue::
     end
 end
 

@@ -30,6 +30,8 @@
         "write_dword",
         "read_bit",
         "rand",
-        "write_word"
+        "write_word",
+        "sort",
+        "exit_vehicle"
     ]
 }
