@@ -139,9 +139,9 @@ function Player:isAFK(current_time)
     return false
 end
 
-function Player:updateCamera(cameraPosition)
+function Player:updateCamera(cameraPosition, current_time)
     self:checkVoluntaryAFKActivity()
-    self.lastActive = time()
+    self.lastActive = current_time
     local prev = self.previousCamera
     prev[1], prev[2], prev[3] = cameraPosition[1], cameraPosition[2], cameraPosition[3]
 end
@@ -154,8 +154,6 @@ function Player:hasCameraMoved(currentCamera)
 end
 
 function Player:processInputs(dynamicAddress)
-    if dynamicAddress == 0 then return end
-
     if not self.inputStatesInitialized then
         self:initInputStates()
         if not self.inputStatesInitialized then return end
@@ -222,7 +220,7 @@ function OnTick()
             cam[3] = read_float(dynamicAddress + 0x238)
 
             if player:hasCameraMoved(cam) then
-                player:updateCamera(cam)
+                player:updateCamera(cam, current_time)
             end
         end
 
