@@ -17,17 +17,18 @@
 --========================= CONFIGURATION ====================================--
 
 -- 1. AFK Timing Settings
-local MAX_AFK_TIME       = 300   -- Maximum allowed AFK time (seconds)
-local GRACE_PERIOD       = 60    -- Grace period before kicking (seconds)
-local WARNING_INTERVAL   = 30    -- Warning frequency (seconds)
+local MAX_AFK_TIME       = 300       -- Maximum allowed AFK time (seconds)
+local GRACE_PERIOD       = 60        -- Grace period before kicking (seconds)
+local WARNING_INTERVAL   = 30        -- Warning frequency (seconds)
 
 -- 2. AFK Detection Settings
-local AIM_THRESHOLD      = 0.001 -- Camera aim detection sensitivity (adjust as needed)
+local AIM_THRESHOLD      = 0.001     -- Camera aim detection sensitivity (adjust as needed)
 
 -- 3. AFK Command & Permissions
-local AFK_PERMISSION     = 3     -- Minimum admin level required (-1 = public, 1-4 = admin levels)
-local AFK_COMMAND        = "afk" -- Command to toggle AFK status
-local AFK_KICK_IMMUNITY  = {     -- Admin levels with kick immunity
+local AFK_PERMISSION     = 3         -- Minimum admin level required (-1 = public, 1-4 = admin levels)
+local AFK_COMMAND        = "afk"     -- Command to toggle AFK status
+local AFK_STATUS_COMMAND = "afklist" -- Command to list AFK players
+local AFK_KICK_IMMUNITY  = {         -- Admin levels with kick immunity
     [1] = true,
     [2] = true,
     [3] = true,
@@ -268,6 +269,18 @@ function OnCommand(id, command)
             return false
         else
             players[id]:checkVoluntaryAFKActivity()
+        end
+
+        if command:lower() == AFK_STATUS_COMMAND then
+            local afkList = {}
+            for _, player in pairs(players) do
+                if player.voluntaryAFK then
+                    table.insert(afkList, player.name)
+                end
+            end
+            local msg = #afkList > 0 and "AFK players: " .. table.concat(afkList, ", ") or "No players are AFK"
+            rprint(id, msg)
+            return false
         end
     end
 end
