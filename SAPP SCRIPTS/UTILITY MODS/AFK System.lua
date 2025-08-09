@@ -272,14 +272,18 @@ function OnCommand(id, command)
         end
 
         if command:lower() == AFK_STATUS_COMMAND then
-            local afkList = {}
-            for _, player in pairs(players) do
-                if player.voluntaryAFK then
-                    table.insert(afkList, player.name)
+            if hasPermission(id) then
+                local afkList = {}
+                for _, player in pairs(players) do
+                    if player.voluntaryAFK then
+                        table.insert(afkList, player.name)
+                    end
                 end
+                local msg = #afkList > 0 and "AFK players: " .. table.concat(afkList, ", ") or "No players are AFK"
+                rprint(id, msg)
+            else
+                rprint(id, "You don't have permission to use this command.")
             end
-            local msg = #afkList > 0 and "AFK players: " .. table.concat(afkList, ", ") or "No players are AFK"
-            rprint(id, msg)
             return false
         end
     end
