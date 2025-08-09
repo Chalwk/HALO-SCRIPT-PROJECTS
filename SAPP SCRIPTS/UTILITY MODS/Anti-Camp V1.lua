@@ -1,289 +1,167 @@
---[[
 --=====================================================================================================--
-Script Name: Anti-Camp V1 (v1.2), for SAPP (PC & CE)
-
-- Description -
-Player enters Anti-Camp Zone.
-A warning message appears with a countdown from X seconds.
-If the player doesn't leave that area before the countdown has elapsed it will teleport (or kill) them.
-
-The x,y,z coordinates for each anti-camp zone and teleport locations can be configured along with customizable messages. 
-The countdown duration can be customized on a per-location basis as well as the radius (in world units) in which it is triggered.
-
-Copyright (c) 2019, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+-- SCRIPT NAME:      AntiCamp
+-- DESCRIPTION:      Prevents camping by monitoring player positions in defined zones.
+--
+--                   Features include:
+--                   * Configurable camping zones per map with position, radius, and max allowed time
+--                   * Warning messages sent at half the max camping time
+--                   * Automatic player kill punishment when max time is exceeded
+--                   * Cooldown between punishments to avoid spam
+--                   * Customizable messages
+--                   * Resets timers on player spawn and disconnect
+--                   * Supports multiple maps with easy configuration
+--
+-- AUTHOR:           Jericho Crosby (Chalwk)
+-- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
+--
+-- Copyright (c) 2025 Jericho Crosby <jericho.crosby227@gmail.com>
+-- LICENSE:          MIT License
+--                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--
-]]--
 
-api_version = "1.11.0.0"
+api_version = "1.12.0.0"
 
-local mod, positions = {}, {}
-function mod:init()
+-----------------
+-- CONFIG STARTS
+-----------------
+local COOLDOWN = 10 -- Cooldown period in seconds
 
-    mod.team = "both" -- Valid Teams: "red", "blue" & "both"
-    mod.action = "kill" -- Valid Actions: "teleport, kill"
+-- Customizable messages:
+local MESSAGES = {
+    LOADED = "[Anti-Camp] Loaded %d zones for %s",      -- Console message when zones are loaded
+    NONE = "[Anti-Camp] No zones configured for %s",    -- Console message when no zones
+    WARNING = "WARNING: Move or be killed in %ds!",     -- Player warning message
+    PUNISH = "No camping allowed!",                     -- Punishment message
+}
 
-    mod.messages = {
-        on_enter = { -- to camper
-            "|cWarning! You have entered an Anti-Camp zone",
-            "|cYou will be teleported in %seconds% second%s%",
-        },
-        on_teleport = {
-            "You were teleported for camping.", -- to camper
-            "%name% was teleported for camping.", -- to other players
-        },
-        on_kill = {
-            "You were killed for camping."
-        }
+-- Camping zones {x, y, z, radius, max_time}
+local MAPS = {
+    ["bloodgulch"] = {
+        {98.80, -156.30, 1.70, 5.0, 120},  -- RED base
+        {36.87, -82.33, 1.70, 5.0, 120},   -- BLUE base
     }
+    -- Add configurations for other maps using the same structure
+}
+---------------
+-- CONFIG ENDS
+---------------
 
-    positions = {
+local map
+local players = {}
+local floor = math.floor
 
-        -- Camp Site X,Y,Z | Teleport X,Y,Z | Trigger Radius | Duration
-
-        -- NOTE: Teleport x,y,z coordinates are only required if "mod.action" is set to "teleport".
-
-
-        ["beavercreek"] = {
-            { 15.360, 16.324, 5.059, nil, nil, nil, 3, 10 },
-        },
-        ["bloodgulch"] = {
-            { 0, 0, 0, nil, nil, nil, 3, 10 },
-        },
-        ["boardingaction"] = {
-            { 0, 0, 0, nil, nil, nil, 3, 10 },
-        },
-        ["carousel"] = {
-            { 0, 0, 0, nil, nil, nil, 3, 10 },
-        },
-        ["dangercanyon"] = {
-            { 0, 0, 0, nil, nil, nil, 3, 10 },
-        },
-        ["deathisland"] = {
-            { 0, 0, 0, nil, nil, nil, 3, 10 },
-        },
-        ["gephyrophobia"] = {
-            { 0, 0, 0, nil, nil, nil, 3, 10 },
-        },
-        ["icefields"] = {
-            { 0, 0, 0, nil, nil, nil, 3, 10 },
-        },
-        ["infinity"] = {
-            { 0, 0, 0, nil, nil, nil, 3, 10 },
-        },
-        ["sidewinder"] = {
-            { 0, 0, 0, nil, nil, nil, 3, 10 },
-        },
-        ["timberland"] = {
-            { 0.97, -1.18, -21.20, nil, nil, nil, 3, 10 },
-        },
-        ["hangemhigh"] = {
-            { 7.84, 2.02, -3.45, nil, nil, nil, 3, 10 },
-        },
-        ["ratrace"] = {
-            { 0, 0, 0, nil, nil, nil, 3, 10 },
-        },
-        ["damnation"] = {
-            { -7.13, 12.93, 5.60, nil, nil, nil, 3, 10 },
-            { -10.47, -13.62, 3.82, nil, nil, nil, 3, 10 },
-            { -10.53, -9.80, 3.82, nil, nil, nil, 3, 10 },
-        },
-        ["putput"] = {
-            { 0, 0, 0, nil, nil, nil, 3, 10 },
-        },
-        ["prisoner"] = {
-            { 0, 0, 0, nil, nil, nil, 3, 10 },
-        },
-        ["wizard"] = {
-            { -9.916, 9.950, 0.027, nil, nil, nil, 2, 10 },
-            { -9.969, -9.956, 0.064, nil, nil, nil, 2, 10 },
-            { 9.915, -9.949, 0.025, nil, nil, nil, 2, 10 },
-            { 9.957, 9.964, 0.059, nil, nil, nil, 2, 10 },
-        },
-    }
-    --# Do Not Touch #--
-    mod.players = {}
-    messages = mod.messages
-    positions = positions[get_var(0, "$map")]
-    for i = 1, #positions do
-        positions[i].onsite = {}
-        positions[i].timer = {}
-        for j = 1, 16 do
-            positions[i].timer[j] = 0
-            positions[i].onsite[j] = false
-        end
-    end
+local function getXYZ(dyn)
+    return read_vector3d(dyn + 0x5C)
 end
 
--- Variables for String Library:
-local format, gsub = string.format, string.gsub
--- Variables for Math Library:
-local floor, sqrt = math.floor, math.sqrt
+local function inVehicle(dyn)
+    return read_dword(dyn + 0x11C) == 0xFFFFFFF
+end
 
--- Game Variables:
-local gamestarted, delta_time = nil, 0.03333333333333333
-local delta_time = 0.03333333333333333
+local function getDistance(x1, y1, z1, x2, y2, z2)
+    local dx, dy, dz = x1 - x2, y1 - y2, z1 - z2
+    return math.sqrt(dx*dx + dy*dy + dz*dz)
+end
+
+local function punishPlayer(player)
+    execute_command('kill ' .. player)
+    rprint(player, MESSAGES.PUNISH)
+    return os.time()
+end
 
 function OnScriptLoad()
+    register_callback(cb['EVENT_LEAVE'], 'OnQuit')
+    register_callback(cb['EVENT_SPAWN'], 'OnSpawn')
+    register_callback(cb['EVENT_GAME_START'], 'OnStart')
+    OnStart()
+end
 
-    register_callback(cb['EVENT_TICK'], "OnTick")
-    register_callback(cb["EVENT_JOIN"], "OnPlayerConnect")
-    register_callback(cb["EVENT_GAME_START"], "OnGameStart")
-    register_callback(cb["EVENT_LEAVE"], "OnPlayerDisconnect")
+function OnSpawn(id)
+    players[id] = nil -- Reset data on spawn
+end
 
-    if (get_var(0, '$gt') ~= "n/a") then
-        mod:init()
-        for i = 1, 16 do
-            if player_present(i) then
-                mod:Reset(i)
-            end
+function OnStart()
+    if get_var(0, '$gt') ~= 'n/a' then
+        map = get_var(0, '$map')
+        local zones = MAPS[map]
+
+        if zones and #zones > 0 then
+            cprint(string.format(MESSAGES.LOADED, #zones, map), 12)
+            register_callback(cb['EVENT_TICK'], 'OnTick')
+        else
+            unregister_callback(cb['EVENT_TICK'])
+            cprint(string.format(MESSAGES.NONE, map), 12)
         end
     end
-end
-
-function OnGameStart()
-    if (get_var(0, '$gt') ~= "n/a") then
-        mod:init()
-        gamestarted = true
-    end
-end
-
-function OnGameEnd()
-    gamestarted = false
-end
-
-function OnPlayerConnect(p)
-    mod:Reset(p)
-end
-
-function OnPlayerDisconnect(p)
-    mod:Reset(p)
-end
-
-local function inCampSite(pX, pY, pZ, sX, sY, sZ, R)
-    return (sqrt((pX - sX) ^ 2 + (pY - sY) ^ 2 + (pZ - sZ) ^ 2) <= R)
 end
 
 function OnTick()
-    if (positions ~= nil) then
-        for i = 1, 16 do
-            if player_present(i) and (gamestarted) then
+    local current_time = os.time()
+    local zones = MAPS[map]
 
-                if player_alive(i) then
-                    local team = get_var(i, "$team")
-                    if (team == mod.team or mod.team == "both") then
-                        local player_object = get_dynamic_player(i)
-                        if (player_object ~= 0) then
-                            local coords = mod:getXYZ(i, player_object)
-                            local px, py, pz = coords.x, coords.y, coords.z
-                            local name = get_var(i, "$name")
-                            for k, v in pairs(positions) do
+    for i = 1, 16 do
+        if player_present(i) and player_alive(i) then
+            local dyn = get_dynamic_player(i)
+            if not inVehicle(dyn) then
+                local x, y, z = getXYZ(dyn)
+                local data = players[i] or {}
 
-                                -- CHECK IF PLAYER IS IN CAMP SITE:
-                                if inCampSite(px, py, pz, v[1], v[2], v[3], v[7]) then
-                                    v.onsite[i] = true
-                                    v.timer[i] = v.timer[i] + delta_time
+                -- Check cooldown status
+                if data.last_punishment and (current_time - data.last_punishment) < COOLDOWN then
+                    goto continue
+                end
 
-                                    local timeRemaining = v[8] - floor(v.timer[i] % 60)
-                                    mod:cls(i, 25)
+                -- Check all camping zones
+                local in_zone = false
+                for index, zone in ipairs(zones) do
+                    local dist = getDistance(x, y, z, zone[1], zone[2], zone[3])
+                    if dist <= zone[4] then
+                        in_zone = true
 
-                                    -- WARN PLAYER:
-                                    local char = mod:getChar(timeRemaining)
-                                    for j = 1, #messages.on_enter do
-                                        local msg = gsub(gsub(messages.on_enter[j], "%%seconds%%", timeRemaining), "%%s%%", char)
-                                        rprint(i, msg)
-                                    end
+                        -- Initialize zone timer if new zone
+                        if data.zone ~= index then
+                            data.zone = index
+                            data.entry_time = current_time
+                            data.warned = false
+                        end
 
-                                    -- TELEPORT PLAYER
-                                    if (timeRemaining <= 0) then
-                                        mod:cls(i, 25)
-                                        v.onsite[i], v.timer[i] = false, 0
-                                        if (mod.action == "teleport") then
-                                            write_vector3d(player_object + 0x5C, v[4], v[5], v[6])
-                                            say(i, messages.on_teleport[1])
-                                        elseif (mod.action == "kill") then
-                                            local player = get_player(i)
-                                            local OldValue = read_word(player + 0xD4)
-                                            write_word(player + 0xD4, 0xFFFF)
-                                            kill(i)
-                                            write_word(player + 0xD4, OldValue)
-                                            say(i, messages.on_kill[1])
-                                        end
-                                        local msg = gsub(messages.on_teleport[2], "%%name%%", name)
-                                        mod:broadcast(msg, i)
-                                    end
+                        -- Check camping duration
+                        local elapsed = current_time - data.entry_time
+                        local max_time = zone[5]
 
-                                elseif (v.onsite[i]) then
-                                    mod:cls(i, 25)
-                                    v.onsite[i], v.timer[i] = false, 0
-                                end
-                            end
+                        -- Warn at 50% of max time
+                        if not data.warned and elapsed >= max_time/2 then
+                            local time_left = max_time - elapsed
+                            rprint(i, string.format(MESSAGES.WARNING, floor(time_left)))
+                            data.warned = true
+                        end
+
+                        -- Kill if exceeded max time
+                        if elapsed >= max_time then
+                            data.last_punishment = punishPlayer(i)
+                            data.zone = nil
+                            break
                         end
                     end
                 end
+
+                -- Reset if not in any zone
+                if not in_zone and data.zone then
+                    data.zone = nil
+                    data.entry_time = nil
+                end
+
+                players[i] = data
             end
         end
+        ::continue::
     end
 end
 
-function mod:getXYZ(PlayerIndex, PlayerObject)
-    local coords, x, y, z = { }
-    if player_alive(PlayerIndex) then
-        local VehicleID = read_dword(PlayerObject + 0x11C)
-        if (VehicleID == 0xFFFFFFFF) then
-            coords.invehicle = false
-            x, y, z = read_vector3d(PlayerObject + 0x5c)
-        else
-            coords.invehicle = true
-            x, y, z = read_vector3d(get_object_memory(VehicleID) + 0x5c)
-        end
-
-        if (coords.invehicle) then
-            z = z + 1
-        end
-        coords.x, coords.y, coords.z = x, y, z
-    end
-    return coords
-end
-
-function mod:Reset(p)
-    if (p) then
-        for k, v in pairs(positions) do
-            v.onsite[p], v.timer[p] = false, 0
-        end
-    end
-end
-
-function mod:getChar(input)
-    local char = ""
-    if (tonumber(input) > 1) then
-        char = "s"
-    elseif (tonumber(input) <= 1) then
-        char = ""
-    end
-    return char
-end
-
-function mod:broadcast(message, player)
-    for i = 1, 16 do
-        if player_present(i) then
-            if (i ~= player) then
-                say(i, message)
-            end
-        end
-    end
-end
-
-function mod:cls(PlayerIndex, count)
-    count = count or 25
-    for _ = 1, count do
-        rprint(PlayerIndex, " ")
-    end
+function OnQuit(id)
+    players[id] = nil
 end
 
 function OnScriptUnload()
-    --
+    -- Cleanup
 end
-
-return mod
