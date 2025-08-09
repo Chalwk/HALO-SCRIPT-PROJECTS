@@ -28,6 +28,7 @@
         "spawn_projectile",
         "safe_write",
         "write_dword",
-        "read_bit"
+        "read_bit",
+        "rand"
     ]
 }

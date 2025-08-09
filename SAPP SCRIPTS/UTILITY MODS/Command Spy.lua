@@ -1,6 +1,6 @@
 --=====================================================================================================--
 -- SCRIPT NAME:      AntiCamp
--- DESCRIPTION:      otifies specified admin levels when a player executes a command.
+-- DESCRIPTION:      Notifies specified admin levels when a player executes a command.
 --
 --                   Features:
 --                   - Notifies specified admin levels when a player executes a command.
