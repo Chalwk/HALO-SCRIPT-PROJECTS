@@ -1,15 +1,14 @@
---[[
 --=====================================================================================================--
-Script Name: Tactical Insertion, for SAPP (PC & CE)
-Description: Set your next spawn point with a custom command (/ti).
-
-Players are limited to 5 (default) uses per game.
-
-Copyright (c) 2019-2022, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+-- SCRIPT NAME:     Tactical Insertion
+-- DESCRIPTION:     Players can use a command to set their next spawn point.
+--
+-- AUTHOR:          Jericho Crosby (Chalwk)
+-- COMPATIBILITY:   Halo PC/CE | SAPP 1.12.0.0
+--
+-- Copyright (c) 2019-2025 Jericho Crosby <jericho.crosby227@gmail.com>
+-- LICENSE:         MIT License
+--                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--
-]]--
 
 -- config starts
 -- Set the command you want to use to set your next spawn point:
@@ -27,6 +26,7 @@ local format = string.format
 function OnScriptLoad()
     register_callback(cb['EVENT_DIE'], 'OnDeath')
     register_callback(cb['EVENT_JOIN'], 'OnJoin')
+    register_callback(cb['EVENT_LEAVE'], 'OnQuit')
     register_callback(cb['EVENT_SPAWN'], 'OnSpawn')
     register_callback(cb['EVENT_COMMAND'], 'OnCommand')
     register_callback(cb['EVENT_GAME_START'], 'OnStart')
@@ -35,25 +35,21 @@ function OnScriptLoad()
 end
 
 function OnStart()
-    if (get_var(0, '$gt') ~= 'n/a') then
-
-        players = { }
-
-        for i = 1, 16 do
-            if player_present(i) then
-                OnJoin(i)
-            end
+    if get_var(0, '$gt') == 'n/a' then return end
+    players = {}
+    for i = 1, 16 do
+        if player_present(i) then
+            OnJoin(i)
         end
     end
 end
 
-local function GetIP(Ply)
-    return get_var(Ply, '$ip'):match('%d+.%d+.%d+.%d+')
+local function getIP(id)
+    return get_var(id, '$ip')
 end
 
-function OnJoin(Ply)
-    local ip = GetIP(Ply)
-    players[ip] = players[ip] or {
+function OnJoin(id)
+    players[getIP(id)] = {
         teleport = false,
         uses = uses_per_game,
         x = 0,
@@ -62,30 +58,33 @@ function OnJoin(Ply)
     }
 end
 
-local function GetXYZ(Ply)
+function OnQuit(id)
+    players[getIP(id)] = nil
+end
+
+local function GetXYZ(id)
     local x, y, z
 
-    local dyn = get_dynamic_player(Ply)
-    if (dyn ~= 0) then
-        local vehicle = read_dword(dyn + 0x11C)
-        local object = get_object_memory(vehicle)
-        if (vehicle == 0xFFFFFFFF) then
-            x, y, z = read_vector3d(dyn + 0x5C)
-        else
-            x, y, z = read_vector3d(object + 0x5c)
-        end
+    local dyn = get_dynamic_player(id)
+    if dyn == 0 then return nil end
+
+    local vehicle = read_dword(dyn + 0x11C)
+    local object = get_object_memory(vehicle)
+    if vehicle == 0xFFFFFFFF then
+        x, y, z = read_vector3d(dyn + 0x5C)
+    else
+        x, y, z = read_vector3d(object + 0x5c)
     end
 
     return x, y, z
 end
 
-function OnPreSpawn(Ply)
+function OnPreSpawn(id)
+    local dyn = get_dynamic_player(id)
+    if dyn == 0 then return end
 
-    local dyn = get_dynamic_player(Ply)
-    local ip = GetIP(Ply)
-
-    local p = players[ip]
-    if (dyn ~= 0 and p.teleport) then
+    local p = players[getIP(id)]
+    if p and p.teleport then
         p.teleport = false
         local x, y, z = p.x, p.y, p.z
         local z_off = 0.1
@@ -93,56 +92,45 @@ function OnPreSpawn(Ply)
     end
 end
 
-function OnCommand(Ply, CMD)
-
-    if (CMD:sub(1, command:len()):lower() == command) then
-
-        if player_alive(Ply) then
-
-            local ip = GetIP(Ply)
-            local p = players[ip]
-
-            if (p.uses <= 0) then
-                rprint(Ply, 'You have no more uses left for this game.')
+function OnCommand(id, CMD)
+    if id > 0 and CMD:sub(1, command:len()):lower() == command then
+        if player_alive(id) then
+            local p = players[getIP(id)]
+            if p.uses <= 0 then
+                rprint(id, 'You have no more uses left for this game.')
                 return false
             end
 
             p.uses = p.uses - 1
 
-            local x, y, z = GetXYZ(Ply)
-            players[ip] = {
-                teleport = true,
-                uses = p.uses,
-                x = x,
-                y = y,
-                z = z
-            }
+            local x, y, z = GetXYZ(id)
+            p.teleport = true
+            p.uses = p.uses
+            p.x = x
+            p.y = y
+            p.z = z
 
-            rprint(Ply, 'Tac-Insert set to to: ' .. format('%.2f, %.2f, %.2f', x, y, z))
-            rprint(Ply, format('You have %s uses left for this game.', p.uses))
+            rprint(id, 'Tac-Insert set to: ' .. format('%.2f, %.2f, %.2f', x, y, z))
+            rprint(id, format('You have %s uses left for this game.', p.uses))
         else
-            rprint(Ply, 'Command failed. You are not alive.')
+            rprint(id, 'You need to be alive to use this command.')
         end
 
         return false
     end
 end
 
-function OnDeath(Victim)
-    local ip = GetIP(Victim)
-    local p = players[ip]
-    if (p.teleport) then
-        rprint(Victim, 'You will spawn at your Tac-Insert point.')
+function OnDeath(id)
+    local p = players[getIP(id)]
+    if p and p.teleport then
+        rprint(id, 'You will spawn at your Tac-Insert point.')
     end
 end
 
-function OnSpawn(Ply)
-    local ip = GetIP(Ply)
-    local p = players[ip]
-    rprint(Ply, format('You have %s tac-insert uses left for this game.', p.uses))
-    rprint(Ply, 'Use /' .. command .. ' to set your next spawn point.')
+function OnSpawn(id)
+    local p = players[getIP(id)]
+    rprint(id, format('You have %s tac-insert uses left for this game.', p.uses))
+    rprint(id, 'Use /' .. command .. ' to set your next spawn point.')
 end
 
-function OnScriptUnload()
-    -- N/A
-end
+function OnScriptUnload() end

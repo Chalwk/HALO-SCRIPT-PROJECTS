@@ -29,6 +29,7 @@
         "safe_write",
         "write_dword",
         "read_bit",
-        "rand"
+        "rand",
+        "write_word"
     ]
 }
