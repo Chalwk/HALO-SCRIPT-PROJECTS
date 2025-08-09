@@ -16,6 +16,8 @@
 --                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================--
 
+api_version = '1.12.0.0'
+
 -- ========================
 -- Configurable Settings
 -- ========================
@@ -116,11 +118,20 @@ local settings = {
 }
 
 -- Load dependencies
-api_version = '1.12.0.0'
 local json = loadfile('./WordBuster/json.lua')()
 local infractions = {}
 local infractions_dirty = false
-local bad_words = {} -- Precompiled patterns
+local bad_words = {}
+local immune_cache = {}
+local pattern_cache = {}
+local global_word_cache = {}
+
+-- Metatable for pattern fallback:
+setmetatable(settings.patterns, {
+    __index = function(_, char)
+        return char:gsub("([^%w])", "%%%1")  -- Escape non-alphanumeric
+    end
+})
 
 -- ========================
 -- Utility Functions
@@ -159,33 +170,24 @@ local function has_permission(id, level, msg)
     return false
 end
 
--- Escape anything that's not an alphanumeric (keeps letters/digits/underscore)
-local function escape_pattern(text)
-    return text:gsub("([^%w])", "%%%1")
+local function compile_pattern(word)
+    if pattern_cache[word] then return pattern_cache[word] end
+
+    word = word:match("^%s*(.-)%s*$") or ""
+    local pattern = ''
+
+    for char in word:lower():gmatch(".") do
+        pattern = pattern .. settings.patterns[char]:lower()
+    end
+
+    pattern = '%f[%w]' .. pattern .. '%f[%W]'
+    pattern_cache[word] = pattern
+    return pattern
 end
 
 -- ========================
 -- Core Functionality
 -- ========================
-local function compile_pattern(word)
-    -- trim whitespace
-    word = word:match("^%s*(.-)%s*$") or ""
-
-    local pattern = ''
-    for char in word:lower():gmatch(".") do
-        local replacement = settings.patterns[char]
-        if replacement then
-            -- make replacement lowercase so it matches the lowercased message
-            pattern = pattern .. replacement:lower()
-        else
-            pattern = pattern .. escape_pattern(char)
-        end
-    end
-
-    -- Word boundary: start where next char is alnum, end where next char is NON-alnum
-    return '%f[%w]' .. pattern .. '%f[%W]'
-end
-
 local function load_bad_words()
     bad_words = {}
     local count_langs = 0
@@ -200,16 +202,24 @@ local function load_bad_words()
                 for line in content:gmatch("[^\r\n]+") do
                     local word = line:match("^%s*(.-)%s*$") or ""
                     if word ~= "" and not word:match("^%s*#") then
-                        local ok, pattern = pcall(compile_pattern, word)
-                        if ok and pattern then
-                            table.insert(bad_words, {
-                                pattern = pattern,
+
+                        if not global_word_cache[word] then
+                            local ok, pattern = pcall(compile_pattern, word)
+                            if ok and pattern then
+                                global_word_cache[word] = pattern
+                            else
+                                cprint(('WARNING: Could not compile pattern for "%s" in %s'):format(word, path), 12)
+                                global_word_cache[word] = nil
+                            end
+                        end
+
+                        if global_word_cache[word] then
+                            bad_words[#bad_words + 1] = {
+                                pattern = global_word_cache[word],
                                 language = lang,
                                 word = word
-                            })
+                            }
                             word_count = word_count + 1
-                        else
-                            cprint(('WARNING: Could not compile pattern for "%s" in %s'):format(word, path), 12)
                         end
                     end
                 end
@@ -243,17 +253,12 @@ local function notify_infraction(name, word, pattern, lang)
     cprint(message)
 end
 
-local function new_infraction(ip, name)
-    infractions[ip] = infractions[ip] or { warnings = 0, name = name }
-    infractions[ip].warnings = infractions[ip].warnings + 1
-    infractions[ip].last_infraction = os.time()
-    infractions_dirty = true
-end
-
 function clean_infractions()
+    if next(infractions) == nil then return true end  -- Skip if empty
+
     local now = os.time()
     local changed = false
-    local grace_seconds = settings.grace_period * 86400 -- Convert days to seconds
+    local grace_seconds = settings.grace_period * 86400
 
     for ip, data in pairs(infractions) do
         if data.last_infraction and (now - data.last_infraction) > grace_seconds then
@@ -270,133 +275,141 @@ end
 -- ========================
 -- Command Handlers
 -- ========================
-local function handle_wb_langs(id)
-    if not has_permission(id, 4, 'You need level 4+ for this command') then return end
-
-    rprint(id, 'Enabled Languages:')
-    local found = false
-    for lang, enabled in pairs(settings.languages) do
-        if enabled then
-            rprint(id, '- ' .. lang)
-            found = true
+local command_handlers = {
+    wb_langs = function(id)
+        if not has_permission(id, 4, 'You need level 4+ for this command') then return end
+        rprint(id, 'Enabled Languages:')
+        local found = false
+        for lang, enabled in pairs(settings.languages) do
+            if enabled then
+                rprint(id, '- ' .. lang)
+                found = true
+            end
         end
-    end
-    if not found then rprint(id, 'No languages enabled') end
-end
+        if not found then rprint(id, 'No languages enabled') end
+    end,
 
-local function handle_wb_add_word(id, args)
-    if not has_permission(id, 4, 'You need level 4+ for this command') then return end
-    if #args < 3 then
-        rprint(id, 'Usage: /wb_add_word <word> <lang>')
-        return
-    end
+    wb_add_word = function(id, args)
+        if not has_permission(id, 4, 'You need level 4+ for this command') then return end
+        if #args < 3 then
+            rprint(id, 'Usage: /wb_add_word <word> <lang>')
+            return
+        end
 
-    local word, lang = args[2], args[3]
-    if not settings.languages[lang] then
-        rprint(id, 'Invalid language file')
-        return
-    end
-    if not settings.languages[lang] then
-        rprint(id, 'Language is disabled')
-        return
-    end
+        local word, lang = args[2], args[3]
+        if not settings.languages[lang] then
+            rprint(id, 'Invalid language file')
+            return
+        end
+        if not settings.languages[lang] then
+            rprint(id, 'Language is disabled')
+            return
+        end
 
-    local path = settings.lang_directory .. lang
-    local content = read_file(path) or ''
-    local new_content = content .. '\n' .. word
-    if write_file(path, new_content) then
-        rprint(id, ('Added "%s" to %s'):format(word, lang))
-        load_bad_words()
-    else
-        rprint(id, 'Failed to write to language file')
-    end
-end
-
-local function handle_wb_del_word(id, args)
-    if not has_permission(id, 4, 'You need level 4+ for this command') then return end
-    if #args < 3 then
-        rprint(id, 'Usage: /wb_del_word <word> <lang>')
-        return
-    end
-
-    local word, lang = args[2], args[3]
-    if not settings.languages[lang] then
-        rprint(id, 'Invalid language file')
-        return
-    end
-
-    local path = settings.lang_directory .. lang
-    local content = read_file(path)
-    if not content then
-        rprint(id, 'Language file not found')
-        return
-    end
-
-    local new_content = {}
-    local removed = false
-    for line in content:gmatch("[^\r\n]+") do
-        if line ~= word then
-            table.insert(new_content, line)
+        local path = settings.lang_directory .. lang
+        local content = read_file(path) or ''
+        local new_content = content .. '\n' .. word
+        if write_file(path, new_content) then
+            rprint(id, ('Added "%s" to %s'):format(word, lang))
+            load_bad_words()
         else
-            removed = true
+            rprint(id, 'Failed to write to language file')
         end
-    end
+    end,
 
-    if not removed then
-        rprint(id, ('Word "%s" not found in %s'):format(word, lang))
-        return
-    end
+    wb_del_word = function(id, args)
+        if not has_permission(id, 4, 'You need level 4+ for this command') then return end
+        if #args < 3 then
+            rprint(id, 'Usage: /wb_del_word <word> <lang>')
+            return
+        end
 
-    if write_file(path, table.concat(new_content, '\n')) then
-        rprint(id, ('Removed "%s" from %s'):format(word, lang))
+        local word, lang = args[2], args[3]
+        if not settings.languages[lang] then
+            rprint(id, 'Invalid language file')
+            return
+        end
+
+        local path = settings.lang_directory .. lang
+        local content = read_file(path)
+        if not content then
+            rprint(id, 'Language file not found')
+            return
+        end
+
+        local new_content = {}
+        local removed = false
+        for line in content:gmatch("[^\r\n]+") do
+            if line ~= word then
+                new_content[#new_content + 1] = line
+            else
+                removed = true
+            end
+        end
+
+        if not removed then
+            rprint(id, ('Word "%s" not found in %s'):format(word, lang))
+            return
+        end
+
+        if write_file(path, table.concat(new_content, '\n')) then
+            rprint(id, ('Removed "%s" from %s'):format(word, lang))
+            load_bad_words()
+        else
+            rprint(id, 'Failed to update language file')
+        end
+    end,
+
+    wb_enable_lang = function(id, args)
+        if not has_permission(id, 4, 'You need level 4+ for this command') then return end
+        if #args < 2 then
+            rprint(id, 'Usage: /wb_enable_lang <lang>')
+            return
+        end
+
+        local lang = args[2]
+        if not settings.languages[lang] then
+            rprint(id, 'Language file not found')
+            return
+        end
+        if settings.languages[lang] then
+            rprint(id, 'Language already enabled')
+            return
+        end
+
+        settings.languages[lang] = true
+        rprint(id, ('Enabled %s'):format(lang))
         load_bad_words()
-    else
-        rprint(id, 'Failed to update language file')
-    end
-end
+    end,
 
-local function handle_wb_enable_lang(id, args)
-    if not has_permission(id, 4, 'You need level 4+ for this command') then return end
-    if #args < 2 then
-        rprint(id, 'Usage: /wb_enable_lang <lang>')
-        return
-    end
+    wb_disable_lang = function(id, args)
+        if not has_permission(id, 4, 'You need level 4+ for this command') then return end
+        if #args < 2 then
+            rprint(id, 'Usage: /wb_disable_lang <lang>')
+            return
+        end
 
-    local lang = args[2]
-    if not settings.languages[lang] then
-        rprint(id, 'Language file not found')
-        return
-    end
-    if settings.languages[lang] then
-        rprint(id, 'Language already enabled')
-        return
-    end
+        local lang = args[2]
+        if not settings.languages[lang] then
+            rprint(id, 'Language file not found')
+            return
+        end
+        if not settings.languages[lang] then
+            rprint(id, 'Language already disabled')
+            return
+        end
 
-    settings.languages[lang] = true
-    rprint(id, ('Enabled %s'):format(lang))
-    load_bad_words()
-end
-
-local function handle_wb_disable_lang(id, args)
-    if not has_permission(id, 4, 'You need level 4+ for this command') then return end
-    if #args < 2 then
-        rprint(id, 'Usage: /wb_disable_lang <lang>')
-        return
+        settings.languages[lang] = false
+        rprint(id, ('Disabled %s'):format(lang))
+        load_bad_words()
     end
+}
 
-    local lang = args[2]
-    if not settings.languages[lang] then
-        rprint(id, 'Language file not found')
-        return
-    end
-    if not settings.languages[lang] then
-        rprint(id, 'Language already disabled')
-        return
-    end
-
-    settings.languages[lang] = false
-    rprint(id, ('Disabled %s'):format(lang))
-    load_bad_words()
+local function immune(id)
+    if immune_cache[id] ~= nil then return immune_cache[id] end
+    local lvl = tonumber(get_var(id, '$lvl'))
+    immune_cache[id] = settings.immune[lvl] or false
+    return immune_cache[id]
 end
 
 -- ========================
@@ -406,6 +419,7 @@ function OnScriptLoad()
     register_callback(cb['EVENT_CHAT'], 'OnChat')
     register_callback(cb['EVENT_COMMAND'], 'OnCommand')
     register_callback(cb['EVENT_GAME_END'], 'OnGameEnd')
+    register_callback(cb['EVENT_LEAVE'], 'OnPlayerLeave')
 
     infractions = load_infractions()
     load_bad_words()
@@ -419,36 +433,29 @@ end
 
 function OnGameEnd()
     save_infractions()
+    immune_cache = {}  -- Reset immunity cache
+end
+
+function OnPlayerLeave(id)
+    immune_cache[id] = nil
 end
 
 function OnCommand(id, command)
-    local args = {}
-    for arg in command:gmatch('%S+') do
-        table.insert(args, arg:lower())
+    local cmd = command:match("^(%S+)")
+    if not cmd or not settings.commands[cmd] then return true end
+
+    local handler = command_handlers[cmd]
+    if handler then
+
+        local args = {}
+        for arg in command:gmatch('%S+') do
+            table.insert(args, arg:lower())
+        end
+        handler(id, args)
+
+        return false
     end
-    if #args == 0 then return true end
-
-    local cmd = args[1]
-    if not settings.commands[cmd] then return true end
-
-    if cmd == 'wb_langs' then
-        handle_wb_langs(id)
-    elseif cmd == 'wb_add_word' then
-        handle_wb_add_word(id, args)
-    elseif cmd == 'wb_del_word' then
-        handle_wb_del_word(id, args)
-    elseif cmd == 'wb_enable_lang' then
-        handle_wb_enable_lang(id, args)
-    elseif cmd == 'wb_disable_lang' then
-        handle_wb_disable_lang(id, args)
-    end
-
-    return false
-end
-
-local function immune(id)
-    local lvl = tonumber(get_var(id, '$lvl'))
-    return settings.immune[lvl]
+    return true
 end
 
 function OnChat(id, message)
@@ -460,29 +467,38 @@ function OnChat(id, message)
     local msg_lower = message:lower()
 
     for _, data in ipairs(bad_words) do
-        local ok, found = pcall(function() return msg_lower:find(data.pattern) end)
-        if ok and found then
+        if msg_lower:find(data.pattern) then
             notify_infraction(name, data.word, data.pattern, data.language)
-            new_infraction(ip, name)
 
-            local warnings = infractions[ip] and infractions[ip].warnings or 0
-            if warnings == settings.warnings then
-                rprint(id, settings.last_warning)
-            elseif warnings > settings.warnings then
-                local action = settings.punishment
-                local msg = format_message(settings.on_punish, { punishment = action })
+            -- Handle infractions with local caching
+            local ip_data = infractions[ip]
+            if not ip_data then
+                ip_data = { warnings = 0, name = name }
+                infractions[ip] = ip_data
+            end
+            ip_data.warnings = ip_data.warnings + 1
+            ip_data.last_infraction = os.time()
+            infractions_dirty = true
 
-                if action == 'kick' then
-                    execute_command('k ' .. id .. ' "' .. msg .. '"')
-                elseif action == 'ban' then
-                    execute_command('ipban ' .. id .. ' ' .. settings.ban_duration .. ' "' .. msg .. '"')
+            -- Handle warnings/punishment
+            local warnings = ip_data.warnings
+            if warnings >= settings.warnings then
+                if warnings == settings.warnings then
+                    rprint(id, settings.last_warning)
+                else
+                    local action = settings.punishment
+                    local msg = format_message(settings.on_punish, { punishment = action })
+
+                    if action == 'kick' then
+                        execute_command('k ' .. id .. ' "' .. msg .. '"')
+                    elseif action == 'ban' then
+                        execute_command('ipban ' .. id .. ' ' .. settings.ban_duration .. ' "' .. msg .. '"')
+                    end
+                    infractions[ip] = nil
                 end
-                infractions[ip] = nil
-                infractions_dirty = true
             else
                 rprint(id, settings.notify_text)
             end
-            save_infractions()
             return false
         end
     end
