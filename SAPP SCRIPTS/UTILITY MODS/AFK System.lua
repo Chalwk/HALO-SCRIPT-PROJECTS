@@ -15,24 +15,34 @@
 --=====================================================================================--
 
 --========================= CONFIGURATION ====================================--
-local MAX_AFK_TIME = 300    -- Maximum allowed AFK time (seconds)
-local GRACE_PERIOD = 60     -- Grace period before kicking (seconds)
-local WARNING_INTERVAL = 30 -- Warning frequency (seconds)
-local AIM_THRESHOLD = 0.001 -- Camera aim detection sensitivity (adjust as needed)
-local WARNING_MESSAGE = "Warning: You will be kicked in $time_until_kick seconds for being AFK."
-local KICK_MESSAGE = "$name was kicked for being AFK!"
-local AFK_KICK_IMMUNITY = { -- Admin levels with kick immunity
+
+-- 1. AFK Timing Settings
+local MAX_AFK_TIME       = 300   -- Maximum allowed AFK time (seconds)
+local GRACE_PERIOD       = 60    -- Grace period before kicking (seconds)
+local WARNING_INTERVAL   = 30    -- Warning frequency (seconds)
+
+-- 2. AFK Detection Settings
+local AIM_THRESHOLD      = 0.001 -- Camera aim detection sensitivity (adjust as needed)
+
+-- 3. AFK Command & Permissions
+local AFK_PERMISSION     = 3     -- Minimum admin level required (-1 = public, 1-4 = admin levels)
+local AFK_COMMAND        = "afk" -- Command to toggle AFK status
+local AFK_KICK_IMMUNITY  = {     -- Admin levels with kick immunity
     [1] = true,
     [2] = true,
     [3] = true,
     [4] = true
 }
--- Voluntary AFK
-local VOLUNTARY_AFK_COMMAND = "afk" -- Command to toggle AFK status
-local VOLUNTARY_AFK_PERMISSION = 3 -- Minimum admin level required (-1 = public, 1-4 = admin levels)
-local VOLUNTARY_AFK_ACTIVATE_MSG = "$name is now AFK."
-local VOLUNTARY_AFK_DEACTIVATE_MSG = "$name is no longer AFK."
--- Configuration ends here.
+
+-- 4. AFK Messages
+local AFK_ACTIVATE_MSG   = "$name is now AFK."
+local AFK_DEACTIVATE_MSG = "$name is no longer AFK."
+local WARNING_MESSAGE    = "Warning: You will be kicked in $time_until_kick seconds for being AFK."
+local KICK_MESSAGE       = "$name was kicked for being AFK!"
+
+-- CONFIG ENDS ---------------------------------------------------------------
+
+-- DO NOT EDIT BELOW THIS LINE
 
 api_version = "1.12.0.0"
 
@@ -105,7 +115,7 @@ end
 -- Toggle voluntary AFK status
 function Player:toggleVoluntaryAFK()
     self.voluntaryAFK = not self.voluntaryAFK
-    local msg = self.voluntaryAFK and VOLUNTARY_AFK_ACTIVATE_MSG or VOLUNTARY_AFK_DEACTIVATE_MSG
+    local msg = self.voluntaryAFK and AFK_ACTIVATE_MSG or AFK_DEACTIVATE_MSG
     self:broadcast(msg, true)
 end
 
@@ -113,7 +123,7 @@ end
 function Player:checkVoluntaryAFKActivity()
     if self.voluntaryAFK then
         self.voluntaryAFK = false
-        self:broadcast(VOLUNTARY_AFK_DEACTIVATE_MSG, true)
+        self:broadcast(AFK_DEACTIVATE_MSG, true)
         return true
     end
     return false
@@ -242,14 +252,14 @@ function OnQuit(id)
 end
 
 local function hasPermission(id)
-    return tonumber(get_var(id, '$lvl')) >= VOLUNTARY_AFK_PERMISSION
+    return tonumber(get_var(id, '$lvl')) >= AFK_PERMISSION
 end
 
 function OnCommand(id, command)
     if id > 0 and players[id] then
         players[id].lastActive = time() -- Critical reset for any command
 
-        if command:lower() == VOLUNTARY_AFK_COMMAND then
+        if command:lower() == AFK_COMMAND then
             if hasPermission(id) then
                 players[id]:toggleVoluntaryAFK()
             else
