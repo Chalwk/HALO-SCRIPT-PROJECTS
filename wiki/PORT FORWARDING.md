@@ -45,16 +45,16 @@ You need to forward **both ports** below for the server to work correctly:
 | Service Name  | Halo SAPP Server (Server Port)                |
 | Protocol      | UDP                                           |
 | External Port | *Your chosen server port (for example, 2310)* |
-| Internal Port | *Your chosen server port (default is 2310)*   |
+| Internal Port | *Your chosen server port (for example, 2310)* |
 | Internal IP   | Your server’s local IP (Step 1)               |
-
-Perfect! Here’s a tidy, clear technical note you can add right after the first note in Step 4. It gently warns about port conflicts for local play — with calm, precise wording:
 
 ---
 
-> **Note:** The server port can be **any 4-digit number**, just make sure to use the same port number in both your server configuration and your port forwarding rules.
+> **Note:** The server port can be **any 4-digit number**, just make sure to use the same port number in both your
+> server configuration and your port forwarding rules.
 >
-> **Important:** If you play the game on the same local network as your server, ensure the server port is **different** from your client port in-game. To check your client port:
+> **Important:** If you play the game on the same local network as your server, ensure the server port is **different**
+> from your client port in-game. To check your client port:
 >
 > 1. Launch Halo
 > 2. Go to **Settings → Network Setup**
@@ -79,7 +79,7 @@ Create **one inbound rule** that covers **both UDP ports 2302 and your server po
 2. Click **Inbound Rules** → **New Rule...**
 3. Select **Port** → **Next**
 4. Choose **UDP**
-5. In "Specific local ports", enter: `2302,<your server port>` (e.g., `2302,2512`) → **Next**
+5. In "Specific local ports", enter: `2302,<your server port>` (e.g., `2302,2310`) → **Next**
 6. Select **Allow the connection** → **Next**
 7. Select profiles (Domain, Private, Public) → **Next**
 8. Name it `Halo SAPP Server (Ports 2302, <your server port>)` → **Finish**
