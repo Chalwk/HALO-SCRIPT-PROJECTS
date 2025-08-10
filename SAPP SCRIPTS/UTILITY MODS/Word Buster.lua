@@ -3,7 +3,7 @@
 -- DESCRIPTION:      An advanced, multilingual profanity filter.
 --
 -- FEATURES:         Monitors chat messages for offensive words with flexible pattern matching
---                   to catch variations and substitutions (e.g., "a$$hole"). Tracks player infractions
+--                   to catch leet-speak (e.g., "a$$hole"). Tracks player infractions
 --                   over time, issues warnings, and enforces punishments like kicks or temporary bans.
 --                   Supports 21 languages, admin immunity, configurable settings, and in-game
 --                   commands to manage word lists and languages dynamically.
@@ -19,7 +19,7 @@
 -- ========================
 -- Configurable Settings
 -- ========================
-local settings = {
+local CFG = {
 
     -- General behaviour
     warnings = 5,                -- Number of warnings before punishment
@@ -27,7 +27,7 @@ local settings = {
     ignore_commands = true,      -- Whether to ignore commands when checking for infractions
     clean_interval_seconds = 30, -- How often to clean infractions (in seconds)
     immune = {                   -- Admin levels that are immune
-        [1] = true, [2] = true, [3] = true, [4] = true
+        [1] = true, [2] = true, [3] = true, [4] = false
     },
 
     -- Notification messages
@@ -48,6 +48,7 @@ local settings = {
     notify_console_format = '[INFRACTION] | $name | $word | $pattern | $lang',
 
     -- Commands
+    command_permission_level = 4,  -- Required level to run commands
     commands = {
         wb_langs = true,
         wb_add_word = true,
@@ -69,29 +70,11 @@ local settings = {
     -- ========================================
     -- BELOW: FOR ADVANCED USERS ONLY
     -- ========================================
+
+    -- Leet-speak substitutions
+
     pattern_settings = {
-
-        -- Trim whitespace
-        trim_pattern = "^%s*(.-)%s*$",
-
-        -- Comment lines in word lists
-        comment_pattern = "^%s*#",
-
-        -- Characters allowed between letters (no quantifier)
-        separator_class = "[%s%p]",
-
-        -- Word boundary anchors
-        word_boundary_start = "",
-        word_boundary_end = "",
-
-        -- Non-alphanumeric character escape
-        escape_non_word = "([^%w])",
-        escape_replacement = "%%%1",
-
-        -- Pattern for reading lines in a file
-        line_pattern = "[^\\r\\n]+",
-
-        -- Leet-speak substitutions
+        separator = "[-*_. ]*",
         leet_map = {
             a = "[aA@*#]", b = "[bB]",	 c = "[cCkK*#]",  d = "[dD]", 	e = "[eE3]", 	f = "[fF]",
             g = "[gG6]",   h = "[hH]",	 i = "[iIl!1]",   j = "[jJ]", 	k = "[cCkK*#]", l = "[lL1!i]",
@@ -115,18 +98,22 @@ local pattern_cache = {}
 local global_word_cache = {}
 
 -- Precomputed values
-local GRACE_PERIOD_SECONDS = settings.grace_period * 86400
-local CLEAN_INTERVAL_MS = settings.clean_interval_seconds * 1000
+local GRACE_PERIOD_SECONDS = CFG.grace_period * 86400
+local CLEAN_INTERVAL_MS = CFG.clean_interval_seconds * 1000
 
+local pcall = pcall
 local open = io.open
+local rprint = rprint
+local get_var = get_var
 local pairs, ipairs = pairs, ipairs
+local tonumber = tonumber
 local concat = table.concat
 local clock, time = os.clock, os.time
 
 -- Metatable for pattern fallback
-setmetatable(settings.pattern_settings.leet_map, {
+setmetatable(CFG.pattern_settings.leet_map, {
     __index = function(_, char)
-        return char:gsub(settings.pattern_settings.escape_non_word, settings.pattern_settings.escape_replacement)
+        return char:gsub("([^%w])", "%%%1")
     end
 })
 
@@ -150,13 +137,13 @@ local function read_file(path)
 end
 
 local function load_infractions()
-    local content = read_file(settings.infractions_directory)
+    local content = read_file(CFG.infractions_directory)
     return content and json:decode(content) or {}
 end
 
 local function save_infractions()
     if infractions_dirty then
-        if write_file(settings.infractions_directory, infractions, true) then
+        if write_file(CFG.infractions_directory, infractions, true) then
             infractions_dirty = false
         end
     end
@@ -169,22 +156,15 @@ end
 local function compile_pattern(word)
     if pattern_cache[word] then return pattern_cache[word] end
 
-    local ps = settings.pattern_settings
-    word = word:match(ps.trim_pattern) or ""
-    local pattern_builder = {}
+    word = word:match("^%s*(.-)%s*$") or ""
+    local separator = CFG.pattern_settings.separator
 
-    local sep = (ps.separator_class) .. '*'
-    local len = #word
-    for i = 1, len do
-        local ch = word:sub(i, i)
-        local chpat = ps.leet_map[ch:lower()] or ch:gsub(ps.escape_non_word, ps.escape_replacement)
-        pattern_builder[#pattern_builder + 1] = chpat
-        if i < len then
-            pattern_builder[#pattern_builder + 1] = sep
-        end
+    local letters = {}
+    for char in word:gmatch(".") do
+        letters[#letters + 1] = CFG.pattern_settings.leet_map[char:lower()]
     end
 
-    local pattern = ps.word_boundary_start .. concat(pattern_builder) .. ps.word_boundary_end
+    local pattern = '%f[%w]' .. concat(letters, separator) .. '%f[%W]'
     pattern_cache[word] = pattern
     return pattern
 end
@@ -193,14 +173,13 @@ end
 -- Core Functionality
 -- ========================
 local function load_bad_word_file(path, lang)
-    local ps = settings.pattern_settings
     local content = read_file(path)
     if not content then return 0 end
 
     local count = 0
-    for line in content:gmatch(ps.line_pattern) do
-        local word = line:match(ps.trim_pattern)
-        if word and word ~= "" and not word:match(ps.comment_pattern) then
+    for line in content:gmatch("[^\r\n]+") do
+        local word = line:match("^%s*(.-)%s*$")
+        if word and word ~= "" and not word:match("^%s*#") then
             if not global_word_cache[word] then
                 local ok, pattern = pcall(compile_pattern, word)
                 if ok and pattern then
@@ -230,9 +209,9 @@ local function load_bad_words()
     local lang_count = 0
     local start_time = clock()
 
-    for lang, enabled in pairs(settings.languages) do
+    for lang, enabled in pairs(CFG.languages) do
         if enabled then
-            local path = settings.lang_directory .. lang
+            local path = CFG.lang_directory .. lang
             local count = load_bad_word_file(path, lang)
             if count > 0 then
                 word_count = word_count + count
@@ -251,8 +230,8 @@ local function format_message(template, vars)
 end
 
 local function notify_infraction(name, word, pattern, lang)
-    if settings.notify_console then
-        local message = format_message(settings.notify_console_format, {
+    if CFG.notify_console then
+        local message = format_message(CFG.notify_console_format, {
             name = name,
             word = word,
             pattern = pattern,
@@ -289,7 +268,7 @@ end
 local function handle_wb_langs(id)
     rprint(id, 'Enabled Languages:')
     local found = false
-    for lang, enabled in pairs(settings.languages) do
+    for lang, enabled in pairs(CFG.languages) do
         if enabled then
             rprint(id, '- ' .. lang)
             found = true
@@ -305,12 +284,12 @@ local function handle_wb_add_word(id, args)
     end
 
     local word, lang = args[2], args[3]
-    if not settings.languages[lang] then
+    if not CFG.languages[lang] then
         rprint(id, 'Invalid language file')
         return
     end
 
-    local path = settings.lang_directory .. lang
+    local path = CFG.lang_directory .. lang
     local content = read_file(path) or ''
     local new_content = content .. '\n' .. word
 
@@ -329,19 +308,19 @@ local function handle_wb_del_word(id, args)
     end
 
     local word, lang = args[2], args[3]
-    if not settings.languages[lang] then
+    if not CFG.languages[lang] then
         rprint(id, 'Invalid language file')
         return
     end
 
-    local path = settings.lang_directory .. lang
+    local path = CFG.lang_directory .. lang
     local content = read_file(path)
     if not content then
         rprint(id, 'Language file not found')
         return
     end
 
-    local ps = settings.pattern_settings
+    local ps = CFG.pattern_settings
     local new_content = {}
     local removed = false
 
@@ -373,17 +352,17 @@ local function handle_lang_toggle(id, args, enable)
     end
 
     local lang = args[2]
-    if not settings.languages[lang] then
+    if not CFG.languages[lang] then
         rprint(id, 'Language file not found')
         return
     end
 
-    if settings.languages[lang] == enable then
+    if CFG.languages[lang] == enable then
         rprint(id, 'Language already ' .. (enable and 'enabled' or 'disabled'))
         return
     end
 
-    settings.languages[lang] = enable
+    CFG.languages[lang] = enable
     rprint(id, ('%s %s'):format(enable and 'Enabled' or 'Disabled', lang))
     load_bad_words()
 end
@@ -398,7 +377,7 @@ local command_handlers = {
 
 local function immune(id)
     if immune_cache[id] == nil then
-        immune_cache[id] = settings.immune[tonumber(get_var(id, '$lvl'))] or false
+        immune_cache[id] = CFG.immune[tonumber(get_var(id, '$lvl'))] or false
     end
     return immune_cache[id]
 end
@@ -411,7 +390,6 @@ function OnScriptLoad()
     register_callback(cb['EVENT_COMMAND'], 'OnCommand')
     register_callback(cb['EVENT_GAME_END'], 'OnGameEnd')
     register_callback(cb['EVENT_LEAVE'], 'OnPlayerLeave')
-    --register_callback(cb['EVENT_GAME_START'], 'OnStart') -- for debugging
 
     infractions = load_infractions()
     load_bad_words()
@@ -433,12 +411,12 @@ end
 
 function OnCommand(id, command)
     local cmd = command:match("^(%S+)")
-    if not cmd or not settings.commands[cmd] then return true end
+    if not cmd or not CFG.commands[cmd] then return true end
 
     local handler = command_handlers[cmd]
     if handler then
-        if not has_permission(id, 4) then
-            rprint(id, 'You need level 4+ for this command')
+        if not has_permission(id, CFG.command_permission_level) then
+            rprint(id, ('You need level %d+ for this command'):format(CFG.command_permission_level))
             return false
         end
 
@@ -453,16 +431,14 @@ function OnCommand(id, command)
 end
 
 function OnChat(id, message)
-    if settings.ignore_commands and (message:find('^/') or message:find('^\\')) then return true end
+    if CFG.ignore_commands and (message:find('^/') or message:find('^\\')) then return true end
     if immune(id) then return true end
 
-    local ps = settings.pattern_settings
     local name = get_var(id, '$name')
     local ip = get_var(id, '$ip')
-    local msg_lower = message:lower()
 
     for _, data in ipairs(bad_words) do
-        if msg_lower:find(data.pattern) then
+        if message:find(data.pattern) then
             notify_infraction(name, data.word, data.pattern, data.language)
 
             local ip_data = infractions[ip] or { warnings = 0, name = name }
@@ -473,107 +449,23 @@ function OnChat(id, message)
             infractions_dirty = true
 
             local warnings = ip_data.warnings
-            if warnings == settings.warnings then
-                rprint(id, settings.last_warning)
-            elseif warnings > settings.warnings then
-                local action = settings.punishment
-                local msg = format_message(settings.on_punish, { punishment = action })
+            if warnings == CFG.warnings then
+                rprint(id, CFG.last_warning)
+            elseif warnings > CFG.warnings then
+                local action = CFG.punishment
+                local msg = format_message(CFG.on_punish, { punishment = action })
 
                 if action == 'kick' then
                     execute_command('k ' .. id .. ' "' .. msg .. '"')
                 elseif action == 'ban' then
-                    execute_command('ipban ' .. id .. ' ' .. settings.ban_duration .. ' "' .. msg .. '"')
+                    execute_command('ipban ' .. id .. ' ' .. CFG.ban_duration .. ' "' .. msg .. '"')
                 end
                 infractions[ip] = nil
             else
-                rprint(id, settings.notify_text)
+                rprint(id, CFG.notify_text)
             end
             return false
         end
     end
     return true
-end
-
-function OnStart()
-    if get_var(0, '$gt') == 'n/a' then return end
-
-    -- ================================
-    -- Profanity Filter Test Harness
-    -- ================================
-
-    local test_bad_words = { "fuck", "shit", "bitch", "asshole", "bastard", "cunt", "dick", "piss" }
-    local test_patterns = {}
-    for _, w in ipairs(test_bad_words) do
-        test_patterns[#test_patterns + 1] = {
-            word = w,
-            pattern = compile_pattern(w),
-            language = "en.txt"
-        }
-    end
-
-    local test_sentences = {
-        { msg = "Hello there, friend!", should_match = false },
-        { msg = "You are a fuck!", should_match = true },
-        { msg = "That guy is an a$$hole!", should_match = true },
-        { msg = "Sh1t happens.", should_match = true },
-        { msg = "$h1+ happens.", should_match = true },
-        { msg = "s_h_i_t+", should_match = true },
-        { msg = "5h!t", should_match = true },
-        { msg = "sh!t.", should_match = true },
-        { msg = "This is a clean sentence with no swearing.", should_match = false },
-        { msg = "You little b!tch!", should_match = true },
-        { msg = "P1ss off, mate.", should_match = true },
-        { msg = "Good morning everyone.", should_match = false },
-        { msg = "You're such a BasTaRd!", should_match = true },
-        { msg = "F.U.C.K this!", should_match = true },
-        { msg = "Nothing rude here at all.", should_match = false },
-        { msg = "f*ck off!", should_match = true },
-        { msg = "f#ck you!", should_match = true },
-        { msg = "f**k!", should_match = true },
-        { msg = "sh!7 happens.", should_match = true },
-        { msg = "b!tch please.", should_match = true },
-        { msg = "a$$h0le alert!", should_match = true },
-        { msg = "a5sh0le!", should_match = true },
-        { msg = "c*nt!", should_match = true },
-        { msg = "d!ckhead.", should_match = true },
-        { msg = "d1ck!", should_match = true },
-        { msg = "p!$$ off.", should_match = true },
-        { msg = "p1$$ed off!", should_match = true },
-        { msg = "b@st@rd!", should_match = true },
-        { msg = "c.u.n.t", should_match = true },
-        { msg = "sh!tty.", should_match = true },
-        { msg = "f.u.c.k.y.o.u", should_match = true },
-        { msg = "5h!7 h@pp3ns.", should_match = true },
-        { msg = "b1tch!", should_match = true },
-        { msg = "a$$h*l3", should_match = true },
-        { msg = "p!ss off!", should_match = true },
-    }
-
-    -- Run the tests
-    print("=== Word Buster Test Results ===")
-    for i, test in ipairs(test_sentences) do
-        local lower_msg = test.msg:lower()
-        local matched = false
-        local matched_word, matched_pattern
-
-        for _, data in ipairs(test_patterns) do
-            if lower_msg:find(data.pattern) then
-                matched = true
-                matched_word = data.word
-                matched_pattern = data.pattern
-                break
-            end
-        end
-
-        local result = matched == test.should_match and "PASS" or "FAIL"
-        print(string.format(
-            "[%02d] %-50s | Expected: %-5s | Got: %-5s | %s%s",
-            i,
-            '"' .. test.msg .. '"',
-            tostring(test.should_match),
-            tostring(matched),
-            result,
-            matched and (" | Matched Word: " .. matched_word) or ""
-        ))
-    end
 end
