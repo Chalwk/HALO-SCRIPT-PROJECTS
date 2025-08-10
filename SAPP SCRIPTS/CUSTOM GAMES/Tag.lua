@@ -1,83 +1,57 @@
---=====================================================================================================--
+--=====================================================================================--
 -- SCRIPT NAME:      Tag
--- DESCRIPTION:      Classic game of tag with a twist!
---
---                   - Start by hitting a player to make them 'it' (the tagger).
---                   - Taggers wield an oddball with a 1.5x speed boost.
---                   - Runners carry plasma rifles (slows taggers when shot).
---                   - Runners earn 5 points every 10 seconds; tagging grants 500 points.
---                   - Runners cannot earn points by killing.
---                   - Score limit set at 10,000.
---                   - Turn ends when tagger tags someone or time runs out.
---                   - If time lapses without tagging, a new tagger is randomly chosen.
---
---                   Recommended for medium & small maps:
---                   timberland, bloodgulch, damnation, longest,
---                   chillout, carousel, ratrace, putput,
---                   prisoner, wizard, beavercreek, hangemhigh
+-- DESCRIPTION:      A mini-game where one player is the "tagger" and tries
+--                   to tag other players. When a runner is tagged, they become the
+--                   new tagger. Runners earn points over time, while taggers earn a
+--                   large score bonus for tagging someone. Optional settings allow
+--                   for automatic tagger rotation, speed modifiers, and more.
 --
 -- AUTHOR:           Jericho Crosby (Chalwk)
 -- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
 --
--- Copyright (c) 2022-2024 Jericho Crosby <jericho.crosby227@gmail.com>
+-- COPYRIGHT (c) 2022-2025 Jericho Crosby <jericho.crosby227@gmail.com>
 -- LICENSE:          MIT License
 --                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
+--=====================================================================================--
 
--- Configuration table for the Tag game mode
-local Tag = {
-    -- The score limit to win the game
-    score_limit = 10000,
+-- CONFIG --
+local CFG = {
 
-    -- Points awarded to the tagger for tagging a runner
-    points_on_tag = 100,
+    SCORE_LIMIT          = 10000,                   -- Total score required to end the game.
+    TAG_POINTS           = 500,                     -- Points awarded to the tagger for tagging a runner.
+    RUNNER_POINTS        = 5,                       -- Points awarded to each runner every interval.
+    POINTS_INTERVAL      = 10,                      -- Seconds between runner point awards.
+    TURN_TIME            = 60,                      -- Max seconds a player can stay tagger before auto-rotation.
+    MIN_PLAYERS          = 2,                       -- Minimum players required to start a game.
+    TAGGER_SPEED         = 1.5,                     -- Movement speed multiplier for the tagger.
+    RUNNER_SPEED         = 1.0,                     -- Movement speed multiplier for runners.
+    INITIAL_TAGGER_DELAY = 5,                       -- Delay (seconds) before selecting random tagger.
+    NEW_TAGGER_ON_QUIT   = true,                    -- Select new tagger if current tagger leaves.
+    NEW_TAGGER_ON_DEATH  = false,                   -- Select new tagger if current tagger dies.
+    SERVER_PREFIX        = '**TAG**',               -- Prefix for server broadcast messages.
+    RANDOM_TAGGER        = '%s is now the tagger!', -- Message when a random player becomes tagger.
+    ON_TAG               = {                        -- Messages displayed when a player is tagged:
+        "Tag, you're it! (%s got you)",
+        '%s was tagged by %s'
+    }
+}
+-- END OF CONFIG
 
-    -- Points awarded to runners every points_interval seconds
-    runner_points = 5,
+api_version = '1.12.0.0'
 
-    -- Interval in seconds for awarding points to runners
-    points_interval = 10,
-
-    -- Duration in seconds for each tagger's turn
-    turn_time = 60,
-
-    -- Minimum number of players required to start the game
-    players_required = 2,
-
-    -- Speed settings for taggers and runners
-    speed = {
-        tagger = 1.5,  -- Speed multiplier for taggers
-        runner = 1    -- Speed multiplier for runners
-    },
-
-    -- Messages displayed when a player is tagged
-    on_tag = {
-        "Tag, you're it! ($name got you)",  -- Message for the new tagger
-        '$name was tagged by $tagger'       -- Message for the runner who was tagged
-    },
-
-    -- Message displayed when a random player is chosen as the new tagger
-    random_tagger = '$name is now the tagger!',
-
-    -- Whether a new tagger should be chosen when the current tagger quits
-    new_tagger_on_quit = true,
-
-    -- Whether a new tagger should be chosen when the current tagger dies
-    new_tagger_on_death = false,
-
-    -- Prefix for server messages
-    server_prefix = '**SAPP**'
+-- Game State
+local game = {
+    players = {},
+    tagger = nil,
+    game_over = true,
+    next_point_time = 0,
+    tagger_weapon = nil,
+    runner_weapon = nil,
+    waiting_for_players = false,
 }
 
-local players = {}
-local game_over = false
-local tagger
-local tagger_weapon_meta_id
-local runner_weapon_meta_id
-local tagger_weapon
-local runner_weapon
-
-local objects = {
+-- Predefined object bans
+local BANNED_OBJECTS = {
     'weapons\\frag grenade\\frag grenade',
     'weapons\\plasma grenade\\plasma grenade',
     'vehicles\\ghost\\ghost_mp',
@@ -100,263 +74,320 @@ local objects = {
     'weapons\\rocket launcher\\rocket launcher'
 }
 
-local function getTag(class, name)
+-- Precomputed values
+local time = os.time
+
+-- Player Management
+local Player = {}
+Player.__index = Player
+
+function Player.new(id)
+    return setmetatable({
+        id = id,
+        name = get_var(id, '$name'),
+        is_tagger = false,
+        drone = nil,
+        next_point = 0,
+        turn_end = 0,
+        assign_weapon_flag = false,
+    }, Player)
+end
+
+function Player:flag_weapon_reassign()
+    self.assign_weapon_flag = true
+end
+
+function Player:set_tagger(state)
+    self.is_tagger = state
+    execute_command('s ' .. self.id .. ' ' .. (state and CFG.TAGGER_SPEED or CFG.RUNNER_SPEED))
+
+    if state then
+        self.turn_end = time() + CFG.TURN_TIME
+        self:assign_weapon(game.tagger_weapon)
+    else
+        self:assign_weapon(game.runner_weapon)
+    end
+end
+
+function Player:assign_weapon(weapon)
+    self:remove_weapons()
+    self.drone = spawn_object('', '', 0, 0, -9999, 0, weapon)
+    assign_weapon(self.drone, self.id)
+end
+
+function Player:remove_weapons()
+    if self.drone then
+        destroy_object(self.drone)
+        self.drone = nil
+    end
+    execute_command('wdel ' .. self.id)
+end
+
+function Player:update_score(points)
+    local new_score = tonumber(get_var(self.id, '$score')) + points
+    execute_command('score ' .. self.id .. ' ' .. new_score)
+end
+
+function Player:reset()
+    self:remove_weapons()
+    execute_command('s ' .. self.id .. ' 1.0')
+end
+
+-- Game Logic
+local function broadcast(msg, pid)
+    execute_command('msg_prefix ""')
+    if pid then say(pid, msg) else say_all(msg) end
+    execute_command('msg_prefix "' .. CFG.SERVER_PREFIX .. '"')
+end
+
+local function disable_objects(disable)
+    local cmd = disable and 'disable_object' or 'enable_object'
+    for _, object in ipairs(BANNED_OBJECTS) do
+        execute_command(cmd .. ' "' .. object .. '" 0')
+    end
+end
+
+local function get_tag_id(class, name)
     local tag = lookup_tag(class, name)
     return (tag ~= 0 and read_dword(tag + 0xC)) or nil
 end
 
-local function broadcast(msg, pm)
-    execute_command('msg_prefix ""')
-    if not pm then
-        say_all(msg)
-    else
-        say(pm, msg)
-    end
-    execute_command('msg_prefix "' .. Tag.server_prefix .. '"')
-end
-
-local function disableObjects(state)
-    state = (state and 'enable_object') or 'disable_object'
-    for _, object in ipairs(objects) do
-        execute_command(state .. ' "' .. object .. '" 0')
-    end
-end
-
-local function enoughPlayers(quit)
-    local n = tonumber(get_var(0, '$pn'))
-    n = (quit and n - 1 or n)
-    return (n >= Tag.players_required)
-end
-
-local function pickRandomPlayer(quit)
-
-    if not enoughPlayers(quit) then
-        tagger = nil
-        broadcast('Game of tag has ended. Not enough players.')
-        return
-    end
-
+local function select_new_tagger(previous_tagger)
     local candidates = {}
-    for i in pairs(players) do
-        if player_present(i) and i ~= tagger then
-            candidates[#candidates + 1] = i
+    for id, _ in pairs(game.players) do
+        if player_present(id) and id ~= previous_tagger then
+            candidates[#candidates + 1] = id
         end
     end
 
-    if #candidates > 0 then
-        local new_tagger = candidates[math.random(#candidates)]
-        players[new_tagger]:setTagger(quit)
-    end
+    if #candidates == 0 then return nil end
+    return candidates[math.random(#candidates)]
 end
 
-local Player = {}
-Player.__index = Player
-
-function Player:new(id)
-    local self = setmetatable({}, Player)
-    self.id = id
-    self.name = get_var(id, '$name')
-    self.assign = true
-    self.drone = ''
-    self.killer = 0
-    self.periodic_scoring = false
-    return self
-end
-
-function Player:isTagger()
-    return self.id == tagger
-end
-
-function Player:setSpeed()
-    execute_command('s ' .. self.id .. ' ' .. Tag.speed.tagger)
-    for i, _ in pairs(players) do
-        if i ~= self.id then
-            execute_command('s ' .. i .. ' ' .. Tag.speed.runner)
+local function count_players()
+    local count = 0
+    for id, _ in pairs(game.players) do
+        if player_present(id) then
+            count = count + 1
         end
     end
+    return count
 end
 
-function Player:setTagger(quit)
+function SetInitialTagger()
 
-    tagger = self.id
-    self.assign = true
-    self.periodic_scoring = false
-    self.turn_start = os.time()
-    self.turn_finish = self.turn_start + Tag.turn_time
-    self:setSpeed()
-
-    local tag_message = Tag.on_tag[1]:gsub('$name', self.name)
-    local runner_message = Tag.on_tag[2]:gsub('$name', self.name):gsub('$tagger', self.name)
-
-    for i, player in pairs(players) do
-
-        if quit then
-            player:broadcast(Tag.random_tagger:gsub('$name', self.name), true)
-        elseif i == self.id then
-            player:broadcast(tag_message, true)
-        else
-            player:broadcast(runner_message, true)
-        end
+    if count_players() < CFG.MIN_PLAYERS then
+        game.waiting_for_players = true
+        disable_objects(false)  -- Re-enable objects
+        timer(2000, "SetInitialTagger")  -- Retry later
+        return false
     end
-end
 
-function Player:broadcast(msg, pm)
-    broadcast(msg, pm and self.id or nil)
-end
-
-function Player:assignWeapons()
-    if self.assign then
-        self.assign = false
-        execute_command_sequence('nades ' .. self.id .. ' 0; wdel ' .. self.id)
-        local weapon = self:isTagger() and tagger_weapon or runner_weapon
-        self.drone = spawn_object('', '', 0, 0, -9999, 0, weapon)
-        assign_weapon(self.drone, self.id)
-    end
-end
-
-function Player:updateScore(deduct, runner_points)
-    local score = tonumber(get_var(self.id, '$score'))
-    if deduct then
-        score = math.max(0, score - 1)
+    local new_tagger = select_new_tagger(nil)
+    if new_tagger then
+        disable_objects(true)
+        execute_command('sv_map_reset')
+        game.next_point_time = time() + CFG.POINTS_INTERVAL
+        game.players[new_tagger]:set_tagger(true)
+        game.tagger = new_tagger
+        broadcast(CFG.RANDOM_TAGGER:format(game.players[new_tagger].name))
+        game.game_over = false
+        game.waiting_for_players = false
+        return false
     else
-        score = score + (runner_points and Tag.runner_points or Tag.points_on_tag)
+        game.waiting_for_players = true
+        timer(2000, "SetInitialTagger") -- retry after 2 seconds
+        return false
     end
-    execute_command('score ' .. self.id .. ' ' .. score)
 end
 
-function Player:deleteDrone(assign)
-    destroy_object(self.drone)
-    self.assign = assign
+local function handle_tagger_transfer(new_tagger_id, old_tagger_name)
+    local new_player = game.players[new_tagger_id]
+
+    -- Set new tagger
+    if game.tagger then
+        game.players[game.tagger]:set_tagger(false)
+    end
+    new_player:set_tagger(true)
+    game.tagger = new_tagger_id
+
+    -- Broadcast messages
+    broadcast(CFG.ON_TAG[1]:format(old_tagger_name), new_tagger_id)
+    for id, _ in pairs(game.players) do
+        if id ~= new_tagger_id then
+            broadcast(CFG.ON_TAG[2]:format(new_player.name, old_tagger_name), id)
+        end
+    end
+
+    new_player:update_score(CFG.TAG_POINTS)
 end
 
+local function process_point_distribution()
+    local current_time = time()
+    if current_time < game.next_point_time then return end
+
+    game.next_point_time = current_time + CFG.POINTS_INTERVAL
+    for _, player in pairs(game.players) do
+        if not player.is_tagger then
+            player:update_score(CFG.RUNNER_POINTS)
+        end
+    end
+end
+
+local function check_tagger_timeout()
+    if not game.tagger then return end
+
+    local tagger = game.players[game.tagger]
+    if os.time() >= tagger.turn_end then
+        local new_tagger = select_new_tagger(game.tagger)
+        if new_tagger then
+            handle_tagger_transfer(new_tagger, tagger.name)
+        end
+    end
+end
+
+-- Event Handlers
 function OnScriptLoad()
-    register_callback(cb['EVENT_TICK'], 'OnTick')
-    register_callback(cb['EVENT_JOIN'], 'OnJoin')
-    register_callback(cb['EVENT_SPAWN'], 'OnSpawn')
-    register_callback(cb['EVENT_DIE'], 'OnDamage')
-    register_callback(cb['EVENT_LEAVE'], 'OnQuit')
-    register_callback(cb['EVENT_GAME_END'], 'OnEnd')
-    register_callback(cb['EVENT_WEAPON_DROP'], 'OnDrop')
-    register_callback(cb['EVENT_GAME_START'], 'OnStart')
-    register_callback(cb['EVENT_DAMAGE_APPLICATION'], 'OnDamage')
+    register_callback(cb.EVENT_DIE, 'OnDeath')
+    register_callback(cb.EVENT_TICK, 'OnTick')
+    register_callback(cb.EVENT_JOIN, 'OnJoin')
+    register_callback(cb.EVENT_LEAVE, 'OnQuit')
+    register_callback(cb.EVENT_SPAWN, 'OnSpawn')
+    register_callback(cb.EVENT_GAME_END, 'OnEnd')
+    register_callback(cb.EVENT_GAME_START, 'OnStart')
+    register_callback(cb.EVENT_WEAPON_DROP, 'OnWeaponDrop')
+    register_callback(cb.EVENT_DAMAGE_APPLICATION, 'OnDamage')
+
     OnStart()
 end
 
-function OnScriptUnload()
-    disableObjects(true)
-end
-
 function OnStart()
-    if get_var(0, '$gt') ~= 'n/a' then
+    if get_var(0, '$gt') == 'n/a' then return end
 
-        tagger_weapon_meta_id = getTag('jpt!', 'weapons\\ball\\melee')
-        runner_weapon_meta_id = getTag('jpt!', 'weapons\\plasma rifle\\melee')
-        tagger_weapon = getTag('weap', 'weapons\\ball\\ball')
-        runner_weapon = getTag('weap', 'weapons\\plasma rifle\\plasma rifle')
+    game.tagger_weapon = get_tag_id('weap', 'weapons\\ball\\ball')
+    game.runner_weapon = get_tag_id('weap', 'weapons\\plasma rifle\\plasma rifle')
+    execute_command('scorelimit ' .. CFG.SCORE_LIMIT)
 
-        game_over = false
-        players = {}
-        tagger = nil
-        disableObjects(false)
-
-        execute_command('scorelimit ' .. Tag.score_limit)
-        for i = 1, 16 do
-            if player_present(i) then
-                OnJoin(i)
-            end
+    -- Initialize all players (happens when script is loaded after a game has started)
+    for i = 1, 16 do
+        if player_present(i) then
+            game.players[i] = Player.new(i)
         end
+    end
+
+    local count = count_players()
+    if count >= CFG.MIN_PLAYERS then
+        broadcast("Starting a new game in 5 seconds...")
+        timer(CFG.INITIAL_TAGGER_DELAY * 1000, "SetInitialTagger")
+        game.waiting_for_players = false
+    else
+        game.waiting_for_players = true
+        disable_objects(false)
     end
 end
 
 function OnEnd()
-    game_over = true
+    game.game_over = true
+    for _, player in pairs(game.players) do
+        player:reset()
+    end
 end
 
 function OnTick()
-    for i, player in pairs(players) do
+    if game.game_over or game.waiting_for_players then return end
+    process_point_distribution()
+    check_tagger_timeout()
 
-        if game_over or not player_present(i) or not player_alive(i) then
-            goto continue
-        end
-
-        player:assignWeapons()
-        execute_command('battery ' .. i .. ' 100')
-
-        if player:isTagger() and os.time() >= player.turn_finish then
-            pickRandomPlayer()
-        elseif not player:isTagger() then
-            if not player.periodic_scoring then
-                player.periodic_scoring = true
-                player.runner_start = os.time()
-                player.runner_finish = player.runner_start + Tag.points_interval
-            elseif os.time() >= player.runner_finish then
-                player.runner_start = os.time()
-                player.runner_finish = player.runner_start + Tag.points_interval
-                player:updateScore(false, true)
+    for id, player in pairs(game.players) do
+        if player.assign_weapon_flag and player_alive(id) then
+            player.assign_weapon_flag = false
+            player:remove_weapons()
+            if player.is_tagger then
+                player:assign_weapon(game.tagger_weapon)
+            else
+                player:assign_weapon(game.runner_weapon)
             end
         end
-
-        :: continue ::
     end
 end
 
 function OnJoin(id)
-    players[id] = Player:new(id)
+    game.players[id] = Player.new(id)
+    if game.waiting_for_players and count_players() >= CFG.MIN_PLAYERS then
+        game.waiting_for_players = false
+        broadcast("Enough players joined! Starting a new game in 5 seconds...")
+        timer(CFG.INITIAL_TAGGER_DELAY * 1000, "SetInitialTagger")
+    end
 end
 
 function OnSpawn(id)
-    local player = players[id]
-    player.assign = true
-    player.killer = 0
-
-    if player:isTagger() then
-        player:setSpeed()
-    elseif tagger then
-        player.periodic_scoring = true
-        player.runner_start = os.time()
-        player.runner_finish = player.runner_start + Tag.points_interval
-    end
+    local player = game.players[id]
+    player:reset()
+    player:set_tagger(id == game.tagger)
 end
 
 function OnQuit(id)
-    local player = players[id]
-    if not game_over and Tag.new_tagger_on_quit and player:isTagger() then
-        pickRandomPlayer(true)
+    if not game.players[id] then return end
+
+    if id == game.tagger and CFG.NEW_TAGGER_ON_QUIT then
+        local new_tagger = select_new_tagger(id)
+        if new_tagger then
+            handle_tagger_transfer(new_tagger, game.players[id].name)
+        else
+            game.tagger = nil
+        end
     end
-    player:deleteDrone()
-    players[id] = nil
-end
 
-function OnDamage(victim, killer, meta_id)
+    game.players[id]:reset()
+    game.players[id] = nil
 
-    killer, victim = tonumber(killer), tonumber(victim)
-    local k, v = players[killer], players[victim]
-
-    if not game_over and killer > 0 and k and v and enoughPlayers() then
-        if meta_id then
-            if tagger and not (k:isTagger() or v:isTagger()) then
-                return false
-            end
-            local case1 = not tagger and meta_id == runner_weapon_meta_id or k:isTagger()
-            local case2 = tagger and meta_id == tagger_weapon_meta_id
-            if killer ~= victim and (case1 or case2) then
-                k.assign = true
-                v.killer = killer
-                k:updateScore()
-                v:setTagger(k.name)
-            end
-            return
+    -- Check player count after removal
+    if count_players() < CFG.MIN_PLAYERS then
+        game.waiting_for_players = true
+        disable_objects(false)
+        broadcast("Not enough players to continue the game. Waiting for more players...")
+        -- Reset tagger and game state
+        if game.tagger and game.players[game.tagger] then
+            game.players[game.tagger]:set_tagger(false)
         end
-        v:deleteDrone()
-        k:updateScore(true)
-        if Tag.new_tagger_on_death and v:isTagger() and v.killer ~= killer then
-            pickRandomPlayer()
-        end
+        game.tagger = nil
     end
 end
 
-function OnDrop(id)
-    players[id]:deleteDrone(true)
+function OnWeaponDrop(id)
+    local player = game.players[id]
+    if player then
+        player:remove_weapons()       -- Remove dropped weapon drone
+        player:flag_weapon_reassign() -- Flag for reassign in next tick
+    end
 end
 
-api_version = '1.12.0.0'
+function OnDamage(victim, killer)
+    victim = tonumber(victim)
+    killer = tonumber(killer)
+
+    if game.game_over or killer == 0 then return end
+    if not game.players[victim] or not game.players[killer] then return end
+
+    local victim_player = game.players[victim]
+    local killer_player = game.players[killer]
+
+    -- Handle tag transfer
+    if killer_player.is_tagger and not victim_player.is_tagger then
+        handle_tagger_transfer(victim, killer_player.name)
+    end
+end
+
+function OnDeath(victim)
+    victim = tonumber(victim)
+    if not game.players[victim] then return end
+
+    if victim == game.tagger and CFG.NEW_TAGGER_ON_DEATH then
+        local new_tagger = select_new_tagger(victim)
+        if new_tagger then
+            handle_tagger_transfer(new_tagger, game.players[victim].name)
+        end
+    end
+end
+
+function OnScriptUnload() end

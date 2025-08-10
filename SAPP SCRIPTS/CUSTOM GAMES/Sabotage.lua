@@ -328,9 +328,7 @@ local function say(Ply, Msg)
         execute_command('msg_prefix "' .. prefix .. '"')
         return
     end
-    for _ = 1, 25 do
-        rprint(Ply, ' ')
-    end
+    for _ = 1, 25 do rprint(Ply, ' ') end
     rprint(Ply, '|c' .. Msg)
 end
 

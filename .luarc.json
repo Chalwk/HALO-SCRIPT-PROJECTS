@@ -34,6 +34,11 @@
         "sort",
         "exit_vehicle",
         "intersect",
-        "get_player"
+        "get_player",
+        "assign_weapon",
+        "drop_weapon",
+        "_",
+        "write_bit",
+        "execute_command_sequence"
     ]
 }

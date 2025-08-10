@@ -7,7 +7,7 @@
 -- AUTHOR:           Jericho Crosby (Chalwk)
 -- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
 --
--- Copyright (c) 2022 Jericho Crosby <jericho.crosby227@gmail.com>
+-- Copyright (c) 2022-2025 Jericho Crosby <jericho.crosby227@gmail.com>
 -- LICENSE:          MIT License
 --                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--
@@ -24,6 +24,8 @@ local SurvivalSlayer = {
     kills_to_win = 15
 }
 
+-- config ends
+
 local players = {}
 local start_time = 0
 local game_started = false
@@ -33,11 +35,11 @@ local format = string.format
 
 api_version = '1.12.0.0'
 
-local function say(playerId, message)
+local function say(id, message)
     for _ = 1, 25 do
-        rprint(playerId, ' ')
+        rprint(id, " ")
     end
-    rprint(playerId, message)
+    rprint(id, message)
 end
 
 function SurvivalSlayer:newPlayer(o)
@@ -46,47 +48,45 @@ function SurvivalSlayer:newPlayer(o)
     return o
 end
 
-function onStart()
-    if get_var(0, '$gt') ~= 'n/a' then
-        players = {}
-        game_started = true
-        start_time = os.clock()
-        execute_command('scorelimit ' .. SurvivalSlayer.kills_to_win)
-        for i = 1, 16 do
-            if player_present(i) then
-                onJoin(i)
-            end
+function OnStart()
+    if get_var(0, '$gt') == 'n/a' then return end
+
+    players = {}
+    game_started = true
+    start_time = os.clock()
+    execute_command('scorelimit ' .. SurvivalSlayer.kills_to_win)
+    for i = 1, 16 do
+        if player_present(i) then
+            OnJoin(i)
         end
     end
 end
 
-function onEnd()
+function OnEnd()
     game_started = false
 end
 
-function onJoin(Ply)
-    players[Ply] = SurvivalSlayer:newPlayer({
-        name = get_var(Ply, '$name'),
+function OnJoin(id)
+    players[id] = SurvivalSlayer:newPlayer({
+        name = get_var(id, '$name'),
         life = SurvivalSlayer.life_time
     })
 end
 
-function onQuit(Ply)
-    players[Ply] = nil
+function OnQuit(id)
+    players[id] = nil
 end
 
-function onSpawn(Ply)
-    local p = players[Ply]
+function OnSpawn(id)
+    local p = players[id]
     if p then
         p.life = SurvivalSlayer.life_time
     end
 end
 
-function onTick()
+function OnTick()
 
-    if not game_started then
-        return
-    end
+    if not game_started then return end
 
     local elapsed_time = os.clock() - start_time
     for i, v in pairs(players) do
@@ -103,9 +103,9 @@ function onTick()
     start_time = os.clock()
 end
 
-function onDeath(Victim, Killer)
-    local killer = tonumber(Killer)
-    local victim = tonumber(Victim)
+function OnDeath(victim, killer)
+    killer = tonumber(killer)
+    victim = tonumber(victim)
 
     local k = players[killer]
     local v = players[victim]
@@ -116,16 +116,14 @@ function onDeath(Victim, Killer)
 end
 
 function OnScriptLoad()
-    register_callback(cb['EVENT_DIE'], 'onDeath')
-    register_callback(cb['EVENT_TICK'], 'onTick')
-    register_callback(cb['EVENT_JOIN'], 'onJoin')
-    register_callback(cb['EVENT_LEAVE'], 'onQuit')
-    register_callback(cb['EVENT_SPAWN'], 'onSpawn')
-    register_callback(cb['EVENT_GAME_END'], 'onEnd')
-    register_callback(cb['EVENT_GAME_START'], 'onStart')
-    onStart()
+    register_callback(cb.EVENT_DIE, 'OnDeath')
+    register_callback(cb.EVENT_TICK, 'OnTick')
+    register_callback(cb.EVENT_JOIN, 'OnJoin')
+    register_callback(cb.EVENT_LEAVE, 'OnQuit')
+    register_callback(cb.EVENT_SPAWN, 'OnSpawn')
+    register_callback(cb.EVENT_GAME_END, 'OnEnd')
+    register_callback(cb.EVENT_GAME_START, 'OnStart')
+    OnStart()
 end
 
-function OnScriptUnload()
-    -- N/A
-end
+function OnScriptUnload() end
