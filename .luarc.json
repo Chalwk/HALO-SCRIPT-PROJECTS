@@ -32,6 +32,8 @@
         "rand",
         "write_word",
         "sort",
-        "exit_vehicle"
+        "exit_vehicle",
+        "intersect",
+        "get_player"
     ]
 }

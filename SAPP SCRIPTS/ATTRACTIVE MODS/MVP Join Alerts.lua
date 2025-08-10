@@ -1,66 +1,71 @@
---[[
---=====================================================================================================--
-Script Name: MVP Join Alerts, for SAPP (PC & CE)
-Description: This mod will automatically broadcast a special message when an MVP joins!
-             Each MVP can have a unique message, and general welcome messages are available for other players.
-             Supports IP Addresses & Hashes
+--=====================================================================================--
+-- SCRIPT NAME:      MPV Join Alerts
+-- DESCRIPTION:      Broadcasts a custom welcome message when a "Most Valued Player" joins the server.
+--                   - Each MVP can have their own unique message.
+--                   - Non-MVP players get a random general welcome message.
+--                   - Identification supports both IP addresses and hashes.
+--
+-- AUTHOR:           Chalwk (Jericho Crosby)
+-- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
+--
+-- Copyright (c) 2025 Jericho Crosby <jericho.crosby227@gmail.com>
+-- LICENSE:          MIT License
+--                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+--=====================================================================================--
 
-Copyright (c) 2020-2024, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+-- CONFIG:
 
--- Config starts here:
+local MVP_MESSAGES = {
 
-local MVP = {
-    ['127.0.0.1'] = 'YO! MVP $name has joined the server!',
-    ['xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'] = '$name, a brother from another mother has joined!',
-    ['AnotherPlayerName'] = 'Welcome, $name! Glad you could join us!',
+    -- [IP Address] = "Custom message",
+    -- [Hash]       = "Custom message",
+    -- [Exact Name] = "Custom message",
+
+    ['127.0.0.1']                        = "YO! MVP $name has joined the server!",
+    ['xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'] = "$name, a brother from another mother has joined!",
+    ['AnotherPlayerName']                = "Welcome, $name! Glad you could join us!"
 }
 
-local GENERAL_WELCOME_MESSAGES = {
-    'Welcome to the server, $name!',
-    'Hello $name, glad to have you!',
-    'Hey $name, enjoy your stay!',
+local GENERAL_MESSAGES = {
+    "Welcome to the server, $name!",
+    "Hello $name, glad to have you!",
+    "Hey $name, enjoy your stay!"
 }
 
-local server_prefix = '**SAPP**'
+local SERVER_PREFIX = "**SAPP**"
 
-api_version = '1.12.0.0'
+-- CONFIG ENDS
 
--- Config ends here.
+api_version = "1.12.0.0"
 
--- Utility Functions
-local function send(message, name)
+local function sendMessage(template, name)
     execute_command('msg_prefix ""')
-    local finalMessage = message:gsub('$name', name)
-    say_all(finalMessage)
-    execute_command('msg_prefix "' .. server_prefix .. '"')
+    say_all(template:gsub("$name", name))
+    execute_command('msg_prefix "' .. SERVER_PREFIX .. '"')
 end
 
-local function getPlayerInfo(Ply)
-    local ip = get_var(Ply, '$ip'):match('%d+.%d+.%d+.%d+')
-    local hash = get_var(Ply, 'hash')
-    local name = get_var(Ply, '$name')
+local function getPlayerInfo(id)
+    local ip   = get_var(id, "$ip"):match("(%d+%.%d+%.%d+%.%d+)")
+    local hash = get_var(id, "hash")
+    local name = get_var(id, "$name")
     return ip, hash, name
 end
 
-local function getWelcomeMessage(ip, hash)
-    return MVP[hash] or MVP[ip] or GENERAL_WELCOME_MESSAGES[math.random(#GENERAL_WELCOME_MESSAGES)]
+local function resolveWelcomeMessage(ip, hash, name)
+    return MVP_MESSAGES[hash]
+        or MVP_MESSAGES[ip]
+        or MVP_MESSAGES[name]
+        or GENERAL_MESSAGES[rand(1, #GENERAL_MESSAGES + 1)]
 end
 
--- Event Handlers
-function OnJoin(Ply)
-    local ip, hash, name = getPlayerInfo(Ply)
-    local message = getWelcomeMessage(ip, hash)
-    send(message, name)
+function OnJoin(id)
+    local ip, hash, name = getPlayerInfo(id)
+    local message = resolveWelcomeMessage(ip, hash, name)
+    sendMessage(message, name)
 end
 
 function OnScriptLoad()
-    register_callback(cb['EVENT_JOIN'], 'OnJoin')
+    register_callback(cb.EVENT_JOIN, "OnJoin")
 end
 
-function OnScriptUnload()
-    -- N/A
-end
+function OnScriptUnload() end
