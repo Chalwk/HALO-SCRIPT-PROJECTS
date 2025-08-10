@@ -66,15 +66,43 @@ local settings = {
         ['tlh.txt'] = false
     },
 
-    -- Character pattern matching
-    patterns = {
-        a = '[aA@]', b = '[bB]', c = '[cCkK]', d = '[dD]', e = '[eE3]', f = '[fF]',
-        g = '[gG6]', h = '[hH]', i = '[iIl!1]', j = '[jJ]', k = '[cCkK]', l = '[lL1!i]',
-        m = '[mM]', n = '[nN]', o = '[oO0]', p = '[pP]', q = '[qQ9]', r = '[rR]',
-        s = '[sS$5]', t = '[tT7]', u = '[uUvV]', v = '[vVuU]', w = '[wW]', x = '[xX]',
-        y = '[yY]', z = '[zZ2]'
+    -- ========================================
+    -- BELOW: FOR ADVANCED USERS ONLY
+    -- ========================================
+    pattern_settings = {
+
+        -- Trim whitespace
+        trim_pattern = "^%s*(.-)%s*$",
+
+        -- Comment lines in word lists
+        comment_pattern = "^%s*#",
+
+        -- Characters allowed between letters (no quantifier)
+        separator_class = "[%s%p]",
+
+        -- Word boundary anchors
+        word_boundary_start = "",
+        word_boundary_end = "",
+
+        -- Non-alphanumeric character escape
+        escape_non_word = "([^%w])",
+        escape_replacement = "%%%1",
+
+        -- Pattern for reading lines in a file
+        line_pattern = "[^\\r\\n]+",
+
+        -- Leet-speak substitutions
+        leet_map = {
+            a = "[aA@*#]", b = "[bB]", c = "[cCkK*#]", d = "[dD]", e = "[eE3]", f = "[fF]",
+            g = "[gG6]", h = "[hH]", i = "[iIl!1]", j = "[jJ]", k = "[cCkK*#]", l = "[lL1!i]",
+            m = "[mM]", n = "[nN]", o = "[oO0*#]", p = "[pP]", q = "[qQ9]", r = "[rR]",
+            s = "[sS$5]", t = "[tT7+]", u = "[uUvV*#]", v = "[vVuU]", w = "[wW]", x = "[xX]",
+            y = "[yY]", z = "[zZ2]"
+        }
     }
 }
+
+-- CONFIG ENDS ---------------------------------------------------------------
 
 -- Load dependencies
 api_version = '1.12.0.0'
@@ -96,9 +124,9 @@ local concat = table.concat
 local clock, time = os.clock, os.time
 
 -- Metatable for pattern fallback
-setmetatable(settings.patterns, {
+setmetatable(settings.pattern_settings.leet_map, {
     __index = function(_, char)
-        return char:gsub("([^%w])", "%%%1")
+        return char:gsub(settings.pattern_settings.escape_non_word, settings.pattern_settings.escape_replacement)
     end
 })
 
@@ -141,14 +169,22 @@ end
 local function compile_pattern(word)
     if pattern_cache[word] then return pattern_cache[word] end
 
-    word = word:match("^%s*(.-)%s*$") or ""
+    local ps = settings.pattern_settings
+    word = word:match(ps.trim_pattern) or ""
     local pattern_builder = {}
 
-    for char in word:gmatch(".") do
-        pattern_builder[#pattern_builder + 1] = settings.patterns[char:lower()]
+    local sep = (ps.separator_class) .. '*'
+    local len = #word
+    for i = 1, len do
+        local ch = word:sub(i, i)
+        local chpat = ps.leet_map[ch:lower()] or ch:gsub(ps.escape_non_word, ps.escape_replacement)
+        pattern_builder[#pattern_builder + 1] = chpat
+        if i < len then
+            pattern_builder[#pattern_builder + 1] = sep
+        end
     end
 
-    local pattern = '%f[%w]' .. concat(pattern_builder) .. '%f[%W]'
+    local pattern = ps.word_boundary_start .. concat(pattern_builder) .. ps.word_boundary_end
     pattern_cache[word] = pattern
     return pattern
 end
@@ -157,13 +193,14 @@ end
 -- Core Functionality
 -- ========================
 local function load_bad_word_file(path, lang)
+    local ps = settings.pattern_settings
     local content = read_file(path)
     if not content then return 0 end
 
     local count = 0
-    for line in content:gmatch("[^\r\n]+") do
-        local word = line:match("^%s*(.-)%s*$")
-        if word and word ~= "" and not word:match("^%s*#") then
+    for line in content:gmatch(ps.line_pattern) do
+        local word = line:match(ps.trim_pattern)
+        if word and word ~= "" and not word:match(ps.comment_pattern) then
             if not global_word_cache[word] then
                 local ok, pattern = pcall(compile_pattern, word)
                 if ok and pattern then
@@ -304,10 +341,11 @@ local function handle_wb_del_word(id, args)
         return
     end
 
+    local ps = settings.pattern_settings
     local new_content = {}
     local removed = false
 
-    for line in content:gmatch("[^\r\n]+") do
+    for line in content:gmatch(ps.line_pattern) do
         if line ~= word then
             new_content[#new_content + 1] = line
         else
@@ -373,6 +411,7 @@ function OnScriptLoad()
     register_callback(cb['EVENT_COMMAND'], 'OnCommand')
     register_callback(cb['EVENT_GAME_END'], 'OnGameEnd')
     register_callback(cb['EVENT_LEAVE'], 'OnPlayerLeave')
+    --register_callback(cb['EVENT_GAME_START'], 'OnStart') -- for debugging
 
     infractions = load_infractions()
     load_bad_words()
@@ -417,6 +456,7 @@ function OnChat(id, message)
     if settings.ignore_commands and (message:find('^/') or message:find('^\\')) then return true end
     if immune(id) then return true end
 
+    local ps = settings.pattern_settings
     local name = get_var(id, '$name')
     local ip = get_var(id, '$ip')
     local msg_lower = message:lower()
@@ -452,4 +492,88 @@ function OnChat(id, message)
         end
     end
     return true
+end
+
+function OnStart()
+    if get_var(0, '$gt') == 'n/a' then return end
+
+    -- ================================
+    -- Profanity Filter Test Harness
+    -- ================================
+
+    local test_bad_words = { "fuck", "shit", "bitch", "asshole", "bastard", "cunt", "dick", "piss" }
+    local test_patterns = {}
+    for _, w in ipairs(test_bad_words) do
+        test_patterns[#test_patterns + 1] = {
+            word = w,
+            pattern = compile_pattern(w),
+            language = "en.txt"
+        }
+    end
+
+    local test_sentences = {
+        { msg = "Hello there, friend!", should_match = false },
+        { msg = "You are a fuck!", should_match = true },
+        { msg = "That guy is an a$$hole!", should_match = true },
+        { msg = "Sh1t happens.", should_match = true },
+        { msg = "$h1+ happens.", should_match = true },
+        { msg = "s_h_i_t+", should_match = true },
+        { msg = "5h!t", should_match = true },
+        { msg = "sh!t.", should_match = true },
+        { msg = "This is a clean sentence with no swearing.", should_match = false },
+        { msg = "You little b!tch!", should_match = true },
+        { msg = "P1ss off, mate.", should_match = true },
+        { msg = "Good morning everyone.", should_match = false },
+        { msg = "You're such a BasTaRd!", should_match = true },
+        { msg = "F.U.C.K this!", should_match = true },
+        { msg = "Nothing rude here at all.", should_match = false },
+        { msg = "f*ck off!", should_match = true },
+        { msg = "f#ck you!", should_match = true },
+        { msg = "f**k!", should_match = true },
+        { msg = "sh!7 happens.", should_match = true },
+        { msg = "b!tch please.", should_match = true },
+        { msg = "a$$h0le alert!", should_match = true },
+        { msg = "a5sh0le!", should_match = true },
+        { msg = "c*nt!", should_match = true },
+        { msg = "d!ckhead.", should_match = true },
+        { msg = "d1ck!", should_match = true },
+        { msg = "p!$$ off.", should_match = true },
+        { msg = "p1$$ed off!", should_match = true },
+        { msg = "b@st@rd!", should_match = true },
+        { msg = "c.u.n.t", should_match = true },
+        { msg = "sh!tty.", should_match = true },
+        { msg = "f.u.c.k.y.o.u", should_match = true },
+        { msg = "5h!7 h@pp3ns.", should_match = true },
+        { msg = "b1tch!", should_match = true },
+        { msg = "a$$h*l3", should_match = true },
+        { msg = "p!ss off!", should_match = true },
+    }
+
+    -- Run the tests
+    print("=== Word Buster Test Results ===")
+    for i, test in ipairs(test_sentences) do
+        local lower_msg = test.msg:lower()
+        local matched = false
+        local matched_word, matched_pattern
+
+        for _, data in ipairs(test_patterns) do
+            if lower_msg:find(data.pattern) then
+                matched = true
+                matched_word = data.word
+                matched_pattern = data.pattern
+                break
+            end
+        end
+
+        local result = matched == test.should_match and "PASS" or "FAIL"
+        print(string.format(
+            "[%02d] %-50s | Expected: %-5s | Got: %-5s | %s%s",
+            i,
+            '"' .. test.msg .. '"',
+            tostring(test.should_match),
+            tostring(matched),
+            result,
+            matched and (" | Matched Word: " .. matched_word) or ""
+        ))
+    end
 end
