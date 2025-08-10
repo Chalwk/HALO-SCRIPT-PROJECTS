@@ -39,9 +39,28 @@ local CFG = {
 
 api_version = '1.12.0.0'
 
+-- Localize frequently used global functions
+local execute_command = execute_command
+local player_present = player_present
+local get_var = get_var
+local say = say
+local say_all = say_all
+local player_alive = player_alive
+local rand = rand
+local spawn_object = spawn_object
+local assign_weapon = assign_weapon
+local destroy_object = destroy_object
+local lookup_tag = lookup_tag
+local read_dword = read_dword
+local tonumber = tonumber
+local timer = timer
+local pairs = pairs
+local os_time = os.time
+
 -- Game State
 local game = {
     players = {},
+    player_count = 0,
     tagger = nil,
     game_over = true,
     next_point_time = 0,
@@ -74,9 +93,6 @@ local BANNED_OBJECTS = {
     'weapons\\rocket launcher\\rocket launcher'
 }
 
--- Precomputed values
-local time = os.time
-
 -- Player Management
 local Player = {}
 Player.__index = Player
@@ -89,12 +105,7 @@ function Player.new(id)
         drone = nil,
         next_point = 0,
         turn_end = 0,
-        assign_weapon_flag = false,
     }, Player)
-end
-
-function Player:flag_weapon_reassign()
-    self.assign_weapon_flag = true
 end
 
 function Player:set_tagger(state)
@@ -102,7 +113,7 @@ function Player:set_tagger(state)
     execute_command('s ' .. self.id .. ' ' .. (state and CFG.TAGGER_SPEED or CFG.RUNNER_SPEED))
 
     if state then
-        self.turn_end = time() + CFG.TURN_TIME
+        self.turn_end = os_time() + CFG.TURN_TIME
         self:assign_weapon(game.tagger_weapon)
     else
         self:assign_weapon(game.runner_weapon)
@@ -152,33 +163,25 @@ local function get_tag_id(class, name)
     return (tag ~= 0 and read_dword(tag + 0xC)) or nil
 end
 
-local function select_new_tagger(previous_tagger)
-    local candidates = {}
+local function select_new_tagger(exclude)
+    local candidate_count = 0
+    local selected = nil
     for id, _ in pairs(game.players) do
-        if player_present(id) and id ~= previous_tagger then
-            candidates[#candidates + 1] = id
+        if player_present(id) and id ~= exclude then
+            candidate_count = candidate_count + 1
+            if rand(1, candidate_count + 1) == 1 then -- +1 because of SAPP bug
+                selected = id
+            end
         end
     end
-
-    if #candidates == 0 then return nil end
-    return candidates[rand(1, #candidates + 1)]
-end
-
-local function count_players()
-    local count = 0
-    for id, _ in pairs(game.players) do
-        if player_present(id) then
-            count = count + 1
-        end
-    end
-    return count
+    return selected
 end
 
 function SetInitialTagger()
-    if count_players() < CFG.MIN_PLAYERS then
+    if game.player_count < CFG.MIN_PLAYERS then
         game.waiting_for_players = true
-        disable_objects(false)          -- Re-enable objects
-        timer(2000, "SetInitialTagger") -- retry
+        disable_objects(false)
+        timer(2000, "SetInitialTagger")
         return false
     end
 
@@ -186,7 +189,7 @@ function SetInitialTagger()
     if new_tagger then
         disable_objects(true)
         execute_command('sv_map_reset')
-        game.next_point_time = time() + CFG.POINTS_INTERVAL
+        game.next_point_time = os_time() + CFG.POINTS_INTERVAL
         game.players[new_tagger]:set_tagger(true)
         game.tagger = new_tagger
         broadcast(CFG.RANDOM_TAGGER:format(game.players[new_tagger].name))
@@ -195,7 +198,7 @@ function SetInitialTagger()
         return false
     else
         game.waiting_for_players = true
-        timer(2000, "SetInitialTagger") -- retry
+        timer(2000, "SetInitialTagger")
         return false
     end
 end
@@ -221,11 +224,10 @@ local function handle_tagger_transfer(new_tagger_id, old_tagger_name)
     new_player:update_score(CFG.TAG_POINTS)
 end
 
-local function process_point_distribution()
-    local current_time = time()
+local function process_point_distribution(current_time)
     if current_time < game.next_point_time then return end
-
     game.next_point_time = current_time + CFG.POINTS_INTERVAL
+
     for _, player in pairs(game.players) do
         if not player.is_tagger then
             player:update_score(CFG.RUNNER_POINTS)
@@ -233,11 +235,11 @@ local function process_point_distribution()
     end
 end
 
-local function check_tagger_timeout()
+local function check_tagger_timeout(current_time)
     if not game.tagger then return end
 
     local tagger = game.players[game.tagger]
-    if time() >= tagger.turn_end then
+    if current_time >= tagger.turn_end then
         local new_tagger = select_new_tagger(game.tagger)
         if new_tagger then
             handle_tagger_transfer(new_tagger, tagger.name)
@@ -247,15 +249,15 @@ end
 
 -- Event Handlers
 function OnScriptLoad()
-    register_callback(cb.EVENT_DIE, 'OnDeath')
-    register_callback(cb.EVENT_TICK, 'OnTick')
-    register_callback(cb.EVENT_JOIN, 'OnJoin')
-    register_callback(cb.EVENT_LEAVE, 'OnQuit')
-    register_callback(cb.EVENT_SPAWN, 'OnSpawn')
-    register_callback(cb.EVENT_GAME_END, 'OnEnd')
-    register_callback(cb.EVENT_GAME_START, 'OnStart')
-    register_callback(cb.EVENT_WEAPON_DROP, 'OnWeaponDrop')
-    register_callback(cb.EVENT_DAMAGE_APPLICATION, 'OnDamage')
+    register_callback(cb['EVENT_DIE'], 'OnDeath')
+    register_callback(cb['EVENT_TICK'], 'OnTick')
+    register_callback(cb['EVENT_JOIN'], 'OnJoin')
+    register_callback(cb['EVENT_LEAVE'], 'OnQuit')
+    register_callback(cb['EVENT_SPAWN'], 'OnSpawn')
+    register_callback(cb['EVENT_GAME_END'], 'OnEnd')
+    register_callback(cb['EVENT_GAME_START'], 'OnStart')
+    register_callback(cb['EVENT_WEAPON_DROP'], 'OnWeaponDrop')
+    register_callback(cb['EVENT_DAMAGE_APPLICATION'], 'OnDamage')
 
     OnStart()
 end
@@ -267,16 +269,16 @@ function OnStart()
     game.runner_weapon = get_tag_id('weap', 'weapons\\plasma rifle\\plasma rifle')
     execute_command('scorelimit ' .. CFG.SCORE_LIMIT)
 
-    -- Initialize all players (happens when script is loaded after a game has started)
+    game.player_count = 0
     for i = 1, 16 do
         if player_present(i) then
             game.players[i] = Player.new(i)
+            game.player_count = game.player_count + 1
         end
     end
 
-    local count = count_players()
-    if count >= CFG.MIN_PLAYERS then
-        broadcast("Starting a new game in 5 seconds...")
+    if game.player_count >= CFG.MIN_PLAYERS then
+        broadcast("Starting a new game in " .. CFG.INITIAL_TAGGER_DELAY .. " seconds...")
         timer(CFG.INITIAL_TAGGER_DELAY * 1000, "SetInitialTagger")
         game.waiting_for_players = false
     else
@@ -294,27 +296,19 @@ end
 
 function OnTick()
     if game.game_over or game.waiting_for_players then return end
-    process_point_distribution()
-    check_tagger_timeout()
 
-    for id, player in pairs(game.players) do
-        if player.assign_weapon_flag and player_alive(id) then
-            player.assign_weapon_flag = false
-            player:remove_weapons()
-            if player.is_tagger then
-                player:assign_weapon(game.tagger_weapon)
-            else
-                player:assign_weapon(game.runner_weapon)
-            end
-        end
-    end
+    local current_time = os_time()
+    process_point_distribution(current_time)
+    check_tagger_timeout(current_time)
 end
 
 function OnJoin(id)
     game.players[id] = Player.new(id)
-    if game.waiting_for_players and count_players() >= CFG.MIN_PLAYERS then
+    game.player_count = game.player_count + 1
+
+    if game.waiting_for_players and game.player_count >= CFG.MIN_PLAYERS then
         game.waiting_for_players = false
-        broadcast("Enough players joined! Starting new game in 5 seconds...")
+        broadcast("Enough players joined! Starting a new game in " .. CFG.INITIAL_TAGGER_DELAY .. " seconds...")
         timer(CFG.INITIAL_TAGGER_DELAY * 1000, "SetInitialTagger")
     end
 end
@@ -339,13 +333,12 @@ function OnQuit(id)
 
     game.players[id]:reset()
     game.players[id] = nil
+    game.player_count = game.player_count - 1
 
-    -- Check player count after removal
-    if count_players() < CFG.MIN_PLAYERS then
+    if game.player_count < CFG.MIN_PLAYERS then
         game.waiting_for_players = true
         disable_objects(false)
         broadcast("Not enough players to continue the game. Waiting for more players...")
-        -- Reset tagger and game state
         if game.tagger and game.players[game.tagger] then
             game.players[game.tagger]:set_tagger(false)
         end
@@ -355,9 +348,12 @@ end
 
 function OnWeaponDrop(id)
     local player = game.players[id]
-    if player then
-        player:remove_weapons()       -- Remove dropped weapon drone
-        player:flag_weapon_reassign() -- Flag for reassign in next tick
+    if player and player_alive(id) then
+        if player.is_tagger then
+            player:assign_weapon(game.tagger_weapon)
+        else
+            player:assign_weapon(game.runner_weapon)
+        end
     end
 end
 
@@ -371,7 +367,6 @@ function OnDamage(victim, killer)
     local victim_player = game.players[victim]
     local killer_player = game.players[killer]
 
-    -- Handle tag transfer
     if killer_player.is_tagger and not victim_player.is_tagger then
         handle_tagger_transfer(victim, killer_player.name)
     end
