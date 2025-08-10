@@ -67,19 +67,34 @@ local CFG = {
         ['tlh.txt'] = false
     },
 
-    -- ========================================
-    -- BELOW: FOR ADVANCED USERS ONLY
-    -- ========================================
+    -- ===============================
+    -- SECTION FOR ADVANCED USERS ONLY
+    -- ===============================
 
     pattern_settings = {
+        -- Defines the allowed characters that can separate letters in a detected word.
+        -- This helps catch words with inserted symbols or spacing, like "a-s-s" or "a_s.s".
         separator = "[-*_. ]*",
+
+        -- Maps each alphabet letter to a Lua pattern class that includes:
+        -- 1. Lowercase and uppercase versions of the letter,
+        -- 2. Common "leet speak" substitutions (like '@' for 'a', '3' for 'e', '!' or '1' for 'i', etc.),
+        -- 3. Some extra symbols used to replace letters, e.g., '*', '#', '$', '+'.
+        -- This allows the filter to detect offensive words even if players use these substitutions.
         leet_map = {
             a = "[aA@*#]", b = "[bB]",	 c = "[cCkK*#]",  d = "[dD]", 	e = "[eE3]", 	f = "[fF]",
             g = "[gG6]",   h = "[hH]",	 i = "[iIl!1]",   j = "[jJ]", 	k = "[cCkK*#]", l = "[lL1!i]",
             m = "[mM]",    n = "[nN]",	 o = "[oO0*#]",   p = "[pP]", 	q = "[qQ9]", 	r = "[rR]",
             s = "[sS$5]",  t = "[tT7+]", u = "[uUvV*#]",  v = "[vVuU]", w = "[wW]", 	x = "[xX]",
             y = "[yY]",    z = "[zZ2]"
-        }
+        },
+
+        --=====================================================================================--
+        -- For deeper customization and understanding, see related functions:
+        --  - compile_pattern() builds the regex pattern using these settings.
+        --  - load_bad_word_file() loads and processes word files.
+        --  - The leet_map table has a metatable to handle unexpected characters.
+        --=====================================================================================--
     }
 }
 
