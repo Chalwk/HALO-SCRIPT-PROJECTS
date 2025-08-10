@@ -93,11 +93,11 @@ local settings = {
 
         -- Leet-speak substitutions
         leet_map = {
-            a = "[aA@*#]", b = "[bB]", c = "[cCkK*#]", d = "[dD]", e = "[eE3]", f = "[fF]",
-            g = "[gG6]", h = "[hH]", i = "[iIl!1]", j = "[jJ]", k = "[cCkK*#]", l = "[lL1!i]",
-            m = "[mM]", n = "[nN]", o = "[oO0*#]", p = "[pP]", q = "[qQ9]", r = "[rR]",
-            s = "[sS$5]", t = "[tT7+]", u = "[uUvV*#]", v = "[vVuU]", w = "[wW]", x = "[xX]",
-            y = "[yY]", z = "[zZ2]"
+            a = "[aA@*#]", b = "[bB]",	 c = "[cCkK*#]",  d = "[dD]", 	e = "[eE3]", 	f = "[fF]",
+            g = "[gG6]",   h = "[hH]",	 i = "[iIl!1]",   j = "[jJ]", 	k = "[cCkK*#]", l = "[lL1!i]",
+            m = "[mM]",    n = "[nN]",	 o = "[oO0*#]",   p = "[pP]", 	q = "[qQ9]", 	r = "[rR]",
+            s = "[sS$5]",  t = "[tT7+]", u = "[uUvV*#]",  v = "[vVuU]", w = "[wW]", 	x = "[xX]",
+            y = "[yY]",    z = "[zZ2]"
         }
     }
 }
