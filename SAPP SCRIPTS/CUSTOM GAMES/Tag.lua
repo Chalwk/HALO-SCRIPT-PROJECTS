@@ -179,7 +179,7 @@ function SetInitialTagger()
     if count_players() < CFG.MIN_PLAYERS then
         game.waiting_for_players = true
         disable_objects(false)  -- Re-enable objects
-        timer(2000, "SetInitialTagger")  -- Retry later
+        timer(2000, "SetInitialTagger") -- retry
         return false
     end
 
@@ -196,7 +196,7 @@ function SetInitialTagger()
         return false
     else
         game.waiting_for_players = true
-        timer(2000, "SetInitialTagger") -- retry after 2 seconds
+        timer(2000, "SetInitialTagger") -- retry
         return false
     end
 end
