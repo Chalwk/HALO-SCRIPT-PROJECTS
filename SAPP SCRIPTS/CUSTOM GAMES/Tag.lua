@@ -161,7 +161,7 @@ local function select_new_tagger(previous_tagger)
     end
 
     if #candidates == 0 then return nil end
-    return candidates[math.random(#candidates)]
+    return candidates[rand(1, #candidates + 1)]
 end
 
 local function count_players()
@@ -175,10 +175,9 @@ local function count_players()
 end
 
 function SetInitialTagger()
-
     if count_players() < CFG.MIN_PLAYERS then
         game.waiting_for_players = true
-        disable_objects(false)  -- Re-enable objects
+        disable_objects(false)          -- Re-enable objects
         timer(2000, "SetInitialTagger") -- retry
         return false
     end
@@ -238,7 +237,7 @@ local function check_tagger_timeout()
     if not game.tagger then return end
 
     local tagger = game.players[game.tagger]
-    if os.time() >= tagger.turn_end then
+    if time() >= tagger.turn_end then
         local new_tagger = select_new_tagger(game.tagger)
         if new_tagger then
             handle_tagger_transfer(new_tagger, tagger.name)
@@ -315,7 +314,7 @@ function OnJoin(id)
     game.players[id] = Player.new(id)
     if game.waiting_for_players and count_players() >= CFG.MIN_PLAYERS then
         game.waiting_for_players = false
-        broadcast("Enough players joined! Starting a new game in 5 seconds...")
+        broadcast("Enough players joined! Starting new game in 5 seconds...")
         timer(CFG.INITIAL_TAGGER_DELAY * 1000, "SetInitialTagger")
     end
 end
