@@ -18,10 +18,10 @@ function OnScriptLoad()
 end
 
 function OnJoin(id)
-    timer(1000, 'regenerateHealth', id)
+    timer(1000, 'RegenHealth', id)
 end
 
-function regenerateHealth(id)
+function RegenHealth(id)
     local dyn = get_dynamic_player(id)
     if (dyn ~= 0 and player_alive(id)) then
         local health = read_float(dyn + 0xE0)
