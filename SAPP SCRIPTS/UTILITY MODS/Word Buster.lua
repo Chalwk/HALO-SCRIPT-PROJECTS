@@ -27,7 +27,7 @@ local CFG = {
     ignore_commands = true,      -- Whether to ignore commands when checking for infractions
     clean_interval_seconds = 30, -- How often to clean infractions (in seconds)
     immune = {                   -- Admin levels that are immune
-        [1] = true, [2] = true, [3] = true, [4] = false
+        [1] = true, [2] = true, [3] = true, [4] = true
     },
 
     -- Notification messages
@@ -161,7 +161,7 @@ local function compile_pattern(word)
 
     local letters = {}
     for char in word:gmatch(".") do
-        letters[#letters + 1] = CFG.pattern_settings.leet_map[char:lower()]
+        letters[#letters + 1] = CFG.pattern_settings.leet_map[char:lower()] .. '+'
     end
 
     local pattern = '%f[%w]' .. concat(letters, separator) .. '%f[%W]'
@@ -204,6 +204,9 @@ local function load_bad_word_file(path, lang)
 end
 
 local function load_bad_words()
+
+    pattern_cache = {}
+    global_word_cache = {}
     bad_words = {}
     local word_count = 0
     local lang_count = 0
