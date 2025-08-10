@@ -71,8 +71,6 @@ local CFG = {
     -- BELOW: FOR ADVANCED USERS ONLY
     -- ========================================
 
-    -- Leet-speak substitutions
-
     pattern_settings = {
         separator = "[-*_. ]*",
         leet_map = {
