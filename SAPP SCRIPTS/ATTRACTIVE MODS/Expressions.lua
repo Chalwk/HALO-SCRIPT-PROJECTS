@@ -1,16 +1,30 @@
---========================================================================--
--- Expressions (v2.1), for SAPP (PC & CE)
--- Description: Want to express your rage, taunt your opponents or
---              cuss in a family-friendly-ish way? Look no further!
--- Copyright (c) 2022-2024, Jericho Crosby <jericho.crosby227@gmail.com>
--- License: See https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---========================================================================--
+--=====================================================================================--
+-- SCRIPT NAME:      Expressions
+-- DESCRIPTION:      Fun, family-friendly(-ish) ways to express yourself in chat.
+--                   - Rage ("!anger")
+--                   - Taunt ("!taunt")
+--                   - Mild cussing ("!cuss")
+--
+--                   Players type a trigger command in chat to send a random phrase from the relevant category.
+--                   The system preserves the player's name in the output format.
+--
+-- AUTHOR:           Chalwk (Jericho Crosby)
+-- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
+--
+-- Copyright (c) 2019-2025 Jericho Crosby <jericho.crosby227@gmail.com>
+-- LICENSE:          MIT License
+--                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+--=====================================================================================--
 
-api_version = "1.12.0.0"
+-- CONFGIGURATION --
 
-local expressions = {
+local Expressions = {
+
+    --- Chat triggers and their phrase lists.
+    --- Add more triggers by replicating the structure below.
     phrases = {
-        ["!cuss"] = { -- type this in chat to cuss
+
+        ["!cuss"] = {
             "Shnookerdookies!",
             "Fudge nuggets!",
             "Cheese and rice!",
@@ -35,12 +49,9 @@ local expressions = {
             "Dang rabbit!",
             "Dadgummit!",
             "Jumpin' Jiminy!"
-            --
-            -- repeat the structure to add more entries
-            --
         },
 
-        ["!anger"] = { -- type this in chat to express anger
+        ["!anger"] = {
             "FOR GOODNESS SAKES",
             "OUH C'MON!",
             "ARE YOU SERIOUS!?",
@@ -50,12 +61,9 @@ local expressions = {
             "*FLARES NOSTRILS*",
             "*SCREAMS AT TOP OF LUNGS*",
             "BOLLOCKS"
-            --
-            -- repeat the structure to add more entries
-            --
         },
 
-        ["!taunt"] = { -- type this in chat to taunt
+        ["!taunt"] = {
             "Ees too bad you got manure for brains!!",
             "Hell's full a' retired Gamers, And it's time you join em!",
             "Hell! My horse pisses straighter than you shoot!!",
@@ -71,52 +79,57 @@ local expressions = {
             "Sell your PC. Just do it.",
             "Don't be shy! You can shoot at me next time, I don't mind!",
             "You must be new at this!",
-            "Is that really a gun in your hand or is it just wishful thinkin'!",
-            --
-            -- repeat the structure to add more entries
-            --
+            "Is that really a gun in your hand or is it just wishful thinkin'!"
         }
     },
 
-    output = {
-        [0] = '$name: $msg',
-        [1] = '[$name]: $msg',
-        [2] = '[$name]: $msg'
+    --- Message output formats by chat type:
+    --- 0 = Global, 1 = Team, 2 = Vehicle
+    outputFormats = {
+        [0] = "$name: $msg",
+        [1] = "[$name]: $msg",
+        [2] = "[$name]: $msg"
     },
-    server_prefix = '**SAPP**'
+
+    serverPrefix = "**SAPP**"
 }
 
-function OnScriptLoad()
-    register_callback(cb['EVENT_CHAT'], 'OnChat')
-end
+-- CONFIG ENDS
+
+api_version = "1.12.0.0"
 
 local function formatMessage(chatType, playerName, message)
-    local format = expressions.output[chatType]
-    return format:gsub('$name', playerName):gsub('$msg', message)
+    return Expressions.outputFormats[chatType]
+        :gsub("$name", playerName)
+        :gsub("$msg", message)
 end
 
 local function getRandomPhrase(phrases)
-    local randomIndex = rand(1, #phrases + 1)
-    return phrases[randomIndex]
+    return phrases[rand(1, #phrases + 1)]
+end
+
+local function broadcast(message)
+    execute_command('msg_prefix ""')
+    say_all(message)
+    execute_command('msg_prefix "' .. Expressions.serverPrefix .. '"')
 end
 
 function OnChat(playerId, message, chatType)
-    local lowerMessage = message:lower()
-    local phrases = expressions.phrases[lowerMessage]
+    local command = message:lower()
+    local phrases = Expressions.phrases[command]
 
     if phrases then
         local randomPhrase = getRandomPhrase(phrases)
-        local playerName = get_var(playerId, '$name')
-        local formattedMessage = formatMessage(chatType, playerName, randomPhrase)
+        local playerName   = get_var(playerId, "$name")
+        local output       = formatMessage(chatType, playerName, randomPhrase)
 
-        execute_command('msg_prefix ""')
-        say_all(formattedMessage)
-        execute_command('msg_prefix "' .. expressions.server_prefix .. '"')
-
-        return false
+        broadcast(output)
+        return false -- suppress original message
     end
 end
 
-function OnScriptUnload()
-    -- N/A
+function OnScriptLoad()
+    register_callback(cb.EVENT_CHAT, "OnChat")
 end
+
+function OnScriptUnload() end
