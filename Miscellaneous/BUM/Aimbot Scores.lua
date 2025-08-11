@@ -54,12 +54,12 @@ local function stringSplit(str)
 end
 
 -- Check player permission
-local function hasPermission(playerId)
-    local level = tonumber(get_var(playerId, '$lvl'))
-    if level < 1 then
-        rprint(playerId, 'Insufficient Permission')
-        return false
+local function hasPermission(id)
+    local lvl = tonumber(get_var(id, '$lvl'))
+    if lvl >= 1 then
+        return return true
     end
+    rprint(id, 'Insufficient Permission')
     return true
 end
 

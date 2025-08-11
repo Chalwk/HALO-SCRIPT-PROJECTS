@@ -1,166 +1,175 @@
 --[[
 --=====================================================================================================--
 Script Name: RegToPlay, for SAPP (PC & CE)
-Description: This script requires players to register within 10 seconds of joining the server.
-Players must know the secret command and password to register. If they fail to register in time,
-they will be kicked from the server. Registered player information, including IP and username,
-is saved in a file called players.txt in the format: 127.0.0.1|name.
+Description: Players must register using a secret command/password within 10 seconds of joining.
+             Unregistered players are automatically kicked. Registered player data (IP|name)
+             is persistently stored in players.txt.
 
 Copyright (c) 2022, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+License: https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--
 ]]--
 
-local RegToPlay = {
-    kick_delay = 10,                -- Time allowed for registration in seconds
-    command = 'command_here',       -- Command to trigger registration
-    password = 'password_here',      -- Password for registration
-    permission_level = -1,           -- Minimum permission level to register
-    file = 'players.txt',            -- File to save registered players
-    save_on_register = false,        -- Save user data only on game end if true
+-- Configuration Settings --
+local CONFIG = {
+    kick_delay = 10,                -- Registration time window (seconds)
+    command = "!register",          -- Registration trigger command
+    password = "secret123",         -- Registration password
+    permission_level = -1,          -- Minimum required permission level
+    filename = "players.txt",       -- Player database filename
+    save_on_register = false        -- Save mode (true = immediate, false = on game end)
 }
 
-api_version = '1.12.0.0'
+api_version = "1.12.0.0"
 
-local players, database = {}, {}
-local time, open = os.time, io.open
+local pending_players = {}
+local registered_players = {}
+local file_path
 
--- Create a new player entry
-function RegToPlay:NewPlayer(o)
-    setmetatable(o, self)
-    self.__index = self
-    o.start = time()
-    o.finish = o.start + self.kick_delay
-    return o
+local function get_clean_ip(player_id)
+    return get_var(player_id, "$ip"):match("(%d+%.%d+%.%d+%.%d+)")
 end
 
--- Check if player has the necessary permissions
-function RegToPlay:HasPerm()
-    local lvl = tonumber(get_var(self.id, '$lvl'))
-    return (lvl == 0 or lvl >= self.permission_level)
+local function has_permission(player_id)
+    local level = tonumber(get_var(player_id, "$lvl"))
+    return level and (level == 0 or level >= CONFIG.permission_level)
 end
 
--- Split a string based on a delimiter
-local function StrSplit(str, delim)
-    local result = {}
-    for part in str:gmatch('([^' .. delim .. ']+)') do
-        result[#result + 1] = part
-    end
-    return result
-end
-
--- Write the player data to the specified file
-function RegToPlay:Write()
-    local file = open(RegToPlay.dir, 'w')
+local function save_database()
+    local file, err = io.open(file_path, "w")
     if not file then
-        return cprint("Error: Unable to open file for writing.")
+        return cprint("ERROR: Failed to save database - " .. (err or "unknown error"))
     end
-    for ip, name in pairs(database) do
-        file:write(ip .. '|' .. name .. '\n')
+
+    for ip, name in pairs(registered_players) do
+        file:write(ip .. "|" .. name .. "\n")
     end
     file:close()
 end
 
--- Register the current user
-function RegToPlay:RegisterThisUser()
-    database[self.ip] = self.name
+local function load_database()
+    registered_players = {}
+    local file = io.open(file_path, "r")
+    if not file then return end
 
-    if self.save_on_register then
-        self:Write()
+    for line in file:lines() do
+        local ip, name = line:match("^([^|]+)|(.+)$")
+        if ip and name then
+            registered_players[ip] = name
+        end
     end
-
-    say(self.id, 'Username successfully registered.')
-    players[self.id] = nil  -- Remove player from the registration list
+    file:close()
 end
 
--- Load script and set up callbacks
-function OnScriptLoad()
-    register_callback(cb['EVENT_TICK'], 'OnTick')
-    register_callback(cb['EVENT_JOIN'], 'OnJoin')
-    register_callback(cb['EVENT_LEAVE'], 'OnQuit')
-    register_callback(cb['EVENT_COMMAND'], 'OnCommand')
-    register_callback(cb['EVENT_GAME_START'], 'OnStart')
+local function register_player(player_id)
+    local ip = get_clean_ip(player_id)
+    local name = get_var(player_id, "$name")
 
-    if not RegToPlay.save_on_register then
-        register_callback(cb['EVENT_GAME_END'], 'OnEnd')
+    registered_players[ip] = name
+    pending_players[player_id] = nil
+
+    say(player_id, "Registration successful! Welcome to the server.")
+
+    if CONFIG.save_on_register then
+        save_database()
+    end
+end
+
+local function process_command(player_id, command)
+    local args = {}
+    for arg in command:gmatch("%S+") do
+        args[#args+1] = arg
     end
 
-    local path = read_string(read_dword(sig_scan('68??????008D54245468') + 0x1))
-    RegToPlay.dir = path .. '\\sapp\\' .. RegToPlay.file
+    if #args < 2 or args[1]:lower() ~= CONFIG.command then
+        return true
+    end
+
+    if not pending_players[player_id] then
+        say(player_id, "You are already registered.")
+        return false
+    end
+
+    if not has_permission(player_id) then
+        say(player_id, "Insufficient permissions.")
+        return false
+    end
+
+    if args[2] == CONFIG.password then
+        register_player(player_id)
+    else
+        say(player_id, "Invalid password. Try again.")
+    end
+
+    return false
+end
+
+-- Callbacks --
+function OnScriptLoad()
+	local path = read_string(read_dword(sig_scan('68??????008D54245468') + 0x1))
+    file_path = path .. "\\sapp\\" .. CONFIG.filename
+
+    register_callback(cb["EVENT_JOIN"], "OnPlayerJoin")
+    register_callback(cb["EVENT_LEAVE"], "OnPlayerLeave")
+    register_callback(cb["EVENT_COMMAND"], "OnCommand")
+    register_callback(cb["EVENT_TICK"], "OnTick")
+    register_callback(cb["EVENT_GAME_START"], "OnStart")
+
+    if not CONFIG.save_on_register then
+        register_callback(cb["EVENT_GAME_END"], "OnEnd")
+    end
 
     OnStart()
 end
 
--- Initialize script state at game start
 function OnStart()
-    if get_var(0, '$gt') ~= 'n/a' then
-        local file = open(RegToPlay.dir, 'a')
-        if file then file:close() end  -- Ensure file can be accessed
+    if get_var(0, "$gt") == "n/a" then return end
+    load_database()
 
-        file = open(RegToPlay.dir, 'r')
-        for line in file:lines() do
-            local users = StrSplit(line, '|')
-            database[users[1]] = users[2]  -- [1] IP, [2] Username
-        end
-        file:close()
-
-        players = {}
-        for i = 1, 16 do
-            if player_present(i) then
-                OnJoin(i)  -- Initialize existing players
-            end
+    for i = 1, 16 do
+        if player_present(i) then
+            OnPlayerJoin(i)
         end
     end
 end
 
--- Save data to file when the game ends
 function OnEnd()
-    RegToPlay:Write()
+    save_database()
 end
 
--- Handle player joining
-function OnJoin(playerId)
-    local ip = get_var(playerId, '$ip'):match('%d+.%d+.%d+.%d+')
-    local name = get_var(playerId, '$name')
+function OnPlayerJoin(player_id)
+    local ip = get_clean_ip(player_id)
+    local name = get_var(player_id, "$name")
 
-    if not database[ip] or database[ip] ~= name then
-        say(playerId, 'Please register a new username within ' .. RegToPlay.kick_delay .. ' seconds.')
-        players[playerId] = RegToPlay:NewPlayer({ id = playerId, ip = ip, name = name })
+    if not registered_players[ip] or registered_players[ip] ~= name then
+        pending_players[player_id] = {
+            start = os.time(),
+            finish = os.time() + CONFIG.kick_delay
+        }
+        say(player_id, "You have " .. CONFIG.kick_delay .. " seconds to register using: " ..
+            CONFIG.command .. " " .. CONFIG.password)
     end
 end
 
--- Handle player quitting
-function OnQuit(playerId)
-    players[playerId] = nil
+function OnPlayerLeave(player_id)
+    pending_players[player_id] = nil
 end
 
--- Periodically check for unregistered players
 function OnTick()
-    for playerId, player in pairs(players) do
-        if time() >= player.finish then
-            execute_command('k ' .. playerId .. ' "Not registered to this server!"')
+    local current_time = os.time()
+    for player_id, data in pairs(pending_players) do
+        if current_time >= data.finish then
+            execute_command("k " .. player_id .. " \"Registration timeout\"")
         end
     end
 end
 
--- Handle registration command from players
-function OnCommand(playerId, command)
-    local args = StrSplit(command, '%s')
-    local player = players[playerId]
-    if player and args[1] == player.command then
-        if not player:HasPerm() then
-            say(player.id, 'Server says no!')
-        elseif args[2] == player.password then
-            player:RegisterThisUser()
-        else
-            say(player.id, 'Invalid password.')
-        end
-        return false
-    end
+function OnCommand(player_id, command)
+    return process_command(player_id, command)
 end
 
--- Cleanup on script unload
 function OnScriptUnload()
-    -- No specific cleanup required
+    if not CONFIG.save_on_register then
+        save_database()
+    end
 end

@@ -1,95 +1,98 @@
 --[[
---=====================================================================================================--
-Script Name: Doctor, Doctor!, for SAPP (PC & CE)
-Description: Call a doctor!
-
-Copyright (c) 2022, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
+========================================================================================================
+Script Name: Doctor, Doctor! (SAPP - PC & CE)
+Description: Allows players to heal themselves by command.
+Author: Jericho Crosby <jericho.crosby227@gmail.com>
+License: https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+========================================================================================================
 ]]
 
--------------------
--- config starts --
--------------------
--- Custom command to call a doctor:
--- Syntax: /command
-local command = "dr"
+--=====================================
+-- CONFIGURATION
+--=====================================
+local dr_command        = "dr"       -- Custom command to call a doctor
+local increment         = 0.1016     -- Health regen increment per tick
+local permission_level  = -1         -- Minimum permission level (-1 = all players)
 
--- Health will regen in increments of this amount:
-local increment = 0.1016
-
--- Minimum permission level required to execute the /command:
--- All players = -1
--- Admins = levels 1-4
-local permission_level = -1
-
--- Customizable messages:
 local messages = {
-    [1] = "Health is regenerating...",
-    [2] = "You already have full health!",
-    [3] = "You do not have permission to execute that command!",
+    "Health is regenerating...",           -- [1]
+    "You already have full health!",       -- [2]
+    "You do not have permission to execute that command!", -- [3]
+    "Please wait until you respawn!"        -- [4]
 }
------------------
--- config ends --
------------------
 
 api_version = "1.12.0.0"
 
-function OnScriptLoad()
-    register_callback(cb['EVENT_COMMAND'], "OnCommand")
-end
+--=====================================
+-- PERFORMANCE CACHES
+--=====================================
+local lower           = string.lower
+local gmatch          = string.gmatch
+local tonumber        = tonumber
+local read_float      = read_float
+local write_float     = write_float
+local player_alive    = player_alive
+local get_var         = get_var
+local rprint          = rprint
+local get_dynamic_player = get_dynamic_player
+local register_callback = register_callback
+local cb              = cb
+local timer           = timer
 
-local lower = string.lower
-local gmatch = string.gmatch
-local function CMDSplit(CMD)
+--=====================================
+-- HELPERS
+--=====================================
+local function StrSplit(str)
     local args = {}
-    for params in gmatch(CMD, "([^%s]+)") do
-        args[#args + 1] = lower(params)
+    for param in gmatch(str, "([^%s]+)") do
+        args[#args+1] = lower(param)
     end
     return args
 end
 
-local function GetHealth(DyN)
-    return read_float(DyN + 0xE0)
+local function GetHealth(dyn)
+    return read_float(dyn + 0xE0)
 end
 
-function Regen(DyN, Ply)
-    if (DyN ~= 0 and player_alive(Ply)) then
-        local health = GetHealth(DyN)
-        if (health < 1) then
-            write_float(DyN + 0xE0, (health + increment > 1 and 1) or increment)
-        elseif (health == 1) then
+function Regen(id)
+    if player_alive(id) then
+        local dyn = get_dynamic_player(id)
+        local health = GetHealth(dyn)
+        if health < 1 then
+            local newHealth = health + increment
+            write_float(dyn + 0xE0, (newHealth > 1) and 1 or newHealth)
+        else
             return false
         end
     end
     return true
 end
 
-function OnCommand(Ply, CMD)
-    local args = CMDSplit(CMD)
-    if (args[1] == command) then
-        local lvl = tonumber(get_var(Ply, "$lvl"))
-        if (lvl >= permission_level) then
-            if (player_alive(Ply)) then
-                local DyN = get_dynamic_player(Ply)
-                local health = GetHealth(DyN)
-                if (health == 1) then
-                    rprint(Ply, messages[2])
+function OnCommand(id, command)
+    local args = StrSplit(command)
+    if args[1] == dr_command then
+        if tonumber(get_var(id, "$lvl")) >= permission_level then
+            if player_alive(id) then
+                local dyn = get_dynamic_player(id)
+                local health = GetHealth(dyn)
+                if health >= 1 then
+                    rprint(id, messages[2])
                 else
-                    rprint(Ply, messages[1])
-                    timer(1000, "Regen", DyN, Ply)
+                    rprint(id, messages[1])
+                    timer(1000, "Regen", id)
                 end
             else
-                rprint("Please wait until you respawn!")
+                rprint(id, messages[4])
             end
         else
-            rprint(Ply, messages[3])
+            rprint(id, messages[3])
         end
         return false
     end
 end
 
-function OnScriptUnload()
-    -- N/A
+function OnScriptLoad()
+    register_callback(cb['EVENT_COMMAND'], "OnCommand")
 end
+
+function OnScriptUnload() end
