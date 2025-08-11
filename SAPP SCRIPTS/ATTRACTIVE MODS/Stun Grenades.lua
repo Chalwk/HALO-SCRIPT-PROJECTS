@@ -97,13 +97,13 @@ end
 -- Called when a player receives damage:
 function OnDamage(Victim, Killer, MetaID)
 
-    local victim = tonumber(Victim)
-    local killer = tonumber(Killer)
+    victim = tonumber(Victim)
+    killer = tonumber(Killer)
 
     local pvp = (killer > 0 and victim ~= killer)
 
     if (pvp and stuns[MetaID]) then
-	
+
         local stun_time = stuns[MetaID][1]
         local stun_percent = stuns[MetaID][2]
 
