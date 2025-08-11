@@ -57,7 +57,7 @@ end
 local function hasPermission(id)
     local lvl = tonumber(get_var(id, '$lvl'))
     if lvl >= 1 then
-        return return true
+        return true
     end
     rprint(id, 'Insufficient Permission')
     return true
