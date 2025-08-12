@@ -49,7 +49,7 @@ local CONFIG = {
     },
 
     ENFORCEMENT = {
-        COMMAND = "k",              -- Command executed on detection (e.g. "k")
+        COMMAND = "k",              -- Command executed on detection (e.g. "k", "b")
         REASON = "Aimbot detection" -- Reason message for enforcement command
     },
 
@@ -98,13 +98,31 @@ api_version = "1.12.0.0"
 local players = {}        -- Per-player state (indexed 1..16)
 local camera_vectors = {} -- Last-camera vector per player
 local weapon_cache = {}   -- Weapon name cache for performance
+
 local time = os.clock
+local fmt = string.format
+
+local sqrt = math.sqrt
+local acos = math.acos
+local max = math.max
+local pi = math.pi
+
+local ipairs = ipairs
+local insert = table.insert
+local remove = table.remove
+
+local read_vector3d = read_vector3d
+local get_object_memory = get_object_memory
+local get_dynamic_player = get_dynamic_player
+local get_var, get_player = get_var, get_player
+local player_present, player_alive = player_present, player_alive
+local read_float, read_string, read_dword, read_word = read_float, read_string, read_dword, read_word
 
 -- Safe clamp
 local function clamp(v, lo, hi) return (v < lo) and lo or ((v > hi) and hi or v) end
 
 -- Vector helpers -------------------------------------------------------------
-local function vector_length(x, y, z) return math.sqrt(x * x + y * y + z * z) end
+local function vector_length(x, y, z) return sqrt(x * x + y * y + z * z) end
 
 local function normalize(x, y, z)
     local len = vector_length(x, y, z)
@@ -127,8 +145,8 @@ local function calculate_orientation_change(player_id, dyn_ptr)
     local px, py, pz = prev[1], prev[2], prev[3]
     local d = dot_product(px, py, pz, cx, cy, cz)
     d = clamp(d, -1, 1)
-    local angle_rad = math.acos(d)
-    return (angle_rad * 180) / math.pi
+    local angle_rad = acos(d)
+    return (angle_rad * 180) / pi
 end
 
 -- Get player's eye (aim) position with crouch/stand offset
@@ -150,7 +168,7 @@ local function compute_stats(t)
     for i = 1, #t do
         variance = variance + (t[i] - mean) ^ 2
     end
-    return mean, math.sqrt(variance / #t)
+    return mean, sqrt(variance / #t)
 end
 
 -- Get weapon name with caching
@@ -191,7 +209,7 @@ local function get_player_horizontal_speed(player_id)
     local dyn = get_dynamic_player(player_id)
     if dyn == 0 then return 0 end
     local vx, vy, _ = read_vector3d(dyn + 0x278)
-    return math.sqrt(vx * vx + vy * vy)
+    return sqrt(vx * vx + vy * vy)
 end
 
 -- Check whether current aim vector is aligned with direction to target
@@ -243,7 +261,7 @@ local function check_aim_at_target(shooter_dyn, shooter_id, target_id)
     -- Compute angle between vectors (degrees)
     local dp = dot_product(aim_x, aim_y, aim_z, dir_x, dir_y, dir_z)
     dp = clamp(dp, -1, 1)
-    local angle_deg = math.acos(dp) * 180 / math.pi
+    local angle_deg = acos(dp) * 180 / pi
 
     -- Apply weapon-specific modifier
     local weapon = get_weapon_name(shooter_id)
@@ -325,15 +343,15 @@ local function evaluate_aim_event(shooter_id, shooter_dyn, snap_angle_deg, dista
 
     -- Pattern recognition
     if CONFIG.PATTERN_DETECTION.ENABLED then
-        table.insert(state.lock_pattern, time())
+        insert(state.lock_pattern, time())
         if #state.lock_pattern > CONFIG.PATTERN_DETECTION.MAX_PATTERN_LENGTH then
-            table.remove(state.lock_pattern, 1)
+            remove(state.lock_pattern, 1)
         end
 
         if #state.lock_pattern >= 3 then
             local intervals = {}
             for i = 2, #state.lock_pattern do
-                table.insert(intervals, state.lock_pattern[i] - state.lock_pattern[i - 1])
+                insert(intervals, state.lock_pattern[i] - state.lock_pattern[i - 1])
             end
 
             local mean, std_dev = compute_stats(intervals)
@@ -371,9 +389,9 @@ local function update_dynamic_threshold(pid)
     local accuracy = 0.5 -- Replace with actual accuracy tracking
 
     -- Update accuracy history
-    table.insert(state.accuracy_history, accuracy)
+    insert(state.accuracy_history, accuracy)
     if #state.accuracy_history > 10 then
-        table.remove(state.accuracy_history, 1)
+        remove(state.accuracy_history, 1)
     end
 
     -- Calculate weighted average accuracy
@@ -405,7 +423,7 @@ local function process_player_aim(pid)
     local elapsed = now - (state.last_decay_time or now)
     if elapsed >= CONFIG.DECAY.INTERVAL_SECONDS and state.aim_score > 0 then
         local decay_amount = elapsed * CONFIG.DECAY.POINTS_PER_SECOND
-        state.aim_score = math.max(0, state.aim_score - decay_amount)
+        state.aim_score = max(0, state.aim_score - decay_amount)
         state.last_decay_time = now
     end
 
@@ -437,12 +455,12 @@ local function process_player_aim(pid)
     end
 
     if not scoring_occurred then
-        state.lock_count = math.max(0, state.lock_count - 0.5)
+        state.lock_count = max(0, state.lock_count - 0.5)
     end
 
     -- Enforcement
     if state.aim_score > CONFIG.AUTO_AIM.MAX_SCORE then
-        execute_command(string.format("%s %d \"%s\"", CONFIG.ENFORCEMENT.COMMAND, pid, CONFIG.ENFORCEMENT.REASON))
+        execute_command(fmt("%s %d \"%s\"", CONFIG.ENFORCEMENT.COMMAND, pid, CONFIG.ENFORCEMENT.REASON))
         state.aim_score = 0
         state.lock_count = 0
         state.lock_pattern = {}
