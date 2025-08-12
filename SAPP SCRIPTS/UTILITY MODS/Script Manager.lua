@@ -1,7 +1,7 @@
 --[[
 --=====================================================================================================--
 Script Name: Script Manager, for SAPP (PC & CE)
-Description: This script automatically loads scripts based on the current map and game mode.
+Description: Dynamically loads/unloads scripts based on current map and game mode
 
 Copyright (c) 2024, Jericho Crosby <jericho.crosby227@gmail.com>
 Notice: You can use this script subject to the following conditions:
@@ -11,95 +11,129 @@ https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 
 api_version = '1.12.0.0'
 
+-- Configuration --------------------------------------------------------------
 local ScriptManager = {
+    -- Map-game mode associations
     maps = {
-        -- Example Usage:
-        -- ['map_name'] = {
-        --     ['game_mode'] = { 'script1', 'script2' },
-        -- },
-        ['bloodgulch'] = { ['LNZ-DAC'] = { 'Notify Me' } },
-        -- Add more maps and game modes as needed...
-    },
-
-    -- Internal tracking, do not touch:
-    loaded = {},
-    scripts = {},
+        ['bloodgulch'] = {
+            ['LNZ-DAC'] = { 'Notify Me', 'Another Script' },
+        },
+        ['deathisland'] = {
+            ['ctf'] = { 'CTF Helper' },
+            ['slayer'] = { 'Slayer Enhancer' }
+        },
+        -- Add new maps here
+    }
 }
+------------------------------------------------------------------------------
 
--- Initialize the script manager
 function OnScriptLoad()
+    cprint('[Script Manager] Initialized')
     register_callback(cb['EVENT_GAME_START'], 'OnGameStart')
-    cprint("[Script Manager] Initialized.")
+    register_callback(cb['EVENT_GAME_END'], 'OnGameEnd')
+    ScriptManager.loaded = {}    -- Tracks currently loaded scripts
+    ScriptManager.scheduled = {} -- Scripts scheduled for loading/unloading
 end
 
--- Load scripts based on current map and game mode
 function OnGameStart()
     local gameType = get_var(0, '$gt')
+    if gameType == 'n/a' then return end
 
-    if gameType ~= 'n/a' then
-        local map = get_var(0, '$map')
-        local mode = get_var(0, '$mode')
+    local map = get_var(0, '$map'):lower()
+    local mode = get_var(0, '$mode'):lower()
 
-        ScriptManager:LoadScriptsForMapAndMode(map, mode)
-        ScriptManager:UnloadUnusedScripts()
-    end
+    ScriptManager:ProcessMapMode(map, mode)
 end
 
--- Load scripts for the specified map and mode
-function ScriptManager:LoadScriptsForMapAndMode(map, mode)
-    local gameScripts = self.maps[map] and self.maps[map][mode]
+function OnGameEnd()
+    ScriptManager:UnloadAllScripts()
+end
 
-    if gameScripts then
-        for _, script in ipairs(gameScripts) do
+function ScriptManager:ProcessMapMode(map, mode)
+    self:ClearScheduled()
+
+    -- Schedule new scripts for loading
+    if self.maps[map] and self.maps[map][mode] then
+        for _, script in ipairs(self.maps[map][mode]) do
             if not self.loaded[script] then
-                self:LoadScript(script)
+                self.scheduled[script] = true
             end
         end
-    else
-        cprint("[Script Manager] No scripts found for " .. map .. " in mode " .. mode)
     end
-end
 
--- Unload scripts that are no longer needed
-function ScriptManager:UnloadUnusedScripts()
-    for script, _ in pairs(self.loaded) do
-        if not self.scripts[script] then
-            self:UnloadScript(script)
+    -- Schedule obsolete scripts for unloading
+    for script in pairs(self.loaded) do
+        if not (self.maps[map] and self.maps[map][mode] and self:Contains(self.maps[map][mode], script)) then
+            self.scheduled[script] = false
         end
     end
+
+    self:ExecuteScheduled()
 end
 
--- Load a specified script
-function ScriptManager:LoadScript(script)
+function ScriptManager:ExecuteScheduled()
+    for script, load_flag in pairs(self.scheduled) do
+        if load_flag then
+            self:Load(script)
+        else
+            self:Unload(script)
+        end
+    end
+    self:ClearScheduled()
+end
+
+function ScriptManager:Load(script)
+    if self.loaded[script] then return end
+
     local success, err = pcall(function()
-        self.loaded[script] = true
-        self.scripts[script] = true
-        cprint('[Script Manager] Loading Script: ' .. script)
         execute_command('lua_load "' .. script .. '"')
+        self.loaded[script] = true
+        cprint('[Script Manager] Loaded: ' .. script)
     end)
 
     if not success then
-        cprint('[Script Manager] Error loading script: ' .. script .. ' - ' .. err)
+        cprint('[Script Manager] ERROR loading ' .. script .. ': ' .. tostring(err))
+        self.loaded[script] = nil
     end
 end
 
--- Unload a specified script
-function ScriptManager:UnloadScript(script)
+function ScriptManager:Unload(script)
+    if not self.loaded[script] then return end
+
     local success, err = pcall(function()
-        self.loaded[script] = nil
-        cprint('[Script Manager] Unloading Script: ' .. script)
         execute_command('lua_unload "' .. script .. '"')
+        self.loaded[script] = nil
+        cprint('[Script Manager] Unloaded: ' .. script)
     end)
 
     if not success then
-        cprint('[Script Manager] Error unloading script: ' .. script .. ' - ' .. err)
+        cprint('[Script Manager] ERROR unloading ' .. script .. ': ' .. tostring(err))
     end
+end
+
+function ScriptManager:UnloadAllScripts()
+    for script in pairs(self.loaded) do
+        self:Unload(script)
+    end
+    cprint('[Script Manager] All scripts unloaded')
+end
+------------------------------------------------------------------------------
+
+-- Utility functions ----------------------------------------------------------
+function ScriptManager:ClearScheduled()
+    self.scheduled = {}
+end
+
+function ScriptManager:Contains(tbl, item)
+    for _, v in ipairs(tbl) do
+        if v == item then
+            return true
+        end
+    end
+    return false
 end
 
 function OnScriptUnload()
-    -- Clean up any loaded scripts if needed
-    for script, _ in pairs(ScriptManager.loaded) do
-        ScriptManager:UnloadScript(script)
-    end
-    cprint("[Script Manager] Unloaded all scripts.")
+    ScriptManager:UnloadAllScripts()
+    cprint('[Script Manager] Unloaded')
 end

@@ -41,6 +41,7 @@
         "write_bit",
         "execute_command_sequence",
         "write_byte",
-        "to_real_index"
+        "to_real_index",
+        "sync_ammo"
     ]
 }
