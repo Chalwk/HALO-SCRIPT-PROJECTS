@@ -45,6 +45,11 @@
         "sync_ammo",
         "set_callback",
         "console_out",
-        "clua_version"
+        "clua_version",
+        "draw_text",
+        "server_type",
+        "write_file",
+        "file_exists",
+        "read_file"
     ]
 }
