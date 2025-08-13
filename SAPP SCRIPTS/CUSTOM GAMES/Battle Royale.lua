@@ -29,14 +29,14 @@ local WARNING_INTERVAL = 2.0 -- Warn players every 2 seconds
 
 local MAPS = {
     ["bloodgulch"] = {
-        center                  = { x = 0, y = 0, z = 0 }, -- Boundary center position
-        min_size                = 20,                      -- Minimum radius of playable area
-        max_size                = 500,                     -- Maximum radius (starting size)
-        shrink_steps            = 5,                       -- Number of shrink steps to reach min_size
-        game_time               = 5 * 60,                  -- Default game duration in seconds
-        bonus_time              = 30,                      -- Bonus period duration in seconds
-        public_message_interval = 10,                      -- Seconds between private reminders
-        damage_per_second       = 0.0333,                  -- Default 0.0333% damage every 1 second (dead in 30 seconds)
+        center                  = { x = 65.749, y = -120.409, z = 0.118 }, -- Boundary center position
+        min_size                = 1,                                       -- Minimum radius of playable area
+        max_size                = 5,                                       -- Maximum radius (starting size)
+        shrink_steps            = 2,                                       -- Number of shrink steps to reach min_size
+        game_time               = 60,                                      -- Default game duration in seconds
+        bonus_time              = 30,                                      -- Bonus period duration in seconds
+        public_message_interval = 10,                                      -- Seconds between private reminders
+        damage_per_second       = 0.0333,                                  -- Default 0.0333% damage every 1 second (dead in 30 seconds)
     },
     ["sidewinder"] = {
         center                  = { x = 0, y = 0, z = 0 },
@@ -199,172 +199,159 @@ local MAPS = {
         damage_per_second       = 0.0333
     }
 }
--- CONFIG END -------------------------------------------------------------------------------------
+-- CONFIG END ---------------------------------------------------------------------------
 
 api_version = "1.12.0.0"
 
+-- Localized frequently used functions and variables
+local floor, format, max, clock = math.floor, string.format, math.max, os.clock
+local read_float, read_dword, read_vector3d = read_float, read_dword, read_vector3d
+local player_present, player_alive = player_present, player_alive
+local get_dynamic_player, get_object_memory = get_dynamic_player, get_object_memory
+local execute_command, say_all, rprint = execute_command, say_all, rprint
+
+-- Runtime variables
 local CFG = {}
-local prefix = "SAPP"
-local game_start_time = 0
-local current_radius = CFG.max_size
-local expected_reductions = 0
-local total_game_time = 0
 local game_active = false
-local prev_radius = CFG.max_size
+local game_start_time = 0
+local total_game_time = 0
 local last_public_message = 0
 local bonus_period = false
 local bonus_end_time = 0
+local current_radius = 0
+local expected_reductions = 0
 local reductions_remaining = 0
+local damage_per_interval = 0
+local player_timers = {}
 
--- Player timers for damage/warning rate limiting
-local player_timers = {} -- player_id -> { last_damage = time, last_warning = time }
-
-local floor, format, max, clock, pairs = math.floor, string.format, math.max, os.clock, pairs
+-- Precomputed values
+local DAMAGE_INTERVAL_MS = DAMAGE_INTERVAL * 1000
+local WARNING_INTERVAL_MS = WARNING_INTERVAL * 1000
 
 -- Convert seconds to MM:SS format
 local function secondsToTime(seconds)
-    if seconds <= 0 then return "00", "00" end
-    local mins = floor(seconds / 60)
-    local secs = floor(seconds % 60)
-    return format("%02d", mins), format("%02d", secs)
-end
-
--- Convert world units to feet (1 world unit = 10 ft)
-local function unitsToFeet(units)
-    return units * 10
-end
-
--- Calculate expected number of shrink steps
-local function calculateExpectedReductions()
-    return CFG.shrink_steps or 5
-end
-
--- Check if a point is inside the radius
-local function in_range(x1, y1, z1, x2, y2, z2, radius)
-    local dx = x1 - x2
-    local dy = y1 - y2
-    local dz = z1 - z2
-    return (dx * dx + dy * dy + dz * dz) <= (radius * radius)
-end
-
--- Retrieve player's world coordinates, accounting for crouch/vehicle
-local function get_player_position(dyn_player)
-    local crouch = read_float(dyn_player + 0x50C)
-    local vehicle_id = read_dword(dyn_player + 0x11C)
-    local vehicle_obj = get_object_memory(vehicle_id)
-
-    local x, y, z
-    if vehicle_id == 0xFFFFFFFF then
-        x, y, z = read_vector3d(dyn_player + 0x5C)
-    elseif vehicle_obj ~= 0 then
-        x, y, z = read_vector3d(vehicle_obj + 0x5C)
-    end
-
-    local z_offset = (crouch == 0) and 0.65 or 0.35 * crouch
-    return x, y, z + z_offset
-end
-
--- Check if a player is present and alive
-local function player_valid(id)
-    return player_present(id) and player_alive(id)
-end
-
--- Reduce player's health
-local function hurt_player(player_id, dyn_player, amount)
-    local health = read_float(dyn_player + 0xE0)
-    if health <= amount then
-        execute_command('kill ' .. player_id)
-    else
-        write_float(dyn_player + 0xE0, health - amount)
-    end
+    seconds = floor(seconds)
+    return format("%02d:%02d", floor(seconds / 60), seconds % 60)
 end
 
 local function announce(message)
-    execute_command('msg_prefix "' .. prefix .. '"')
+    execute_command('msg_prefix ""')
     say_all(message)
     execute_command('msg_prefix "' .. MSG_PREFIX .. '"')
 end
 
+-- Initialize game boundary
 local function initializeBoundary()
     current_radius = CFG.max_size
-    prev_radius = CFG.max_size
-    expected_reductions = calculateExpectedReductions()
+    expected_reductions = CFG.shrink_steps
     reductions_remaining = expected_reductions
-    total_game_time = CFG.game_time or (5 * 60)
+    total_game_time = CFG.game_time
+    damage_per_interval = CFG.damage_per_second * DAMAGE_INTERVAL
+
+    -- Precompute shrink values
     CFG.reduction_amount = (CFG.max_size - CFG.min_size) / expected_reductions
     CFG.reduction_rate = total_game_time / expected_reductions
+
     game_active = true
     bonus_period = false
     last_public_message = clock()
 
     announce(format(
         "[BATTLE ROYALE] Center: X %.1f Y %.1f Z %.1f | RAD: %.0f | Shrinks: %d | Time: %.0f sec | Bonus: %d sec",
-        CFG.center.x, CFG.center.y, CFG.center.z, current_radius, expected_reductions, total_game_time, CFG.bonus_time))
+        CFG.center_x, CFG.center_y, CFG.center_z, current_radius,
+        expected_reductions, total_game_time, CFG.bonus_time
+    ))
 end
 
-local function register_callbacks()
+-- Boundary check (inlined for performance)
+local function isInsideBoundary(px, py, pz, radius)
+    local dx = px - CFG.center_x
+    local dy = py - CFG.center_y
+    local dz = pz - CFG.center_z
+    return (dx * dx + dy * dy + dz * dz) <= (radius * radius)
+end
+
+-- Player position retrieval
+local function getPlayerPosition(dyn_player)
+    local object = read_dword(dyn_player + 0x11C) -- vehicle ID
+    if object ~= 0xFFFFFFFF then
+        object = get_object_memory(ptr)
+        if object == 0 then return end -- invalid vehicle
+    else
+        object = dyn_player
+    end
+
+    local x, y, z = read_vector3d(object + 0x5C)
+    local crouch = read_float(dyn_player + 0x50C)
+    z = z + (crouch ~= 0 and 0.35 * crouch or 0.65)
+
+    return x, y, z
+end
+
+-- Player damage handler
+local function hurtPlayer(player_id, dyn_player)
+    local health = read_float(dyn_player + 0xE0)
+    if health <= damage_per_interval then
+        execute_command('kill ' .. player_id)
+    else
+        write_float(dyn_player + 0xE0, health - damage_per_interval)
+    end
+end
+
+-- Callback management
+local function registerCallbacks()
     register_callback(cb["EVENT_TICK"], "OnTick")
     register_callback(cb["EVENT_GAME_END"], "OnEnd")
     register_callback(cb["EVENT_JOIN"], "OnJoin")
     register_callback(cb["EVENT_LEAVE"], "OnQuit")
 end
 
-local function unregister_callbacks()
+local function unregisterCallbacks()
     unregister_callback(cb["EVENT_TICK"])
     unregister_callback(cb["EVENT_GAME_END"])
     unregister_callback(cb["EVENT_JOIN"])
     unregister_callback(cb["EVENT_LEAVE"])
 end
 
--- Apply map-specific settings
+-- Map configuration
 local function applyMapSettings()
-    CFG = {}
     local map_name = get_var(0, "$map")
     local map_cfg = MAPS[map_name]
 
     if not map_cfg then
-        unregister_callbacks()
-        error(("[BATTLE ROYALE] Map not configured: %s"):format(map_name), 2)
+        unregisterCallbacks()
+        error("[BATTLE ROYALE] Map not configured: " .. map_name, 10)
     end
 
-    -- Merge map settings into global CFG
-    for k, v in pairs(map_cfg) do
-        CFG[k] = v
-    end
+    CFG = {
+        center_x = map_cfg.center.x,
+        center_y = map_cfg.center.y,
+        center_z = map_cfg.center.z,
+        min_size = map_cfg.min_size,
+        max_size = map_cfg.max_size,
+        shrink_steps = map_cfg.shrink_steps,
+        game_time = map_cfg.game_time,
+        bonus_time = map_cfg.bonus_time,
+        public_message_interval = map_cfg.public_message_interval,
+        damage_per_second = map_cfg.damage_per_second
+    }
 
-    -- Print loaded map message with each setting on a new line
-    cprint(("[BATTLE ROYALE] Loaded settings for map: %s"):format(map_name), 10)
-    for k, v in pairs(CFG) do
-        local value_str
-        if type(v) == "table" then
-            local tbl_items = {}
-            for tk, tv in pairs(v) do
-                table.insert(tbl_items, tk .. "=" .. tostring(tv))
-            end
-            value_str = "{ " .. table.concat(tbl_items, ", ") .. " }"
-        else
-            value_str = tostring(v)
-        end
-        cprint(string.format("  %s = %s", k, value_str), 10)
-    end
-
-    register_callbacks()
+    registerCallbacks()
 end
 
+-- Event handlers
 function OnScriptLoad()
-    register_callback(cb["EVENT_TICK"], "OnTick")
-    register_callback(cb["EVENT_GAME_END"], "OnEnd")
-    register_callback(cb["EVENT_JOIN"], "OnJoin")
-    register_callback(cb["EVENT_LEAVE"], "OnQuit")
-    register_callback(cb["EVENT_GAME_START"], "OnGameStart")
-    OnGameStart()
+    register_callback(cb["EVENT_GAME_START"], "OnStart")
+    OnStart()
 end
 
-function OnGameStart()
+function OnStart()
     if get_var(0, '$gt') == 'n/a' then return end
     applyMapSettings()
     initializeBoundary()
     game_start_time = clock()
+
+    -- Initialize player timers
     for i = 1, 16 do
         if player_present(i) then
             player_timers[i] = { last_damage = 0, last_warning = 0 }
@@ -377,15 +364,12 @@ function OnEnd()
     bonus_period = false
 end
 
-function OnJoin(PlayerIndex)
-    player_timers[tonumber(PlayerIndex)] = {
-        last_damage = 0,
-        last_warning = 0
-    }
+function OnJoin(id)
+    player_timers[id] = { last_damage = 0, last_warning = 0 }
 end
 
-function OnQuit(PlayerIndex)
-    player_timers[tonumber(PlayerIndex)] = nil
+function OnQuit(id)
+    player_timers[id] = nil
 end
 
 function OnTick()
@@ -393,104 +377,93 @@ function OnTick()
 
     local now = clock()
     local elapsed = now - game_start_time
-    local reductions_done = floor(elapsed / CFG.reduction_rate)
-    reductions_remaining = max(expected_reductions - reductions_done, 0)
+    local radius_changed = false
 
-    -- Start bonus period when reductions run out
-    if reductions_remaining == 0 and not bonus_period then
-        bonus_period = true
-        bonus_end_time = now + CFG.bonus_time
-        current_radius = CFG.min_size
-        prev_radius = current_radius
-        announce(format("Last man standing for %d seconds at %.0f ft radius!",
-            CFG.bonus_time, unitsToFeet(current_radius)))
-    end
-
-    -- Update radius (only if not in bonus period)
+    -- Boundary shrinking logic
     if not bonus_period then
-        current_radius = max(CFG.max_size - reductions_done * CFG.reduction_amount, CFG.min_size)
+        local reductions_done = floor(elapsed / CFG.reduction_rate)
+        reductions_remaining = max(expected_reductions - reductions_done, 0)
+        local new_radius = max(CFG.max_size - reductions_done * CFG.reduction_amount, CFG.min_size)
+
+        if new_radius < current_radius then
+            current_radius = new_radius
+            radius_changed = true
+        end
+
+        if reductions_remaining == 0 then
+            bonus_period = true
+            bonus_end_time = now + CFG.bonus_time
+            current_radius = CFG.min_size
+            radius_changed = true
+
+            announce(format("Last man standing for %d seconds at %.0f world units!",
+                CFG.bonus_time, current_radius))
+        end
     end
 
-    -- SHRINK EVENT: announce if radius decreased
-    if current_radius < prev_radius then
-        announce(format(
-            "Radius shrunk to %.0f | Shrinks left: %d | Min radius: %.0f ft",
-            current_radius, reductions_remaining, unitsToFeet(CFG.min_size)))
-        prev_radius = current_radius
+    -- Announce radius changes
+    if radius_changed then
+        announce(format("Radius shrunk to %.0f | Shrinks left: %d | Min radius: %.0f",
+            current_radius, reductions_remaining, CFG.min_size))
     end
 
-    -- REAL-TIME BOUNDARY ENFORCEMENT
-    local damage_per_interval = (CFG.damage_per_second or 10) * DAMAGE_INTERVAL
+    -- Precompute values for boundary checks
+    local radius_sq = current_radius * current_radius
+    local current_time_ms = now * 1000
 
+    -- Player processing
     for i = 1, 16 do
-        if player_valid(i) then
+        if player_present(i) and player_alive(i) then
             local dyn_player = get_dynamic_player(i)
-            local px, py, pz = get_player_position(dyn_player)
+            if not dyn_player then goto continue end
 
-            -- Initialize timer if missing
-            if not player_timers[i] then
-                player_timers[i] = { last_damage = 0, last_warning = 0 }
-            end
+            local x, y, z = getPlayerPosition(dyn_player)
+            if not x then goto continue end
+
             local timer = player_timers[i]
+            local inside = isInsideBoundary(x, y, z, radius_sq)
 
-            if px and py and pz then -- Ensure valid coordinates
-                local inside_boundary = in_range(px, py, pz, CFG.center.x, CFG.center.y, CFG.center.z, current_radius)
+            if not inside then
+                -- Damage application
+                if current_time_ms - timer.last_damage >= DAMAGE_INTERVAL_MS then
+                    hurtPlayer(i, dyn_player)
+                    timer.last_damage = current_time_ms
+                end
 
-                if not inside_boundary then
-                    -- Apply damage at high frequency
-                    if now - timer.last_damage >= DAMAGE_INTERVAL then
-                        hurt_player(i, dyn_player, damage_per_interval)
-                        timer.last_damage = now
-                    end
-
-                    -- Rate-limited warnings
-                    if now - timer.last_warning >= WARNING_INTERVAL then
-                        rprint(i, "You are outside the boundary! Return to the play area.")
-                        timer.last_warning = now
-                    end
+                -- Warning messages
+                if current_time_ms - timer.last_warning >= WARNING_INTERVAL_MS then
+                    rprint(i, "You are outside the boundary! Return to the play area.")
+                    timer.last_warning = current_time_ms
                 end
             end
+
+            -- Periodic status updates
+            if now - last_public_message >= CFG.public_message_interval then
+                local status
+                if bonus_period then
+                    status = format("BONUS TIME: %s | Radius: %.0f",
+                        secondsToTime(bonus_end_time - now),
+                        current_radius)
+                else
+                    status = format("Radius: %.0f | Time: %s | Shrinks left: %d",
+                        current_radius,
+                        secondsToTime(total_game_time - elapsed),
+                        reductions_remaining)
+                end
+                rprint(i, status .. (not inside and " [OUT]" or ""))
+            end
         end
+        ::continue::
     end
 
-    -- PERIODIC PRIVATE REMINDERS
+    -- Update public message timer
     if now - last_public_message >= CFG.public_message_interval then
-        for i = 1, 16 do
-            if player_valid(i) then
-                local dyn_player = get_dynamic_player(i)
-                local px, py, pz = get_player_position(dyn_player)
-
-                local min_str, sec_str
-                local status_msg
-
-                -- Different messages during bonus period
-                if bonus_period then
-                    local bonus_remaining = max(bonus_end_time - now, 0)
-                    min_str, sec_str = secondsToTime(bonus_remaining)
-                    status_msg = format("BONUS TIME: %s:%s | Radius: %.0f ft",
-                        min_str, sec_str, unitsToFeet(current_radius))
-                else
-                    min_str, sec_str = secondsToTime(total_game_time - elapsed)
-                    status_msg = format("Radius: %.0f | Time: %s:%s | Shrinks left: %d",
-                        current_radius, min_str, sec_str, reductions_remaining)
-                end
-
-                local outside = ""
-                if px and py and pz then
-                    outside = not in_range(px, py, pz, CFG.center.x, CFG.center.y, CFG.center.z, current_radius)
-                        and " [OUT]" or ""
-                end
-
-                rprint(i, status_msg .. outside)
-            end
-        end
         last_public_message = now
     end
 
-    -- GAME END CHECK - UPDATED FOR BONUS PERIOD
+    -- End game after bonus period
     if bonus_period and now >= bonus_end_time then
         game_active = false
-        bonus_period = false
         execute_command("sv_map_next")
     end
 end
