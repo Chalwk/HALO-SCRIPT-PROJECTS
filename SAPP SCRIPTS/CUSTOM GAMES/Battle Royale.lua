@@ -23,9 +23,10 @@
 --    - 1 foot = 0.3048 meters, so: 1 world unit ≈ 3.048 meters.
 --    - All min_size and max_size values below are in world units.
 
-local MSG_PREFIX = "SAPP"    -- SAPP msg_prefix
-local DAMAGE_INTERVAL = 0.2  -- Apply damage every 0.2 seconds (5x/sec)
-local WARNING_INTERVAL = 2.0 -- Warn players every 2 seconds
+local MSG_PREFIX = "SAPP"           -- SAPP msg_prefix
+local DAMAGE_INTERVAL = 0.2         -- Apply damage every 0.2 seconds (5x/sec)
+local WARNING_INTERVAL = 2.0        -- Warn players every 2 seconds
+local MAX_DEATHS_UNTIL_SPECTATE = 3 -- Number of times a player can die before spectating
 
 local MAPS = {
     ["bloodgulch"] = {
@@ -222,7 +223,7 @@ local current_radius = 0
 local expected_reductions = 0
 local reductions_remaining = 0
 local damage_per_interval = 0
-local player_timers = {}
+local players = {}
 
 -- Precomputed values
 local DAMAGE_INTERVAL_MS = DAMAGE_INTERVAL * 1000
@@ -304,6 +305,7 @@ local function registerCallbacks()
     register_callback(cb["EVENT_GAME_END"], "OnEnd")
     register_callback(cb["EVENT_JOIN"], "OnJoin")
     register_callback(cb["EVENT_LEAVE"], "OnQuit")
+    register_callback(cb["EVENT_DIE"], "OnDeath")
 end
 
 local function unregisterCallbacks()
@@ -311,6 +313,7 @@ local function unregisterCallbacks()
     unregister_callback(cb["EVENT_GAME_END"])
     unregister_callback(cb["EVENT_JOIN"])
     unregister_callback(cb["EVENT_LEAVE"])
+    unregister_callback(cb["EVENT_DIE"])
 end
 
 -- Map configuration
@@ -354,7 +357,7 @@ function OnStart()
     -- Initialize player timers
     for i = 1, 16 do
         if player_present(i) then
-            player_timers[i] = { last_damage = 0, last_warning = 0 }
+            OnJoin(i)
         end
     end
 end
@@ -365,11 +368,44 @@ function OnEnd()
 end
 
 function OnJoin(id)
-    player_timers[id] = { last_damage = 0, last_warning = 0 }
+    players[id] = { last_damage = 0, last_warning = 0, spectator = false }
 end
 
 function OnQuit(id)
-    player_timers[id] = nil
+    players[id] = nil
+end
+
+function OnDeath(victim, killer)
+    victim = tonumber(victim)
+    killer = tonumber(killer)
+
+    if killer == 0 or killer == victim or not players[victim] then return end
+
+    local deaths = get_var(victim, '$deaths')
+    if deaths >= MAX_DEATHS_UNTIL_SPECTATE then
+        players[victim].spectator = true
+    end
+end
+
+local function spectate(id, dyn_player, px, py, pz)
+    local player = get_player(id) -- static memory address (not dyn_player)
+
+    if (player or not player.spectator) then return end
+
+    write_float(player + 0xF8, px - 1000)   -- player x (x,y,z different from read_vector3d)
+    write_float(player + 0xFC, py - 1000)   -- player y
+    write_float(player + 0x100, pz - 1000)  -- player z
+    write_bit(dyn_player + 0x10, 0, 1)      -- uncollidable/invulnerable
+    write_bit(dyn_player + 0x106, 11, 1)    -- undamageable except for shields w explosions
+
+    -- Force weapon drop:
+    execute_command('wdrop ' .. id)
+    -- Force vehicle exit:
+    execute_command('vexit ' .. id)
+    -- Force into camoflauge:
+    execute_command('camo ' .. id .. ' 1')
+    -- Force into god mode:
+    execute_command('god ' .. id)
 end
 
 function OnTick()
@@ -420,20 +456,25 @@ function OnTick()
             local x, y, z = getPlayerPosition(dyn_player)
             if not x then goto continue end
 
-            local timer = player_timers[i]
+            local player = players[i]
+            if player.spectator then
+                spectate(i, dyn_player, x, y, z)
+                goto continue
+            end
+
             local inside = isInsideBoundary(x, y, z, radius_sq)
 
             if not inside then
                 -- Damage application
-                if current_time_ms - timer.last_damage >= DAMAGE_INTERVAL_MS then
+                if current_time_ms - player.last_damage >= DAMAGE_INTERVAL_MS then
                     hurtPlayer(i, dyn_player)
-                    timer.last_damage = current_time_ms
+                    player.last_damage = current_time_ms
                 end
 
                 -- Warning messages
-                if current_time_ms - timer.last_warning >= WARNING_INTERVAL_MS then
+                if current_time_ms - player.last_warning >= WARNING_INTERVAL_MS then
                     rprint(i, "You are outside the boundary! Return to the play area.")
-                    timer.last_warning = current_time_ms
+                    player.last_warning = current_time_ms
                 end
             end
 
