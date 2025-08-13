@@ -129,6 +129,40 @@ local function get_player_position(dyn_player)
 end
 ```
 
+### 9. Get Objective (oddball or flag)
+
+```lua
+--- Checks if the player currently holds an objective (oddball or flag).
+-- @param dyn_player number Dynamic player memory address.
+-- @return boolean True if player has an objective, false otherwise.
+local function has_objective(dyn_player)
+    local base_tag_table = 0x40440000
+    local weapon_offset = 0x2F8
+    local slot_size = 4
+    local tag_entry_size = 0x20
+    local tag_data_offset = 0x14
+    local bit_check_offset = 0x308
+    local bit_index = 3
+
+    for i = 0, 3 do
+        local weapon_ptr = read_dword(dyn_player + weapon_offset + slot_size * i)
+        if weapon_ptr ~= 0xFFFFFFFF then
+            local obj = get_object_memory(weapon_ptr)
+            if obj ~= 0 then
+                local tag_address = read_word(obj)
+                local tag_data_base = read_dword(base_tag_table)
+                local tag_data = read_dword(tag_data_base + tag_address * tag_entry_size + tag_data_offset)
+                if read_bit(tag_data + bit_check_offset, bit_index) == 1 then
+                    return true
+                end
+            end
+        end
+    end
+
+    return false
+end
+```
+
 ---
 
 ## Pure Lua Utility Functions
