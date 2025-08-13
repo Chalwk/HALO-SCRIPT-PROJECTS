@@ -134,34 +134,43 @@ end
 ### 9. Get Objective (oddball or flag)
 
 ```lua
---- Checks if the player currently holds an objective (oddball or flag).
+--- Checks if the player's currently held weapon is an objective (oddball, flag, or any).
 -- @param dyn_player number Dynamic player memory address.
--- @return boolean True if player has an objective, false otherwise.
-local function has_objective(dyn_player)
+-- @param objective_type string Optional. "oddball", "flag", or "any" (default: "any").
+-- @return boolean True if the currently held weapon matches the specified objective type, false otherwise.
+local function has_objective(dyn_player, objective_type)
     local base_tag_table = 0x40440000
-    local weapon_offset = 0x2F8
-    local slot_size = 4
     local tag_entry_size = 0x20
     local tag_data_offset = 0x14
     local bit_check_offset = 0x308
     local bit_index = 3
 
-    for i = 0, 3 do
-        local weapon_ptr = read_dword(dyn_player + weapon_offset + slot_size * i)
-        if weapon_ptr ~= 0xFFFFFFFF then
-            local obj = get_object_memory(weapon_ptr)
-            if obj ~= 0 then
-                local tag_address = read_word(obj)
-                local tag_data_base = read_dword(base_tag_table)
-                local tag_data = read_dword(tag_data_base + tag_address * tag_entry_size + tag_data_offset)
-                if read_bit(tag_data + bit_check_offset, bit_index) == 1 then
-                    return true
-                end
-            end
-        end
-    end
+    objective_type = objective_type or "any"
 
-    return false
+    -- Get the currently held weapon
+    local weapon_id = read_dword(dyn_player + 0x118)
+    local weapon_obj = get_object_memory(weapon_id)
+    if weapon_obj == nil or weapon_obj == 0 then return false end
+
+    local tag_address = read_word(weapon_obj)
+    local tag_data_base = read_dword(base_tag_table)
+    local tag_data = read_dword(tag_data_base + tag_address * tag_entry_size + tag_data_offset)
+
+    -- Check if weapon is an objective
+    if read_bit(tag_data + bit_check_offset, bit_index) ~= 1 then return false end
+
+    -- Determine objective type from byte 2
+    local obj_byte = read_byte(tag_data + 2)
+    local is_oddball = (obj_byte == 4)
+    local is_flag = (obj_byte == 0)
+
+    if objective_type == "oddball" then
+        return is_oddball
+    elseif objective_type == "flag" then
+        return is_flag
+    else -- "any"
+        return is_oddball or is_flag
+    end
 end
 ```
 
