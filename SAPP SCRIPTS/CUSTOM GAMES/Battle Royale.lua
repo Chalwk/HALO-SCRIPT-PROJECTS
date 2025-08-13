@@ -1,12 +1,21 @@
-api_version = "1.12.0.0"
+--=====================================================================================--
+-- SCRIPT NAME:      Battle Royale
+-- DESCRIPTION:      Minigame implementing a shrinking safe zone.
+--                   Players outside the boundary take damage and receive warnings.
+--                   Supports map-specific settings, configurable shrink steps,
+--                   bonus periods, and automatic game start/end management.
+--
+-- AUTHOR:           Chalwk (Jericho Crosby)
+-- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
+--
+-- Copyright (c) 2025 Jericho Crosby <jericho.crosby227@gmail.com>
+-- LICENSE:          MIT License
+--                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+--=====================================================================================--
 
-local MSG_PREFIX = "SAPP"
-local DAMAGE_INTERVAL = 0.2  -- Apply damage every 0.2 seconds (5x/sec)
-local WARNING_INTERVAL = 2.0 -- Warn players every 2 seconds
-
--- ##########################
--- DEFAULT CONFIGURATION
--- ##########################
+--===========================
+-- CONFIG START
+--===========================
 
 --    Notes on measurements:
 --    - Halo uses "world units" for distances.
@@ -14,31 +23,20 @@ local WARNING_INTERVAL = 2.0 -- Warn players every 2 seconds
 --    - 1 foot = 0.3048 meters, so: 1 world unit ≈ 3.048 meters.
 --    - All min_size and max_size values below are in world units.
 
-local CFG = {
-    center                  = { x = 0, y = 0, z = 0 }, -- Boundary center position
-    min_size                = 22,                      -- Minimum radius of playable area
-    max_size                = 1281,                    -- Maximum radius (starting size)
-    shrink_steps            = 5,                       -- Number of shrink steps to reach min_size
-    game_time               = 5 * 60,                  -- Default game duration in seconds
-    bonus_time              = 30,                      -- Bonus period duration in seconds
-    public_message_interval = 10,                      -- Seconds between private reminders
-    damage_per_second       = 0.0333,                  -- Default 0.0333% damage every 1 second (dead in 30 seconds)
-}
+local MSG_PREFIX = "SAPP"    -- SAPP msg_prefix
+local DAMAGE_INTERVAL = 0.2  -- Apply damage every 0.2 seconds (5x/sec)
+local WARNING_INTERVAL = 2.0 -- Warn players every 2 seconds
 
--- ##########################
--- MAP-SPECIFIC SETTINGS
--- ##########################
-local maps = {
+local MAPS = {
     ["bloodgulch"] = {
-        center                  = { x = 65.749, y = -120.409, z = 0.118 },
-        min_size                = 20,
-        max_size                = 1500,
-        shrink_steps            = 5,
-        game_time               = 5 * 60,
-        bonus_time              = 30,
-        public_message_interval = 10,
-        damage_per_second       = 0.0333,
-
+        center                  = { x = 0, y = 0, z = 0 }, -- Boundary center position
+        min_size                = 20,                      -- Minimum radius of playable area
+        max_size                = 500,                     -- Maximum radius (starting size)
+        shrink_steps            = 5,                       -- Number of shrink steps to reach min_size
+        game_time               = 5 * 60,                  -- Default game duration in seconds
+        bonus_time              = 30,                      -- Bonus period duration in seconds
+        public_message_interval = 10,                      -- Seconds between private reminders
+        damage_per_second       = 0.0333,                  -- Default 0.0333% damage every 1 second (dead in 30 seconds)
     },
     ["sidewinder"] = {
         center                  = { x = 0, y = 0, z = 0 },
@@ -203,6 +201,9 @@ local maps = {
 }
 -- CONFIG END -------------------------------------------------------------------------------------
 
+api_version = "1.12.0.0"
+
+local CFG = {}
 local prefix = "SAPP"
 local game_start_time = 0
 local current_radius = CFG.max_size
@@ -301,33 +302,66 @@ local function initializeBoundary()
         CFG.center.x, CFG.center.y, CFG.center.z, current_radius, expected_reductions, total_game_time, CFG.bonus_time))
 end
 
-local function applyMapSettings()
-    local map_name = get_var(0, "$map")
-    local map_cfg = maps[map_name]
-
-    if map_cfg then
-        for k, v in pairs(map_cfg) do
-            CFG[k] = v
-        end
-        cprint("[BATTLE ROYALE] Loaded settings for map: " .. map_name, 6 + 8)
-    else
-        CFG.game_time = 5 * 60
-        CFG.shrink_steps = 5
-        CFG.public_message_interval = 10
-        CFG.center = { x = 0, y = 0, z = 0 }
-        cprint("[BATTLE ROYALE] Using default settings for map: " .. map_name, 6 + 8)
-    end
-end
-
-function OnScriptLoad()
+local function register_callbacks()
     register_callback(cb["EVENT_TICK"], "OnTick")
-    register_callback(cb["EVENT_GAME_START"], "OnGameStart")
     register_callback(cb["EVENT_GAME_END"], "OnGameEnd")
     register_callback(cb["EVENT_JOIN"], "OnPlayerJoin")
     register_callback(cb["EVENT_LEAVE"], "OnPlayerLeave")
 end
 
+local function unregister_callbacks()
+    unregister_callback(cb["EVENT_TICK"])
+    unregister_callback(cb["EVENT_GAME_END"])
+    unregister_callback(cb["EVENT_JOIN"])
+    unregister_callback(cb["EVENT_LEAVE"])
+end
+
+-- Apply map-specific settings
+local function applyMapSettings()
+    CFG = {}
+    local map_name = get_var(0, "$map")
+    local map_cfg = MAPS[map_name]
+
+    if not map_cfg then
+        unregister_callbacks()
+        error(("[BATTLE ROYALE] Map not configured: %s"):format(map_name), 2)
+    end
+
+    -- Merge map settings into global CFG
+    for k, v in pairs(map_cfg) do
+        CFG[k] = v
+    end
+
+    -- Print loaded map message with each setting on a new line
+    cprint(("[BATTLE ROYALE] Loaded settings for map: %s"):format(map_name), 10)
+    for k, v in pairs(CFG) do
+        local value_str
+        if type(v) == "table" then
+            local tbl_items = {}
+            for tk, tv in pairs(v) do
+                table.insert(tbl_items, tk .. "=" .. tostring(tv))
+            end
+            value_str = "{ " .. table.concat(tbl_items, ", ") .. " }"
+        else
+            value_str = tostring(v)
+        end
+        cprint(string.format("  %s = %s", k, value_str), 10)
+    end
+
+    register_callbacks()
+end
+
+function OnScriptLoad()
+    register_callback(cb["EVENT_TICK"], "OnTick")
+    register_callback(cb["EVENT_GAME_END"], "OnGameEnd")
+    register_callback(cb["EVENT_JOIN"], "OnPlayerJoin")
+    register_callback(cb["EVENT_LEAVE"], "OnPlayerLeave")
+    register_callback(cb["EVENT_GAME_START"], "OnGameStart")
+    OnGameStart()
+end
+
 function OnGameStart()
+    if get_var(0, '$gt') == 'n/a' then return end
     applyMapSettings()
     initializeBoundary()
     game_start_time = clock()
