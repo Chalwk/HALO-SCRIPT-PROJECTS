@@ -206,7 +206,7 @@ end
 function Uber.player_mt:HasObjective(dyn)
     if not Uber.objective then return false end
 
-    local base_tag_table = Uber.base_tag_table
+    local base_tag_table = 0x40440000
     local weapon_offset = 0x2F8
     local slot_size = 4
     local tag_entry_size = 0x20
@@ -220,14 +220,14 @@ function Uber.player_mt:HasObjective(dyn)
             local obj = get_object_memory(weapon_ptr)
             if obj ~= 0 then
                 local tag_address = read_word(obj)
-                local tag_entry = base_tag_table + tag_address * tag_entry_size + tag_data_offset
-                local tag_data = read_dword(tag_entry)
+                local tag_data = read_dword(read_dword(base_tag_table) + tag_address * tag_entry_size + tag_data_offset)
                 if read_bit(tag_data + bit_check_offset, bit_index) == 1 then
                     return true
                 end
             end
         end
     end
+
     return false
 end
 
