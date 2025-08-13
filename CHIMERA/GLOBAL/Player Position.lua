@@ -14,9 +14,10 @@
 
 clua_version = 2.056
 
-local fmt = string.format
+local custom_command = "show_pos"
 local enabled = true -- start enabled
 
+local fmt = string.format
 -- Use placeholders {x}, {y}, and {z} for coordinates
 local output_format = "Player position is X={x}, Y={y}, Z={z}"
 
@@ -50,7 +51,7 @@ function OnTick()
 end
 
 function OnCommand(command)
-    if command:lower() == "show_pos" then
+    if command:lower() == custom_command then
         enabled = not enabled
         console_out("Position display " .. (enabled and "enabled." or "disabled."))
         return false
