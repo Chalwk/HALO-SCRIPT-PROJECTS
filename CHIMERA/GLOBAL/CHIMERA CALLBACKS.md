@@ -1,5 +1,3 @@
-Callbacks:
-
 * command
 * frame
 * preframe
