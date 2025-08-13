@@ -1,3 +1,5 @@
+## FUN FACT: 1 world unit = 10 feet, which is 3.048 meters.
+
 ## SAPP-Specific Methods
 
 ---
