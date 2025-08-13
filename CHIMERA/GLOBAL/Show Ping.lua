@@ -65,8 +65,6 @@ local function determine_ping_color(ping_val)
     end
 end
 
--- === CALLBACK FUNCTIONS ===
-
 function OnTick()
     local local_player = get_player()
     if local_player and server_type == "dedicated" then
