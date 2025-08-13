@@ -291,7 +291,7 @@ end
 set_callback("tick", "OnTick")
 set_callback("preframe", "OnPreFrame")
 set_callback("command", "OnCommand")
-set_callback("map load", "OnMapLoad")
+set_callback("map_load", "OnMapLoad")
 
 -- Initial configuration load
 OnMapLoad()
