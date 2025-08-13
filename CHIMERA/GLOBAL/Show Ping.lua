@@ -239,7 +239,8 @@ function OnCommand(cmd)
                 console_out("Current configuration:")
                 console_out("  Enabled: " .. tostring(CONFIG.ENABLED))
                 console_out("  Mode: " .. CONFIG.ACTIVE_MODE)
-                console_out("  Position: " .. CONFIG.POSITION.x .. ", " .. CONFIG.POSITION.y)
+                console_out("  Position: left=" .. CONFIG.POSITION.left .. ", top=" .. CONFIG.POSITION.top ..
+                            ", right=" .. CONFIG.POSITION.right .. ", bottom=" .. CONFIG.POSITION.bottom)
                 console_out("  History Size: " .. CONFIG.HISTORY_SIZE)
             end
         end
