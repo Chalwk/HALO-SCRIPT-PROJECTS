@@ -47,7 +47,7 @@ local CONFIG = {
     MODES = {
         SIMPLE = "{ping} ms",
         DETAILED = "Latency: {ping} ms",
-        GRAPHICAL = "* {ping} ms", -- Circle character
+        GRAPHICAL = "* {ping} ms",
         HISTORICAL = "Ping: {ping} ms ({min}/{max})"
     },
     ACTIVE_MODE = "HISTORICAL",
@@ -265,8 +265,6 @@ function OnMapLoad()
     state.pingMax = 0
 end
 
--- === SETUP AND INITIALIZATION ===
--- Add missing utility functions
 function string:split(delimiter)
     local result = {}
     local from = 1
@@ -293,5 +291,4 @@ set_callback("preframe", "OnPreFrame")
 set_callback("command", "OnCommand")
 set_callback("map_load", "OnMapLoad")
 
--- Initial configuration load
 OnMapLoad()

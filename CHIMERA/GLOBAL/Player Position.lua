@@ -21,12 +21,6 @@ local fmt = string.format
 -- Use placeholders {x}, {y}, and {z} for coordinates
 local output_format = "Player position is X={x}, Y={y}, Z={z}"
 
-local function clear_console()
-	for _= 0, 25 do
-		console_out(" ")
-	end
-end
-
 function OnTick()
     if not enabled then return end
 
@@ -45,7 +39,7 @@ function OnTick()
             :gsub("{y}", ys)
             :gsub("{z}", zs)
 
-		clear_console()
+        execute_script("cls")
         console_out(message)
     end
 end

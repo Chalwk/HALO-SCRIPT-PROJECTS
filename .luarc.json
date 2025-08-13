@@ -50,6 +50,7 @@
         "server_type",
         "write_file",
         "file_exists",
-        "read_file"
+        "read_file",
+        "execute_script"
     ]
 }
