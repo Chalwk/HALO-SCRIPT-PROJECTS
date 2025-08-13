@@ -1,6 +1,6 @@
 api_version = "1.12.0.0"
 
--- Constants for damage timing
+local MSG_PREFIX = "SAPP"
 local DAMAGE_INTERVAL = 0.2  -- Apply damage every 0.2 seconds (5x/sec)
 local WARNING_INTERVAL = 2.0 -- Warn players every 2 seconds
 
@@ -30,14 +30,15 @@ local CFG = {
 -- ##########################
 local maps = {
     ["bloodgulch"] = {
-        center                  = { x = 0, y = 0, z = 0 },
-        min_size                = 50,
+        center                  = { x = 65.749, y = -120.409, z = 0.118 },
+        min_size                = 20,
         max_size                = 1500,
         shrink_steps            = 5,
         game_time               = 5 * 60,
         bonus_time              = 30,
         public_message_interval = 10,
-        damage_per_second       = 0.0333
+        damage_per_second       = 0.0333,
+
     },
     ["sidewinder"] = {
         center                  = { x = 0, y = 0, z = 0 },
@@ -202,6 +203,7 @@ local maps = {
 }
 -- CONFIG END -------------------------------------------------------------------------------------
 
+local prefix = "SAPP"
 local game_start_time = 0
 local current_radius = CFG.max_size
 local expected_reductions = 0
@@ -276,6 +278,12 @@ local function hurt_player(player_id, dyn_player, amount)
     end
 end
 
+local function announce(message)
+    execute_command('msg_prefix "' .. prefix .. '"')
+    say_all(message)
+    execute_command('msg_prefix "' .. MSG_PREFIX .. '"')
+end
+
 local function initializeBoundary()
     current_radius = CFG.max_size
     prev_radius = CFG.max_size
@@ -288,7 +296,7 @@ local function initializeBoundary()
     bonus_period = false
     last_public_message = clock()
 
-    say_all(format(
+    announce(format(
         "[BATTLE ROYALE] Center: X %.1f Y %.1f Z %.1f | RAD: %.0f | Shrinks: %d | Time: %.0f sec | Bonus: %d sec",
         CFG.center.x, CFG.center.y, CFG.center.z, current_radius, expected_reductions, total_game_time, CFG.bonus_time))
 end
@@ -360,7 +368,7 @@ function OnTick()
         bonus_end_time = now + CFG.bonus_time
         current_radius = CFG.min_size
         prev_radius = current_radius
-        say_all(format("Last man standing for %d seconds at %.0f ft radius!",
+        announce(format("Last man standing for %d seconds at %.0f ft radius!",
             CFG.bonus_time, unitsToFeet(current_radius)))
     end
 
@@ -371,7 +379,7 @@ function OnTick()
 
     -- SHRINK EVENT: announce if radius decreased
     if current_radius < prev_radius then
-        say_all(format(
+        announce(format(
             "Radius shrunk to %.0f | Shrinks left: %d | Min radius: %.0f ft",
             current_radius, reductions_remaining, unitsToFeet(CFG.min_size)))
         prev_radius = current_radius
