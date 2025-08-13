@@ -304,9 +304,9 @@ end
 
 local function register_callbacks()
     register_callback(cb["EVENT_TICK"], "OnTick")
-    register_callback(cb["EVENT_GAME_END"], "OnGameEnd")
-    register_callback(cb["EVENT_JOIN"], "OnPlayerJoin")
-    register_callback(cb["EVENT_LEAVE"], "OnPlayerLeave")
+    register_callback(cb["EVENT_GAME_END"], "OnEnd")
+    register_callback(cb["EVENT_JOIN"], "OnJoin")
+    register_callback(cb["EVENT_LEAVE"], "OnQuit")
 end
 
 local function unregister_callbacks()
@@ -353,9 +353,9 @@ end
 
 function OnScriptLoad()
     register_callback(cb["EVENT_TICK"], "OnTick")
-    register_callback(cb["EVENT_GAME_END"], "OnGameEnd")
-    register_callback(cb["EVENT_JOIN"], "OnPlayerJoin")
-    register_callback(cb["EVENT_LEAVE"], "OnPlayerLeave")
+    register_callback(cb["EVENT_GAME_END"], "OnEnd")
+    register_callback(cb["EVENT_JOIN"], "OnJoin")
+    register_callback(cb["EVENT_LEAVE"], "OnQuit")
     register_callback(cb["EVENT_GAME_START"], "OnGameStart")
     OnGameStart()
 end
@@ -372,19 +372,19 @@ function OnGameStart()
     end
 end
 
-function OnGameEnd()
+function OnEnd()
     game_active = false
     bonus_period = false
 end
 
-function OnPlayerJoin(PlayerIndex)
+function OnJoin(PlayerIndex)
     player_timers[tonumber(PlayerIndex)] = {
         last_damage = 0,
         last_warning = 0
     }
 end
 
-function OnPlayerLeave(PlayerIndex)
+function OnQuit(PlayerIndex)
     player_timers[tonumber(PlayerIndex)] = nil
 end
 
