@@ -42,6 +42,9 @@
         "execute_command_sequence",
         "write_byte",
         "to_real_index",
-        "sync_ammo"
+        "sync_ammo",
+        "set_callback",
+        "console_out",
+        "clua_version"
     ]
 }
