@@ -47,7 +47,7 @@ local CONFIG = {
     MODES = {
         SIMPLE = "{ping} ms",
         DETAILED = "Latency: {ping} ms",
-        GRAPHICAL = "⬤ {ping} ms", -- Circle character
+        GRAPHICAL = "* {ping} ms", -- Circle character
         HISTORICAL = "Ping: {ping} ms ({min}/{max})"
     },
     ACTIVE_MODE = "HISTORICAL",
