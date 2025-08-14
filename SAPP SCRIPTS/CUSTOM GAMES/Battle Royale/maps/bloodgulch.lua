@@ -7,9 +7,9 @@
 local CFG = {
     safe_zone = {
         center       = { x = 65.749, y = -120.409, z = 0.118 }, -- Boundary center position
-        min_size     = 1,                                       -- Minimum radius of playable area
-        max_size     = 5,                                       -- Maximum radius (starting size)
-        shrink_steps = 2,                                       -- Number of shrink steps to reach min_size
+        min_size     = 20,                                      -- Minimum radius of playable area
+        max_size     = 1500,                                    -- Maximum radius (starting size)
+        shrink_steps = 5,                                       -- Number of shrink steps to reach min_size
         game_time    = 60,                                      -- Default game duration in seconds
         bonus_time   = 30                                       -- Bonus period duration in seconds
     },

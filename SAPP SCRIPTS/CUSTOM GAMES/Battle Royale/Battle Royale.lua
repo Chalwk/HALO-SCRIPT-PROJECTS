@@ -46,7 +46,7 @@ local execute_command = execute_command
 local pairs = pairs
 
 -- Runtime variables
-local players, active_crates, respawn_timers, player_effects = {}, {}, {}, {}
+local players, active_crates, respawn_timers, player_effects, enabled_spoils = {}, {}, {}, {}, {}
 local crate_meta_id
 local game_active = false
 local bonus_period = false
@@ -117,9 +117,10 @@ local function hurtPlayer(player_id, dyn_player)
 end
 
 -- Spoil handlers
-local function apply_bonus_life(player_id, spoil)
+local function apply_bonus_life(player_id)
     CFG.send(player_id, "Received bonus life!")
-    -- implementation pending
+    local player = players[player_id]
+    player.lives = player.lives + 1
 end
 
 local function apply_random_weapon(player_id, spoil)
@@ -147,8 +148,8 @@ local function initCrateMeta()
     end
 end
 
-local function spawn_crate(loc_idx, locs)
-    local loc = locs[loc_idx]
+local function spawn_crate(loc_idx)
+    local loc = CFG.crates.locations[loc_idx]
     if not loc then return end
     local height_offset = 0.3
     local obj = spawn_object('', '', loc[1], loc[2], loc[3] + height_offset, 0, crate_meta_id)
@@ -163,10 +164,16 @@ end
 local function initCrates()
     active_crates = {}
     respawn_timers = {}
-    local locs = CFG.crates.locations
-    for i = 1, #locs do
-        spawn_crate(i, locs)
+
+    for i = 1, #CFG.crates.spoils do
+        local spoil = CFG.crates.spoils[i]
+        if spoil.enabled then
+            enabled_spoils[#enabled_spoils + 1] = spoil
+        end
     end
+
+    if #enabled_spoils == 0 or #CFG.crates.locations == 0 then return end
+    for i = 1, #CFG.crates.locations do spawn_crate(i) end
 end
 
 -- Spoil handlers
@@ -179,10 +186,9 @@ local spoil_handlers = {
 
 -- Crate spoil management
 local function open_crate(player_id)
-    local spoils = CFG.crates.spoils
-    local spoil = spoils[math.random(#spoils)]
-    for k, _ in pairs(spoil) do
-        if spoil_handlers[k] then
+    local spoil = enabled_spoils[math.random(#enabled_spoils)]
+    for k in pairs(spoil) do
+        if k ~= "enabled" and spoil_handlers[k] then
             spoil_handlers[k](player_id, spoil)
             break
         end
@@ -209,19 +215,19 @@ end
 
 -- Callback management
 local function registerCallbacks()
+    register_callback(cb["EVENT_DIE"], "OnDeath")
     register_callback(cb["EVENT_TICK"], "OnTick")
-    register_callback(cb["EVENT_GAME_END"], "OnEnd")
     register_callback(cb["EVENT_JOIN"], "OnJoin")
     register_callback(cb["EVENT_LEAVE"], "OnQuit")
-    register_callback(cb["EVENT_DIE"], "OnDeath")
+    register_callback(cb["EVENT_GAME_END"], "OnEnd")
 end
 
 local function unregisterCallbacks()
+    unregister_callback(cb["EVENT_DIE"])
     unregister_callback(cb["EVENT_TICK"])
-    unregister_callback(cb["EVENT_GAME_END"])
     unregister_callback(cb["EVENT_JOIN"])
     unregister_callback(cb["EVENT_LEAVE"])
-    unregister_callback(cb["EVENT_DIE"])
+    unregister_callback(cb["EVENT_GAME_END"])
 end
 
 local function safeLoadFile(path)
@@ -292,7 +298,13 @@ function OnEnd()
 end
 
 function OnJoin(id)
-    players[id] = { last_damage = 0, last_warning = 0, spectator = false, spectator_once = false }
+    players[id] = {
+        lives = CFG.MAX_DEATHS_UNTIL_SPECTATE,
+        last_damage = 0,
+        last_warning = 0,
+        spectator = false,
+        spectator_once = false,
+    }
 end
 
 function OnQuit(id)
@@ -303,12 +315,14 @@ function OnDeath(victim, killer)
     victim = tonumber(victim)
     killer = tonumber(killer)
 
-    if killer == 0 or killer == victim or not players[victim] then return end
+    local player = players[victim]
+    if killer == 0 or killer == victim or not player then return end
 
-    local deaths = get_var(victim, '$deaths')
-    if deaths >= CFG.MAX_DEATHS_UNTIL_SPECTATE then
-        players[victim].spectator = true
+    if player.lives <= 0 then
+        player.spectator = true
+        return
     end
+    player.lives = player.lives - 1
 end
 
 function OnTick()
@@ -353,6 +367,29 @@ function OnTick()
     local radius_sq = current_radius * current_radius
     local current_time_ms = now * 1000
 
+    --- Handle crate respawns
+    for loc_idx, respawn_time in pairs(respawn_timers) do
+        if now >= respawn_time then
+            if spawn_crate(loc_idx) then respawn_timers[loc_idx] = nil end
+        end
+    end
+
+    -- Detect naturally despawned crates
+    local crate_locs = CFG.crates.locations
+    for crate_id, crate_data in pairs(active_crates) do
+        local crate = get_object_memory(crate_id)
+        if crate == 0 then
+            active_crates[crate_id] = nil
+            local loc_idx = crate_data.loc_idx
+            local respawn_delay = crate_locs[loc_idx][4]
+            if not respawn_timers[loc_idx] then
+                respawn_timers[loc_idx] = clock() + respawn_delay
+                CFG:debug_print("Crate at location #%d despawned naturally. Respawning in %d seconds.", loc_idx,
+                    respawn_delay)
+            end
+        end
+    end
+
     -- Player processing
     for i = 1, 16 do
         if CFG.validate_player(i) then
@@ -362,10 +399,11 @@ function OnTick()
             local x, y, z, in_vehicle = CFG.get_player_position(dyn_player)
             if not x then goto continue end
 
+            local player = players[i]
+
             ---------------------
             -- Spectator logic
             ---------------------
-            local player = players[i]
             if player.spectator then
                 spectate(i, dyn_player, x, y, z)
                 goto continue
@@ -375,29 +413,6 @@ function OnTick()
             -- CRATE MANAGEMENT
             --------------------------------
 
-            --- Handle crate respawns
-            for loc_idx, respawn_time in pairs(respawn_timers) do
-                if now >= respawn_time then
-                    if spawn_crate(loc_idx) then respawn_timers[loc_idx] = nil end
-                end
-            end
-            local crate_locs = CFG.crates.locations
-
-            -- Detect naturally despawned crates
-            for crate_id, crate_data in pairs(active_crates) do
-                local crate = get_object_memory(crate_id)
-                if crate == 0 then
-                    active_crates[crate_id] = nil
-                    local loc_idx = crate_data.loc_idx
-                    local respawn_delay = crate_locs[loc_idx][4]
-                    if not respawn_timers[loc_idx] then
-                        respawn_timers[loc_idx] = clock() + respawn_delay
-                        CFG:debug_print("Crate at location #%d despawned naturally. Respawning in %d seconds.", loc_idx,
-                            respawn_delay)
-                    end
-                end
-            end
-
             --- Player-crate collision detection
             if in_vehicle then goto skip_collision end -- do not check for collisions while in a vehicle
             for crate_id, crate_data in pairs(active_crates) do
@@ -406,7 +421,7 @@ function OnTick()
                     active_crates[crate_id] = nil; goto continue_crate
                 end
                 local loc = crate_locs[crate_data.loc_idx]
-                if distance_squared(x, y, z, loc[1], loc[2], loc[3], CFG.crates.collision_radius) then
+                if CFG.distance_squared(x, y, z, loc[1], loc[2], loc[3], CFG.crates.collision_radius) then
                     destroy_object(crate_id)
                     active_crates[crate_id] = nil
                     respawn_timers[crate_data.loc_idx] = now + loc[4]
@@ -421,10 +436,8 @@ function OnTick()
             ------------------------------------------------
             -- PLAYABLE BOUNDARY (safe zone) CHECK
             ------------------------------------------------
-
-            local inside = CFG.distance_squared(x, y, z, CFG.safe_zone.center_x, CFG.safe_zone.center_y,
-                CFG.safe_zone.center_z, radius_sq)
-
+            local center = CFG.safe_zone.center
+            local inside = CFG.distance_squared(x, y, z, center.x, center.y, center.z, radius_sq)
             if not inside then
                 if current_time_ms - player.last_damage >= DAMAGE_INTERVAL_MS then
                     hurtPlayer(i, dyn_player)
