@@ -74,9 +74,10 @@ local WEAPON_BATTERY_OFFSET = 0x240
 
 local clock, format = os.clock, string.format
 
-local function _debug_(...)
-    if not DEBUG then return end
-    cprint(format(...))
+local function debug_print(...)
+    if DEBUG then
+        cprint("[DEBUG] " .. format(...))
+    end
 end
 
 local function melee_button_pressed(dyn_player)
@@ -102,7 +103,7 @@ local function initialize_weapon_state(weapon_id, weapon_tag)
 
     -- Reset state if weapon ID is reused for a different weapon type
     if current_state and current_state.tag_id ~= weapon_tag then
-        _debug_("[DEBUG] Weapon ID %d reused (old tag: %d, new tag: %d). Resetting state.",
+        debug_print("[DEBUG] Weapon ID %d reused (old tag: %d, new tag: %d). Resetting state.",
             weapon_id, current_state.tag_id, weapon_tag)
         weapon_state[weapon_id] = nil
         current_state = nil
@@ -185,7 +186,7 @@ local function process_jam_state(player_id, dyn_player, weapon_id, weapon_obj, s
             state.jam_applied = nil
             state.durability = state.durability - UNJAM_DURABILITY_COST
             rprint(player_id, "Weapon unjammed!")
-            _debug_("[DEBUG] Player %d weapon UNJAMMED at durability %.2f", player_id, state.durability)
+            debug_print("[DEBUG] Player %d weapon UNJAMMED at durability %.2f", player_id, state.durability)
             return "unjammed"
         end
         return "jammed"
@@ -193,13 +194,13 @@ local function process_jam_state(player_id, dyn_player, weapon_id, weapon_obj, s
 
     if state.durability < NO_JAM_THRESHOLD and is_firing(dyn_player) then
         local jam_chance = ((NO_JAM_THRESHOLD - state.durability) / NO_JAM_THRESHOLD) * JAM_CHANCE_MULTIPLIER
-        _debug_("[DEBUG] Player %d | Durability: %.2f | Jam chance: %.4f",
+        debug_print("[DEBUG] Player %d | Durability: %.2f | Jam chance: %.4f",
             player_id, state.durability, jam_chance)
 
         if math.random() < jam_chance then
             state.jammed = true
             state.jam_applied = false
-            _debug_("[DEBUG] Player %d weapon JAMMED at durability %.2f", player_id, state.durability)
+            debug_print("[DEBUG] Player %d weapon JAMMED at durability %.2f", player_id, state.durability)
 
             return "jammed"
         end
@@ -237,7 +238,7 @@ local function process_player_weapon(player_id)
     if jam_result == "functional" then
         process_weapon_decay(dyn_player, state, decay_rate)
         if state.durability <= 0 then
-            _debug_("[DEBUG] Player %d weapon destroyed at durability %.2f", player_id, state.durability)
+            debug_print("[DEBUG] Player %d weapon destroyed at durability %.2f", player_id, state.durability)
 
             destroy_object(weapon_id)
             weapon_state[weapon_id] = nil

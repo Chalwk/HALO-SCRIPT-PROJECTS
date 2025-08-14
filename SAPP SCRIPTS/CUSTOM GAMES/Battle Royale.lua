@@ -236,10 +236,14 @@ local function secondsToTime(seconds)
     return format("%02d:%02d", floor(seconds / 60), seconds % 60)
 end
 
-local function announce(message)
-    execute_command('msg_prefix ""')
-    say_all(message)
-    execute_command('msg_prefix "' .. MSG_PREFIX .. '"')
+local function send_message(player_id, ...)
+    if not player_id then
+        execute_command('msg_prefix ""') -- temporarily remove (means we canfit more characters in the message)
+        say_all(format(...))
+        execute_command('msg_prefix "' .. MSG_PREFIX .. '"') -- restore
+        return
+    end
+    rprint(player_id, format(...)) -- rprint prints to the player's console
 end
 
 -- Initialize game boundary
@@ -258,15 +262,14 @@ local function initializeBoundary()
     bonus_period = false
     last_public_message = clock()
 
-    announce(format(
-        "[BATTLE ROYALE] Center: X %.1f Y %.1f Z %.1f | RAD: %.0f | Shrinks: %d | Time: %.0f sec | Bonus: %d sec",
+    send_message("[BATTLE ROYALE] Center: X %.1f Y %.1f Z %.1f | RAD: %.0f | Shrinks: %d | Time: %.0f sec | Bonus: %d sec",
         CFG.center_x, CFG.center_y, CFG.center_z, current_radius,
         expected_reductions, total_game_time, CFG.bonus_time
-    ))
+    )
 end
 
 -- Boundary check (inlined for performance)
-local function isInsideBoundary(px, py, pz, radius)
+local function is_inside_boundary(px, py, pz, radius)
     local dx = px - CFG.center_x
     local dy = py - CFG.center_y
     local dz = pz - CFG.center_z
@@ -274,20 +277,18 @@ local function isInsideBoundary(px, py, pz, radius)
 end
 
 -- Player position retrieval
-local function getPlayerPosition(dyn_player)
-    local object = read_dword(dyn_player + 0x11C) -- vehicle ID
-    if object ~= 0xFFFFFFFF then
-        object = get_object_memory(ptr)
-        if object == 0 then return end -- invalid vehicle
+local function get_player_position(dyn)
+    local vehicle = read_dword(dyn + 0x11C)
+    local x, y, z
+    if vehicle ~= 0xFFFFFFFF then
+        local obj = get_object_memory(vehicle)
+        if obj ~= 0 then x, y, z = read_vector3d(obj + 0x5C) end
     else
-        object = dyn_player
+        x, y, z = read_vector3d(dyn + 0x5C)
     end
-
-    local x, y, z = read_vector3d(object + 0x5C)
-    local crouch = read_float(dyn_player + 0x50C)
-    z = z + (crouch ~= 0 and 0.35 * crouch or 0.65)
-
-    return x, y, z
+    if not x then return end
+    local crouching = read_float(dyn + 0x50C)
+    return x, y, z + (crouching ~= 0 and 0.35 * crouching or 0.65)
 end
 
 -- Player damage handler
@@ -438,15 +439,15 @@ function OnTick()
             current_radius = CFG.min_size
             radius_changed = true
 
-            announce(format("Last man standing for %d seconds at %.0f world units!",
-                CFG.bonus_time, current_radius))
+            send_message("Last man standing for %d seconds at %.0f world units!",
+                CFG.bonus_time, current_radius)
         end
     end
 
     -- Announce radius changes
     if radius_changed then
-        announce(format("Radius shrunk to %.0f | Shrinks left: %d | Min radius: %.0f",
-            current_radius, reductions_remaining, CFG.min_size))
+        send_message("Radius shrunk to %.0f | Shrinks left: %d | Min radius: %.0f",
+            current_radius, reductions_remaining, CFG.min_size)
     end
 
     -- Precompute values for boundary checks
@@ -459,7 +460,7 @@ function OnTick()
             local dyn_player = get_dynamic_player(i)
             if not dyn_player then goto continue end
 
-            local x, y, z = getPlayerPosition(dyn_player)
+            local x, y, z = get_player_position(dyn_player)
             if not x then goto continue end
 
             local player = players[i]
@@ -468,7 +469,7 @@ function OnTick()
                 goto continue
             end
 
-            local inside = isInsideBoundary(x, y, z, radius_sq)
+            local inside = is_inside_boundary(x, y, z, radius_sq)
 
             if not inside then
                 -- Damage application
@@ -479,7 +480,7 @@ function OnTick()
 
                 -- Warning messages
                 if current_time_ms - player.last_warning >= WARNING_INTERVAL_MS then
-                    rprint(i, "You are outside the boundary! Return to the play area.")
+                    send_message(i, "You are outside the boundary! Return to the play area.")
                     player.last_warning = current_time_ms
                 end
             end
@@ -497,7 +498,7 @@ function OnTick()
                         secondsToTime(total_game_time - elapsed),
                         reductions_remaining)
                 end
-                rprint(i, status .. (not inside and " [OUT]" or ""))
+                send_message(i, status .. (not inside and " [OUT]" or ""))
             end
         end
         ::continue::
