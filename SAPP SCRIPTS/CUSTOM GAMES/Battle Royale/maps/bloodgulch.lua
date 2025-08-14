@@ -1,3 +1,9 @@
+--    Notes on measurements:
+--    - Halo uses "world units" for distances.
+--    - 1 world unit = 10 feet.
+--    - 1 foot = 0.3048 meters, so: 1 world unit ≈ 3.048 meters.
+--    - All min_size and max_size values below are in world units.
+
 local CFG = {
     safe_zone = {
         center       = { x = 65.749, y = -120.409, z = 0.118 }, -- Boundary center position

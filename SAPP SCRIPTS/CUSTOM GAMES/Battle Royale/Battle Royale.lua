@@ -5,6 +5,10 @@
 --                   Supports map-specific settings, configurable shrink steps,
 --                   bonus periods, and automatic game start/end management.
 --
+--                   Additional features:
+--                   - Loot crates
+--
+--
 -- AUTHOR:           Chalwk (Jericho Crosby)
 -- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
 --
@@ -17,19 +21,13 @@
 -- CONFIG START
 --===========================
 
---    Notes on measurements:
---    - Halo uses "world units" for distances.
---    - 1 world unit = 10 feet.
---    - 1 foot = 0.3048 meters, so: 1 world unit ≈ 3.048 meters.
---    - All min_size and max_size values below are in world units.
-
 local CFG = {
     MSG_PREFIX = "SAPP",           -- SAPP msg_prefix
-    DAMAGE_INTERVAL = 0.2,         -- Apply damage every 0.2 seconds (5x/sec)
-    WARNING_INTERVAL = 2.0,        -- Warn players every 2 seconds
+    DAMAGE_INTERVAL = 0.2,         -- Apply damage every 0.2 seconds (5x/sec) while outside boundary
+    WARNING_INTERVAL = 2.0,        -- Warn players every 2 seconds while outside boundary
     MAX_DEATHS_UNTIL_SPECTATE = 3, -- Number of times a player can die before spectating
-    PUBLIC_MESSAGE_INTERVAL = 10,  -- Seconds between private reminders
-    DAMAGE_PER_SECOND = 0.0333,    -- Default 0.0333% damage every 1 second (dead in 30 seconds)
+    PUBLIC_MESSAGE_INTERVAL = 10,  -- Seconds between private reminders (while inside boundary)
+    DAMAGE_PER_SECOND = 0.0333,    -- Default 0.0333% damage every 1 second (dead in 30 seconds) while outside boundary
     DEBUG = true,                  -- Enable debug messages
 }
 
@@ -42,7 +40,7 @@ local insert, remove = table.insert, table.remove
 local floor, max = math.floor, math.max
 local format, clock = string.format, os.clock
 local get_dynamic_player, get_object_memory = get_dynamic_player, get_object_memory
-local read_float = read_float
+local read_float, write_float, write_bit = read_float, write_float, write_bit
 local player_present = player_present
 local execute_command = execute_command
 local pairs = pairs
@@ -116,69 +114,6 @@ local function hurtPlayer(player_id, dyn_player)
     else
         write_float(dyn_player + 0xE0, health - damage_per_interval)
     end
-end
-
--- Callback management
-local function registerCallbacks()
-    register_callback(cb["EVENT_TICK"], "OnTick")
-    register_callback(cb["EVENT_GAME_END"], "OnEnd")
-    register_callback(cb["EVENT_JOIN"], "OnJoin")
-    register_callback(cb["EVENT_LEAVE"], "OnQuit")
-    register_callback(cb["EVENT_DIE"], "OnDeath")
-end
-
-local function unregisterCallbacks()
-    unregister_callback(cb["EVENT_TICK"])
-    unregister_callback(cb["EVENT_GAME_END"])
-    unregister_callback(cb["EVENT_JOIN"])
-    unregister_callback(cb["EVENT_LEAVE"])
-    unregister_callback(cb["EVENT_DIE"])
-end
-
-local function safeLoadFile(path)
-    local chunk, load_err = loadfile(path)
-    if not chunk then
-        return nil, "[LOAD ERROR] Failed to load file: " .. path .. "\nError: " .. tostring(load_err)
-    end
-
-    local ok, result = pcall(chunk)
-    if not ok then
-        return nil, "[RUN ERROR] Error executing file: " .. path .. "\nError: " .. tostring(result)
-    end
-
-    return result
-end
-
-function CFG:loadFiles()
-    local files = {
-        './Battle Royale/helpers.lua',
-        './Battle Royale/maps/' .. get_var(0, "$map") .. '.lua'
-    }
-
-    for i = 1, #files do
-        local path = files[i]
-        local loaded, err = safeLoadFile(path)
-        if not loaded then
-            unregisterCallbacks()
-            error("[BATTLE ROYALE] " .. err, 10)
-            return false
-        end
-
-        -- Merge loaded table into CFG
-        for k, v in pairs(loaded) do
-            self[k] = v
-        end
-    end
-
-    math.randomseed(clock())
-    registerCallbacks()
-    return true
-end
-
--- SAPP Event handlers
-function OnScriptLoad()
-    register_callback(cb["EVENT_GAME_START"], "OnStart")
-    OnStart()
 end
 
 -- Spoil handlers
@@ -270,6 +205,69 @@ local function update_effects()
         end
         if #effects == 0 then player_effects[player_id] = nil end
     end
+end
+
+-- Callback management
+local function registerCallbacks()
+    register_callback(cb["EVENT_TICK"], "OnTick")
+    register_callback(cb["EVENT_GAME_END"], "OnEnd")
+    register_callback(cb["EVENT_JOIN"], "OnJoin")
+    register_callback(cb["EVENT_LEAVE"], "OnQuit")
+    register_callback(cb["EVENT_DIE"], "OnDeath")
+end
+
+local function unregisterCallbacks()
+    unregister_callback(cb["EVENT_TICK"])
+    unregister_callback(cb["EVENT_GAME_END"])
+    unregister_callback(cb["EVENT_JOIN"])
+    unregister_callback(cb["EVENT_LEAVE"])
+    unregister_callback(cb["EVENT_DIE"])
+end
+
+local function safeLoadFile(path)
+    local chunk, load_err = loadfile(path)
+    if not chunk then
+        return nil, "[LOAD ERROR] Failed to load file: " .. path .. "\nError: " .. tostring(load_err)
+    end
+
+    local ok, result = pcall(chunk)
+    if not ok then
+        return nil, "[RUN ERROR] Error executing file: " .. path .. "\nError: " .. tostring(result)
+    end
+
+    return result
+end
+
+function CFG:loadFiles()
+    local files = {
+        './Battle Royale/helpers.lua',
+        './Battle Royale/maps/' .. get_var(0, "$map") .. '.lua'
+    }
+
+    for i = 1, #files do
+        local path = files[i]
+        local loaded, err = safeLoadFile(path)
+        if not loaded then
+            unregisterCallbacks()
+            error("[BATTLE ROYALE] " .. err, 10)
+            return false
+        end
+
+        -- Merge loaded table into CFG
+        for k, v in pairs(loaded) do
+            self[k] = v
+        end
+    end
+
+    math.randomseed(clock())
+    registerCallbacks()
+    return true
+end
+
+-- SAPP Event handlers
+function OnScriptLoad()
+    register_callback(cb["EVENT_GAME_START"], "OnStart")
+    OnStart()
 end
 
 function OnStart()
