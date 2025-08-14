@@ -72,8 +72,7 @@ local WEAPON_PRIMARY_AMMO_OFFSET = 0x2B8
 local WEAPON_RESERVE_AMMO_OFFSET = 0x2B6
 local WEAPON_BATTERY_OFFSET = 0x240
 
-local clock = os.clock
-local format = string.format
+local clock, format = os.clock, string.format
 
 local function _debug_(...)
     if not DEBUG then return end
@@ -140,8 +139,6 @@ end
 -- Apply jam by saving current ammo state and setting ammo to zero
 local function apply_jam(weapon_obj, weapon_id, state, is_energy, player_id)
     state.ammo_snapshot = getAmmunition(weapon_obj, is_energy)
-
-    -- Use SAPP commands to set ammo/battery to zero (write_word for restore)
     if is_energy then
         execute_command('battery ' .. player_id .. ' 0')
     else
@@ -154,10 +151,8 @@ end
 -- Clear jam by restoring saved ammo state
 local function clear_jam(weapon_obj, weapon_id, state, is_energy, player_id)
     if is_energy then
-        -- Restore battery for energy-based weapons
         execute_command('battery ' .. player_id .. ' ' .. state.ammo_snapshot.battery .. ' 0')
     else
-        -- Restore ammo for non-energy weapons
         write_word(weapon_obj + WEAPON_PRIMARY_AMMO_OFFSET, state.ammo_snapshot.primary)
         write_word(weapon_obj + WEAPON_RESERVE_AMMO_OFFSET, state.ammo_snapshot.reserve)
     end
@@ -179,7 +174,6 @@ end
 -- Jam state logic with jam_applied fix + debug
 local function process_jam_state(player_id, dyn_player, weapon_id, weapon_obj, state, is_energy)
     if state.jammed then
-        -- Only apply jam effects once
         if not state.jam_applied then
             apply_jam(weapon_obj, weapon_id, state, is_energy, player_id)
             state.jam_applied = true
