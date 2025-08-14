@@ -30,6 +30,7 @@ local CFG = {
     MAX_DEATHS_UNTIL_SPECTATE = 3, -- Number of times a player can die before spectating
     PUBLIC_MESSAGE_INTERVAL = 10,  -- Seconds between private reminders
     DAMAGE_PER_SECOND = 0.0333,    -- Default 0.0333% damage every 1 second (dead in 30 seconds)
+    DEBUG = true,                  -- Enable debug messages
 }
 
 -- CONFIG END ---------------------------------------------------------------------------
@@ -41,9 +42,9 @@ local insert, remove = table.insert, table.remove
 local floor, max = math.floor, math.max
 local format, clock = string.format, os.clock
 local get_dynamic_player, get_object_memory = get_dynamic_player, get_object_memory
-local read_float, read_dword, read_vector3d = read_float, read_dword, read_vector3d
-local player_present, player_alive = player_present, player_alive
-local execute_command, say_all, rprint = execute_command, say_all, rprint
+local read_float = read_float
+local player_present = player_present
+local execute_command = execute_command
 local pairs = pairs
 
 -- Runtime variables
@@ -217,7 +218,7 @@ local function spawn_crate(loc_idx, locs)
     local height_offset = 0.3
     local obj = spawn_object('', '', loc[1], loc[2], loc[3] + height_offset, 0, crate_meta_id)
     if obj ~= 0 then
-        CFG.debug_print("Spawning crate at location #%d (x=%.3f, y=%.3f, z=%.3f)", loc_idx, loc[1], loc[2], loc[3])
+        CFG:debug_print("Spawning crate at location #%d (x=%.3f, y=%.3f, z=%.3f)", loc_idx, loc[1], loc[2], loc[3])
         active_crates[obj] = { loc_idx = loc_idx, spawn_time = clock() }
         return true
     end
@@ -228,7 +229,7 @@ local function initCrates()
     active_crates = {}
     respawn_timers = {}
     local locs = CFG.crates.locations
-    for i = 1, #locslocations do
+    for i = 1, #locs do
         spawn_crate(i, locs)
     end
 end
@@ -393,7 +394,7 @@ function OnTick()
                     local respawn_delay = crate_locs[loc_idx][4]
                     if not respawn_timers[loc_idx] then
                         respawn_timers[loc_idx] = clock() + respawn_delay
-                        CFG.debug_print("Crate at location #%d despawned naturally. Respawning in %d seconds.", loc_idx,
+                        CFG:debug_print("Crate at location #%d despawned naturally. Respawning in %d seconds.", loc_idx,
                             respawn_delay)
                     end
                 end
@@ -412,7 +413,7 @@ function OnTick()
                     active_crates[crate_id] = nil
                     respawn_timers[crate_data.loc_idx] = now + loc[4]
                     open_crate(i)
-                    CFG.debug_print("Player %d collected crate at location #%d", i, crate_data.loc_idx)
+                    CFG:debug_print("Player %d collected crate at location #%d", i, crate_data.loc_idx)
                     break
                 end
                 ::continue_crate::

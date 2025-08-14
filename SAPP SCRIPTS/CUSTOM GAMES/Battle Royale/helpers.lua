@@ -53,8 +53,8 @@ function HELPERS.get_tag(class, name)
     return tag ~= 0 and read_dword(tag + 0xC) or nil
 end
 
-function HELPERS.debug_print(...)
-    if DEBUG then
+function HELPERS:debug_print(...)
+    if self.DEBUG then
         cprint("[DEBUG] " .. format(...))
     end
 end
