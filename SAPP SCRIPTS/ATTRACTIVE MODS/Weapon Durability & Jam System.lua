@@ -18,7 +18,7 @@
 --                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================--
 
--- FIXME 1: When a player picks up ammo with a jammed weapon, it auto-reloads and they can fire | EVENT_WEAPON_PICKUP doesn't detect ammo pickups.
+-- FIXME 1: When a player picks up ammo with a jammed weapon, it auto-reloads and they can fire.
 -- FIXME 2: Doesn't immediately detect when a player fires their weapon.
 
 -- CONFIG STARTS ---------------------------------------------------------------
