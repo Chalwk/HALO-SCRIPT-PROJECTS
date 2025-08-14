@@ -18,8 +18,8 @@
 --                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================--
 
--- FIXME: When a player picks up ammo with a jammed weapon, it auto-reloads and they can fire.
--- FIXME: Doesn't immediately detect when a player fires their weapon
+-- FIXME 1: When a player picks up ammo with a jammed weapon, it auto-reloads and they can fire | EVENT_WEAPON_PICKUP doesn't detect ammo pickups.
+-- FIXME 2: Doesn't immediately detect when a player fires their weapon.
 
 -- CONFIG STARTS ---------------------------------------------------------------
 
@@ -97,7 +97,7 @@ local function in_vehicle(dyn_player)
     return vehicle_id ~= 0xFFFFFFFF and get_object_memory(vehicle_id) ~= 0
 end
 
--- Weapon Durability Management
+-- Weapon state
 local function initialize_weapon_state(weapon_id, weapon_tag)
     local current_state = weapon_state[weapon_id]
 
@@ -112,7 +112,7 @@ local function initialize_weapon_state(weapon_id, weapon_tag)
     -- Initialize new state if needed
     if not current_state then
         weapon_state[weapon_id] = {
-            tag_id = weapon_tag, -- Track weapon type to detect ID reuse
+            tag_id = weapon_tag,
             durability = MAX_DURABILITY,
             jammed = false,
             jam_applied = nil,
@@ -126,13 +126,10 @@ end
 -- Save ammo state for given weapon
 local function getAmmunition(weapon_obj, is_energy)
     if is_energy then
-        -- Read current battery level (0.0–1.0) and convert to shots fired (0–100)
         local battery = read_float(weapon_obj + WEAPON_BATTERY_OFFSET)
         local shots_fired = 100 - math.floor(battery * 100)
-
         return { battery = shots_fired }
     else
-        -- Read conventional ammo counts
         return {
             primary = read_word(weapon_obj + WEAPON_PRIMARY_AMMO_OFFSET),
             reserve = read_word(weapon_obj + WEAPON_RESERVE_AMMO_OFFSET)
@@ -272,8 +269,6 @@ function OnStart()
         if tag_id ~= 0 then
             local tag_id_value = read_dword(tag_id + 0xC)
             decay_rates_by_tag[tag_id_value] = rate
-
-            -- NEW: Track if this weapon is energy-based
             is_energy_by_tag[tag_id_value] = ENERGY_WEAPONS[tag_path] or false
         end
     end
