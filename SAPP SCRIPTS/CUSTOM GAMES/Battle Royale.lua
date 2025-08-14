@@ -40,7 +40,7 @@ local MAPS = {
         damage_per_second       = 0.0333,                                  -- Default 0.0333% damage every 1 second (dead in 30 seconds)
     },
     ["sidewinder"] = {
-        center                  = { x = 0, y = 0, z = 0 },
+        center                  = { x = 2.051, y = 55.220, z = -2.801 },
         min_size                = 60,
         max_size                = 1400,
         shrink_steps            = 6,
@@ -50,7 +50,7 @@ local MAPS = {
         damage_per_second       = 0.0333
     },
     ["damnation"] = {
-        center                  = { x = 0, y = 0, z = 0 },
+        center                  = { x = -2.002, y = -4.301, z = 3.399 },
         min_size                = 20,
         max_size                = 300,
         shrink_steps            = 4,
@@ -60,7 +60,7 @@ local MAPS = {
         damage_per_second       = 0.0333
     },
     ["prisoner"] = {
-        center                  = { x = 0, y = 0, z = 0 },
+        center                  = { x = 0.902, y = 0.088, z = 1.392 },
         min_size                = 15,
         max_size                = 250,
         shrink_steps            = 3,
@@ -70,7 +70,7 @@ local MAPS = {
         damage_per_second       = 0.0333
     },
     ["hangemhigh"] = {
-        center                  = { x = 0, y = 0, z = 0 },
+        center                  = { x = 21.020, y = -4.632, z = -4.229 },
         min_size                = 25,
         max_size                = 350,
         shrink_steps            = 4,
@@ -80,7 +80,7 @@ local MAPS = {
         damage_per_second       = 0.0333
     },
     ["chillout"] = {
-        center                  = { x = 0, y = 0, z = 0 },
+        center                  = { x = 1.392, y = 4.700, z = 3.108 },
         min_size                = 20,
         max_size                = 300,
         shrink_steps            = 4,
@@ -90,7 +90,7 @@ local MAPS = {
         damage_per_second       = 0.0333
     },
     ["ratrace"] = {
-        center                  = { x = 0, y = 0, z = 0 },
+        center                  = { x = 8.662, y = -11.159, z = 0.221 },
         min_size                = 20,
         max_size                = 300,
         shrink_steps            = 3,
@@ -100,7 +100,7 @@ local MAPS = {
         damage_per_second       = 0.0333
     },
     ["wizard"] = {
-        center                  = { x = 0, y = 0, z = 0 },
+        center                  = { x = -5.035, y = -5.064, z = -2.750 },
         min_size                = 20,
         max_size                = 250,
         shrink_steps            = 3,
@@ -110,7 +110,7 @@ local MAPS = {
         damage_per_second       = 0.0333
     },
     ["longest"] = {
-        center                  = { x = 0, y = 0, z = 0 },
+        center                  = { x = -0.84, y = -14.54, z = 2.41 },
         min_size                = 20,
         max_size                = 250,
         shrink_steps            = 3,
@@ -120,7 +120,7 @@ local MAPS = {
         damage_per_second       = 0.0333
     },
     ["beavercreek"] = {
-        center                  = { x = 0, y = 0, z = 0 },
+        center                  = { x = 14.015, y = 14.238, z = -0.911 },
         min_size                = 40,
         max_size                = 600,
         shrink_steps            = 4,
@@ -130,7 +130,7 @@ local MAPS = {
         damage_per_second       = 0.0333
     },
     ["boardingaction"] = {
-        center                  = { x = 0, y = 0, z = 0 },
+        center                  = { x = 4.374, y = -12.832, z = 7.220 },
         min_size                = 30,
         max_size                = 500,
         shrink_steps            = 4,
@@ -140,7 +140,7 @@ local MAPS = {
         damage_per_second       = 0.0333
     },
     ["carousel"] = {
-        center                  = { x = 0, y = 0, z = 0 },
+        center                  = { x = 0.033, y = 0.003, z = -0.856 },
         min_size                = 20,
         max_size                = 300,
         shrink_steps            = 3,
@@ -150,7 +150,7 @@ local MAPS = {
         damage_per_second       = 0.0333
     },
     ["deathisland"] = {
-        center                  = { x = 0, y = 0, z = 0 },
+        center                  = { x = -30.282, y = 31.312, z = 16.601 },
         min_size                = 80,
         max_size                = 1600,
         shrink_steps            = 6,
@@ -160,7 +160,7 @@ local MAPS = {
         damage_per_second       = 0.0333
     },
     ["gephyrophobia"] = {
-        center                  = { x = 0, y = 0, z = 0 },
+        center                  = { x = 63.513, y = -74.088, z = -1.062 },
         min_size                = 80,
         max_size                = 1600,
         shrink_steps            = 6,
@@ -170,7 +170,7 @@ local MAPS = {
         damage_per_second       = 0.0333
     },
     ["infinity"] = {
-        center                  = { x = 0, y = 0, z = 0 },
+        center                  = { x = 9.631, y = -64.030, z = 7.776 },
         min_size                = 100,
         max_size                = 2000,
         shrink_steps            = 6,
@@ -180,7 +180,7 @@ local MAPS = {
         damage_per_second       = 0.0333
     },
     ["timberland"] = {
-        center                  = { x = 0, y = 0, z = 0 },
+        center                  = { x = 1.250, y = -1.487, z = -21.264 },
         min_size                = 70,
         max_size                = 1500,
         shrink_steps            = 5,
@@ -190,7 +190,7 @@ local MAPS = {
         damage_per_second       = 0.0333
     },
     ["icefields"] = {
-        center                  = { x = 0, y = 0, z = 0 },
+        center                  = { x = -26.032, y = 32.365, z = 9.007 },
         min_size                = 80,
         max_size                = 1600,
         shrink_steps            = 6,
@@ -198,7 +198,8 @@ local MAPS = {
         bonus_time              = 30,
         public_message_interval = 10,
         damage_per_second       = 0.0333
-    }
+    },
+    -- Add more maps here
 }
 -- CONFIG END ---------------------------------------------------------------------------
 
@@ -213,17 +214,17 @@ local execute_command, say_all, rprint = execute_command, say_all, rprint
 
 -- Runtime variables
 local CFG = {}
+local players = {}
 local game_active = false
-local game_start_time = 0
-local total_game_time = 0
-local last_public_message = 0
 local bonus_period = false
 local bonus_end_time = 0
 local current_radius = 0
+local game_start_time = 0
+local total_game_time = 0
 local expected_reductions = 0
-local reductions_remaining = 0
+local last_public_message = 0
 local damage_per_interval = 0
-local players = {}
+local reductions_remaining = 0
 
 -- Precomputed values
 local DAMAGE_INTERVAL_MS = DAMAGE_INTERVAL * 1000
@@ -368,7 +369,7 @@ function OnEnd()
 end
 
 function OnJoin(id)
-    players[id] = { last_damage = 0, last_warning = 0, spectator = false }
+    players[id] = { last_damage = 0, last_warning = 0, spectator = false, spectator_once = false }
 end
 
 function OnQuit(id)
@@ -392,20 +393,25 @@ local function spectate(id, dyn_player, px, py, pz)
 
     if (player or not player.spectator) then return end
 
-    write_float(player + 0xF8, px - 1000)   -- player x (x,y,z different from read_vector3d)
-    write_float(player + 0xFC, py - 1000)   -- player y
-    write_float(player + 0x100, pz - 1000)  -- player z
-    write_bit(dyn_player + 0x10, 0, 1)      -- uncollidable/invulnerable
-    write_bit(dyn_player + 0x106, 11, 1)    -- undamageable except for shields w explosions
+    write_float(player + 0xF8, px - 1000)  -- player x (x,y,z different from read_vector3d)
+    write_float(player + 0xFC, py - 1000)  -- player y
+    write_float(player + 0x100, pz - 1000) -- player z
 
     -- Force weapon drop:
     execute_command('wdrop ' .. id)
     -- Force vehicle exit:
     execute_command('vexit ' .. id)
-    -- Force into camoflauge:
-    execute_command('camo ' .. id .. ' 1')
-    -- Force into god mode:
-    execute_command('god ' .. id)
+
+    -- only set these once
+    if not players[id].spectator_once then
+        -- Force into camoflauge:
+        execute_command('camo ' .. id .. ' 1')
+        -- Force into god mode:
+        execute_command('god ' .. id)
+
+        write_bit(dyn_player + 0x10, 0, 1)   -- uncollidable/invulnerable
+        write_bit(dyn_player + 0x106, 11, 1) -- undamageable except for shields w explosions
+    end
 end
 
 function OnTick()
