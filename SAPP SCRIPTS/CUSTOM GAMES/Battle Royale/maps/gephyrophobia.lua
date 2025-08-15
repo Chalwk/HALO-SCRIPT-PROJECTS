@@ -9,6 +9,8 @@ local CFG = {
     },
     crates = {
         crate_tag = { 'eqip', 'powerups\\full-spectrum vision' },
+        min_spawn_delay = 30,
+        max_spawn_delay = 120,
         collision_radius = 1.5,
         locations = {},
         spoils = {
@@ -19,37 +21,37 @@ local CFG = {
             { -- RANDOM WEAPON
                 enabled = true,
                 weapons = {
-                    'weapons\\plasma pistol\\plasma pistol',
-                    'weapons\\plasma rifle\\plasma rifle',
-                    'weapons\\assault rifle\\assault rifle',
-                    'weapons\\pistol\\pistol',
-                    'weapons\\needler\\mp_needler',
-                    'weapons\\flamethrower\\flamethrower',
-                    'weapons\\shotgun\\shotgun',
-                    'weapons\\sniper rifle\\sniper rifle',
-                    'weapons\\plasma_cannon\\plasma_cannon',
-                    'weapons\\rocket launcher\\rocket launcher'
+                    ['Plasma Pistol']   = 'weapons\\plasma pistol\\plasma pistol',
+                    ['Plasma Rifle']    = 'weapons\\plasma rifle\\plasma rifle',
+                    ['Assault Rifle']   = 'weapons\\assault rifle\\assault rifle',
+                    ['Pistol']          = 'weapons\\pistol\\pistol',
+                    ['Needler']         = 'weapons\\needler\\mp_needler',
+                    ['Flamethrower']    = 'weapons\\flamethrower\\flamethrower',
+                    ['Shotgun']         = 'weapons\\shotgun\\shotgun',
+                    ['Sniper Rifle']    = 'weapons\\sniper rifle\\sniper rifle',
+                    ['Plasma Cannon']   = 'weapons\\plasma_cannon\\plasma_cannon',
+                    ['Rocket Launcher'] = 'weapons\\rocket launcher\\rocket launcher'
                 }
             },
             { -- SPEED BOOST
                 enabled = true,
-                multipliers = { { 1.2, 10 }, { 1.3, 15 }, { 1.4, 20 }, { 1.5, 25 } },
+                multipliers = { { 1.25, 10 }, { 1.35, 15 }, { 1.45, 20 }, { 1.55, 25 } }, -- increased slightly for bridge crossing
             },
-
             { -- GRENADES {frags, plasmas}
                 enabled = true,
-                count = { 4, 4 },
+                count = { 4, 4 }, -- enough for base skirmishes without cluttering bridges
             },
             { -- CAMOFLAGE
                 enabled = true,
-                durations = { 30, 45, 60, 75, 90, 105, 120 },
+                durations = { 40, 55, 70, 85, 100, 115, 130 }, -- longer for mid-field and vertical flanking
             },
-            { -- FULL OVERSHIELD
+            { -- FULL OVERSHIELD (multiplier)
                 enabled = true,
+                overshield = { 1, 2, 3, 4, 5 }
             },
-            { -- HEALTH BOOST
+            { -- HEALTH BOOST (picks a random multiplier)
                 enabled = true,
-                levels = { 1.2, 1.3, 1.4, 1.5 },
+                levels = { 1.25, 1.35, 1.45, 1.55 }, -- slightly increased for survival in open areas
             }
         }
     }

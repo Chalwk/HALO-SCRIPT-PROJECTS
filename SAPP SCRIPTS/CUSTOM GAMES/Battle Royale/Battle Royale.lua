@@ -43,11 +43,12 @@ local get_dynamic_player, get_object_memory = get_dynamic_player, get_object_mem
 local read_float, write_float, write_bit = read_float, write_float, write_bit
 local player_present = player_present
 local execute_command = execute_command
+local spawn_object = spawn_object
 local pairs = pairs
 
 -- Runtime variables
 local players, active_crates, respawn_timers, player_effects, enabled_spoils = {}, {}, {}, {}, {}
-local crate_meta_id
+local crate_meta_id, map_name
 local game_active = false
 local bonus_period = false
 local bonus_end_time = 0
@@ -118,14 +119,47 @@ end
 
 -- Spoil handlers
 local function apply_bonus_life(player_id)
-    CFG.send(player_id, "Received bonus life!")
+    CFG:send(player_id, "Received bonus life!")
     local player = players[player_id]
     player.lives = player.lives + 1
+    return true
 end
 
-local function apply_random_weapon(player_id, spoil)
-    local weapon = spoil.weapons[math.random(#spoil.weapons)]
-    -- implementation pending
+local function apply_full_overshield(player_id, spoil)
+    local level = spoil.overshield[math.random(#spoil.overshield)]
+    execute_command("sh " .. player_id .. " " .. level)
+    CFG:send(player_id, "Received %sX overshield!", level)
+    return true
+end
+
+local function apply_random_weapon(player_id, spoil, dyn_player)
+    local weapon_names = {}
+    for name, _ in pairs(spoil.weapons) do
+        insert(weapon_names, name)
+    end
+
+    local weapon_name = weapon_names[math.random(#weapon_names)]
+    local weapon_path = spoil.weapons[weapon_name]
+
+    local inventory = CFG.get_inventory(dyn_player)
+    if #inventory == 4 then
+        CFG.cls(player_id)
+        CFG:send(player_id, "Attempted to receive %s, but you're already full!", weapon_name)
+        return false
+    end
+
+    local meta_id = CFG.get_tag('weap', weapon_path)
+    if not meta_id then
+        CFG:send(player_id, "This crate was a dud!")
+        error("ERROR: Invalid object tag: weap " .. weapon_path, 10)
+        return false
+    end
+
+    local weapon = spawn_object('', '', 0, 0, 0, 0, meta_id)
+    assign_weapon(weapon, player_id)
+    CFG:send(player_id, "Received %s!", weapon_name)
+
+    return true
 end
 
 local function apply_speed_boost(player_id, spoil)
@@ -134,21 +168,26 @@ local function apply_speed_boost(player_id, spoil)
     player_effects[player_id] = player_effects[player_id] or {}
     insert(player_effects[player_id], { effect = "speed", multiplier = mult, expires = clock() + duration })
     execute_command("s " .. player_id .. " " .. mult)
-    CFG.send(player_id, "%.1fX speed boost for %d seconds!", mult, duration)
+    CFG:send(player_id, "%.1fX speed boost for %d seconds!", mult, duration)
+    return true
 end
 
--- Crate management
-local function initCrateMeta()
-    local tag = CFG.crates.crate_tag
-    local class, name = tag[1], tag[2]
-    crate_meta_id = CFG.get_tag(class, name)
-    if not crate_meta_id then
-        unregisterCallbacks()
-        error("ERROR: Invalid object tag: " .. class .. " " .. name, 10)
-    end
+local function apply_health(player_id, spoil)
+    local levels = spoil.health[math.random(#spoil.health)]
+    local health = levels[math.random(#levels)]
+    execute_command("hp " .. player_id .. " " .. health)
+    CFG:send(player_id, "Received %dX health!", health)
+    return true
+end
+
+local function apply_grenades(player_id, spoil)
+    local grenade_count = spoil.grenades[math.random(#spoil.grenades)]
+    execute_command('nades ' .. player_id .. ' ' .. grenade_count[1] .. ' 1')
+    execute_command('nades ' .. player_id .. ' ' .. grenade_count[2] .. ' 2')
 end
 
 local function spawn_crate(loc_idx)
+    -- todo: spawn crates at random locations
     local loc = CFG.crates.locations[loc_idx]
     if not loc then return end
     local height_offset = 0.3
@@ -161,38 +200,51 @@ local function spawn_crate(loc_idx)
     return false
 end
 
+-- Crate management
 local function initCrates()
     active_crates = {}
     respawn_timers = {}
 
-    for i = 1, #CFG.crates.spoils do
-        local spoil = CFG.crates.spoils[i]
+    local crates = CFG.crates
+    local tag = crates.crate_tag
+    local class, name = tag[1], tag[2]
+    crate_meta_id = CFG.get_tag(class, name)
+    if not crate_meta_id then
+        unregisterCallbacks()
+        error("ERROR: Invalid object tag: " .. class .. " " .. name, 10)
+    end
+
+    for i = 1, #crates.spoils do
+        local spoil = crates.spoils[i]
         if spoil.enabled then
             enabled_spoils[#enabled_spoils + 1] = spoil
         end
     end
 
-    if #enabled_spoils == 0 or #CFG.crates.locations == 0 then return end
-    for i = 1, #CFG.crates.locations do spawn_crate(i) end
+    if #enabled_spoils == 0 or #crates.locations == 0 then return end
+    for i = 1, #crates.locations do spawn_crate(i) end
+    execute_command('disable_object ' .. '"' .. tag[2] .. '"')
 end
 
 -- Spoil handlers
 local spoil_handlers = {
     lives = apply_bonus_life,
     weapons = apply_random_weapon,
-    multipliers = apply_speed_boost
-    -- add others as needed
+    multipliers = apply_speed_boost,
+    overshield = apply_full_overshield,
+    grenades = apply_grenades,
+    health_boost = apply_health,
 }
 
 -- Crate spoil management
-local function open_crate(player_id)
+local function open_crate(player_id, dyn_player)
     local spoil = enabled_spoils[math.random(#enabled_spoils)]
     for k in pairs(spoil) do
         if k ~= "enabled" and spoil_handlers[k] then
-            spoil_handlers[k](player_id, spoil)
-            break
+            return spoil_handlers[k](player_id, spoil, dyn_player)
         end
     end
+    return false
 end
 
 -- Crate Effect management
@@ -204,7 +256,7 @@ local function update_effects()
             if current_time >= eff.expires then
                 if eff.effect == "speed" then
                     execute_command("s " .. player_id .. " 1.0")
-                    CFG.send(player_id, "Speed boost ended")
+                    CFG:send(player_id, "Speed boost ended")
                 end
                 remove(effects, i)
             end
@@ -278,10 +330,10 @@ end
 
 function OnStart()
     if get_var(0, '$gt') == 'n/a' then return end
+    map_name = get_var(0, '$map')
     if CFG:loadFiles() then
         initializeBoundary()
         game_start_time = clock()
-        initCrateMeta()
         initCrates()
         for i = 1, 16 do
             if player_present(i) then
@@ -381,9 +433,8 @@ function OnTick()
         if crate == 0 then
             active_crates[crate_id] = nil
             local loc_idx = crate_data.loc_idx
-            local respawn_delay = crate_locs[loc_idx][4]
             if not respawn_timers[loc_idx] then
-                respawn_timers[loc_idx] = clock() + respawn_delay
+                respawn_timers[loc_idx] = now + CFG:get_crate_respawn_time()
                 CFG:debug_print("Crate at location #%d despawned naturally. Respawning in %d seconds.", loc_idx,
                     respawn_delay)
             end
@@ -414,7 +465,7 @@ function OnTick()
             --------------------------------
 
             --- Player-crate collision detection
-            if in_vehicle then goto skip_collision end -- do not check for collisions while in a vehicle
+            if in_vehicle or player.spectator then goto skip_collision end
             for crate_id, crate_data in pairs(active_crates) do
                 local crate = get_object_memory(crate_id)
                 if crate == 0 then
@@ -422,11 +473,11 @@ function OnTick()
                 end
                 local loc = crate_locs[crate_data.loc_idx]
                 if CFG.distance_squared(x, y, z, loc[1], loc[2], loc[3], CFG.crates.collision_radius) then
-                    destroy_object(crate_id)
+                    if not open_crate(i, dyn_player) then goto continue_crate end
                     active_crates[crate_id] = nil
-                    respawn_timers[crate_data.loc_idx] = now + loc[4]
-                    open_crate(i)
+                    respawn_timers[crate_data.loc_idx] = now + CFG:get_crate_respawn_time()
                     CFG:debug_print("Player %d collected crate at location #%d", i, crate_data.loc_idx)
+                    destroy_object(crate_id)
                     break
                 end
                 ::continue_crate::
@@ -453,12 +504,12 @@ function OnTick()
                 local status
                 if bonus_period then
                     status = format("BONUS TIME: %s | Radius: %.0f",
-                        CFG.secondsToTime(bonus_end_time - now),
+                        CFG.seconds_to_time(bonus_end_time - now),
                         current_radius)
                 else
                     status = format("Radius: %.0f | Time: %s | Shrinks left: %d",
                         current_radius,
-                        CFG.secondsToTime(total_game_time - elapsed),
+                        CFG.seconds_to_time(total_game_time - elapsed),
                         reductions_remaining)
                 end
                 CFG:send(i, status .. (not inside and " [OUT]" or ""))

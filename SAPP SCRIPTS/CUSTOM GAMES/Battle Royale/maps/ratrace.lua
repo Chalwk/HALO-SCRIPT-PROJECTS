@@ -9,6 +9,8 @@ local CFG = {
     },
     crates = {
         crate_tag = { 'eqip', 'powerups\\full-spectrum vision' },
+        min_spawn_delay = 25, -- faster respawns to keep pace high
+        max_spawn_delay = 90, -- shorter max to avoid mid-field overcrowding
         collision_radius = 1.5,
         locations = {},
         spoils = {
@@ -19,37 +21,37 @@ local CFG = {
             { -- RANDOM WEAPON
                 enabled = true,
                 weapons = {
-                    'weapons\\plasma pistol\\plasma pistol',
-                    'weapons\\plasma rifle\\plasma rifle',
-                    'weapons\\assault rifle\\assault rifle',
-                    'weapons\\pistol\\pistol',
-                    'weapons\\needler\\mp_needler',
-                    'weapons\\flamethrower\\flamethrower',
-                    'weapons\\shotgun\\shotgun',
-                    'weapons\\sniper rifle\\sniper rifle',
-                    'weapons\\plasma_cannon\\plasma_cannon',
-                    'weapons\\rocket launcher\\rocket launcher'
+                    ['Plasma Pistol']   = 'weapons\\plasma pistol\\plasma pistol',
+                    ['Plasma Rifle']    = 'weapons\\plasma rifle\\plasma rifle',
+                    ['Assault Rifle']   = 'weapons\\assault rifle\\assault rifle',
+                    ['Pistol']          = 'weapons\\pistol\\pistol',
+                    ['Needler']         = 'weapons\\needler\\mp_needler',
+                    ['Flamethrower']    = 'weapons\\flamethrower\\flamethrower',
+                    ['Shotgun']         = 'weapons\\shotgun\\shotgun',         -- strong in tight spots
+                    ['Sniper Rifle']    = 'weapons\\sniper rifle\\sniper rifle', -- for mid-field control
+                    ['Plasma Cannon']   = 'weapons\\plasma_cannon\\plasma_cannon',
+                    ['Rocket Launcher'] = 'weapons\\rocket launcher\\rocket launcher'
                 }
             },
             { -- SPEED BOOST
                 enabled = true,
-                multipliers = { { 1.2, 10 }, { 1.3, 15 }, { 1.4, 20 }, { 1.5, 25 } },
+                multipliers = { { 1.3, 10 }, { 1.4, 15 }, { 1.5, 20 }, { 1.6, 25 } }, -- faster traversal for open-mid fights
             },
-
             { -- GRENADES {frags, plasmas}
                 enabled = true,
-                count = { 4, 4 },
+                count = { 3, 3 }, -- moderate to avoid spam in narrow corridors
             },
             { -- CAMOFLAGE
                 enabled = true,
-                durations = { 30, 45, 60, 75, 90, 105, 120 },
+                durations = { 30, 40, 50, 60, 70, 80 }, -- balanced for strategic flanking
             },
-            { -- FULL OVERSHIELD
+            { -- FULL OVERSHIELD (multiplier)
                 enabled = true,
+                overshield = { 1, 2, 3, 4, 5 }
             },
-            { -- HEALTH BOOST
+            { -- HEALTH BOOST (picks a random multiplier)
                 enabled = true,
-                levels = { 1.2, 1.3, 1.4, 1.5 },
+                levels = { 1.3, 1.4, 1.5 }, -- survival in quick skirmishes
             }
         }
     }

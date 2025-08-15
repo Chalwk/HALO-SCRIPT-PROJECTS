@@ -1,55 +1,57 @@
 local CFG = {
     safe_zone = {
-        center       = { x = 4.374, y = -12.832, z = 7.220 },
-        min_size     = 30,
-        max_size     = 500,
-        shrink_steps = 4,
-        game_time    = 4 * 60,
-        bonus_time   = 30
+        center       = { x = 4.374, y = -12.832, z = 7.220 }, -- Boundary center position
+        min_size     = 30,                                     -- Minimum radius of playable area
+        max_size     = 500,                                    -- Maximum radius (starting size)
+        shrink_steps = 4,                                      -- Number of shrink steps to reach min_size
+        game_time    = 4 * 60,                                 -- Default game duration in seconds
+        bonus_time   = 30                                      -- Bonus period duration in seconds
     },
     crates = {
         crate_tag = { 'eqip', 'powerups\\full-spectrum vision' },
-        collision_radius = 1.5,
-        locations = {},
+        min_spawn_delay = 20,   -- Crate min respawn delay (a random value between min_spawn_delay and max_spawn_delay will be used)
+        max_spawn_delay = 90,   -- Crate max respawn delay
+        collision_radius = 1.5, -- A player must within this many world units to open a crate
+        locations = {},          -- Crate spawn locations
         spoils = {
             { -- BONUS LIVES
                 enabled = true,
                 lives = 1,
             },
-            { -- RANDOM WEAPON
+            { -- RANDOM WEAPON [label] = tag name
                 enabled = true,
                 weapons = {
-                    'weapons\\plasma pistol\\plasma pistol',
-                    'weapons\\plasma rifle\\plasma rifle',
-                    'weapons\\assault rifle\\assault rifle',
-                    'weapons\\pistol\\pistol',
-                    'weapons\\needler\\mp_needler',
-                    'weapons\\flamethrower\\flamethrower',
-                    'weapons\\shotgun\\shotgun',
-                    'weapons\\sniper rifle\\sniper rifle',
-                    'weapons\\plasma_cannon\\plasma_cannon',
-                    'weapons\\rocket launcher\\rocket launcher'
+                    ['Plasma Pistol']   = 'weapons\\plasma pistol\\plasma pistol',
+                    ['Plasma Rifle']    = 'weapons\\plasma rifle\\plasma rifle',
+                    ['Assault Rifle']   = 'weapons\\assault rifle\\assault rifle',
+                    ['Pistol']          = 'weapons\\pistol\\pistol',
+                    ['Needler']         = 'weapons\\needler\\mp_needler',
+                    ['Flamethrower']    = 'weapons\\flamethrower\\flamethrower',
+                    ['Shotgun']         = 'weapons\\shotgun\\shotgun',
+                    ['Sniper Rifle']    = 'weapons\\sniper rifle\\sniper rifle',
+                    ['Plasma Cannon']   = 'weapons\\plasma_cannon\\plasma_cannon',
+                    ['Rocket Launcher'] = 'weapons\\rocket launcher\\rocket launcher'
                 }
             },
-            { -- SPEED BOOST
+            { -- SPEED BOOST {boost, duration}
                 enabled = true,
-                multipliers = { { 1.2, 10 }, { 1.3, 15 }, { 1.4, 20 }, { 1.5, 25 } },
+                multipliers = { { 1.25, 10 }, { 1.35, 15 }, { 1.45, 20 }, { 1.55, 25 } },
             },
-
             { -- GRENADES {frags, plasmas}
                 enabled = true,
                 count = { 4, 4 },
             },
-            { -- CAMOFLAGE
+            { -- CAMOFLAGE {duration}
                 enabled = true,
-                durations = { 30, 45, 60, 75, 90, 105, 120 },
+                durations = { 25, 40, 55, 70, 85 },
             },
-            { -- FULL OVERSHIELD
+            { -- FULL OVERSHIELD (multiplier)
                 enabled = true,
+                overshield = { 1, 2, 3, 4, 5 }
             },
-            { -- HEALTH BOOST
+            { -- HEALTH BOOST (multiplier)
                 enabled = true,
-                levels = { 1.2, 1.3, 1.4, 1.5 },
+                levels = { 1.25, 1.35, 1.45 },
             }
         }
     }
