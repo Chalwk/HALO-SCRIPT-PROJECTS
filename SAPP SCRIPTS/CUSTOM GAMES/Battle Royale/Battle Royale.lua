@@ -37,7 +37,7 @@ api_version = '1.12.0.0'
 
 -- Localized frequently used functions and variables
 local insert, remove = table.insert, table.remove
-local floor, max = math.floor, math.max
+local floor, max, random = math.floor, math.max, math.random
 local format, clock = string.format, os.clock
 local get_dynamic_player, get_object_memory = get_dynamic_player, get_object_memory
 local read_float, write_float, write_bit = read_float, write_float, write_bit
@@ -124,7 +124,7 @@ local function apply_bonus_life(player_id)
 end
 
 local function apply_full_overshield(player_id, spoil)
-    local level = spoil.overshield[math.random(#spoil.overshield)]
+    local level = spoil.overshield[random(#spoil.overshield)]
     execute_command("sh " .. player_id .. " " .. level)
     CFG:send(player_id, "Received %sX overshield!", level)
     return true
@@ -136,7 +136,7 @@ local function apply_random_weapon(player_id, spoil, dyn_player)
         insert(weapon_names, name)
     end
 
-    local weapon_name = weapon_names[math.random(#weapon_names)]
+    local weapon_name = weapon_names[random(#weapon_names)]
     local weapon_path = spoil.weapons[weapon_name]
 
     local inventory = CFG.get_inventory(dyn_player)
@@ -161,7 +161,7 @@ local function apply_random_weapon(player_id, spoil, dyn_player)
 end
 
 local function apply_speed_boost(player_id, spoil)
-    local boost = spoil.multipliers[math.random(#spoil.multipliers)]
+    local boost = spoil.multipliers[random(#spoil.multipliers)]
     local mult, duration = boost[1], boost[2]
     player_effects[player_id] = player_effects[player_id] or {}
     insert(player_effects[player_id], { effect = "speed", multiplier = mult, expires = clock() + duration })
@@ -171,7 +171,7 @@ local function apply_speed_boost(player_id, spoil)
 end
 
 local function apply_camouflage(player_id, spoil)
-    local duration = spoil.camouflage[math.random(#spoil.camouflage)]
+    local duration = spoil.camouflage[random(#spoil.camouflage)]
     player_effects[player_id] = player_effects[player_id] or {}
     insert(player_effects[player_id], { effect = "camouflage", expires = clock() + duration })
     execute_command("camo " .. player_id .. " " .. duration)
@@ -180,7 +180,7 @@ local function apply_camouflage(player_id, spoil)
 end
 
 local function apply_health_boost(_, spoil, dyn_player)
-    local health = spoil.health[math.random(#spoil.health)]
+    local health = spoil.health[random(#spoil.health)]
     local current_health = read_float(dyn_player + 0xE0)
     write_float(dyn_player + 0xE0, current_health + health)
     CFG:send(player_id, "Received %dX health!", health)
@@ -196,7 +196,6 @@ local function apply_grenades(player_id, spoil)
 end
 
 local function spawn_crate(loc_idx)
-    -- todo: spawn crates more dynamically
     local loc = CFG.crates.locations[loc_idx]
     if not loc then return end
     local height_offset = 0.3
@@ -210,6 +209,7 @@ local function spawn_crate(loc_idx)
 end
 
 -- Crate management
+-- In the main script, modify the initCrates function:
 local function initCrates()
     active_crates = {}
     respawn_timers = {}
@@ -223,6 +223,11 @@ local function initCrates()
         error("ERROR: Invalid object tag: " .. class .. " " .. name, 10)
     end
 
+    -- Set defaults if min/max not defined
+    crates.min_crates = crates.min_crates or 1
+    crates.max_crates = crates.max_crates or #crates.locations
+    crates.max_crates = math.min(math.max(crates.min_crates, crates.max_crates), #crates.locations)
+
     for i = 1, #crates.spoils do
         local spoil = crates.spoils[i]
         if spoil.enabled then
@@ -231,8 +236,23 @@ local function initCrates()
     end
 
     if #enabled_spoils == 0 or #crates.locations == 0 then return end
-    for i = 1, #crates.locations do spawn_crate(i) end
+
     execute_command('disable_object ' .. '"' .. tag[2] .. '"')
+
+    -- Spawn random number of crates at random locations
+    local num_to_spawn = random(crates.min_crates, crates.max_crates)
+    local indices = {}
+    for i = 1, #crates.locations do indices[i] = i end
+
+    -- Shuffle indices
+    for i = #indices, 2, -1 do
+        local j = random(i)
+        indices[i], indices[j] = indices[j], indices[i]
+    end
+
+    for i = 1, num_to_spawn do
+        spawn_crate(indices[i])
+    end
 end
 
 -- Spoil handlers
@@ -248,7 +268,7 @@ local spoil_handlers = {
 
 -- Crate spoil management
 local function open_crate(player_id, dyn_player)
-    local spoil = enabled_spoils[math.random(#enabled_spoils)]
+    local spoil = enabled_spoils[random(#enabled_spoils)]
     for k in pairs(spoil) do
         if k ~= "enabled" and spoil_handlers[k] then
             return spoil_handlers[k](player_id, spoil, dyn_player)
@@ -433,10 +453,22 @@ function OnTick()
     local radius_sq = current_radius * current_radius
     local current_time_ms = now * 1000
 
-    --- Handle crate respawns
+    -- Precompute active crate count
+    local active_crate_count = 0
+    for _ in pairs(active_crates) do active_crate_count = active_crate_count + 1 end
+
+    -- Handle crate respawns
     for loc_idx, respawn_time in pairs(respawn_timers) do
         if now >= respawn_time then
-            if spawn_crate(loc_idx) then respawn_timers[loc_idx] = nil end
+            if active_crate_count < CFG.crates.max_crates then
+                if spawn_crate(loc_idx) then
+                    respawn_timers[loc_idx] = nil
+                    active_crate_count = active_crate_count + 1
+                end
+            else
+                -- Reschedule if at max crates
+                respawn_timers[loc_idx] = now + 5
+            end
         end
     end
 
@@ -450,7 +482,8 @@ function OnTick()
             if not respawn_timers[loc_idx] then
                 local respawn_delay = CFG:get_crate_respawn_time()
                 respawn_timers[loc_idx] = now + respawn_delay
-                CFG:debug_print("Crate at location #%d despawned naturally. Respawning in %d seconds.", loc_idx, respawn_delay)
+                CFG:debug_print("Crate at location #%d despawned naturally. Respawning in %d seconds.", loc_idx,
+                    respawn_delay)
             end
         end
     end

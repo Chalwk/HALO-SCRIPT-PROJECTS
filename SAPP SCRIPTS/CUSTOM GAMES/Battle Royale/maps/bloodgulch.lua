@@ -9,6 +9,8 @@ local CFG = {
     },
     crates = {
         crate_tag = { 'eqip', 'powerups\\full-spectrum vision' },
+        min_crates = 3,         -- Minimum crates to spawn
+        max_crates = 8,         -- Maximum crates to spawn
         min_spawn_delay = 35,   -- Crate min respawn delay (a random value between min_spawn_delay and max_spawn_delay will be used)
         max_spawn_delay = 130,  -- Crate max respawn delay
         collision_radius = 1.5, -- A player must within this many world units to open a crate

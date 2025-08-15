@@ -9,6 +9,8 @@ local CFG = {
     },
     crates = {
         crate_tag = { 'eqip', 'powerups\\full-spectrum vision' },
+        min_crates = 3,         -- Minimum crates to spawn
+        max_crates = 8,         -- Maximum crates to spawn
         min_spawn_delay = 35, -- slightly slower to avoid mid-field clutter
         max_spawn_delay = 140, -- spaced out to keep crates meaningful
         collision_radius = 1.5,
