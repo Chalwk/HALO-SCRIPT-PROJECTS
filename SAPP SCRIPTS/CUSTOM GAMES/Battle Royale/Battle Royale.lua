@@ -25,9 +25,6 @@ local CFG = {
     MSG_PREFIX = "SAPP",           -- SAPP msg_prefix
     DAMAGE_INTERVAL = 0.2,         -- Apply damage every 0.2 seconds (5x/sec) while outside boundary
     WARNING_INTERVAL = 2.0,        -- Warn players every 2 seconds while outside boundary
-    MAX_DEATHS_UNTIL_SPECTATE = 3, -- Number of times a player can die before spectating
-    PUBLIC_MESSAGE_INTERVAL = 10,  -- Seconds between private reminders (while inside boundary)
-    DAMAGE_PER_SECOND = 0.0333,    -- Default 0.0333% damage every 1 second (dead in 30 seconds) while outside boundary
     DEBUG = true,                  -- Enable debug messages
 }
 
@@ -70,7 +67,7 @@ local function initializeBoundary()
     expected_reductions = CFG.safe_zone.shrink_steps
     reductions_remaining = expected_reductions
     total_game_time = CFG.safe_zone.game_time
-    damage_per_interval = CFG.DAMAGE_PER_SECOND * CFG.DAMAGE_INTERVAL
+    damage_per_interval = CFG.safe_zone.damage_per_second * CFG.DAMAGE_INTERVAL
 
     -- Precompute shrink values
     CFG.safe_zone.reduction_amount = (CFG.safe_zone.max_size - CFG.safe_zone.min_size) / expected_reductions
@@ -383,7 +380,7 @@ end
 
 function OnJoin(id)
     players[id] = {
-        lives = CFG.MAX_DEATHS_UNTIL_SPECTATE,
+        lives = CFG.sfe_zone.max_deaths_until_spectate,
         last_damage = 0,
         last_warning = 0,
         spectator = false,
@@ -547,7 +544,7 @@ function OnTick()
                 end
             end
 
-            if now - last_public_message >= CFG.PUBLIC_MESSAGE_INTERVAL then
+            if now - last_public_message >= CFG.safe_zone.public_message_interval then
                 local status
                 if bonus_period then
                     status = format("BONUS TIME: %s | Radius: %.0f",
@@ -566,7 +563,7 @@ function OnTick()
     end
 
     -- Update public message timer
-    if now - last_public_message >= CFG.PUBLIC_MESSAGE_INTERVAL then
+    if now - last_public_message >= CFG.safe_zone.public_message_interval then
         last_public_message = now
     end
 

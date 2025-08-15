@@ -1,21 +1,21 @@
 local CFG = {
     safe_zone = {
-        center = { x = 0.033, y = 0.003, z = -0.856 },
-        min_size = 20,
-        max_size = 300,
-        shrink_steps = 3,
-        game_time = 3 * 60,
+        center = { x = -30.282, y = 31.312, z = 16.601 },
+        min_size = 80,
+        max_size = 1600,
+        shrink_steps = 6,
+        game_time = 7 * 60,
         bonus_time = 30,
-        max_deaths_until_spectate = 2,
-        public_message_interval = 10,
-        damage_per_second = 0.035
+        max_deaths_until_spectate = 3,
+        public_message_interval = 12,
+        damage_per_second = 0.0271
     },
     crates = {
         crate_tag = { 'eqip', 'powerups\\full-spectrum vision' },
-        min_crates = 4,
-        max_crates = 6,
-        min_spawn_delay = 25,
-        max_spawn_delay = 100,
+        min_crates = 5,
+        max_crates = 7,
+        min_spawn_delay = 30,
+        max_spawn_delay = 120,
         collision_radius = 1.5,
         locations = {},
         spoils = {

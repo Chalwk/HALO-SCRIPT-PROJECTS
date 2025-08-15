@@ -1,20 +1,23 @@
 local CFG = {
     safe_zone = {
-        center       = { x = 14.015, y = 14.238, z = -0.911 }, -- Boundary center position
-        min_size     = 40,                                     -- Minimum radius of playable area
-        max_size     = 600,                                    -- Maximum radius (starting size)
-        shrink_steps = 4,                                      -- Number of shrink steps to reach min_size
-        game_time    = 4 * 60,                                 -- Default game duration in seconds
-        bonus_time   = 30                                      -- Bonus period duration in seconds
+        center = { x = 14.015, y = 14.238, z = -0.911 },
+        min_size = 40,
+        max_size = 600,
+        shrink_steps = 4,
+        game_time = 4 * 60,
+        bonus_time = 30,
+        max_deaths_until_spectate = 2,
+        public_message_interval = 10,
+        damage_per_second = 0.035
     },
     crates = {
         crate_tag = { 'eqip', 'powerups\\full-spectrum vision' },
-        min_crates = 3,         -- Minimum crates to spawn
-        max_crates = 8,         -- Maximum crates to spawn
-        min_spawn_delay = 25,   -- Crate min respawn delay (a random value between min_spawn_delay and max_spawn_delay will be used)
-        max_spawn_delay = 100,  -- Crate max respawn delay
-        collision_radius = 1.5, -- A player must within this many world units to open a crate
-        locations = {},          -- Crate spawn locations
+        min_crates = 3,
+        max_crates = 5,
+        min_spawn_delay = 25,
+        max_spawn_delay = 100,
+        collision_radius = 1.5,
+        locations = {},
         spoils = {
             { -- BONUS LIVES
                 enabled = true,
@@ -23,37 +26,37 @@ local CFG = {
             { -- RANDOM WEAPON [label] = tag name
                 enabled = true,
                 weapons = {
-                    ['Plasma Pistol']   = 'weapons\\plasma pistol\\plasma pistol',
-                    ['Plasma Rifle']    = 'weapons\\plasma rifle\\plasma rifle',
-                    ['Assault Rifle']   = 'weapons\\assault rifle\\assault rifle',
-                    ['Pistol']          = 'weapons\\pistol\\pistol',
-                    ['Needler']         = 'weapons\\needler\\mp_needler',
-                    ['Flamethrower']    = 'weapons\\flamethrower\\flamethrower',
-                    ['Shotgun']         = 'weapons\\shotgun\\shotgun',
-                    ['Sniper Rifle']    = 'weapons\\sniper rifle\\sniper rifle',
-                    ['Plasma Cannon']   = 'weapons\\plasma_cannon\\plasma_cannon',
+                    ['Plasma Pistol'] = 'weapons\\plasma pistol\\plasma pistol',
+                    ['Plasma Rifle'] = 'weapons\\plasma rifle\\plasma rifle',
+                    ['Assault Rifle'] = 'weapons\\assault rifle\\assault rifle',
+                    ['Pistol'] = 'weapons\\pistol\\pistol',
+                    ['Needler'] = 'weapons\\needler\\mp_needler',
+                    ['Flamethrower'] = 'weapons\\flamethrower\\flamethrower',
+                    ['Shotgun'] = 'weapons\\shotgun\\shotgun',
+                    ['Sniper Rifle'] = 'weapons\\sniper rifle\\sniper rifle',
+                    ['Plasma Cannon'] = 'weapons\\plasma_cannon\\plasma_cannon',
                     ['Rocket Launcher'] = 'weapons\\rocket launcher\\rocket launcher'
                 }
             },
             { -- SPEED BOOST {boost, duration}
                 enabled = true,
-                multipliers = { { 1.2, 10 }, { 1.3, 15 }, { 1.4, 20 }, { 1.5, 25 } },
+                multipliers = { { 1.35, 10 }, { 1.45, 15 }, { 1.55, 20 }, { 1.65, 25 } }
             },
             { -- GRENADES {frags, plasmas}
                 enabled = true,
-                grenades = { 2, 2 },
+                grenades = { 3, 3 }
             },
             { -- CAMOUFLAGE {duration}
                 enabled = true,
-                camouflage = { 25, 40, 55, 70, 85 },
+                camouflage = { 50, 65, 80, 95, 110 }
             },
             { -- FULL OVERSHIELD (multiplier)
                 enabled = true,
-                overshield = { 1, 2, 3, 4, 5 }
+                overshield = { 2, 3, 4, 5 }
             },
-            { -- HEALTH BOOST (multiplier)
+            { -- HEALTH BOOST (1 = full health)
                 enabled = true,
-                health = { 1.15, 1.25, 1.35 },
+                health = { 1.25, 1.35, 1.45 }
             }
         }
     }

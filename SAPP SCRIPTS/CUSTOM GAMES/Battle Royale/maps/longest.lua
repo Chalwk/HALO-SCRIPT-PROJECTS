@@ -1,18 +1,21 @@
 local CFG = {
     safe_zone = {
-        center       = { x = -0.84, y = -14.54, z = 2.41 },
-        min_size     = 20,
-        max_size     = 250,
+        center = { x = -0.84, y = -14.54, z = 2.41 },
+        min_size = 20,
+        max_size = 250,
         shrink_steps = 3,
-        game_time    = 3 * 60,
-        bonus_time   = 30
+        game_time = 3 * 60,
+        bonus_time = 30,
+        max_deaths_until_spectate = 2,
+        public_message_interval = 10,
+        damage_per_second = 0.035
     },
     crates = {
         crate_tag = { 'eqip', 'powerups\\full-spectrum vision' },
-        min_crates = 3,         -- Minimum crates to spawn
-        max_crates = 8,         -- Maximum crates to spawn
-        min_spawn_delay = 20, -- faster respawns for constant corridor action
-        max_spawn_delay = 80, -- shorter max to avoid overstocking
+        min_crates = 1,
+        max_crates = 3,
+        min_spawn_delay = 20,
+        max_spawn_delay = 80,
         collision_radius = 1.5,
         locations = {},
         spoils = {
@@ -23,37 +26,37 @@ local CFG = {
             { -- RANDOM WEAPON
                 enabled = true,
                 weapons = {
-                    ['Plasma Pistol']   = 'weapons\\plasma pistol\\plasma pistol',
-                    ['Plasma Rifle']    = 'weapons\\plasma rifle\\plasma rifle',
-                    ['Assault Rifle']   = 'weapons\\assault rifle\\assault rifle',
-                    ['Pistol']          = 'weapons\\pistol\\pistol',
-                    ['Needler']         = 'weapons\\needler\\mp_needler',
-                    ['Flamethrower']    = 'weapons\\flamethrower\\flamethrower',
-                    ['Shotgun']         = 'weapons\\shotgun\\shotgun',
-                    ['Sniper Rifle']    = 'weapons\\sniper rifle\\sniper rifle',
-                    ['Plasma Cannon']   = 'weapons\\plasma_cannon\\plasma_cannon',
+                    ['Plasma Pistol'] = 'weapons\\plasma pistol\\plasma pistol',
+                    ['Plasma Rifle'] = 'weapons\\plasma rifle\\plasma rifle',
+                    ['Assault Rifle'] = 'weapons\\assault rifle\\assault rifle',
+                    ['Pistol'] = 'weapons\\pistol\\pistol',
+                    ['Needler'] = 'weapons\\needler\\mp_needler',
+                    ['Flamethrower'] = 'weapons\\flamethrower\\flamethrower',
+                    ['Shotgun'] = 'weapons\\shotgun\\shotgun',
+                    ['Sniper Rifle'] = 'weapons\\sniper rifle\\sniper rifle',
+                    ['Plasma Cannon'] = 'weapons\\plasma_cannon\\plasma_cannon',
                     ['Rocket Launcher'] = 'weapons\\rocket launcher\\rocket launcher'
                 }
             },
-            { -- SPEED BOOST
+            { -- SPEED BOOST {boost, duration}
                 enabled = true,
-                multipliers = { { 1.35, 10 }, { 1.45, 15 }, { 1.55, 20 }, { 1.65, 25 } }, -- helps quick corridor dashes
+                multipliers = { { 1.35, 10 }, { 1.45, 15 }, { 1.55, 20 }, { 1.65, 25 } }
             },
             { -- GRENADES {frags, plasmas}
                 enabled = true,
-                grenades = { 3, 3 }, -- reduced to avoid spam in tight spaces
+                grenades = { 3, 3 }
             },
-            { -- CAMOUFLAGE
+            { -- CAMOUFLAGE {duration}
                 enabled = true,
-                camouflage = { 30, 40, 50, 60, 70 }, -- shorter to maintain corridor fight pace
+                camouflage = { 50, 65, 80, 95, 110 }
             },
             { -- FULL OVERSHIELD (multiplier)
                 enabled = true,
-                overshield = { 1, 2, 3, 4, 5 }
+                overshield = { 2, 3, 4, 5 }
             },
-            { -- HEALTH BOOST (picks a random multiplier)
+            { -- HEALTH BOOST (1 = full health)
                 enabled = true,
-                health = { 1.3, 1.4, 1.5 }, -- slight boost for quick indoor duels
+                health = { 1.25, 1.35, 1.45 }
             }
         }
     }
