@@ -1,8 +1,8 @@
 local CFG = {
     safe_zone = {
         center = { x = 0.902, y = 0.088, z = 1.392 },
-        min_size = 15,
-        max_size = 250,
+        min_size = 5,
+        max_size = 25,
         shrink_steps = 3,
         game_time = 3 * 60,
         bonus_time = 30,
