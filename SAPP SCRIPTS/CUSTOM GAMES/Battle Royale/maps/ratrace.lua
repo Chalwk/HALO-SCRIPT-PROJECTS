@@ -39,11 +39,11 @@ local CFG = {
             },
             { -- GRENADES {frags, plasmas}
                 enabled = true,
-                count = { 3, 3 }, -- moderate to avoid spam in narrow corridors
+                grenades = { 3, 3 }, -- moderate to avoid spam in narrow corridors
             },
-            { -- CAMOFLAGE
+            { -- CAMOUFLAGE
                 enabled = true,
-                durations = { 30, 40, 50, 60, 70, 80 }, -- balanced for strategic flanking
+                camouflage = { 30, 40, 50, 60, 70, 80 }, -- balanced for strategic flanking
             },
             { -- FULL OVERSHIELD (multiplier)
                 enabled = true,
@@ -51,7 +51,7 @@ local CFG = {
             },
             { -- HEALTH BOOST (picks a random multiplier)
                 enabled = true,
-                levels = { 1.3, 1.4, 1.5 }, -- survival in quick skirmishes
+                health = { 1.3, 1.4, 1.5 }, -- survival in quick skirmishes
             }
         }
     }

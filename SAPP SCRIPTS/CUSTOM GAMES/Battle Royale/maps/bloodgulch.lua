@@ -4,7 +4,7 @@ local CFG = {
         min_size     = 20,                                      -- Minimum radius of playable area
         max_size     = 1500,                                    -- Maximum radius (starting size)
         shrink_steps = 5,                                       -- Number of shrink steps to reach min_size
-        game_time    = 60,                                      -- Default game duration in seconds
+        game_time    = 5 * 60,                                  -- Default game duration in seconds
         bonus_time   = 30                                       -- Bonus period duration in seconds
     },
     crates = {
@@ -55,11 +55,11 @@ local CFG = {
             },
             { -- GRENADES {frags, plasmas}
                 enabled = true,
-                count = { 3, 3 },
+                grenades = { 3, 3 },
             },
-            { -- CAMOFLAGE {duration}
+            { -- CAMOUFLAGE {duration}
                 enabled = true,
-                durations = { 50, 65, 80, 95, 110 },
+                camouflage = { 50, 65, 80, 95, 110 },
             },
             { -- FULL OVERSHIELD (multiplier)
                 enabled = true,
@@ -67,7 +67,7 @@ local CFG = {
             },
             { -- HEALTH BOOST (1 = full health)
                 enabled = true,
-                levels = { 1.25, 1.35, 1.45 },
+                health = { 1.25, 1.35, 1.45 },
             }
         }
     }

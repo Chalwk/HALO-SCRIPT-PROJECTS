@@ -48,7 +48,7 @@ local pairs = pairs
 
 -- Runtime variables
 local players, active_crates, respawn_timers, player_effects, enabled_spoils = {}, {}, {}, {}, {}
-local crate_meta_id, map_name
+local crate_meta_id
 local game_active = false
 local bonus_period = false
 local bonus_end_time = 0
@@ -90,9 +90,7 @@ local function spectate(id, dyn_player, px, py, pz)
     write_float(player + 0xFC, py - 1000)  -- player y
     write_float(player + 0x100, pz - 1000) -- player z
 
-    -- Force weapon drop:
     execute_command('wdrop ' .. id)
-    -- Force vehicle exit:
     execute_command('vexit ' .. id)
 
     -- only set these once
@@ -172,22 +170,33 @@ local function apply_speed_boost(player_id, spoil)
     return true
 end
 
-local function apply_health(player_id, spoil)
-    local levels = spoil.health[math.random(#spoil.health)]
-    local health = levels[math.random(#levels)]
-    execute_command("hp " .. player_id .. " " .. health)
+local function apply_camouflage(player_id, spoil)
+    local duration = spoil.camouflage[math.random(#spoil.camouflage)]
+    player_effects[player_id] = player_effects[player_id] or {}
+    insert(player_effects[player_id], { effect = "camouflage", expires = clock() + duration })
+    execute_command("camo " .. player_id .. " " .. duration)
+    CFG:send(player_id, "Received camouflage for %d seconds!", duration)
+    return true
+end
+
+local function apply_health_boost(_, spoil, dyn_player)
+    local health = spoil.health[math.random(#spoil.health)]
+    local current_health = read_float(dyn_player + 0xE0)
+    write_float(dyn_player + 0xE0, current_health + health)
     CFG:send(player_id, "Received %dX health!", health)
     return true
 end
 
 local function apply_grenades(player_id, spoil)
-    local grenade_count = spoil.grenades[math.random(#spoil.grenades)]
-    execute_command('nades ' .. player_id .. ' ' .. grenade_count[1] .. ' 1')
-    execute_command('nades ' .. player_id .. ' ' .. grenade_count[2] .. ' 2')
+    local frags, plasmas = spoil.grenades[1], spoil.grenades[2]
+    execute_command('nades ' .. player_id .. ' ' .. frags .. ' 1')
+    execute_command('nades ' .. player_id .. ' ' .. plasmas .. ' 2')
+    CFG:send(player_id, "Received %dX frags, %dX plasmas!", frags, plasmas)
+    return true
 end
 
 local function spawn_crate(loc_idx)
-    -- todo: spawn crates at random locations
+    -- todo: spawn crates more dynamically
     local loc = CFG.crates.locations[loc_idx]
     if not loc then return end
     local height_offset = 0.3
@@ -233,7 +242,8 @@ local spoil_handlers = {
     multipliers = apply_speed_boost,
     overshield = apply_full_overshield,
     grenades = apply_grenades,
-    health_boost = apply_health,
+    health = apply_health_boost,
+    camouflage = apply_camouflage
 }
 
 -- Crate spoil management
@@ -257,6 +267,9 @@ local function update_effects()
                 if eff.effect == "speed" then
                     execute_command("s " .. player_id .. " 1.0")
                     CFG:send(player_id, "Speed boost ended")
+                elseif eff.effect == "camouflage" then
+                    execute_command("camo " .. player_id .. " 0")
+                    CFG:send(player_id, "Camouflage ended")
                 end
                 remove(effects, i)
             end
@@ -330,7 +343,6 @@ end
 
 function OnStart()
     if get_var(0, '$gt') == 'n/a' then return end
-    map_name = get_var(0, '$map')
     if CFG:loadFiles() then
         initializeBoundary()
         game_start_time = clock()
@@ -370,8 +382,10 @@ function OnDeath(victim, killer)
     local player = players[victim]
     if killer == 0 or killer == victim or not player then return end
 
+    player_effects[victim] = nil
     if player.lives <= 0 then
         player.spectator = true
+        player.spectator_once = true
         return
     end
     player.lives = player.lives - 1
@@ -434,9 +448,9 @@ function OnTick()
             active_crates[crate_id] = nil
             local loc_idx = crate_data.loc_idx
             if not respawn_timers[loc_idx] then
-                respawn_timers[loc_idx] = now + CFG:get_crate_respawn_time()
-                CFG:debug_print("Crate at location #%d despawned naturally. Respawning in %d seconds.", loc_idx,
-                    respawn_delay)
+                local respawn_delay = CFG:get_crate_respawn_time()
+                respawn_timers[loc_idx] = now + respawn_delay
+                CFG:debug_print("Crate at location #%d despawned naturally. Respawning in %d seconds.", loc_idx, respawn_delay)
             end
         end
     end

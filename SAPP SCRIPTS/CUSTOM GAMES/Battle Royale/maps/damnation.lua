@@ -39,11 +39,11 @@ local CFG = {
             },
             { -- GRENADES {frags, plasmas}
                 enabled = true,
-                count = { 3, 3 }, -- balanced to prevent overspam indoors
+                grenades = { 3, 3 }, -- balanced to prevent overspam indoors
             },
-            { -- CAMOFLAGE
+            { -- CAMOUFLAGE
                 enabled = true,
-                durations = { 25, 40, 55, 70, 85 }, -- shorter for fast corridor fights
+                camouflage = { 25, 40, 55, 70, 85 }, -- shorter for fast corridor fights
             },
             { -- FULL OVERSHIELD (multiplier)
                 enabled = true,
@@ -51,7 +51,7 @@ local CFG = {
             },
             { -- HEALTH BOOST (picks a random multiplier)
                 enabled = true,
-                levels = { 1.25, 1.35, 1.45 }, -- slightly lighter to balance rapid indoor duels
+                health = { 1.25, 1.35, 1.45 }, -- slightly lighter to balance rapid indoor duels
             }
         }
     }

@@ -39,11 +39,11 @@ local CFG = {
             },
             { -- GRENADES {frags, plasmas}
                 enabled = true,
-                count = { 3, 3 }, -- enough for close-quarters skirmishes
+                grenades = { 3, 3 }, -- enough for close-quarters skirmishes
             },
-            { -- CAMOFLAGE
+            { -- CAMOUFLAGE
                 enabled = true,
-                durations = { 30, 45, 60, 75, 90 }, -- short enough to stay tactical indoors
+                camouflage = { 30, 45, 60, 75, 90 }, -- short enough to stay tactical indoors
             },
             { -- FULL OVERSHIELD (multiplier)
                 enabled = true,
@@ -51,7 +51,7 @@ local CFG = {
             },
             { -- HEALTH BOOST (picks a random multiplier)
                 enabled = true,
-                levels = { 1.3, 1.4, 1.5 }, -- supports survival in tight trades
+                health = { 1.3, 1.4, 1.5 }, -- supports survival in tight trades
             }
         }
     }

@@ -39,11 +39,11 @@ local CFG = {
             },
             {                                                                             -- GRENADES {frags, plasmas}
                 enabled = true,
-                count = { 4, 4 },                                                         -- enough to contest bases without overspamming
+                grenades = { 4, 4 },                                                         -- enough to contest bases without overspamming
             },
-            {                                                                             -- CAMOFLAGE
+            {                                                                             -- CAMOUFLAGE
                 enabled = true,
-                durations = { 40, 55, 70, 85, 100, 115, 130 },                            -- longer for mid-field flanking and sniping
+                camouflage = { 40, 55, 70, 85, 100, 115, 130 },                            -- longer for mid-field flanking and sniping
             },
             {                                                                             -- FULL OVERSHIELD (multiplier)
                 enabled = true,
@@ -51,7 +51,7 @@ local CFG = {
             },
             {                                        -- HEALTH BOOST
                 enabled = true,
-                levels = { 1.25, 1.35, 1.45, 1.55 }, -- slightly higher to survive open battles
+                health = { 1.25, 1.35, 1.45, 1.55 }, -- slightly higher to survive open battles
             }
         }
     }

@@ -39,11 +39,11 @@ local CFG = {
             },
             { -- GRENADES {frags, plasmas}
                 enabled = true,
-                count = { 3, 3 }, -- moderate, balanced for indoor and outdoor fights
+                grenades = { 3, 3 }, -- moderate, balanced for indoor and outdoor fights
             },
-            { -- CAMOFLAGE
+            { -- CAMOUFLAGE
                 enabled = true,
-                durations = { 30, 45, 60, 75, 90 }, -- shorter for faster combat pace
+                camouflage = { 30, 45, 60, 75, 90 }, -- shorter for faster combat pace
             },
             { -- FULL OVERSHIELD (multiplier)
                 enabled = true,
@@ -51,7 +51,7 @@ local CFG = {
             },
             { -- HEALTH BOOST (picks a random multiplier)
                 enabled = true,
-                levels = { 1.25, 1.35, 1.45 }, -- balanced for indoor and outdoor survival
+                health = { 1.25, 1.35, 1.45 }, -- balanced for indoor and outdoor survival
             }
         }
     }

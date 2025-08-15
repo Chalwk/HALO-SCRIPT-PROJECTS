@@ -39,11 +39,11 @@ local CFG = {
             },
             { -- GRENADES {frags, plasmas}
                 enabled = true,
-                count = { 4, 4 },
+                grenades = { 4, 4 },
             },
-            { -- CAMOFLAGE {duration}
+            { -- CAMOUFLAGE {duration}
                 enabled = true,
-                durations = { 25, 40, 55, 70, 85 },
+                camouflage = { 25, 40, 55, 70, 85 },
             },
             { -- FULL OVERSHIELD (multiplier)
                 enabled = true,
@@ -51,7 +51,7 @@ local CFG = {
             },
             { -- HEALTH BOOST (multiplier)
                 enabled = true,
-                levels = { 1.25, 1.35, 1.45 },
+                health = { 1.25, 1.35, 1.45 },
             }
         }
     }
