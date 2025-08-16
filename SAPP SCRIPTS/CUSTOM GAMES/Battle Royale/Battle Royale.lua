@@ -9,7 +9,7 @@
 --                   - Loot crates
 --
 --                   Coming soon:
---                   - Sky spawning system (at beginning of the game
+--                   - Sky spawning system (at beginning of the game)
 --                   - Game start countdown
 --
 --
