@@ -7,9 +7,7 @@
 --
 --                   Additional features:
 --                   - Loot crates
---
---                   Coming soon:
---                   - Sky spawning system (at beginning of the game)
+--                   - Sky spawning system
 --
 --
 -- AUTHOR:           Chalwk (Jericho Crosby)
@@ -34,40 +32,49 @@ local CFG = {
 api_version = '1.12.0.0'
 
 -- Localized frequently used functions and variables
+
 local remove = table.remove
-local floor, min, max, random, ceil = math.floor, math.min, math.max, math.random, math.ceil
-local format, clock = string.format, os.clock
+local pairs = pairs
+
+local floor, ceil, min, max, random = math.floor, math.ceil, math.min, math.max, math.random
+
+local format = string.format
+local clock = os.clock
+
 local get_dynamic_player, get_object_memory = get_dynamic_player, get_object_memory
-local read_float, write_float, write_bit = read_float, write_float, write_bit
+local read_byte, read_float = read_byte, read_float
+local write_float, write_bit = write_float, write_bit
+
 local player_present = player_present
 local execute_command = execute_command
 local spawn_object = spawn_object
-local pairs = pairs
 
--- Runtime variables
-local players, active_crates, respawn_timers, enabled_spoils = {}, {}, {}, {}
-local crate_meta_id
 local game_active = false
-local bonus_period = false
-local bonus_end_time = 0
-local current_radius = 0
 local game_start_time = 0
 local total_game_time = 0
-local expected_reductions = 0
-local last_public_message = 0
-local damage_per_interval = 0
-local reductions_remaining = 0
 
--- Countdown variables
+local bonus_period = false
+local bonus_end_time = 0
+
+local players = {}
+local crate_meta_id
+local active_crates = {}
+local enabled_spoils = {}
+local respawn_timers = {}
+
+local current_radius = 0
+local expected_reductions = 0
+local reductions_remaining = 0
+local damage_per_interval = 0
+local last_public_message = 0
+
 local countdown_state = "inactive" -- "inactive", "running", "paused"
 local countdown_end_time = nil
 local countdown_remaining = CFG.START_DELAY
 
--- Precomputed values
 local DAMAGE_INTERVAL_MS = CFG.DAMAGE_INTERVAL * 1000
 local WARNING_INTERVAL_MS = CFG.WARNING_INTERVAL * 1000
 
--- Callback management
 local function registerCallbacks()
     register_callback(cb["EVENT_DIE"], "OnDeath")
     register_callback(cb["EVENT_TICK"], "OnTick")
@@ -88,7 +95,6 @@ local function unregisterCallbacks()
     unregister_callback(cb["EVENT_PRESPAWN"])
 end
 
--- Countdown functions
 local function getPlayerCount()
     local count = 0
     for i = 1, 16 do
@@ -130,7 +136,6 @@ local function initializeBoundary()
     total_game_time = CFG.safe_zone.game_time
     damage_per_interval = CFG.safe_zone.damage_per_second * CFG.DAMAGE_INTERVAL
 
-    -- Precompute shrink values
     CFG.safe_zone.reduction_amount = (CFG.safe_zone.max_size - CFG.safe_zone.min_size) / expected_reductions
     CFG.safe_zone.reduction_rate = total_game_time / expected_reductions
 
@@ -185,7 +190,6 @@ local function spectate(player, px, py, pz)
     end
 end
 
--- Player damage handler
 local function hurtPlayer(player_id, dyn_player)
     local health = read_float(dyn_player + 0xE0)
     if health <= damage_per_interval then
@@ -221,9 +225,6 @@ local function initCrates()
         error("ERROR: Invalid object tag: " .. class .. " " .. name, 10)
     end
 
-    -- Set defaults if min/max not defined
-    crates.min_crates = crates.min_crates or 1
-    crates.max_crates = crates.max_crates or #crates.locations
     crates.max_crates = min(max(crates.min_crates, crates.max_crates), #crates.locations)
 
     for i = 1, #crates.spoils do
@@ -281,6 +282,23 @@ local function update_effects()
     end
 end
 
+local function resetCountdown()
+    countdown_state = "inactive"
+    countdown_end_time = nil
+    countdown_remaining = CFG.START_DELAY
+end
+
+local function startGame()
+    execute_command("sv_map_reset")
+    initializeBoundary()
+    initCrates()
+    game_start_time = clock()
+    game_active = true
+    bonus_period = false
+    CFG:send(nil, "A new game of Battle Royale has started!")
+    setSpawns()
+end
+
 local function safeLoadFile(path)
     local chunk, load_err = loadfile(path)
     if not chunk then
@@ -326,23 +344,6 @@ end
 function OnScriptLoad()
     register_callback(cb["EVENT_GAME_START"], "OnStart")
     OnStart()
-end
-
-local function resetCountdown()
-    countdown_state = "inactive"
-    countdown_end_time = nil
-    countdown_remaining = CFG.START_DELAY
-end
-
-local function startGame()
-    execute_command("sv_map_reset")
-    initializeBoundary()
-    initCrates()
-    game_start_time = clock()
-    game_active = true
-    bonus_period = false
-    CFG:send(nil, "A new game of Battle Royale has started!")
-    setSpawns()
 end
 
 function OnStart()
