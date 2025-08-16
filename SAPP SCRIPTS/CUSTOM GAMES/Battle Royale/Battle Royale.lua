@@ -27,7 +27,7 @@ local CFG = {
     WARNING_INTERVAL = 2.0,   -- Warn players every 2 seconds while outside boundary
     MIN_PLAYERS = 1,          -- Minimum number of players required to start the game | For a future update
     START_DELAY = 5,          -- Delay (in seconds) before starting the game | For a future update
-    DEBUG = true,             -- Enable debug messages
+    DEBUG = false,            -- Enable debug messages
 }
 -- ========== Config End ============
 
@@ -35,7 +35,7 @@ api_version = '1.12.0.0'
 
 -- Localized frequently used functions and variables
 local remove = table.remove
-local floor, max, random, ceil = math.floor, math.max, math.random, math.ceil
+local floor, min, max, random, ceil = math.floor, math.min, math.max, math.random, math.ceil
 local format, clock = string.format, os.clock
 local get_dynamic_player, get_object_memory = get_dynamic_player, get_object_memory
 local read_float, write_float, write_bit = read_float, write_float, write_bit
@@ -74,6 +74,8 @@ local function registerCallbacks()
     register_callback(cb["EVENT_JOIN"], "OnJoin")
     register_callback(cb["EVENT_LEAVE"], "OnQuit")
     register_callback(cb["EVENT_GAME_END"], "OnEnd")
+    register_callback(cb["EVENT_SPAWN"], "OnSpawn")
+    register_callback(cb["EVENT_PRESPAWN"], "OnPreSpawn")
 end
 
 local function unregisterCallbacks()
@@ -82,6 +84,8 @@ local function unregisterCallbacks()
     unregister_callback(cb["EVENT_JOIN"])
     unregister_callback(cb["EVENT_LEAVE"])
     unregister_callback(cb["EVENT_GAME_END"])
+    unregister_callback(cb["EVENT_SPAWN"])
+    unregister_callback(cb["EVENT_PRESPAWN"])
 end
 
 -- Countdown functions
@@ -133,27 +137,51 @@ local function initializeBoundary()
     last_public_message = clock()
 end
 
-local function spectate(id, dyn_player, px, py, pz)
-    local player = get_player(id) -- static memory address (not dyn_player)
+local function setSpawns()
+    local locations = CFG:get_sky_spawns()
+    if (#locations == 0 or #locations < 16) then
+        cprint('Not enough sky-spawn points configured (16+ required)')
+        return
+    end
 
-    if (player or not player.spectator) then return end
+    local loops = 0
+    for _, v in pairs(players) do
+        local point = CFG.get_random_sky_spawn_point(locations)
+        while (point.used) do
+            loops = loops + 1
+            point = CFG.get_random_sky_spawn_point(locations)
+            if (loops == 500) then -- just in case
+                cprint('Unable to find spawn point!')
+                return
+            end
+        end
+        point.used = true
+        v.sky_spawn_location = point
+        v.teleport = true
+    end
+end
 
-    write_float(player + 0xF8, px - 1000)  -- player x (x,y,z different from read_vector3d)
-    write_float(player + 0xFC, py - 1000)  -- player y
-    write_float(player + 0x100, pz - 1000) -- player z
+local function spectate(player, px, py, pz)
+    local static_player = get_player(player.id) -- static memory address (not dyn_player)
 
-    execute_command('wdrop ' .. id)
-    execute_command('vexit ' .. id)
+    if not static_player or not player.spectator then return end
+
+    write_float(static_player + 0xF8, px - 1000)  -- player x (x,y,z different from read_vector3d)
+    write_float(static_player + 0xFC, py - 1000)  -- player y
+    write_float(static_player + 0x100, pz - 1000) -- player z
+
+    execute_command('wdrop ' .. player.id)
+    execute_command('vexit ' .. player.id)
 
     -- only set these once
-    if not players[id].spectator_once then
+    if not players[player.id].spectator_once then
         -- Force into camoflauge:
-        execute_command('camo ' .. id .. ' 1')
+        execute_command('camo ' .. player.id .. ' 1')
         -- Force into god mode:
-        execute_command('god ' .. id)
+        execute_command('god ' .. player.id)
 
-        write_bit(dyn_player + 0x10, 0, 1)   -- uncollidable/invulnerable
-        write_bit(dyn_player + 0x106, 11, 1) -- undamageable except for shields w explosions
+        write_bit(player.dyn_player + 0x10, 0, 1)   -- uncollidable/invulnerable
+        write_bit(player.dyn_player + 0x106, 11, 1) -- undamageable except for shields w explosions
     end
 end
 
@@ -180,8 +208,6 @@ local function spawn_crate(loc_idx)
     return false
 end
 
--- Crate management
--- In the main script, modify the initCrates function:
 local function initCrates()
     active_crates = {}
     respawn_timers = {}
@@ -198,7 +224,7 @@ local function initCrates()
     -- Set defaults if min/max not defined
     crates.min_crates = crates.min_crates or 1
     crates.max_crates = crates.max_crates or #crates.locations
-    crates.max_crates = math.min(math.max(crates.min_crates, crates.max_crates), #crates.locations)
+    crates.max_crates = min(max(crates.min_crates, crates.max_crates), #crates.locations)
 
     for i = 1, #crates.spoils do
         local spoil = crates.spoils[i]
@@ -211,12 +237,10 @@ local function initCrates()
 
     execute_command('disable_object ' .. '"' .. tag[2] .. '"')
 
-    -- Spawn random number of crates at random locations
     local num_to_spawn = random(crates.min_crates, crates.max_crates)
     local indices = {}
     for i = 1, #crates.locations do indices[i] = i end
 
-    -- Shuffle indices
     for i = #indices, 2, -1 do
         local j = random(i)
         indices[i], indices[j] = indices[j], indices[i]
@@ -227,7 +251,6 @@ local function initCrates()
     end
 end
 
--- Crate spoil management
 local function open_crate(player)
     local spoil = enabled_spoils[random(#enabled_spoils)]
     for k in pairs(spoil) do
@@ -238,7 +261,6 @@ local function open_crate(player)
     return false
 end
 
--- Crate Effect management
 local function update_effects()
     local current_time = clock()
     for player_id, effects in pairs(CFG.player_effects) do
@@ -320,6 +342,7 @@ local function startGame()
     game_active = true
     bonus_period = false
     CFG:send(nil, "A new game of Battle Royale has started!")
+    setSpawns()
 end
 
 function OnStart()
@@ -358,6 +381,24 @@ function OnJoin(id)
     updateCountdown()
 end
 
+function OnPreSpawn(id)
+    local player = players[id]
+    if not player or not player.teleport then return end
+
+    local dyn_player = get_dynamic_player(id)
+    if dyn_player == 0 then return end
+
+    CFG.teleport(player, dyn_player)
+end
+
+function OnSpawn(id)
+    local player = players[id]
+    if not player or not player.teleport then return end
+
+    player.teleport = nil
+    execute_command('god ' .. id)
+end
+
 function OnQuit(id)
     players[id] = nil
     updateCountdown()
@@ -369,7 +410,6 @@ function OnDeath(victim, killer)
 
     local player = players[victim]
     if killer == 0 or killer == victim or not player then return end
-
     if CFG.player_effects and victim then CFG.player_effects[victim] = nil end
 
     if player.lives <= 0 then
@@ -471,21 +511,35 @@ function OnTick()
     for i = 1, 16 do
         if CFG.validate_player(i) then
             local dyn_player = get_dynamic_player(i)
-            if not dyn_player then goto continue end
+            if dyn_player == 0 then goto continue end
 
             local x, y, z, in_vehicle = CFG.get_player_position(dyn_player)
             if not x then goto continue end
 
             local player = players[i]
+            player.dyn_player = dyn_player
+
+            ---------------------
+            -- Sky spawn logic
+            ---------------------
+            local sky = player.sky_spawn_location
+            if sky then
+                local state = read_byte(dyn_player + 0x2A3)
+                if state == 21 or state == 22 then -- landed
+                    player.sky_spawn_location = nil
+                    execute_command('ungod ' .. i)
+                    write_word(dyn_player + 0x104, 0)  -- force shield to regenerate immediately
+                    write_float(dyn_player + 0x424, 0) -- stun
+                end
+            end
 
             ---------------------
             -- Spectator logic
             ---------------------
             if player.spectator then
-                spectate(i, dyn_player, x, y, z)
+                spectate(player, x, y, z)
                 goto continue
             end
-            player.dyn_player = dyn_player
 
             --------------------------------
             -- CRATE MANAGEMENT
