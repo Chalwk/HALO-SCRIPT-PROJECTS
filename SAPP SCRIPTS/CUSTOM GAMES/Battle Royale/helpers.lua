@@ -115,4 +115,10 @@ function HELPERS.teleport(player, dyn_player)
     write_vector3d(dyn_player + 0x74, cos(r), sin(r), 0)
 end
 
+function HELPERS:lock_server()
+    if self.LOCK_SERVER then
+        execute_command('sv_password "' .. self.PASSWORD .. '"')
+    end
+end
+
 return HELPERS

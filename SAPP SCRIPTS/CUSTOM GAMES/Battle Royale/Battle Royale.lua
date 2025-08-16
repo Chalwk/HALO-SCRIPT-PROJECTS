@@ -20,12 +20,15 @@
 
 -- ========== Config Start ==========
 local CFG = {
-    MSG_PREFIX = "**SAPP** ", -- SAPP msg_prefix
-    DAMAGE_INTERVAL = 0.2,    -- Apply damage every 0.2 seconds (5x/sec) while outside boundary
-    WARNING_INTERVAL = 2.0,   -- Warn players every 2 seconds while outside boundary
-    MIN_PLAYERS = 1,          -- Minimum number of players required to start the game | For a future update
-    START_DELAY = 5,          -- Delay (in seconds) before starting the game | For a future update
-    DEBUG = false,            -- Enable debug messages
+    MSG_PREFIX = "**SAPP** ",    -- SAPP msg_prefix
+    DAMAGE_INTERVAL = 0.2,       -- Apply damage every 0.2 seconds (5x/sec) while outside boundary
+    WARNING_INTERVAL = 2.0,      -- Warn players every 2 seconds while outside boundary
+    MIN_PLAYERS = 1,             -- Minimum number of players required to start the game | For a future update
+    START_DELAY = 5,             -- Delay (in seconds) before starting the game | For a future update
+    LOCK_SERVER = false,         -- Lock server on game start
+    PASSWORD = "password",       -- Server password (if LOCK_SERVER is true)
+    NEW_PLAYER_SPECTATE = true,  -- Spectate new players (if LOCK_SERVER is false)
+    DEBUG = false,               -- Enable debug messages
 }
 -- ========== Config End ============
 
@@ -106,7 +109,12 @@ local function getPlayerCount()
     return count
 end
 
-local function updateCountdown()
+local function setSpectator(player)
+    player.spectator = true
+    player.spectator_once = true
+end
+
+local function updateCountdown(player)
     local current_players = getPlayerCount()
     if current_players >= CFG.MIN_PLAYERS then
         if countdown_state == "inactive" then
@@ -126,6 +134,10 @@ local function updateCountdown()
             local missing = CFG.MIN_PLAYERS - current_players
             CFG:send(nil, "Countdown paused, waiting for %d more player%s to start.", missing, missing == 1 and "" or "s")
         end
+    end
+
+    if player and CFG.NEW_PLAYER_SPECTATE and game_active then
+        setSpectator(player)
     end
 end
 
@@ -161,9 +173,7 @@ local function setSpawns()
                 return
             end
         end
-        point.used = true
-        v.sky_spawn_location = point
-        v.teleport = true
+        point.used = true; v.sky_spawn_location = point; v.teleport = true
     end
 end
 
@@ -215,8 +225,7 @@ local function spawn_crate(loc_idx)
 end
 
 local function initCrates()
-    active_crates = {}
-    respawn_timers = {}
+    active_crates = {}; respawn_timers = {}
 
     local crates = CFG.crates
     local tag = crates.crate_tag
@@ -292,12 +301,10 @@ end
 
 local function startGame()
     execute_command("sv_map_reset")
-    initializeBoundary()
-    initCrates()
+    initializeBoundary(); initCrates()
     game_start_time = clock()
-    game_active = true
-    bonus_period = false
-    CFG:send(nil, "A new game of Battle Royale has started!")
+    game_active = true; bonus_period = false
+    CFG:send(nil, "Battle Royale has started - good luck!")
     setSpawns()
 end
 
@@ -365,8 +372,7 @@ end
 
 function OnEnd()
     CFG.player_effects = {}
-    game_active = false
-    bonus_period = false
+    game_active = false; bonus_period = false
     resetCountdown()
 end
 
@@ -377,7 +383,7 @@ function OnJoin(id)
         last_damage = 0,
         last_warning = 0
     }
-    updateCountdown()
+    updateCountdown(players[id])
 end
 
 function OnPreSpawn(id)
@@ -395,7 +401,7 @@ function OnSpawn(id)
     if not player or not player.teleport then return end
 
     player.teleport = nil
-    execute_command('god ' .. id)
+    execute_command_sequence('god ' .. id .. ';wdel ' .. id)
 end
 
 function OnQuit(id)
@@ -404,19 +410,40 @@ function OnQuit(id)
 end
 
 function OnDeath(victim, killer)
-    victim = tonumber(victim)
-    killer = tonumber(killer)
+    victim = tonumber(victim); killer = tonumber(killer)
 
     local player = players[victim]
     if killer == 0 or killer == victim or not player then return end
     if CFG.player_effects and victim then CFG.player_effects[victim] = nil end
 
     if player.lives <= 0 then
-        player.spectator = true
-        player.spectator_once = true
+        setSpectator(player)
         return
     end
     player.lives = player.lives - 1
+end
+
+local function getWinner()
+    local winner = nil
+    local survivors = 0
+
+    for i = 1, #players do
+        local player = players[i]
+        if player.lives > 0 then
+            survivors = survivors + 1; winner = player
+            if survivors > 1 then
+                return false
+            end
+        end
+    end
+
+    if survivors == 1 then
+        execute_command("sv_map_next")
+        CFG:send(nil, "[VICTORY] %s has won the game!", winner.name)
+        return true
+    end
+
+    return false
 end
 
 function OnTick()
@@ -440,6 +467,8 @@ function OnTick()
         return
     end
 
+    -- todo: enable this after testing
+    --if getWinner() then return end
     update_effects()
 
     local now = clock()
