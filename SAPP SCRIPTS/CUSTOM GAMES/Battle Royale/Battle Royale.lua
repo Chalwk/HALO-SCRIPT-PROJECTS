@@ -32,7 +32,6 @@ local CFG = {
 api_version = '1.12.0.0'
 
 -- Localized frequently used functions and variables
-
 local remove = table.remove
 local pairs = pairs
 
@@ -74,6 +73,8 @@ local countdown_remaining = CFG.START_DELAY
 
 local DAMAGE_INTERVAL_MS = CFG.DAMAGE_INTERVAL * 1000
 local WARNING_INTERVAL_MS = CFG.WARNING_INTERVAL * 1000
+
+local reduction_amount, reduction_rate
 
 local function registerCallbacks()
     register_callback(cb["EVENT_DIE"], "OnDeath")
@@ -128,16 +129,16 @@ local function updateCountdown()
     end
 end
 
--- Initialize game boundary
 local function initializeBoundary()
-    current_radius = CFG.safe_zone.max_size
-    expected_reductions = CFG.safe_zone.shrink_steps
+    local zone = CFG.safe_zone
+    current_radius = zone.max_size
+    expected_reductions = zone.shrink_steps
     reductions_remaining = expected_reductions
-    total_game_time = CFG.safe_zone.game_time
-    damage_per_interval = CFG.safe_zone.damage_per_second * CFG.DAMAGE_INTERVAL
+    total_game_time = zone.game_time
+    damage_per_interval = zone.damage_per_second * CFG.DAMAGE_INTERVAL
 
-    CFG.safe_zone.reduction_amount = (CFG.safe_zone.max_size - CFG.safe_zone.min_size) / expected_reductions
-    CFG.safe_zone.reduction_rate = total_game_time / expected_reductions
+    reduction_amount = (zone.max_size - zone.min_size) / expected_reductions
+    reduction_rate = total_game_time / expected_reductions
 
     last_public_message = clock()
 end
@@ -169,7 +170,7 @@ end
 local function spectate(player, px, py, pz)
     local static_player = get_player(player.id) -- static memory address (not dyn_player)
 
-    if not static_player or not player.spectator then return end
+    if not static_player then return end
 
     write_float(static_player + 0xF8, px - 1000)  -- player x (x,y,z different from read_vector3d)
     write_float(static_player + 0xFC, py - 1000)  -- player y
@@ -179,7 +180,8 @@ local function spectate(player, px, py, pz)
     execute_command('vexit ' .. player.id)
 
     -- only set these once
-    if not players[player.id].spectator_once then
+    if player.spectator_once then
+        player.spectator_once = nil
         -- Force into camoflauge:
         execute_command('camo ' .. player.id .. ' 1')
         -- Force into god mode:
@@ -330,9 +332,7 @@ function CFG:loadFiles()
         end
 
         -- Merge loaded table into CFG
-        for k, v in pairs(loaded) do
-            self[k] = v
-        end
+        for k, v in pairs(loaded) do self[k] = v end
     end
 
     math.randomseed(clock())
@@ -375,9 +375,7 @@ function OnJoin(id)
         id = id,
         lives = CFG.safe_zone.max_deaths_until_spectate,
         last_damage = 0,
-        last_warning = 0,
-        spectator = false,
-        spectator_once = false,
+        last_warning = 0
     }
     updateCountdown()
 end
@@ -422,11 +420,19 @@ function OnDeath(victim, killer)
 end
 
 function OnTick()
+    -- Precompute localized references
+    local safe_zone = CFG.safe_zone
+    local center = safe_zone.center
+    local crates = CFG.crates
+    local crate_locs = crates.locations
+    local collision_radius = crates.collision_radius
+    local public_message_interval = safe_zone.public_message_interval
+
     -- Countdown logic
     if not game_active then
         if countdown_state == "running" then
-            local current_time = clock()
-            if current_time >= countdown_end_time then
+            local now = clock()
+            if now >= countdown_end_time then
                 startGame()
                 resetCountdown()
             end
@@ -442,10 +448,10 @@ function OnTick()
 
     -- Boundary shrinking logic
     if not bonus_period then
-        local reductions_done = floor(elapsed / CFG.safe_zone.reduction_rate)
+        local reductions_done = floor(elapsed / reduction_rate)
         reductions_remaining = max(expected_reductions - reductions_done, 0)
-        local new_radius = max(CFG.safe_zone.max_size - reductions_done * CFG.safe_zone.reduction_amount,
-            CFG.safe_zone.min_size)
+        local new_radius = max(safe_zone.max_size - reductions_done * reduction_amount,
+            safe_zone.min_size)
 
         if new_radius < current_radius then
             current_radius = new_radius
@@ -454,19 +460,18 @@ function OnTick()
 
         if reductions_remaining == 0 then
             bonus_period = true
-            bonus_end_time = now + CFG.safe_zone.bonus_time
-            current_radius = CFG.safe_zone.min_size
+            bonus_end_time = now + safe_zone.bonus_time
+            current_radius = safe_zone.min_size
             radius_changed = true
-
             CFG:send(nil, "Last man standing for %d seconds at %.0f world units!",
-                CFG.safe_zone.bonus_time, current_radius)
+                safe_zone.bonus_time, current_radius)
         end
     end
 
     -- Announce radius changes
     if radius_changed then
         CFG:send(nil, "Radius shrunk to %.0f | Shrinks left: %d | Min radius: %.0f",
-            current_radius, reductions_remaining, CFG.safe_zone.min_size)
+            current_radius, reductions_remaining, safe_zone.min_size)
     end
 
     -- Precompute values for boundary checks
@@ -480,7 +485,7 @@ function OnTick()
     -- Handle crate respawns
     for loc_idx, respawn_time in pairs(respawn_timers) do
         if now >= respawn_time then
-            if active_crate_count < CFG.crates.max_crates then
+            if active_crate_count < crates.max_crates then
                 if spawn_crate(loc_idx) then
                     respawn_timers[loc_idx] = nil
                     active_crate_count = active_crate_count + 1
@@ -493,7 +498,6 @@ function OnTick()
     end
 
     -- Detect naturally despawned crates
-    local crate_locs = CFG.crates.locations
     for crate_id, crate_data in pairs(active_crates) do
         local crate = get_object_memory(crate_id)
         if crate == 0 then
@@ -511,13 +515,14 @@ function OnTick()
     -- Player processing
     for i = 1, 16 do
         if CFG.validate_player(i) then
+            local player = players[i]
+            if not player then goto continue end
+
             local dyn_player = get_dynamic_player(i)
             if dyn_player == 0 then goto continue end
 
             local x, y, z, in_vehicle = CFG.get_player_position(dyn_player)
             if not x then goto continue end
-
-            local player = players[i]
             player.dyn_player = dyn_player
 
             ---------------------
@@ -554,7 +559,7 @@ function OnTick()
                     active_crates[crate_id] = nil; goto next_crate
                 end
                 local loc = crate_locs[crate_data.loc_idx]
-                if CFG.distance_squared(x, y, z, loc[1], loc[2], loc[3], CFG.crates.collision_radius) then
+                if CFG.distance_squared(x, y, z, loc[1], loc[2], loc[3], collision_radius) then
                     if not open_crate(player) then goto next_crate end
                     active_crates[crate_id] = nil
                     respawn_timers[crate_data.loc_idx] = now + CFG:get_crate_respawn_time()
@@ -569,7 +574,6 @@ function OnTick()
             ------------------------------------------------
             -- PLAYABLE BOUNDARY (safe zone) CHECK
             ------------------------------------------------
-            local center = CFG.safe_zone.center
             local inside = CFG.distance_squared(x, y, z, center.x, center.y, center.z, radius_sq)
             if not inside then
                 if current_time_ms - player.last_damage >= DAMAGE_INTERVAL_MS then
@@ -582,7 +586,7 @@ function OnTick()
                 end
             end
 
-            if now - last_public_message >= CFG.safe_zone.public_message_interval then
+            if now - last_public_message >= public_message_interval then
                 local status
                 if bonus_period then
                     status = format("BONUS TIME: %s | Radius: %.0f",
@@ -601,7 +605,7 @@ function OnTick()
     end
 
     -- Update public message timer
-    if now - last_public_message >= CFG.safe_zone.public_message_interval then
+    if now - last_public_message >= public_message_interval then
         last_public_message = now
     end
 

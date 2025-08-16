@@ -95,11 +95,6 @@ function spoils.health_boosts(player, spoil, CFG)
     local bonus = spoil.health_boosts[random(#spoil.health_boosts)]
     local current = read_float(player.dyn_player + 0xE0)
 
-    if not current then
-        CFG:send(player.id, "Failed to read health!")
-        return false
-    end
-
     write_float(player.dyn_player + 0xE0, current + bonus)
     CFG:send(player.id, "Received +%.2f health!", bonus)
     return true
