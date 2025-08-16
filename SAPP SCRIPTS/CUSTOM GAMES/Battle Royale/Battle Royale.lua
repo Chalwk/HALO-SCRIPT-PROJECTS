@@ -8,6 +8,10 @@
 --                   Additional features:
 --                   - Loot crates
 --
+--                   Coming soon:
+--                   - Sky spawning system (at beginning of the game
+--                   - Game start countdown
+--
 --
 -- AUTHOR:           Chalwk (Jericho Crosby)
 -- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
@@ -22,10 +26,12 @@
 --===========================
 
 local CFG = {
-    MSG_PREFIX = "SAPP",           -- SAPP msg_prefix
-    DAMAGE_INTERVAL = 0.2,         -- Apply damage every 0.2 seconds (5x/sec) while outside boundary
-    WARNING_INTERVAL = 2.0,        -- Warn players every 2 seconds while outside boundary
-    DEBUG = true,                  -- Enable debug messages
+    MSG_PREFIX = "SAPP",    -- SAPP msg_prefix
+    DAMAGE_INTERVAL = 0.2,  -- Apply damage every 0.2 seconds (5x/sec) while outside boundary
+    WARNING_INTERVAL = 2.0, -- Warn players every 2 seconds while outside boundary
+    MIN_PLAYERS = 5,        -- Minimum number of players required to start the game | For a future update
+    START_DELAY = 5,        -- Delay (in seconds) before starting the game | For a future update
+    DEBUG = true,           -- Enable debug messages
 }
 
 -- CONFIG END ---------------------------------------------------------------------------
