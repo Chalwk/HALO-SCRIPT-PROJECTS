@@ -1,4 +1,4 @@
-local CFG = {
+local MAP = {
     safe_zone = {
         center = { x = 0.477, y = 55.331, z = 0.239 },
         min_size = 20,
@@ -69,13 +69,15 @@ local CFG = {
             { -7.125,  53.230, 0.917 },
         },
         spoils = {
-            { -- BONUS LIVES
+            {
+                -- Extra lives
                 enabled = true,
-                lives = 1,
+                bonus_lives = 1
             },
-            { -- RANDOM WEAPON [label] = tag name
+            {
+                -- Random weapon rewards: [label] = tag path
                 enabled = true,
-                weapons = {
+                random_weapons = {
                     ['Plasma Pistol'] = 'weapons\\plasma pistol\\plasma pistol',
                     ['Plasma Rifle'] = 'weapons\\plasma rifle\\plasma rifle',
                     ['Assault Rifle'] = 'weapons\\assault rifle\\assault rifle',
@@ -88,28 +90,33 @@ local CFG = {
                     ['Rocket Launcher'] = 'weapons\\rocket launcher\\rocket launcher'
                 }
             },
-            { -- SPEED BOOST {boost, duration}
+            {
+                -- Speed boosts: {multiplier, duration in seconds}
                 enabled = true,
-                multipliers = { { 1.35, 10 }, { 1.45, 15 }, { 1.55, 20 }, { 1.65, 25 } }
+                speed_boosts = { { 1.35, 10 }, { 1.45, 15 }, { 1.55, 20 }, { 1.65, 25 } }
             },
-            { -- GRENADES {frags, plasmas}
+            {
+                -- Grenade rewards: {frag_count, plasma_count}
                 enabled = true,
                 grenades = { 3, 3 }
             },
-            { -- CAMOUFLAGE {duration}
+            {
+                -- Active camouflage durations (seconds)
                 enabled = true,
                 camouflage = { 50, 65, 80, 95, 110 }
             },
-            { -- FULL OVERSHIELD (multiplier)
+            {
+                -- Overshield multipliers
                 enabled = true,
-                overshield = { 2, 3, 4, 5 }
+                overshield_boosts = { 2, 3, 4, 5 }
             },
-            { -- HEALTH BOOST (1 = full health)
+            {
+                -- Health multipliers (1 = full health)
                 enabled = true,
-                health = { 1.25, 1.35, 1.45 }
+                health_boosts = { 1.25, 1.35, 1.45 }
             }
         }
     }
 }
 
-return CFG
+return MAP

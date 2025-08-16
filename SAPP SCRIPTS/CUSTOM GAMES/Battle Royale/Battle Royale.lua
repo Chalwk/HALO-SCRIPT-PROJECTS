@@ -10,7 +10,6 @@
 --
 --                   Coming soon:
 --                   - Sky spawning system (at beginning of the game)
---                   - Game start countdown
 --
 --
 -- AUTHOR:           Chalwk (Jericho Crosby)
@@ -21,26 +20,22 @@
 --                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================--
 
---===========================
--- CONFIG START
---===========================
-
+-- ========== Config Start ==========
 local CFG = {
-    MSG_PREFIX = "SAPP",    -- SAPP msg_prefix
-    DAMAGE_INTERVAL = 0.2,  -- Apply damage every 0.2 seconds (5x/sec) while outside boundary
-    WARNING_INTERVAL = 2.0, -- Warn players every 2 seconds while outside boundary
-    MIN_PLAYERS = 5,        -- Minimum number of players required to start the game | For a future update
-    START_DELAY = 5,        -- Delay (in seconds) before starting the game | For a future update
-    DEBUG = true,           -- Enable debug messages
+    MSG_PREFIX = "**SAPP** ", -- SAPP msg_prefix
+    DAMAGE_INTERVAL = 0.2,    -- Apply damage every 0.2 seconds (5x/sec) while outside boundary
+    WARNING_INTERVAL = 2.0,   -- Warn players every 2 seconds while outside boundary
+    MIN_PLAYERS = 1,          -- Minimum number of players required to start the game | For a future update
+    START_DELAY = 5,          -- Delay (in seconds) before starting the game | For a future update
+    DEBUG = true,             -- Enable debug messages
 }
-
--- CONFIG END ---------------------------------------------------------------------------
+-- ========== Config End ============
 
 api_version = '1.12.0.0'
 
 -- Localized frequently used functions and variables
-local insert, remove = table.insert, table.remove
-local floor, max, random = math.floor, math.max, math.random
+local remove = table.remove
+local floor, max, random, ceil = math.floor, math.max, math.random, math.ceil
 local format, clock = string.format, os.clock
 local get_dynamic_player, get_object_memory = get_dynamic_player, get_object_memory
 local read_float, write_float, write_bit = read_float, write_float, write_bit
@@ -50,7 +45,7 @@ local spawn_object = spawn_object
 local pairs = pairs
 
 -- Runtime variables
-local players, active_crates, respawn_timers, player_effects, enabled_spoils = {}, {}, {}, {}, {}
+local players, active_crates, respawn_timers, enabled_spoils = {}, {}, {}, {}
 local crate_meta_id
 local game_active = false
 local bonus_period = false
@@ -63,9 +58,65 @@ local last_public_message = 0
 local damage_per_interval = 0
 local reductions_remaining = 0
 
+-- Countdown variables
+local countdown_state = "inactive" -- "inactive", "running", "paused"
+local countdown_end_time = nil
+local countdown_remaining = CFG.START_DELAY
+
 -- Precomputed values
 local DAMAGE_INTERVAL_MS = CFG.DAMAGE_INTERVAL * 1000
 local WARNING_INTERVAL_MS = CFG.WARNING_INTERVAL * 1000
+
+-- Callback management
+local function registerCallbacks()
+    register_callback(cb["EVENT_DIE"], "OnDeath")
+    register_callback(cb["EVENT_TICK"], "OnTick")
+    register_callback(cb["EVENT_JOIN"], "OnJoin")
+    register_callback(cb["EVENT_LEAVE"], "OnQuit")
+    register_callback(cb["EVENT_GAME_END"], "OnEnd")
+end
+
+local function unregisterCallbacks()
+    unregister_callback(cb["EVENT_DIE"])
+    unregister_callback(cb["EVENT_TICK"])
+    unregister_callback(cb["EVENT_JOIN"])
+    unregister_callback(cb["EVENT_LEAVE"])
+    unregister_callback(cb["EVENT_GAME_END"])
+end
+
+-- Countdown functions
+local function getPlayerCount()
+    local count = 0
+    for i = 1, 16 do
+        if player_present(i) then
+            count = count + 1
+        end
+    end
+    return count
+end
+
+local function updateCountdown()
+    local current_players = getPlayerCount()
+    if current_players >= CFG.MIN_PLAYERS then
+        if countdown_state == "inactive" then
+            countdown_state = "running"
+            countdown_end_time = clock() + countdown_remaining
+            CFG:send(nil, "%d players reached, starting in %d seconds!", CFG.MIN_PLAYERS, CFG.START_DELAY)
+        elseif countdown_state == "paused" then
+            countdown_state = "running"
+            countdown_end_time = clock() + countdown_remaining
+            CFG:send(nil, "Countdown resumed, starting in %d seconds!", ceil(countdown_remaining))
+        end
+    else
+        if countdown_state == "running" then
+            countdown_state = "paused"
+            countdown_remaining = countdown_end_time - clock()
+            countdown_end_time = nil
+            local missing = CFG.MIN_PLAYERS - current_players
+            CFG:send(nil, "Countdown paused, waiting for %d more player%s to start.", missing, missing == 1 and "" or "s")
+        end
+    end
+end
 
 -- Initialize game boundary
 local function initializeBoundary()
@@ -79,8 +130,6 @@ local function initializeBoundary()
     CFG.safe_zone.reduction_amount = (CFG.safe_zone.max_size - CFG.safe_zone.min_size) / expected_reductions
     CFG.safe_zone.reduction_rate = total_game_time / expected_reductions
 
-    game_active = true
-    bonus_period = false
     last_public_message = clock()
 end
 
@@ -116,86 +165,6 @@ local function hurtPlayer(player_id, dyn_player)
     else
         write_float(dyn_player + 0xE0, health - damage_per_interval)
     end
-end
-
--- Spoil handlers
-local function apply_bonus_life(player_id)
-    CFG:send(player_id, "Received bonus life!")
-    local player = players[player_id]
-    player.lives = player.lives + 1
-    return true
-end
-
-local function apply_full_overshield(player_id, spoil)
-    local level = spoil.overshield[random(#spoil.overshield)]
-    execute_command("sh " .. player_id .. " " .. level)
-    CFG:send(player_id, "Received %sX overshield!", level)
-    return true
-end
-
-local function apply_random_weapon(player_id, spoil, dyn_player)
-    local weapon_names = {}
-    for name, _ in pairs(spoil.weapons) do
-        insert(weapon_names, name)
-    end
-
-    local weapon_name = weapon_names[random(#weapon_names)]
-    local weapon_path = spoil.weapons[weapon_name]
-
-    local inventory = CFG.get_inventory(dyn_player)
-    if #inventory == 4 then
-        CFG.cls(player_id)
-        CFG:send(player_id, "Attempted to receive %s, but you're already full!", weapon_name)
-        return false
-    end
-
-    local meta_id = CFG.get_tag('weap', weapon_path)
-    if not meta_id then
-        CFG:send(player_id, "This crate was a dud!")
-        error("ERROR: Invalid object tag: weap " .. weapon_path, 10)
-        return false
-    end
-
-    local weapon = spawn_object('', '', 0, 0, 0, 0, meta_id)
-    assign_weapon(weapon, player_id)
-    CFG:send(player_id, "Received %s!", weapon_name)
-
-    return true
-end
-
-local function apply_speed_boost(player_id, spoil)
-    local boost = spoil.multipliers[random(#spoil.multipliers)]
-    local mult, duration = boost[1], boost[2]
-    player_effects[player_id] = player_effects[player_id] or {}
-    insert(player_effects[player_id], { effect = "speed", multiplier = mult, expires = clock() + duration })
-    execute_command("s " .. player_id .. " " .. mult)
-    CFG:send(player_id, "%.1fX speed boost for %d seconds!", mult, duration)
-    return true
-end
-
-local function apply_camouflage(player_id, spoil)
-    local duration = spoil.camouflage[random(#spoil.camouflage)]
-    player_effects[player_id] = player_effects[player_id] or {}
-    insert(player_effects[player_id], { effect = "camouflage", expires = clock() + duration })
-    execute_command("camo " .. player_id .. " " .. duration)
-    CFG:send(player_id, "Received camouflage for %d seconds!", duration)
-    return true
-end
-
-local function apply_health_boost(_, spoil, dyn_player)
-    local health = spoil.health[random(#spoil.health)]
-    local current_health = read_float(dyn_player + 0xE0)
-    write_float(dyn_player + 0xE0, current_health + health)
-    CFG:send(player_id, "Received %dX health!", health)
-    return true
-end
-
-local function apply_grenades(player_id, spoil)
-    local frags, plasmas = spoil.grenades[1], spoil.grenades[2]
-    execute_command('nades ' .. player_id .. ' ' .. frags .. ' 1')
-    execute_command('nades ' .. player_id .. ' ' .. plasmas .. ' 2')
-    CFG:send(player_id, "Received %dX frags, %dX plasmas!", frags, plasmas)
-    return true
 end
 
 local function spawn_crate(loc_idx)
@@ -258,23 +227,12 @@ local function initCrates()
     end
 end
 
--- Spoil handlers
-local spoil_handlers = {
-    lives = apply_bonus_life,
-    weapons = apply_random_weapon,
-    multipliers = apply_speed_boost,
-    overshield = apply_full_overshield,
-    grenades = apply_grenades,
-    health = apply_health_boost,
-    camouflage = apply_camouflage
-}
-
 -- Crate spoil management
-local function open_crate(player_id, dyn_player)
+local function open_crate(player)
     local spoil = enabled_spoils[random(#enabled_spoils)]
     for k in pairs(spoil) do
-        if k ~= "enabled" and spoil_handlers[k] then
-            return spoil_handlers[k](player_id, spoil, dyn_player)
+        if k ~= "enabled" then
+            return CFG[k](player, spoil, CFG)
         end
     end
     return false
@@ -283,7 +241,7 @@ end
 -- Crate Effect management
 local function update_effects()
     local current_time = clock()
-    for player_id, effects in pairs(player_effects) do
+    for player_id, effects in pairs(CFG.player_effects) do
         for i = #effects, 1, -1 do
             local eff = effects[i]
             if current_time >= eff.expires then
@@ -297,25 +255,8 @@ local function update_effects()
                 remove(effects, i)
             end
         end
-        if #effects == 0 then player_effects[player_id] = nil end
+        if #effects == 0 then CFG.player_effects[player_id] = nil end
     end
-end
-
--- Callback management
-local function registerCallbacks()
-    register_callback(cb["EVENT_DIE"], "OnDeath")
-    register_callback(cb["EVENT_TICK"], "OnTick")
-    register_callback(cb["EVENT_JOIN"], "OnJoin")
-    register_callback(cb["EVENT_LEAVE"], "OnQuit")
-    register_callback(cb["EVENT_GAME_END"], "OnEnd")
-end
-
-local function unregisterCallbacks()
-    unregister_callback(cb["EVENT_DIE"])
-    unregister_callback(cb["EVENT_TICK"])
-    unregister_callback(cb["EVENT_JOIN"])
-    unregister_callback(cb["EVENT_LEAVE"])
-    unregister_callback(cb["EVENT_GAME_END"])
 end
 
 local function safeLoadFile(path)
@@ -334,8 +275,9 @@ end
 
 function CFG:loadFiles()
     local files = {
+        './Battle Royale/maps/' .. get_var(0, "$map") .. '.lua',
         './Battle Royale/helpers.lua',
-        './Battle Royale/maps/' .. get_var(0, "$map") .. '.lua'
+        './Battle Royale/spoils.lua'
     }
 
     for i = 1, #files do
@@ -364,38 +306,61 @@ function OnScriptLoad()
     OnStart()
 end
 
+local function resetCountdown()
+    countdown_state = "inactive"
+    countdown_end_time = nil
+    countdown_remaining = CFG.START_DELAY
+end
+
+local function startGame()
+    execute_command("sv_map_reset")
+    initializeBoundary()
+    initCrates()
+    game_start_time = clock()
+    game_active = true
+    bonus_period = false
+    CFG:send(nil, "A new game of Battle Royale has started!")
+end
+
 function OnStart()
     if get_var(0, '$gt') == 'n/a' then return end
+
+    resetCountdown()
+    game_active = false
+    CFG.player_effects = {}
+
     if CFG:loadFiles() then
-        initializeBoundary()
-        game_start_time = clock()
-        initCrates()
         for i = 1, 16 do
             if player_present(i) then
                 OnJoin(i)
             end
         end
+        updateCountdown()
     end
 end
 
 function OnEnd()
+    CFG.player_effects = {}
     game_active = false
     bonus_period = false
-    player_effects = {}
+    resetCountdown()
 end
 
 function OnJoin(id)
     players[id] = {
-        lives = CFG.sfe_zone.max_deaths_until_spectate,
+        id = id,
+        lives = CFG.safe_zone.max_deaths_until_spectate,
         last_damage = 0,
         last_warning = 0,
         spectator = false,
         spectator_once = false,
     }
+    updateCountdown()
 end
 
 function OnQuit(id)
     players[id] = nil
+    updateCountdown()
 end
 
 function OnDeath(victim, killer)
@@ -405,7 +370,8 @@ function OnDeath(victim, killer)
     local player = players[victim]
     if killer == 0 or killer == victim or not player then return end
 
-    player_effects[victim] = nil
+    if CFG.player_effects and victim then CFG.player_effects[victim] = nil end
+
     if player.lives <= 0 then
         player.spectator = true
         player.spectator_once = true
@@ -415,7 +381,17 @@ function OnDeath(victim, killer)
 end
 
 function OnTick()
-    if not game_active then return end
+    -- Countdown logic
+    if not game_active then
+        if countdown_state == "running" then
+            local current_time = clock()
+            if current_time >= countdown_end_time then
+                startGame()
+                resetCountdown()
+            end
+        end
+        return
+    end
 
     update_effects()
 
@@ -509,6 +485,7 @@ function OnTick()
                 spectate(i, dyn_player, x, y, z)
                 goto continue
             end
+            player.dyn_player = dyn_player
 
             --------------------------------
             -- CRATE MANAGEMENT
@@ -519,18 +496,18 @@ function OnTick()
             for crate_id, crate_data in pairs(active_crates) do
                 local crate = get_object_memory(crate_id)
                 if crate == 0 then
-                    active_crates[crate_id] = nil; goto continue_crate
+                    active_crates[crate_id] = nil; goto next_crate
                 end
                 local loc = crate_locs[crate_data.loc_idx]
                 if CFG.distance_squared(x, y, z, loc[1], loc[2], loc[3], CFG.crates.collision_radius) then
-                    if not open_crate(i, dyn_player) then goto continue_crate end
+                    if not open_crate(player) then goto next_crate end
                     active_crates[crate_id] = nil
                     respawn_timers[crate_data.loc_idx] = now + CFG:get_crate_respawn_time()
                     CFG:debug_print("Player %d collected crate at location #%d", i, crate_data.loc_idx)
                     destroy_object(crate_id)
                     break
                 end
-                ::continue_crate::
+                ::next_crate::
             end
             ::skip_collision::
 
