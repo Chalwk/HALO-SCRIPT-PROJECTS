@@ -308,7 +308,7 @@ local function startGame()
     CFG:send(nil, "Battle Royale has started - good luck!")
     setSpawns()
 
-    if not flag_meta_id or not flag_meta_id then return end
+    if not flag_meta_id or not flag_tag_name then return end
     local safe_zone = CFG.safe_zone
     local center = safe_zone.center
     local height_offset = 0.3
