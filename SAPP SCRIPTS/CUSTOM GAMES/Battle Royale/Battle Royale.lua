@@ -183,10 +183,12 @@ local function spectate(player, px, py, pz)
 
     if not static_player then return end
 
+    -- hide the player
     write_float(static_player + 0xF8, px - 1000)  -- player x (x,y,z different from read_vector3d)
     write_float(static_player + 0xFC, py - 1000)  -- player y
     write_float(static_player + 0x100, pz - 1000) -- player z
 
+    -- force weapon drop and vehicle exit
     execute_command('wdrop ' .. player.id); execute_command('vexit ' .. player.id)
 
     -- only set these once
