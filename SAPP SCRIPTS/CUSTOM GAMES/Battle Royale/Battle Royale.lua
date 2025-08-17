@@ -5,9 +5,8 @@
 --                   Supports map-specific settings, configurable shrink steps,
 --                   bonus periods, and automatic game start/end management.
 --
---                   Additional features:
---                   - Loot crates
---                   - Sky spawning system
+--                   See GitHub release page for more information:
+--                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/battle_royale
 --
 --
 -- AUTHOR:           Chalwk (Jericho Crosby)
