@@ -54,6 +54,7 @@ local spawn_object = spawn_object
 local game_active = false
 local game_start_time = 0
 local total_game_time = 0
+local flag_meta_id, flag_tag_name
 
 local bonus_period = false
 local bonus_end_time = 0
@@ -187,8 +188,7 @@ local function spectate(player, px, py, pz)
     write_float(static_player + 0xFC, py - 1000)  -- player y
     write_float(static_player + 0x100, pz - 1000) -- player z
 
-    execute_command('wdrop ' .. player.id)
-    execute_command('vexit ' .. player.id)
+    execute_command('wdrop ' .. player.id); execute_command('vexit ' .. player.id)
 
     -- only set these once
     if player.spectator_once then
@@ -307,6 +307,15 @@ local function startGame()
     game_active = true; bonus_period = false
     CFG:send(nil, "Battle Royale has started - good luck!")
     setSpawns()
+
+    if not flag_meta_id or not flag_meta_id then return end
+    local safe_zone = CFG.safe_zone
+    local center = safe_zone.center
+    local height_offset = 0.3
+    local x, y, z = center.x, center.y, center.z + height_offset
+
+    spawn_object('', '', x, y, z, 0, flag_meta_id)
+    execute_command('disable_object ' .. '"' .. flag_tag_name .. '"')
 end
 
 local function safeLoadFile(path)
@@ -369,6 +378,8 @@ function OnStart()
         end
         updateCountdown()
     end
+
+    flag_meta_id, flag_tag_name = CFG.find_flag()
 end
 
 function OnEnd()

@@ -70,7 +70,6 @@ end
 function spoils.camouflage(player, spoil, CFG)
     local duration = spoil.camouflage[random(#spoil.camouflage)]
 
-
     CFG.player_effects[player.id] = CFG.player_effects[player.id] or {}
     insert(CFG.player_effects[player.id], {
         effect = "camouflage",

@@ -8,6 +8,14 @@ local execute_command, say_all, rprint = execute_command, say_all, rprint
 local read_float, read_dword, read_vector3d, read_byte, write_vector3d =
     read_float, read_dword, read_vector3d, read_byte, write_vector3d
 
+-- constants for finding the flag
+local base_tag_table = 0x40440000
+local tag_entry_size = 0x20
+local tag_data_offset = 0x14
+local bit_check_offset = 0x308
+local bit_index = 3
+local flag_meta_id, flag_tag_name
+
 function HELPERS.get_player_position(dyn_player)
     local in_vehicle = false
     local vehicle = read_dword(dyn_player + 0x11C)
@@ -119,6 +127,31 @@ function HELPERS:lock_server()
     if self.LOCK_SERVER then
         execute_command('sv_password "' .. self.PASSWORD .. '"')
     end
+end
+
+function HELPERS.find_flag()
+    local tag_array = read_dword(base_tag_table)
+    local tag_count = read_dword(base_tag_table + 0xC)
+
+    for i = 0, tag_count - 1 do
+        local tag = tag_array + tag_entry_size * i
+        local tag_class = read_dword(tag)
+
+        if tag_class == 0x77656170 then -- "weap"
+            local tag_data = read_dword(tag + tag_data_offset)
+            if read_bit(tag_data + bit_check_offset, bit_index) == 1 then
+                if read_byte(tag_data + 2) == 0 then
+                    flag_meta_id = read_dword(tag + 0xC)
+                    flag_tag_name = read_string(read_dword(tag + 0x10))
+
+                    --print("Flag meta ID: " .. flag_meta_id, "Flag tag name: " .. flag_tag_name)
+                    return flag_meta_id, flag_tag_name
+                end
+            end
+        end
+    end
+
+    return nil, nil
 end
 
 return HELPERS
