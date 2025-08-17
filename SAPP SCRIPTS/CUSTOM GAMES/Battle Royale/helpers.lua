@@ -61,7 +61,7 @@ end
 
 function HELPERS.distance_squared(x1, y1, z1, x2, y2, z2, radius)
     local dx, dy, dz = x1 - x2, y1 - y2, z1 - z2
-    return (dx * dx + dy * dy + dz * dz) <= (radius * radius)
+    return (dx * dx + dy * dy + dz * dz) <= radius
 end
 
 function HELPERS.seconds_to_time(seconds)
@@ -82,12 +82,6 @@ end
 function HELPERS:debug_print(...)
     if self.DEBUG then
         cprint("[DEBUG] " .. format(...))
-    end
-end
-
-function HELPERS:cls(player_id)
-    for _ = 1, 25 do
-        rprint(player_id, " ")
     end
 end
 

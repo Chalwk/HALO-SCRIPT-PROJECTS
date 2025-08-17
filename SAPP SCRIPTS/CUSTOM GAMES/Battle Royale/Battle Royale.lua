@@ -21,7 +21,7 @@
 local CFG = {
     MSG_PREFIX = "**SAPP** ",   -- SAPP msg_prefix
     DAMAGE_INTERVAL = 0.2,      -- Apply damage every 0.2 seconds (5x/sec) while outside boundary
-    WARNING_INTERVAL = 2.0,     -- Warn players every 2 seconds while outside boundary
+    WARNING_INTERVAL = 5.0,     -- Warn players every 2 seconds while outside boundary
     MIN_PLAYERS = 1,            -- Minimum number of players required to start the game | For a future update
     START_DELAY = 5,            -- Delay (in seconds) before starting the game | For a future update
     LOCK_SERVER = false,        -- Lock server on game start
@@ -459,72 +459,88 @@ local function getWinner()
     return false
 end
 
-function OnTick()
-    -- Precompute localized references
-    local safe_zone = CFG.safe_zone
-    local center = safe_zone.center
-    local crates = CFG.crates
-    local crate_locs = crates.locations
-    local collision_radius = crates.collision_radius
+local function handleSafeZoneCheck(player, x, y, z, center, radius_sq, now)
+    if player.spectator then return end -- Spectators don't need to be checked
+    local current_time_ms = now * 1000
+    local inside = CFG.distance_squared(x, y, z, center.x, center.y, center.z, radius_sq)
+    if inside then return end
+
+    if current_time_ms - player.last_damage >= DAMAGE_INTERVAL_MS then
+        hurtPlayer(i, player.dyn_player)
+        player.last_damage = current_time_ms
+    end
+    if current_time_ms - player.last_warning >= WARNING_INTERVAL_MS then
+        CFG:send(i, "You are outside the boundary! Return to the play area.")
+        player.last_warning = current_time_ms
+    end
+end
+
+local function sendPlayerStatus(player, now, safe_zone)
     local public_message_interval = safe_zone.public_message_interval
+    if now - last_public_message < public_message_interval then return end
 
-    -- Countdown logic
-    if not game_active then
-        if countdown_state == "running" then
-            local now = clock()
-            if now >= countdown_end_time then
-                startGame()
-                resetCountdown()
-            end
-        end
-        return
+    local status = ""
+    if bonus_period then
+        status = format("BONUS TIME: %s | Radius: %.0f",
+            CFG.seconds_to_time(bonus_end_time - now),
+            current_radius)
+    else
+        local elapsed = now - game_start_time
+        status = format("Radius: %.0f | Time: %s | Shrinks left: %d",
+            current_radius,
+            CFG.seconds_to_time(total_game_time - elapsed),
+            reductions_remaining)
     end
+    CFG:send(player.id, status)
+end
 
-    -- todo: enable this after testing
-    --if getWinner() then return end
-    update_effects()
+local function handleCountdown(now)
+    if game_active then return end
+    if countdown_state ~= "running" then return end
 
-    local now = clock()
+    if now >= countdown_end_time then
+        startGame()
+        resetCountdown()
+    end
+end
+
+local function handleSafeZoneShrink(now)
+    local safe_zone = CFG.safe_zone
+    if bonus_period then return end
+
     local elapsed = now - game_start_time
+    local reductions_done = floor(elapsed / reduction_rate)
+    reductions_remaining = max(expected_reductions - reductions_done, 0)
+    local new_radius = max(safe_zone.max_size - reductions_done * reduction_amount, safe_zone.min_size)
+
     local radius_changed = false
-
-    -- Boundary shrinking logic
-    if not bonus_period then
-        local reductions_done = floor(elapsed / reduction_rate)
-        reductions_remaining = max(expected_reductions - reductions_done, 0)
-        local new_radius = max(safe_zone.max_size - reductions_done * reduction_amount,
-            safe_zone.min_size)
-
-        if new_radius < current_radius then
-            current_radius = new_radius
-            radius_changed = true
-        end
-
-        if reductions_remaining == 0 then
-            bonus_period = true
-            bonus_end_time = now + safe_zone.bonus_time
-            current_radius = safe_zone.min_size
-            radius_changed = true
-            CFG:send(nil, "Last man standing for %d seconds at %.0f world units!",
-                safe_zone.bonus_time, current_radius)
-        end
+    if new_radius < current_radius then
+        current_radius = new_radius
+        radius_changed = true
     end
 
-    -- Announce radius changes
+    if reductions_remaining == 0 then
+        bonus_period = true
+        bonus_end_time = now + safe_zone.bonus_time
+        current_radius = safe_zone.min_size
+        radius_changed = true
+        CFG:send(nil, "Last man standing for %d seconds at %.0f world units!", safe_zone.bonus_time, current_radius)
+    end
+
     if radius_changed then
         CFG:send(nil, "Radius shrunk to %.0f | Shrinks left: %d | Min radius: %.0f",
             current_radius, reductions_remaining, safe_zone.min_size)
     end
+end
 
-    -- Precompute values for boundary checks
-    local radius_sq = current_radius * current_radius
-    local current_time_ms = now * 1000
+local function handleCrateRespawns(now)
+    local crates = CFG.crates
 
-    -- Precompute active crate count
+    -- Count active crates
     local active_crate_count = 0
     for _ in pairs(active_crates) do active_crate_count = active_crate_count + 1 end
 
-    -- Handle crate respawns
+    -- Respawn timers
     for loc_idx, respawn_time in pairs(respawn_timers) do
         if now >= respawn_time then
             if active_crate_count < crates.max_crates then
@@ -533,7 +549,6 @@ function OnTick()
                     active_crate_count = active_crate_count + 1
                 end
             else
-                -- Reschedule if at max crates
                 respawn_timers[loc_idx] = now + 5
             end
         end
@@ -548,113 +563,99 @@ function OnTick()
             if not respawn_timers[loc_idx] then
                 local respawn_delay = CFG:get_crate_respawn_time()
                 respawn_timers[loc_idx] = now + respawn_delay
-                CFG:debug_print("Crate at location #%d despawned naturally. Respawning in %d seconds.", loc_idx,
-                    respawn_delay)
+                CFG:debug_print("Crate at location #%d despawned naturally. Respawning in %d seconds.", loc_idx, respawn_delay)
             end
         end
     end
+end
 
-    -- Player processing
-    for i = 1, 16 do
-        if CFG.validate_player(i) then
-            local player = players[i]
-            if not player then goto continue end
-
-            local dyn_player = get_dynamic_player(i)
-            if dyn_player == 0 then goto continue end
-
-            local x, y, z, in_vehicle = CFG.get_player_position(dyn_player)
-            if not x then goto continue end
-            player.dyn_player = dyn_player
-
-            ---------------------
-            -- Sky spawn logic
-            ---------------------
-            local sky = player.sky_spawn_location
-            if sky then
-                local state = read_byte(dyn_player + 0x2A3)
-                if state == 21 or state == 22 then -- landed
-                    player.sky_spawn_location = nil
-                    execute_command('ungod ' .. i)
-                    write_word(dyn_player + 0x104, 0)  -- force shield to regenerate immediately
-                    write_float(dyn_player + 0x424, 0) -- stun
-                end
-                goto continue
-            end
-
-            ---------------------
-            -- Spectator logic
-            ---------------------
-            if player.spectator then
-                spectate(player, x, y, z)
-                goto continue
-            end
-
-            --------------------------------
-            -- CRATE MANAGEMENT
-            --------------------------------
-
-            --- Player-crate collision detection
-            if in_vehicle or player.spectator then goto skip_collision end
-            for crate_id, crate_data in pairs(active_crates) do
-                local crate = get_object_memory(crate_id)
-                if crate == 0 then
-                    active_crates[crate_id] = nil; goto next_crate
-                end
-                local loc = crate_locs[crate_data.loc_idx]
-                if CFG.distance_squared(x, y, z, loc[1], loc[2], loc[3], collision_radius) then
-                    if not open_crate(player) then goto next_crate end
-                    active_crates[crate_id] = nil
-                    respawn_timers[crate_data.loc_idx] = now + CFG:get_crate_respawn_time()
-                    CFG:debug_print("Player %d collected crate at location #%d", i, crate_data.loc_idx)
-                    destroy_object(crate_id)
-                    break
-                end
-                ::next_crate::
-            end
-            ::skip_collision::
-
-            ------------------------------------------------
-            -- PLAYABLE BOUNDARY (safe zone) CHECK
-            ------------------------------------------------
-            local inside = CFG.distance_squared(x, y, z, center.x, center.y, center.z, radius_sq)
-            if not inside then
-                if current_time_ms - player.last_damage >= DAMAGE_INTERVAL_MS then
-                    hurtPlayer(i, dyn_player)
-                    player.last_damage = current_time_ms
-                end
-                if current_time_ms - player.last_warning >= WARNING_INTERVAL_MS then
-                    CFG:send(i, "You are outside the boundary! Return to the play area.")
-                    player.last_warning = current_time_ms
-                end
-            end
-
-            if now - last_public_message >= public_message_interval then
-                local status
-                if bonus_period then
-                    status = format("BONUS TIME: %s | Radius: %.0f",
-                        CFG.seconds_to_time(bonus_end_time - now),
-                        current_radius)
-                else
-                    status = format("Radius: %.0f | Time: %s | Shrinks left: %d",
-                        current_radius,
-                        CFG.seconds_to_time(total_game_time - elapsed),
-                        reductions_remaining)
-                end
-                CFG:send(i, status .. (not inside and " [OUT]" or ""))
-            end
+local function handlePlayerCrateCollision(player, x, y, z, in_vehicle, now, crate_locs, collision_radius)
+    if in_vehicle or player.spectator then return end
+    for crate_id, crate_data in pairs(active_crates) do
+        local crate = get_object_memory(crate_id)
+        if crate == 0 then
+            active_crates[crate_id] = nil
+            goto next_crate
         end
+        local loc = crate_locs[crate_data.loc_idx]
+        if CFG.distance_squared(x, y, z, loc[1], loc[2], loc[3], collision_radius) then
+            if not open_crate(player) then goto next_crate end
+            active_crates[crate_id] = nil
+            respawn_timers[crate_data.loc_idx] = now + CFG:get_crate_respawn_time()
+            CFG:debug_print("Player %d collected crate at location #%d", i, crate_data.loc_idx)
+            destroy_object(crate_id)
+            break
+        end
+        ::next_crate::
+    end
+end
+
+local function handleSkySpawn(player, dyn_player, player_index)
+    if not player.sky_spawn_location then return end
+
+    local state = read_byte(dyn_player + 0x2A3)
+    if state == 21 or state == 22 then
+        player.sky_spawn_location = nil
+        execute_command('ungod ' .. player_index)
+        write_word(dyn_player + 0x104, 0)  -- force shield to regenerate immediately
+        write_float(dyn_player + 0x424, 0) -- stun
+    end
+end
+
+local function handlePlayerProcessing(now)
+    local safe_zone = CFG.safe_zone
+    local center = safe_zone.center
+    local crate_locs = CFG.crates.locations
+    local collision_radius = CFG.crates.collision_radius
+    local radius_sq = current_radius * current_radius
+
+    for i = 1, 16 do
+        if not CFG.validate_player(i) then goto continue end
+        local player = players[i]
+        if not player then goto continue end
+
+        local dyn_player = get_dynamic_player(i)
+        if dyn_player == 0 then goto continue end
+
+        local x, y, z, in_vehicle = CFG.get_player_position(dyn_player)
+        if not x then goto continue end
+        player.dyn_player = dyn_player
+
+        handleSkySpawn(player, dyn_player, i)
+        if player.sky_spawn_location then goto continue end
+
+        if player.spectator then
+            spectate(player, x, y, z)
+            goto continue
+        end
+
+        handlePlayerCrateCollision(player, x, y, z, in_vehicle, now, crate_locs, collision_radius)
+        handleSafeZoneCheck(player, x, y, z, center, radius_sq, now)
+        sendPlayerStatus(player, now, safe_zone)
         ::continue::
     end
+end
+
+function OnTick()
+    local now = clock()
+
+    handleCountdown(now)
+    if not game_active then return end
+
+    --if getWinner() then return end
+    update_effects()
+    handleSafeZoneShrink(now)
+    handleCrateRespawns(now)
+    handlePlayerProcessing(now)
 
     -- Update public message timer
-    if now - last_public_message >= public_message_interval then
+    local safe_zone = CFG.safe_zone
+    if now - last_public_message >= safe_zone.public_message_interval then
         last_public_message = now
     end
 
     -- End game after bonus period
     if bonus_period and now >= bonus_end_time then
-        game_active = false
         execute_command("sv_map_next")
     end
 end
