@@ -1,5 +1,7 @@
 ![Logo](https://i.imgur.com/t0W5aJe.png)
 
+# All scripts are moving to my [NEW WEBSITE](https://chalwk.github.io/HALO%20SCRIPT%20PROJECTS/main.html)
+
 # 👾 Halo Script Projects (HSP)
 
 Welcome to the **Halo Script Projects (HSP)** repository! I'm **Chalwk**, an independent game developer and open-source enthusiast from New Zealand. I create everything from custom game modes and server tools to libraries and quality-of-life enhancements.
