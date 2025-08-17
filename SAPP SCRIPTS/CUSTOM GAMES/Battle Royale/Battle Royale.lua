@@ -20,15 +20,15 @@
 
 -- ========== Config Start ==========
 local CFG = {
-    MSG_PREFIX = "**SAPP** ",    -- SAPP msg_prefix
-    DAMAGE_INTERVAL = 0.2,       -- Apply damage every 0.2 seconds (5x/sec) while outside boundary
-    WARNING_INTERVAL = 2.0,      -- Warn players every 2 seconds while outside boundary
-    MIN_PLAYERS = 1,             -- Minimum number of players required to start the game | For a future update
-    START_DELAY = 5,             -- Delay (in seconds) before starting the game | For a future update
-    LOCK_SERVER = false,         -- Lock server on game start
-    PASSWORD = "password",       -- Server password (if LOCK_SERVER is true)
-    NEW_PLAYER_SPECTATE = true,  -- Spectate new players (if LOCK_SERVER is false)
-    DEBUG = false,               -- Enable debug messages
+    MSG_PREFIX = "**SAPP** ",   -- SAPP msg_prefix
+    DAMAGE_INTERVAL = 0.2,      -- Apply damage every 0.2 seconds (5x/sec) while outside boundary
+    WARNING_INTERVAL = 2.0,     -- Warn players every 2 seconds while outside boundary
+    MIN_PLAYERS = 1,            -- Minimum number of players required to start the game | For a future update
+    START_DELAY = 5,            -- Delay (in seconds) before starting the game | For a future update
+    LOCK_SERVER = false,        -- Lock server on game start
+    PASSWORD = "password",      -- Server password (if LOCK_SERVER is true)
+    NEW_PLAYER_SPECTATE = true, -- Spectate new players (if LOCK_SERVER is false)
+    DEBUG = false,              -- Enable debug messages
 }
 -- ========== Config End ============
 
@@ -84,8 +84,8 @@ local function registerCallbacks()
     register_callback(cb["EVENT_TICK"], "OnTick")
     register_callback(cb["EVENT_JOIN"], "OnJoin")
     register_callback(cb["EVENT_LEAVE"], "OnQuit")
-    register_callback(cb["EVENT_GAME_END"], "OnEnd")
     register_callback(cb["EVENT_SPAWN"], "OnSpawn")
+    register_callback(cb["EVENT_GAME_END"], "OnEnd")
     register_callback(cb["EVENT_PRESPAWN"], "OnPreSpawn")
 end
 
@@ -94,8 +94,8 @@ local function unregisterCallbacks()
     unregister_callback(cb["EVENT_TICK"])
     unregister_callback(cb["EVENT_JOIN"])
     unregister_callback(cb["EVENT_LEAVE"])
-    unregister_callback(cb["EVENT_GAME_END"])
     unregister_callback(cb["EVENT_SPAWN"])
+    unregister_callback(cb["EVENT_GAME_END"])
     unregister_callback(cb["EVENT_PRESPAWN"])
 end
 
@@ -110,11 +110,16 @@ local function getPlayerCount()
 end
 
 local function setSpectator(player)
-    player.spectator = true
-    player.spectator_once = true
+    if not player then return end
+    player.spectator = true; player.spectator_once = true
+    CFG:send(player.id, 'You are now a spectator!')
 end
 
 local function updateCountdown(player)
+    if game_active then
+        if CFG.NEW_PLAYER_SPECTATE then setSpectator(player) end
+        return
+    end
     local current_players = getPlayerCount()
     if current_players >= CFG.MIN_PLAYERS then
         if countdown_state == "inactive" then
@@ -134,10 +139,6 @@ local function updateCountdown(player)
             local missing = CFG.MIN_PLAYERS - current_players
             CFG:send(nil, "Countdown paused, waiting for %d more player%s to start.", missing, missing == 1 and "" or "s")
         end
-    end
-
-    if player and CFG.NEW_PLAYER_SPECTATE and game_active then
-        setSpectator(player)
     end
 end
 
@@ -566,6 +567,7 @@ function OnTick()
                     write_word(dyn_player + 0x104, 0)  -- force shield to regenerate immediately
                     write_float(dyn_player + 0x424, 0) -- stun
                 end
+                goto continue
             end
 
             ---------------------
