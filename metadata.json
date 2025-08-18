@@ -265,117 +265,117 @@
       "filename": "server_fun_plus.lua"
     },
     "shield_regen": {
-      "title": "Shield Regen",
-      "shortDescription": "Restore shields over time",
-      "description": "Automatically regenerates player shields gradually or after avoiding damage.",
+      "title": "Instant Shield Regeneration",
+      "shortDescription": "Immediate shield recharge after taking damage",
+      "description": "Removes the shield recharge delay, causing shields to begin regenerating immediately after taking damage. Configurable delay timer.",
       "filename": "shield_regen.lua"
     },
     "spawn_from_sky": {
-      "title": "Spawn From Sky",
-      "shortDescription": "Random drop-in spawn",
-      "description": "Players appear dropping from above instead of normal spawn points.",
+      "title": "Aerial Spawn System",
+      "shortDescription": "Players spawn high above map with parachute effect",
+      "description": "Drops players from the sky at spawn locations with temporary god mode until landing. Includes pre-configured spawn points for all standard maps.",
       "filename": "spawn_from_sky.lua"
     },
     "spawn_protection": {
-      "title": "Spawn Protection",
-      "shortDescription": "Temporary invulnerability",
-      "description": "Players are immune to damage briefly after spawning to prevent spawn killing.",
+      "title": "Spawn Protection System",
+      "shortDescription": "Temporary invulnerability after respawning",
+      "description": "Grants players a configurable period of invulnerability after spawning. Optional setting to prevent protected players from dealing damage.",
       "filename": "spawn_protection.lua"
     },
     "spawn_where_killed": {
-      "title": "Spawn Where Killed",
-      "shortDescription": "Respawn at death location",
-      "description": "Players respawn at the location they died instead of default points.",
+      "title": "Death Location Respawn",
+      "shortDescription": "Players respawn at their death locations",
+      "description": "Modifies spawn system so players reappear exactly where they died, creating intense revenge opportunities. Works for both foot and vehicle deaths.",
       "filename": "spawn_where_killed.lua"
     },
     "sprint_system": {
-      "title": "Sprint System",
-      "shortDescription": "Enable sprinting",
-      "description": "Adds a stamina-based sprint mechanic to players.",
+      "title": "Advanced Sprint Mechanic",
+      "shortDescription": "Stamina-based sprinting with exhaustion effects",
+      "description": "Adds realistic sprinting with stamina management, speed boosts, exhaustion penalties, and HUD feedback. Activated by flashlight key with fully customizable parameters.",
       "filename": "sprint_system.lua"
     },
     "stun_grenades": {
-      "title": "Stun Grenades",
-      "shortDescription": "Non-lethal crowd control",
-      "description": "Deploy grenades that temporarily disorient or slow opponents.",
+      "title": "Stun Grenade Modifier",
+      "shortDescription": "Converts grenades into stunning weapons",
+      "description": "Modifies all grenade types to temporarily slow victims on explosion. Features different duration effects for frag, plasma, and stuck plasma grenades.",
       "filename": "stun_grenades.lua"
     },
     "super_bloodgulch": {
-      "title": "Super Bloogulch",
-      "shortDescription": "Custom super mode",
-      "description": "Enables a unique enhanced mode with exaggerated player abilities.",
+      "title": "Super Bloodgulch",
+      "shortDescription": "Enhanced weapons and vehicles",
+      "description": "Overhauls weapon and vehicle stats for an intense gameplay experience. Modifies damage, projectile speed, explosion radius, and other properties for most weapons and vehicles in the game.",
       "filename": "super_bloodgulch.lua"
     },
     "super_jump": {
       "title": "Super Jump",
-      "shortDescription": "Jump higher than normal",
-      "description": "Players gain enhanced jump height and distance for fun or mobility.",
+      "shortDescription": "Enhanced jumping with cooldown",
+      "description": "Allows players to jump significantly higher than normal with a configurable cooldown period between jumps. Can be toggled on/off with commands.",
       "filename": "super_jump.lua"
     },
     "tactical_airstrike": {
       "title": "Tactical Airstrike",
-      "shortDescription": "Targeted air support",
-      "description": "Call in precision airstrikes on specific locations or players.",
+      "shortDescription": "Call in airstrikes after killstreaks",
+      "description": "Players who achieve a 5-kill streak can call in devastating airstrikes with three different targeting modes. Features map-specific strike locations, configurable projectile counts, and team-based restrictions where applicable.",
       "filename": "tactical_airstrike.lua"
     },
     "tactical_insertion": {
       "title": "Tactical Insertion",
-      "shortDescription": "Spawn at strategic point",
-      "description": "Allows players to respawn at custom strategic points instead of default spawn locations.",
+      "shortDescription": "Set custom spawn points during gameplay",
+      "description": "Allows players to set their next spawn location using a command. Features limited uses per game, coordinate precision, and spawn confirmation messages. Players must be alive to set their insertion point.",
       "filename": "tactical_insertion.lua"
     },
     "taunt_on_end_messages": {
-      "title": "Taunt OnGameEnd (messages)",
-      "shortDescription": "Send taunting messages",
-      "description": "Automatically sends taunts to players when the game ends.",
+      "title": "Taunt Messages",
+      "shortDescription": "Playful taunts based on player performance",
+      "description": "Displays humorous taunting messages to players at game end based on their kill count. Ranges from gentle ribbing for poor performance to backhanded compliments for better scores.",
       "filename": "taunt_on_end_messages.lua"
     },
-    "taunt_your_players": {
-      "title": "Taunt Your Players",
+    "taunt_your_players_v1": {
+      "title": "Player Taunts V1",
       "shortDescription": "Send player taunts",
       "description": "Displays funny or provocative messages to players in-game.",
-      "filename": "taunt_your_players.lua"
+      "filename": "taunt_your_players_v1.lua"
     },
     "taunt_your_players_v2": {
-      "title": "Taunt Your Players (v2.0)",
-      "shortDescription": "Updated player taunts",
-      "description": "Sends humorous or teasing messages to players during the game.",
+      "title": "Player Taunts V2",
+      "shortDescription": "Advanced taunt system with customizable messages",
+      "description": "Enhanced version featuring fully configurable taunt messages with variables, message alignment options, and organized kill-based responses. Supports multiple messages per kill threshold and excludes suicides/vehicle deaths from triggering taunts.",
       "filename": "taunt_your_players_v2.lua"
     },
     "tea_bagging": {
-      "title": "Tea Bagging",
-      "shortDescription": "Fun emote mimic",
-      "description": "Allows players to perform the infamous 'tea bag' action in-game.",
+      "title": "Tea Bagging Detection",
+      "shortDescription": "Automatically detects and announces tea-bagging behavior",
+      "description": "Monitors player crouching near corpses and triggers humorous announcements when tea-bagging is detected. Features configurable detection radius, required crouch count, cooldown periods, and a variety of customizable taunt messages. Includes admin toggle functionality.",
       "filename": "tea_bagging.lua"
     },
-    "truce": {
-      "title": "Truce",
-      "shortDescription": "Temporary ceasefire mode",
-      "description": "Disables combat between players for a short duration to enforce a truce.",
+    "truce_system": {
+      "truce": "Truce System",
+      "shortDescription": "Allows players to establish temporary peace agreements",
+      "description": "Enables players to request, accept, or deny truces with opponents, preventing mutual damage while active. Features request management, configurable privilege levels, persistent truce data across maps, and comprehensive status tracking. Includes commands for managing active truces and pending requests.",
       "filename": "truce.lua"
     },
     "uber_taxi": {
       "title": "Uber (TAXI)",
-      "shortDescription": "Vehicle taxi system",
-      "description": "Players can summon or ride vehicles as if using a taxi service.",
+      "shortDescription": "Team vehicle summoning system",
+      "description": "Allows players to summon themselves into teammates' vehicles with configurable seat priority, cooldowns, and restrictions. Supports vehicle validation, auto-ejection, crouch activation, and call limits.",
       "filename": "uber_taxi.lua"
     },
     "vanish_lurker": {
-      "title": "Vanish (LURKER)",
-      "shortDescription": "Stealth mode",
-      "description": "Players become invisible or undetectable to others temporarily.",
+      "title": "Vanish (Lurker)",
+      "shortDescription": "Advanced player invisibility system",
+      "description": "Provides comprehensive vanish mode with configurable stealth features including invisibility, camouflage, speed boosts, invincibility, radar hiding, and objective restrictions. Includes warning system for objective carriers and admin controls.",
       "filename": "vanish_lurker.lua"
     },
     "weapon_durability_jam_system": {
       "title": "Weapon Durability & Jam System",
-      "shortDescription": "Simulate weapon wear",
-      "description": "Weapons can degrade or jam after repeated use, requiring maintenance.",
+      "shortDescription": "Realistic weapon degradation and malfunction mechanics",
+      "description": "Implements comprehensive weapon durability system with progressive decay, jamming mechanics, and weapon-specific failure rates. Features include melee-based jam clearing, ammo state preservation, overheat prevention, and configurable degradation rates per weapon type.",
       "filename": "weapon_durability_jam_system.lua"
     },
     "weighted_weapons": {
-      "title": "Weighted Weapons",
-      "shortDescription": "Adjust weapon handling",
-      "description": "Changes movement speed or handling based on equipped weapons.",
+      "title": "Weighted Weapons System",
+      "shortDescription": "Realistic weapon weight and stamina mechanics",
+      "description": "Implements weapon-based movement penalties with configurable weight values for each weapon type. Features a comprehensive stamina system that depletes during movement and regenerates while resting, with visual feedback. Includes exhaustion penalties and supports both individual weapon and combined loadout weight calculations.",
       "filename": "weighted_weapons.lua"
     }
   },

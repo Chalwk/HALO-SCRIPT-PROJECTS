@@ -1,6 +1,6 @@
 --[[
 =====================================================================================
-SCRIPT NAME:      taunt_your_players.lua
+SCRIPT NAME:      taunt_your_players_v1.lua
 DESCRIPTION:      Displays 1-30 random taunting messages to players on events:
                   OnGameEnd or OnPlayerDie.
 
