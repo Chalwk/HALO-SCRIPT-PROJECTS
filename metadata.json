@@ -91,177 +91,177 @@
       "filename": "flip_a_coin.lua"
     },
     "flying_vehicles": {
-      "title": "Flying Vehicles",
-      "shortDescription": "Make vehicles airborne",
-      "description": "Allows vehicles to fly temporarily for fun or tactical advantage.",
+      "title": "Flying Vehicles Mod",
+      "shortDescription": "Enable flight for ground vehicles",
+      "description": "Transforms standard ground vehicles into flying machines with a simple command. Supports configurable vehicle selection, permission-based access control, and automatic reset options. Perfect for creating custom game modes or just having fun with unconventional vehicle physics. Includes safety features to prevent conflicts with normal gameplay.",
       "filename": "flying_vehicles.lua"
     },
     "force_chat": {
-      "title": "Force-Chat",
-      "shortDescription": "Send automated messages",
-      "description": "Forces players or server to display custom messages in chat.",
+      "title": "Force Chat",
+      "shortDescription": "Make players say custom messages",
+      "description": "Allows administrators to make any player appear to send chat messages. Useful for roleplaying scenarios, announcements, or moderation purposes. Features permission controls, customizable message formatting, and proper server prefix handling. Note: Fake messages may be detectable by some client modifications.",
       "filename": "force_chat.lua"
     },
     "gravity_gun": {
-      "title": "Gravity Gun",
-      "shortDescription": "Manipulate objects",
-      "description": "Pick up, throw, or manipulate objects with gravity-based mechanics.",
+      "title": "Gravity Gun Mod",
+      "shortDescription": "Half-Life inspired object manipulation tool",
+      "description": "Adds a physics-based gravity gun that lets players pick up, carry, and launch objects with realistic mass-based physics. Supports vehicles, weapons, equipment and devices with configurable pickup range, rotation speed, and launch velocity. Includes cooldown timers, mass restrictions, and permission controls for balanced gameplay. Perfect for creating custom game modes or just having fun with physics.",
       "filename": "gravity_gun.lua"
     },
     "grenade_launcher": {
-      "title": "Grenade Launcher",
-      "shortDescription": "Launch explosive grenades",
-      "description": "Players can fire grenades with area-of-effect damage for tactical advantage.",
+      "title": "Grenade Launcher Mod",
+      "shortDescription": "Convert weapons into grenade launchers",
+      "description": "Transforms standard weapons and vehicle armaments into grenade launchers with configurable projectile physics. Features map-specific grenade types, adjustable velocity settings, and toggleable activation. Supports multiple weapon types with realistic ballistic behavior. Includes permission controls and optional auto-disable on death for balanced gameplay.",
       "filename": "grenade_launcher.lua"
     },
     "headshot_blocker": {
       "title": "Headshot Blocker",
-      "shortDescription": "Prevent headshot damage",
-      "description": "Blocks critical hits to make gameplay more forgiving.",
+      "shortDescription": "Disables headshot damage",
+      "description": "Prevents all headshot damage while maintaining normal body shot mechanics. Works across all weapons and gametypes. Ideal for creating more casual gameplay experiences or balancing weapon mechanics. Simple and lightweight implementation with no configuration needed.",
       "filename": "headshot_blocker.lua"
     },
     "health_regeneration": {
       "title": "Health Regeneration",
-      "shortDescription": "Restore player health over time",
-      "description": "Players regain health automatically after taking damage or over intervals.",
+      "shortDescription": "Gradual automatic health recovery system",
+      "description": "Implements a dynamic health regeneration system that gradually restores player health when below maximum. Features intelligent scaling that regenerates faster when health is lower. Lightweight implementation with minimal performance impact. Perfect for creating more forgiving gameplay experiences or custom game modes.",
       "filename": "health_regeneration.lua"
     },
     "items_from_heaven": {
-      "title": "Items from Heaven",
-      "shortDescription": "Spawn items from above",
-      "description": "Drops weapons or power-ups from the sky for players to collect.",
+      "title": "Items From Heaven",
+      "shortDescription": "Random weapon/vehicle spawns across the map",
+      "description": "Spawns random weapons and vehicles at predefined map locations at configurable intervals. Features include adjustable spawn timing, automatic cleanup of unused items, and support for all standard Halo weapons and vehicles. Perfect for creating dynamic gameplay experiences or custom game modes where equipment availability changes throughout the match.",
       "filename": "items_from_heaven.lua"
     },
     "kill_counter": {
       "title": "Kill Counter",
-      "shortDescription": "Track player kills",
-      "description": "Displays or logs the number of kills for each player in real time.",
+      "shortDescription": "Real-time kill count notifications",
+      "description": "Displays current kill counts to players after each successful elimination. Features customizable message formatting and automatic tracking. Lightweight implementation with minimal performance impact. Perfect for competitive matches where players want immediate feedback on their performance.",
       "filename": "kill_counter.lua"
     },
     "killer_reward": {
-      "title": "Killer Reward",
-      "shortDescription": "Grant bonuses for kills",
-      "description": "Rewards players with items, points, or perks after eliminating opponents.",
+      "title": "Killer Reward System",
+      "shortDescription": "Drops weapons/equipment on player kills",
+      "description": "Rewards successful kills by spawning random weapons or equipment at the victim's death location. Features configurable drop tables, consecutive kill requirements, and multiple reward modes (weapons-only, equipment-only, or mixed). Includes kill streak tracking and customizable drop chances. Perfect for creating dynamic combat scenarios where players are rewarded for consistent performance.",
       "filename": "killer_reward.lua"
     },
     "market_account_saving": {
-      "title": "Market (with Account Saving)",
-      "shortDescription": "In-game shop with persistence",
-      "description": "Players can buy items, and their inventory is saved across sessions.",
+      "title": "Market Economy System",
+      "shortDescription": "Persistent player economy with purchasable perks",
+      "description": "Implements a comprehensive in-game economy where players earn currency through combat performance and can spend it on temporary perks. Features account persistence, configurable rewards/penalties, admin controls, and a marketplace with cooldowns. Supports perks like god mode, camouflage, damage boosts and more with JSON-based account saving. Perfect for creating progression systems in persistent servers.",
       "filename": "market_account_saving.lua"
     },
     "market_no_account_saving": {
       "title": "Market (no account saving)",
-      "shortDescription": "Temporary in-game shop",
-      "description": "Players can buy items, but inventory resets each session.",
+      "shortDescription": "Temporary perk market system",
+      "description": "Players earn money through gameplay to purchase temporary perks. All purchases reset when the player dies or the game ends. Includes admin money management commands.",
       "filename": "market_no_account_saving.lua"
     },
     "melee_kicker": {
       "title": "Melee Kicker",
-      "shortDescription": "Kick players via melee",
-      "description": "Allows melee attacks to knock back or eject opponents from areas.",
+      "shortDescription": "Instantly kicks players killed by melee attacks",
+      "description": "A humorous mod where any melee kill results in the victim being kicked from the server. Can be configured to only allow admins to perform melee-kicks. Works with all melee weapons including flags and oddball.",
       "filename": "melee_kicker.lua"
     },
     "mode_destroy_gun": {
-      "title": "[MODE] Destroy Gun",
-      "shortDescription": "Special weapon mode",
-      "description": "A custom mode where guns have destructive or altered behavior.",
+      "title": "Destroy Gun Mode",
+      "shortDescription": "Weapon mode that destroys objects on impact",
+      "description": "Allows players with permission to toggle a mode where their weapon fire destroys any object it hits (vehicles, weapons, equipment). Includes object type feedback and admin controls.",
       "filename": "mode_destroy_gun.lua"
     },
     "mode_enter_gun": {
-      "title": "[MODE] Enter Gun",
-      "shortDescription": "Custom spawn weapon",
-      "description": "Players start with a specific gun in a unique mode.",
+      "title": "Enter Gun Mode",
+      "shortDescription": "Vehicle entry system using weapon fire",
+      "description": "Allows players to enter vehicles by shooting them when the mode is active. Supports Warthog, Ghost, Banshee, Scorpion, and other vehicles. Includes admin toggle controls and visual feedback.",
       "filename": "mode_enter_gun.lua"
     },
     "mode_spawn_gun": {
-      "title": "[MODE] Spawn Gun",
-      "shortDescription": "Spawn weapons for players",
-      "description": "Automatically gives players guns on spawn for a custom game mode.",
+      "title": "Spawn Gun Mode",
+      "shortDescription": "Creative mode that spawns objects when firing",
+      "description": "Allows players to spawn various game objects (weapons, vehicles, powerups) by shooting. Includes 40+ spawnable objects, automatic cleanup on death, and manual cleanup commands. Perfect for creative gameplay and custom maps.",
       "filename": "mode_spawn_gun.lua"
     },
     "mvp_join_alerts": {
       "title": "MVP Join Alerts",
-      "shortDescription": "Announce top players joining",
-      "description": "Notifies everyone when a high-performing player joins the server.",
+      "shortDescription": "Personalized welcome messages for VIP players",
+      "description": "Broadcasts custom welcome messages when special players join, with unique messages for MVPs and random generic greetings for regular players. Supports identification by IP, hash, or exact name. Fully configurable messages and prefixes.",
       "filename": "mvp_join_alerts.lua"
     },
     "player_vanish": {
-      "title": "Player Vanish",
-      "shortDescription": "Make a player invisible",
-      "description": "Temporarily hides a player from others for stealth or fun.",
+      "title": "Player Vanish System",
+      "shortDescription": "Advanced player invisibility and teleportation system",
+      "description": "Provides comprehensive vanish functionality including invisibility, invincibility, speed boosts, and teleportation. Features persistent vanish states, vehicle hiding, radar concealment, and customizable messages. Supports both self-vanish and admin-controlled vanishing of other players.",
       "filename": "player_vanish.lua"
     },
     "portal_gun_type_1": {
-      "title": "Portal Gun (type 1)",
-      "shortDescription": "Create linked portals",
-      "description": "Players can shoot portals to instantly travel between two points.",
+      "title": "Portal Gun (Vehicle-Compatible)",
+      "shortDescription": "Shoot-to-teleport system that works in vehicles",
+      "description": "Advanced teleportation system that lets players instantly teleport to where they shoot. Works both on foot and in vehicles. Features admin controls, persistent states, and customizable messages.",
       "filename": "portal_gun_type_1.lua"
     },
     "portal_gun_type_2": {
-      "title": "Portal Gun (type 2)",
-      "shortDescription": "Alternate portal mechanics",
-      "description": "Variation of portal travel with unique behaviors or limitations.",
+      "title": "Portal Gun (Crouch-Activated)",
+      "shortDescription": "Crouch-and-shoot teleportation system",
+      "description": "Teleportation system requiring players to crouch before shooting to activate. Features admin controls, persistent states, and customizable messages. Designed for on-foot gameplay only.",
       "filename": "portal_gun_type_2.lua"
     },
     "proximity_chat": {
-      "title": "Proximity Chat",
-      "shortDescription": "Voice/Chat based on distance",
-      "description": "Messages are only heard by nearby players, simulating realistic proximity.",
+      "title": "Proximity Chat System",
+      "shortDescription": "Localized voice chat with configurable range",
+      "description": "Implements realistic proximity chat where players can only communicate within a set distance. Features per-map range settings, dead player communication options, team/vehicle chat modes, and admin controls for range adjustment.",
       "filename": "proximity_chat.lua"
     },
     "rage_quit": {
-      "title": "Rage Quit",
-      "shortDescription": "Punish or detect quitting",
-      "description": "Triggers a reaction or logs when a player leaves in anger.",
+      "title": "Rage Quit Detector",
+      "shortDescription": "Detects and announces rage quits after deaths",
+      "description": "Identifies when players quit after being killed or during short play sessions, broadcasting humorous announcements. Features configurable detection windows and customizable messages.",
       "filename": "rage_quit.lua"
     },
     "random_fact_generator": {
-      "title": "Random Fact Generator",
-      "shortDescription": "Display trivia",
-      "description": "Shows random facts or info to players periodically.",
+      "title": "Chuck Norris Fact Generator",
+      "shortDescription": "Periodically shares Chuck Norris facts from an API",
+      "description": "Fetches and displays random Chuck Norris facts at intervals. Can optionally replace Chuck's name with player names. Requires HTTP client plugin and JSON library.",
       "filename": "random_fact_generator.lua"
     },
     "random_name": {
-      "title": "Random Name",
-      "shortDescription": "Generate player names",
-      "description": "Assigns random or funny names to players for variety.",
+      "title": "Random Name Generator",
+      "shortDescription": "Replaces player names with random alternatives",
+      "description": "Assigns configurable random names to players based on name categories. Maintains unique name assignments during gameplay sessions.",
       "filename": "random_name.lua"
     },
     "rcon_chat": {
-      "title": "RCON Chat",
-      "shortDescription": "Remote server messaging",
-      "description": "Allows administrators to send messages to the server remotely.",
+      "title": "RCON Chat Redirect",
+      "shortDescription": "Redirects chat messages to RCON console",
+      "description": "Displays all in-game chat messages in the RCON interface with player IDs. Supports team/vehicle chat differentiation and message filtering.",
       "filename": "rcon_chat.lua"
     },
     "replace_weapon_projectile": {
-      "title": "Replace Weapon Projectile",
-      "shortDescription": "Swap bullets or projectiles",
-      "description": "Changes the behavior or type of projectiles fired by weapons.",
+      "title": "Projectile Replacement System",
+      "shortDescription": "Modifies weapon projectiles with custom effects",
+      "description": "Allows server admins to replace default weapon projectiles with custom ones, including damage multiplier adjustments. Supports all standard weapons and vehicles.",
       "filename": "replace_weapon_projectile.lua"
     },
     "rocket_launcher_malfunction": {
       "title": "Rocket Launcher Malfunction",
-      "shortDescription": "Random rocket behavior",
-      "description": "Causes rocket launchers to occasionally behave unpredictably for fun.",
+      "shortDescription": "Random explosive failures for rocket launcher users",
+      "description": "Causes rocket launchers to spontaneously explode at random intervals, creating chaotic gameplay moments. Features configurable explosion frequency and notification messages.",
       "filename": "rocket_launcher_malfunction.lua"
     },
     "roll_the_dice": {
-      "title": "Roll-The-Dice",
-      "shortDescription": "Random effects on players",
-      "description": "Applies random buffs, debuffs, or events when a dice is rolled.",
+      "title": "Roll The Dice Mini-Game",
+      "shortDescription": "Random effect generator with 5 possible outcomes",
+      "description": "Players can gamble with a chance-based system that provides random rewards or punishments. Includes vehicle spawning, weapon assignments, inventory wipes, temporary shields, and player launches.",
       "filename": "roll_the_dice.lua"
     },
     "self_destruction": {
-      "title": "Self-Destruction",
-      "shortDescription": "Destroy your own vehicle or player",
-      "description": "Allows self-elimination of a player or vehicle, optionally with a timer.",
+      "title": "Self-Destruct Mechanic",
+      "shortDescription": "Flashlight-activated suicide explosion",
+      "description": "Allows players to trigger a powerful explosion centered on themselves using the flashlight key. Features cooldown timer, visual effects, and configurable projectile count.",
       "filename": "self_destruction.lua"
     },
     "server_fun_plus": {
-      "title": "Server Fun Plus",
-      "shortDescription": "Miscellaneous fun features",
-      "description": "Adds entertaining mechanics or events for server enjoyment.",
+      "title": "Admin Fun Commands Pack",
+      "shortDescription": "Collection of 12+ humorous admin tools",
+      "description": "Provides administrators with a suite of entertaining commands including player rocketing, forced chat, fake join/quit messages, random teleportation, slapping, spamming, zapping, god broadcasting, nuking, color changing, and client crashing.",
       "filename": "server_fun_plus.lua"
     },
     "shield_regen": {
