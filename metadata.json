@@ -43,51 +43,51 @@
       "filename": "capture_the_flag.lua"
     },
     "color_changer": {
-      "title": "Color Changer",
-      "shortDescription": "Customize player colors",
-      "description": "Allows changing player or vehicle colors dynamically.",
+      "title": "Player Color Changer",
+      "shortDescription": "Allows players to customize their armor color",
+      "description": "Enables players with sufficient permissions to change their armor color using a simple command. Offers 18 different color options from white to salmon. Maintains color consistency through respawns while respecting game mechanics. Includes admin-level restrictions for controlled customization.",
       "filename": "color_changer.lua"
     },
     "color_reservation": {
-      "title": "Color Reservation",
-      "shortDescription": "Lock favorite colors",
-      "description": "Reserves selected colors for specific players to avoid conflicts.",
+      "title": "VIP Color Reservation",
+      "shortDescription": "Reserves armor colors for VIP players based on their unique hash",
+      "description": "Allows server administrators to reserve specific armor colors for VIP players by configuring their unique player hashes. Supports all 18 armor colors in FFA Slayer mode only. Automatically assigns random colors to non-VIP players while preserving reserved colors for authorized users through respawns. Includes protection against color conflicts.",
       "filename": "color_reservation.lua"
     },
     "custom_teleports": {
-      "title": "Custom Teleports",
-      "shortDescription": "Teleport anywhere",
-      "description": "Players can teleport to predefined or custom locations on the map.",
+      "title": "Custom Teleporters",
+      "shortDescription": "Configurable instant teleport points for any map",
+      "description": "Creates customizable teleportation zones that instantly transport players between locations on the same map. Supports map-specific configurations with adjustable activation radius and destination points. Optional crouch-only activation prevents accidental teleports. Perfect for creating shortcuts, secret passages, or gameplay variations in any map.",
       "filename": "custom_teleports.lua"
     },
     "damage_multiplier": {
       "title": "Damage Multiplier",
-      "shortDescription": "Adjust attack strength",
-      "description": "Change how much damage weapons or abilities deal.",
+      "shortDescription": "Admin-controlled player damage scaling",
+      "description": "Allows server administrators to dynamically adjust individual players' damage output with a simple command. Features configurable multiplier ranges (1-10x), optional reset functionality, and permission-based access control. Perfect for balancing gameplay, creating special events, or testing combat scenarios.",
       "filename": "damage_multiplier.lua"
     },
     "deployable_mines": {
       "title": "Deployable Mines",
-      "shortDescription": "Place explosive traps",
-      "description": "Players can place mines on the map to ambush opponents.",
+      "shortDescription": "Adds tactical mine deployment for vehicles",
+      "description": "Introduces deployable explosive mines that players can strategically place while driving compatible vehicles. Features configurable mine limits per life, timed despawn, adjustable detonation radius, and team damage options. Mines persist through player deaths and can be used to create defensive perimeters or ambush points. Includes visual feedback and mine counters for players.",
       "filename": "deployable_mines.lua"
     },
     "expressions": {
-      "title": "Expressions",
-      "shortDescription": "Custom emotes and reactions",
-      "description": "Players can display or trigger visual/emote expressions in-game.",
+      "title": "Fun Chat Expressions",
+      "shortDescription": "Family-friendly chat reactions and taunts",
+      "description": "Adds playful, moderated chat commands for expressing emotions like anger (!anger), taunting opponents (!taunt), or mild frustration (!cuss). Features multiple randomized responses for each command while maintaining player identity in chat. Perfect for adding personality to gameplay without offensive language. Fully configurable with custom phrase lists and output formatting.",
       "filename": "expressions.lua"
     },
     "flashlight_vehicle_entry": {
-      "title": "Flashlight-Vehicle-Entry",
-      "shortDescription": "Light up while entering vehicles",
-      "description": "Activates flashlight automatically when players enter vehicles.",
+      "title": "Flashlight Vehicle Entry",
+      "shortDescription": "Enter vehicles by aiming and using flashlight",
+      "description": "Adds an alternative vehicle entry system where players can enter unoccupied vehicles by aiming at them and pressing their flashlight key. Supports all standard Halo vehicles with configurable options. Provides more intuitive vehicle boarding while maintaining game balance. Works seamlessly with existing vehicle mechanics.",
       "filename": "flashlight_vehicle_entry.lua"
     },
     "flip_a_coin": {
-      "title": "Flip a Coin",
-      "shortDescription": "Random binary outcome",
-      "description": "Players can flip a virtual coin to make decisions.",
+      "title": "Coin Flip Simulator",
+      "shortDescription": "Virtual coin flipping with statistics",
+      "description": "Adds a fun virtual coin flip command that simulates thousands of flips instantly and displays detailed statistics. Features configurable flip counts, probability percentages, and execution timing. Provides entertaining random results while demonstrating probability concepts in real-time. Simple permission system controls access.",
       "filename": "flip_a_coin.lua"
     },
     "flying_vehicles": {
