@@ -19,7 +19,7 @@ a wide range of scripts here to enhance, customize, and extend your multiplayer 
 
 ---
 
-### 💡 What are SAPP & Phasor?
+## 💡 What are SAPP & Phasor?
 
 > **SAPP** and **Phasor** are server-side extensions that provide advanced scripting and customization for **Halo: PC**
 > and **Halo: CE** dedicated servers.
@@ -37,8 +37,8 @@ a wide range of scripts here to enhance, customize, and extend your multiplayer 
 
 | **Category**                                                            | **Description**                                                           |
 |-------------------------------------------------------------------------|---------------------------------------------------------------------------|
-| [**SAPP Scripts**](./sapp)                                              | Collection of Lua scripts for the Halo PC/CE SAPP servers.                |
-| [**Phasor Scripts**](./phasor)                                          | Collection of Lua scripts for the Halo PC/CE Phasor servers.              |
+| [**SAPP Scripts**](./sapp)                                              | SAPP Scripts.                                                             |
+| [**Phasor Scripts**](./phasor)                                          | Phasor Scripts.                                                           |
 | [**Releases**](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases) | Larger SAPP projects with advanced functionality beyond standard scripts. |
 | [**HSP Wiki**](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/wiki)     | Documentation and community knowledge base.                               |
 
