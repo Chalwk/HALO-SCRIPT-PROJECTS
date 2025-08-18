@@ -516,8 +516,8 @@
     },
     "aimbot_scores": {
       "title": "Aimbot Scores",
-      "shortDescription": "",
-      "description": "",
+      "shortDescription": "View player accuracy and bot-score stats with simple commands.",
+      "description": "Displays accuracy and bot-score statistics for players with customizable filters.",
       "filename": "aimbot_scores.lua"
     },
     "anti_aimbot": {
