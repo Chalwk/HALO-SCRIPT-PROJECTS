@@ -1,6 +1,6 @@
 --[[
 =====================================================================================
-SCRIPT NAME:      ait_strike.lua
+SCRIPT NAME:      air_strike.lua
 DESCRIPTION:      Adds configurable, map-specific teleport points in Halo PC/CE.
                   Players entering a defined activation radius are instantly moved
                   to a set destination on the same map.

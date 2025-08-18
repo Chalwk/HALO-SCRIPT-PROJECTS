@@ -1,6 +1,6 @@
 --[[
 =====================================================================================
-SCRIPT NAME:      gravity_gun_grenade.lua
+SCRIPT NAME:      grenade_launcher.lua
 DESCRIPTION:      Turns hand-held/vehicle weapons into grenade launchers.
                   Type /gl on|off to toggle.
 

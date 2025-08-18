@@ -1,6 +1,6 @@
 --[[
 =====================================================================================
-SCRIPT NAME:      market_without_account_saving.lua
+SCRIPT NAME:      market_no_account_saving.lua
 DESCRIPTION:      Earn money for killing and scoring. Use your money to buy perks like
                   Camouflage, God Mode, Grenades, Overshield, Health, Speed Boost,
                   Teleport, and Damage Boost. All perks have a cooldown (default 60s).

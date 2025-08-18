@@ -1,14 +1,7 @@
 --[[
 =====================================================================================
-SCRIPT NAME:      weapon_durability_and_jam_system.lua
-DESCRIPTION:      Implements weapon durability degradation and jamming mechanics.
-                  Weapons degrade when fired. Jammed weapons prevent firing and
-                  require player input (melee) to unjam. Features include:
-                    - Weapon-specific decay rates
-                    - Jam chance calculations
-                    - Overheat handling
-                    - Ammo snapshot and restoration
-                    - Debug logging
+SCRIPT NAME:      vasnish_lurker.lua
+DESCRIPTION:      Allows players to turn on Vanish Mode.
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
