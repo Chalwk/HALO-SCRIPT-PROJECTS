@@ -458,12 +458,6 @@
       "description": "Players aim to destroy objectives or equipment while preventing the opposing team from doing the same.",
       "filename": "sabotage.lua"
     },
-    "sdtm": {
-      "title": "SDTM",
-      "shortDescription": "Snipers Dream Team",
-      "description": "A custom game mode where players compete using sniper rifles, emphasizing precision, positioning, and long-range combat.",
-      "filename": "sdtm.lua"
-    },
     "shotty_snipes": {
       "title": "Shotty-Snipes",
       "shortDescription": "Mixed-range combat",
@@ -519,12 +513,6 @@
       "shortDescription": "Advanced AFK system",
       "description": "Monitors player activity and automatically kicks players who remain AFK beyond a configurable threshold.",
       "filename": "afk_system.lua"
-    },
-    "alias_system": {
-      "title": "Alias System",
-      "shortDescription": "Advanced alias look-up system",
-      "description": "Look up aliases based CD Key Hash, IP Address, ID or Name.",
-      "filename": "alias_system.lua"
     },
     "anti_aimbot": {
       "title": "Anti Aimbot",
@@ -700,11 +688,11 @@
       "description": "Displays the internal IDs and properties of objects in the game world for debugging or scripting.",
       "filename": "get_object_identity.lua"
     },
-    "get_server_name_example": {
+    "get_server_name": {
       "title": "Get Server Name (Example)",
       "shortDescription": "Fetch current server name",
       "description": "Demonstrates retrieving the server name programmatically for logging or display purposes.",
-      "filename": "get_server_name_example.lua"
+      "filename": "get_server_name.lua"
     },
     "item_sky_spawner": {
       "title": "Item Sky Spawner",
@@ -850,11 +838,11 @@
       "description": "Allows players to vote on options, with results displayed in chat.",
       "filename": "simple_poll_system.lua"
     },
-    "spawn_protection_v1": {
-      "title": "Spawn Protection V1",
+    "spawn_protection": {
+      "title": "Spawn Protection",
       "shortDescription": "Prevent spawn kills",
       "description": "Grants temporary invincibility to players after spawning to reduce unfair deaths.",
-      "filename": "spawn_protection_v1.lua"
+      "filename": "spawn_protection.lua"
     },
     "status_timer": {
       "title": "Status Timer",
@@ -874,11 +862,11 @@
       "description": "Allows admins to suspend player actions, including movement, chat, and attacks, for a configurable duration.",
       "filename": "suspend_players.lua"
     },
-    "sync_admins_utility": {
-      "title": "Sync Admins (Utility)",
+    "sync_admins": {
+      "title": "Sync Admins",
       "shortDescription": "Sync admin lists across servers",
       "description": "Ensures all servers in a network have updated admin lists and permissions.",
-      "filename": "sync_admins_utility.lua"
+      "filename": "sync_admins.lua"
     },
     "sync_your_files": {
       "title": "Sync Your Files",
@@ -916,23 +904,23 @@
       "description": "Admins can teleport players individually, in groups, or to preset locations.",
       "filename": "teleport_manager.lua"
     },
-    "the_punisher_v1": {
-      "title": "The Punisher (v1.0)",
+    "the_punisher": {
+      "title": "The Punisher",
       "shortDescription": "Admin punishment tool",
       "description": "Implements automatic punishments for players breaking configurable rules, including kicks, bans, and score penalties.",
-      "filename": "the_punisher_v1.lua"
+      "filename": "the_punisher.lua"
     },
-    "vehicle_block_utility_v1": {
-      "title": "Vehicle Block Utility v1",
+    "vehicle_blocker_v1": {
+      "title": "Vehicle Blocker v1",
       "shortDescription": "Restrict certain vehicles",
       "description": "Blocks specific vehicles from spawning or being used, configurable by admin.",
-      "filename": "vehicle_block_utility_v1.lua"
+      "filename": "vehicle_blocker_v1.lua"
     },
-    "vehicle_block_utility_v2": {
-      "title": "Vehicle Block Utility v2",
+    "vehicle_blocker_v2": {
+      "title": "Vehicle Blocker v2",
       "shortDescription": "Advanced vehicle restrictions",
       "description": "Enhanced vehicle blocking with additional options, such as team-specific or temporary blocks.",
-      "filename": "vehicle_block_utility_v2.lua"
+      "filename": "vehicle_blocker_v2.lua"
     },
     "vote_kick": {
       "title": "Vote Kick",
@@ -952,11 +940,11 @@
       "description": "Automatically provides players with specific weapons on spawn or via command.",
       "filename": "weapon_assigner.lua"
     },
-    "welcome_message_req": {
-      "title": "Welcome Message [req]",
+    "welcome_messages": {
+      "title": "Welcome Messages",
       "shortDescription": "Custom welcome messages",
       "description": "Sends personalized welcome messages to players when they join the server.",
-      "filename": "welcome_message_req.lua"
+      "filename": "welcome_messages.lua"
     },
     "word_buster": {
       "title": "Word Buster",
