@@ -1,14 +1,3 @@
---[[
---=====================================================================================================--
-Script Name: Parkour, for SAPP (PC & CE)
-Description: This script will record how long it takes a player to complete the parkour course.
-
-Copyright (c) 2022-2024, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
-
 local config = {
     json = loadfile('./Parkour/util/json.lua')(),
     timer = loadfile('./Parkour/util/timer.lua')(),
