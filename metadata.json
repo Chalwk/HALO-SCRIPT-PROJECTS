@@ -2,20 +2,20 @@
   "attractive": {
     "air_strike": {
       "title": "Air Strike",
-      "shortDescription": "Periodic aerial bombardment",
-      "description": "Automated airstrike system. Spawns rockets at randomized intervals, heights, and trajectories over predefined map locations with player warnings.",
+      "shortDescription": "Automated, randomized rocket strikes with player alerts",
+      "description": "Triggers periodic airstrikes over predefined map locations. Rockets spawn at random heights and trajectories, accompanied by player warnings, creating dynamic map hazards.",
       "filename": "air_strike.lua"
     },
     "ammo_resupply": {
       "title": "Ammo Resupply",
-      "shortDescription": "Automatically replenish ammo",
-      "description": "Players receive extra ammunition periodically or on demand.",
+      "shortDescription": "Resupply ammo, grenades, and energy batteries on command",
+      "description": "Provides a configurable player command to replenish ammo, magazines, frag/plasma grenades, and battery. Includes cooldowns and optional permission restrictions.",
       "filename": "ammo_resupply.lua"
     },
     "april_fools_chat": {
       "title": "April Fools - Chat",
-      "shortDescription": "Prank chat messages",
-      "description": "Funny or mischievous chat triggered for April Fools.",
+      "shortDescription": "Randomly reroutes player chat to others",
+      "description": "Prank script that makes other players 'speak' your chat messages when triggered by certain words. Includes permission-level checks to limit who can trigger the effect.",
       "filename": "april_fools_chat.lua"
     },
     "april_fools_word_shuffler": {
