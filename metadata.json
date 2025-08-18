@@ -654,8 +654,8 @@
     },
     "cyborg_spawner": {
       "title": "Cyborg Spawner",
-      "shortDescription": "",
-      "description": "",
+      "shortDescription": "Spawn multiplayer cyborgs at preset map locations.",
+      "description": "Automatically spawns novelty cyborgs at fixed coordinates on supported maps.",
       "filename": "cyborg_spawner.lua"
     },
     "damage_multiplier_changer": {
@@ -726,8 +726,8 @@
     },
     "liberty_vehicle_spawner": {
       "title": "Liberty Vehicle Spawner",
-      "shortDescription": "",
-      "description": "",
+      "shortDescription": "Spawn vehicles instantly using chat keywords.",
+      "description": "On-demand vehicle spawner with auto-entry, cleanup timers, and multi-vehicle support.",
       "filename": "liberty_vehicle_spawner.lua"
     },
     "list_players": {
@@ -744,20 +744,21 @@
     },
     "map_list": {
       "title": "Map List",
-      "shortDescription": "",
-      "description": "",
+      "shortDescription": "View current and upcoming map rotation info.",
+      "description": "Displays map cycle details from mapcycle.txt, with commands for current, next, and position-specific maps.",
       "filename": "map_list.lua"
     },
+
     "map_list_with_map_spec": {
       "title": "Map List (with Map Spec)",
-      "shortDescription": "",
-      "description": "",
+      "shortDescription": "Track map cycle with current and upcoming maps.",
+      "description": "Enhanced map rotation tracker with index control, position-based queries, and real-time progress through mapcycle.txt.",
       "filename": "map_list_with_map_spec.lua"
     },
     "map_skip_tally": {
       "title": "Map Skip Tally",
-      "shortDescription": "",
-      "description": "",
+      "shortDescription": "Track and view skip votes per map and player.",
+      "description": "Records and persists skip votes across sessions, with player-specific counts, mode-specific tracking, JSON data persistence, and real-time tally commands.",
       "filename": "map_skip_tally.lua"
     },
     "map_vote_system": {
@@ -798,8 +799,8 @@
     },
     "no_damage": {
       "title": "No Damage",
-      "shortDescription": "",
-      "description": "",
+      "shortDescription": "Toggle invulnerability to prevent player damage.",
+      "description": "Provides a global damage prevention system that allows players to toggle invulnerability.",
       "filename": "no_damage.lua"
     },
     "notify_me": {
@@ -810,8 +811,8 @@
     },
     "object_spawner": {
       "title": "Object Spawner",
-      "shortDescription": "",
-      "description": "",
+      "shortDescription": "Spawn custom objects with precise positioning and rotation.",
+      "description": "Enables precise placement of objects on maps, including weapons, vehicles, and other tags.",
       "filename": "object_spawner.lua"
     },
     "on_teleport": {
@@ -834,8 +835,8 @@
     },
     "race_assistant": {
       "title": "Race Assistant",
-      "shortDescription": "",
-      "description": "",
+      "shortDescription": "Enforces vehicle use in race gametypes with warnings and penalties.",
+      "description": "Monitors players in race gametypes to ensure they enter and stay in vehicles. Features configurable grace periods, visual countdown warnings, safe zones, multi-stage violation handling, and admin exemptions. Supports automated penalties such as kills or kicks for non-compliance.",
       "filename": "race_assistant.lua"
     },
     "random_grenades": {
@@ -846,8 +847,8 @@
     },
     "reg_to_play": {
       "title": "Registration Required to Play",
-      "shortDescription": "",
-      "description": "",
+      "shortDescription": "Enforces mandatory player registration with timed kick enforcement.",
+      "description": "Requires all players to register within a configurable time window upon joining. Supports password verification, persistent player data storage, automatic kicks for unregistered players, and permission-based exemptions. Stores registration data in players.txt and optionally saves immediately or at game end.",
       "filename": "reg_to_play.lua"
     },
     "remove_grenades": {
@@ -864,8 +865,8 @@
     },
     "rules_command": {
       "title": "Rules Command",
-      "shortDescription": "",
-      "description": "",
+      "shortDescription": "Displays server rules to players via a chat command and periodic announcements.",
+      "description": "Allows players to view server rules using a configurable command. Supports timed announcements to remind players of the rules during gameplay. Features include custom server prefix, adjustable display duration, and easy rule list configuration.",
       "filename": "rules_command.lua"
     },
     "score_handler": {
@@ -881,9 +882,9 @@
       "filename": "script_manager.lua"
     },
     "seed_score_protection": {
-      "title": "Seed Score Protection",
-      "shortDescription": "",
-      "description": "",
+      "title": "Script Manager",
+      "shortDescription": "Dynamically loads and unloads scripts based on the current map and game mode.",
+      "description": "Automatically manages Lua scripts for each map and game mode. Features include dynamic loading/unloading, error handling, and persistent tracking of active scripts. Ensures only relevant scripts run for a given map/mode combination, improving server efficiency and reducing conflicts.",
       "filename": "seed_score_protection.lua"
     },
     "server_logger": {
@@ -990,8 +991,8 @@
     },
     "timed_server_password": {
       "title": "Timed Server Password",
-      "shortDescription": "",
-      "description": "",
+      "shortDescription": "Automatically removes the server password after a set duration.",
+      "description": "Enables timed server passwords that expire after a configurable duration. Features include optional player notifications, command-based resets, and admin permission enforcement. Ideal for private sessions or timed events where a temporary password is needed.",
       "filename": "timed_server_password.lua"
     },
     "vehicle_blocker_v1": {
