@@ -1,15 +1,3 @@
---[[
-List of Changes made by Chalwk:
-
-(1) Combined Scripts : 
-
-	- Custom Death Messages Script
-	- Custom On Player Score Script
-	- Custom On Vehicle Entry Script
-	- Custom Spawn Protection Script
-]]
-
-
 -- SERVER PORT --
 Server_Port = 2310
 
