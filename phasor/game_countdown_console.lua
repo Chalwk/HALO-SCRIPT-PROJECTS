@@ -1,12 +1,5 @@
---[[
-------------------------------------
-Description: HPC Countdown to Game Start (Console Version), Phasor V2+
-Copyright (c) 2016-2018
-* Author: Jericho Crosby
-* IGN: Chalwk
-* Written and Created by Jericho Crosby
------------------------------------
-]]--
+-- Name: game_countdown_console.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
 
 -- Settings
 Countdown_To_GameStart = (0)

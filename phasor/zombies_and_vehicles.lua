@@ -1,18 +1,9 @@
---[[
-------------------------------------
-Script Name: HPC Zombies and Vehicles Stats Script, for PhasorV2+
+-- Name: zombies_and_vehicles.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
+--
+-- This is a modified version of the original zombies and vehicles script.
+-- Credits to the original creator(s): SlimJim | Kennan
 
-Heavily Modified version by Jericho Crosby
-* Credits to the original creator(s): SlimJim | Kennan
-
-Copyright (c) 2016 Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-
-* IGN: Chalwk
------------------------------------
-]]--
--- STRINGS --
 HUMAN_MESSAGE = "YOU ARE A HUMAN - KILL THE ZOMBIES!"
 ZOMBIE_MESSAGE = "YOU ARE A ZOMBIE - INFECT THE HUMANS!"
 TEAMKILL_MESSAGE = "Please do not betray your Team Mates!"

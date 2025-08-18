@@ -1,17 +1,8 @@
---[[
-------------------------------------
-Script Name: HPC Zombies Stats Script, for PhasorV2+
-
-Heavily Modified version by Jericho Crosby
-* Credits to the original creator(s): SlimJim | Kennan
-
-Copyright (c) 2016 Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-
-* IGN: Chalwk
------------------------------------
-]]--
+-- Name: zombies_stats.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
+--
+-- This is a modified version of the original zombies and vehicles stats script.
+-- Credits to the original creator(s): SlimJim | Kennan
 
 -- STRINGS --
 local HUMAN_MESSAGE = "YOU ARE A HUMAN - KILL THE ZOMBIES!"

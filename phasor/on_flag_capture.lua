@@ -1,12 +1,6 @@
---[[
-------------------------------------
-Description: HPC OnFlagInteraction (Advanced), Phasor V2+
-Copyright (c) 2016-2018
-* Author: Jericho Crosby
-* IGN: Chalwk
-* Written and Created by Jericho Crosby
------------------------------------
-]]--
+-- Name: on_flag_capture.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
+
 stats = { }
 gametypes = { }
 flag_stats = { }

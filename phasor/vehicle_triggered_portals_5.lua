@@ -1,13 +1,5 @@
---[[
-------------------------------------
-Description: HPC Vechile Triggered Portals (Advanced), Phasor V2+
-Copyright (c) 2016-2018
-* Author: Jericho Crosby
-* IGN: Chalwk
-* Written and Created by Jericho Crosby
-Script Version: 4.5 (remastered)
------------------------------------
-]]--
+-- Name: vehicle_triggered_portals_5.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
 
 seat = { }
 

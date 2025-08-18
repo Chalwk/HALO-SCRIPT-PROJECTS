@@ -1,13 +1,5 @@
---[[
-------------------------------------
-Description: HPC Command_Setplasmas (Fixed), Phasor V2+
-Copyright (c) 2016-2018
-* Author: Jericho Crosby
-* IGN: Chalwk
-* Written and Created by Jericho Crosby
-Script Version: 2.5
------------------------------------
-]]--
+-- Name: command_plasmas.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
 
 function Command_Setplasmas(executor, command, player, plasmas, count)
     if count == 3 and tonumber(plasmas) then

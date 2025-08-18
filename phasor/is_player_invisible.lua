@@ -1,12 +1,5 @@
---[[
-------------------------------------
-Description: HPC IsPlayerInvisible, Phasor V2+
-Copyright (c) 2016-2018
-* Author: Jericho Crosby
-* IGN: Chalwk
-* Written and Created by Jericho Crosby
------------------------------------
-]]--
+-- Name: is_player_invisible.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
 
 function OnScriptUnload()
 end

@@ -1,12 +1,5 @@
---[[
-------------------------------------
-Description: HPC Status Timer, Phasor V2+
-Copyright (c) 2016-2018
-* Author: Jericho Crosby
-* IGN: Chalwk
-* Written and Created by Jericho Crosby
------------------------------------
-]]--
+-- Name: stats_timer.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
 
 function GetRequiredVersion()
     return 200

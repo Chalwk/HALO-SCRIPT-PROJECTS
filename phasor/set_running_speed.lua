@@ -1,12 +1,5 @@
---[[
-------------------------------------
-Description: HPC SetRunningSpeed, Phasor V2+
-Copyright (c) 2016-2018
-* Author: Jericho Crosby
-* IGN: Chalwk
-* Written and Created by Jericho Crosby
------------------------------------
-]]-- 
+-- Name: set_running_speed.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
 
 RunningSpeed = 1.08
 function GetRequiredVersion()

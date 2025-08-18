@@ -1,3 +1,6 @@
+-- Name: one_in_the_chamber.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
+
 starting_primary_ammo = 1
 starting_secondary_ammo = 1
 reset_ammo = true

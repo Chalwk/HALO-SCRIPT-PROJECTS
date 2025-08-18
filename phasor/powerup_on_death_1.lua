@@ -1,13 +1,6 @@
--- Spawn Where Killed & Drop PowerUp on Death: Combined
---[[
-------------------------------------
-Description: HPC Drop PowerUp on Death (+ Spawn), Phasor V2+
-Copyright (c) 2016-2018
-* Author: Jericho Crosby
-* IGN: Chalwk
-* Written and Created by Jericho Crosby
------------------------------------
-]]--
+-- Name: powerup_on_death_1.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
+
 players = { }
 EQUIPMENT = { }
 DEATH_LOCATION = { }

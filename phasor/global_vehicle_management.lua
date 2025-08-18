@@ -1,15 +1,6 @@
---[[
-------------------------------------
-Description: HPC Global Vehicle Management, Phasor V2+
-Copyright (c) 2016-2018
-* Author: Jericho Crosby
-* IGN: Chalwk
-* Written and Created by Jericho Crosby
------------------------------------
-]]--
--- About:
--- 		* Globally Block/Allow vehicle entry.
--- 		* Configure which vehicles are accessible on a GameType / Map basis.
+-- Name: global_vehicle_management.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
+
 Vehicle_List = "" -- Do Not Touch
 Vehicles_Allowed = "" -- Do Not Touch
 Blocked_Vehicles = "" -- Do Not Touch

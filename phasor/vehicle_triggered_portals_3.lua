@@ -1,15 +1,6 @@
---[[
-------------------------------------
-Description: HPC Vehicle Triggered Portals (OWV Server), Phasor V2+
-Copyright (c) 2016-2018
-* Author: Jericho Crosby
-* IGN: Chalwk
-* Written and Created by Jericho Crosby
-Script Version: 2.5
------------------------------------
-]]--
+-- Name: vehicle_triggered_portals_3.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
 
--- Rocket Hog on top of Turret Mountain - Overlooking Red Base.
 coords = { }
 seat = { }
 function GetRequiredVersion()

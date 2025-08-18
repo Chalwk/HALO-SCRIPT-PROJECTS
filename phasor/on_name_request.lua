@@ -1,12 +1,5 @@
---[[
-    ------------------------------------
-    Description: HPC OnNameRequest, Phasor V2+
-    Copyright (c) 2016-2018
-    * Author: Jericho Crosby
-    * IGN: Chalwk
-    * Written and Created by Jericho Crosby
-    -----------------------------------
-]]--
+-- Name: on_name_request.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
 
 function OnNameRequest(hash, name)
     local timestamp = os.date("%H:%M:%S - %d/%m/%Y")

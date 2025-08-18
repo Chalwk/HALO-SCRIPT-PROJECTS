@@ -1,14 +1,6 @@
---[[
-------------------------------------
-Description: HPC Killer Reward!, Phasor V2+
-Copyright (c) 2016-2018
-* Author: Jericho Crosby
-* IGN: Chalwk
-* Written and Created by Jericho Crosby
+-- Name: killer_rewards.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
 
-Reward killer with special attributes
------------------------------------
-]]-- 
 players = { }
 EQUIPMENT = { }
 EQUIPMENT_TAGS = { }

@@ -1,12 +1,5 @@
---[[
-------------------------------------
-Description: HPC Vehicle Spawn #3, Phasor V2+
-Copyright (c) 2016-2018
-* Author: Jericho Crosby
-* IGN: Chalwk
-* Written and Created by Jericho Crosby
------------------------------------
-]]--
+-- Name: vehicle_spawns_3.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
 
 function GetRequiredVersion()
     return 200

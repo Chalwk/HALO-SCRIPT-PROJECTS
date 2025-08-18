@@ -1,14 +1,5 @@
---[[
-------------------------------------------------------------------------
-Script Name: HPC Welcome Messages, for PhasorV2+
-
-Copyright (c) 2016 Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-
-* IGN: Chalwk
-------------------------------------------------------------------------
-]]--
+-- Name: welcome_messages.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
 
 Welcome_Message = "Welcome Message Here"
 

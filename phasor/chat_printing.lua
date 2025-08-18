@@ -1,16 +1,6 @@
---[[
---------------------------------------------------------------------------
-Script Name: HPC Chat Logging, for Phasorv2
+-- Name: chat_printing.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
 
-Description: This script will log player chat to halo/logs/Server Chat.txt
-
-* Notes at the bottom of the script.
-
-Copyright � 2016 Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---------------------------------------------------------------------------
-]]-- 
 function GetRequiredVersion()
     return
     200

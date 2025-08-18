@@ -1,15 +1,5 @@
---[[
-------------------------------------
-Description: HPC Nade Launcher, Phasor V2+
-Copyright (c) 2016-2018
-* Author: Jericho Crosby
-* IGN: Chalwk
-* Written and Created by Jericho Crosby
------------------------------------
-]]--
---[[
-Changing projectiles of current weapon. Direction and velocity is also applied.
---]]
+-- Name: nade_launcher.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
 
 vel = 0.5 -- Velocity to launch projectile
 dist = 0.4 -- Distance from player to spawn projectile

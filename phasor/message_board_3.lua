@@ -1,12 +1,5 @@
---[[
-------------------------------------
-Description: HPC Auto Message Board, Phasor V2+
-* Author: Jericho Crosby
-* IGN: Chalwk
-* Written and Created by Jericho Crosby
-Script Version: 2.5
------------------------------------
-]]--
+-- Name: message_board_3.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
 
 -- Constants
 local MESSAGE_INTERVAL = 1000

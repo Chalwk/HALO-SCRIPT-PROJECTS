@@ -1,12 +1,6 @@
---[[
-------------------------------------
-Description: HPC Classic Snipers Chat Logging, Phasor V2+
-Copyright (c) 2016-2018
-* Author: Jericho Crosby
-* IGN: Chalwk
-* Written and Created by Jericho Crosby
------------------------------------
-]]--
+-- Name: classic_snipers_chat_logging.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
+
 function OnScriptUnload()
 
 end

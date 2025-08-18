@@ -1,12 +1,5 @@
---[[
-------------------------------------
-Description: HPC Set Flag Limit, Phasor V2+
-Copyright (c) 2016-2018
-* Author: Jericho Crosby
-* IGN: Chalwk
-* Written and Created by Jericho Crosby
------------------------------------
-]]--
+-- Name: set_flag_limit.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
 
 function OnScriptUnload()
 end

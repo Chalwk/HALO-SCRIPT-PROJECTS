@@ -1,14 +1,6 @@
---[[
-------------------------------------
-Description: HPC BeaverCreek Messages, Phasor V2+
-Copyright (c) 2016-2018
-* Author: Jericho Crosby
-* IGN: Chalwk
-* Written and Created by Jericho Crosby
------------------------------------
-]]--
+-- Name: beavercreek_messages.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
 
--- Settings
 local message1 = "On this map you start wihout a weapon."
 local message2 = "Each player will have to find a weapon every time you spawn."
 

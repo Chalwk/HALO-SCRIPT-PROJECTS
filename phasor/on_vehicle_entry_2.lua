@@ -1,17 +1,5 @@
---[[
-------------------------------------
-Script Name: HPC OnVehicleEntry Messages, SAPP
-    - Implementing API version: 1.10.0.0
-
-Description: This script will print Vehicle Names & Seat position On vehicle Entry
-
-Copyright (c) 2016 Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-
-* IGN: Chalwk
------------------------------------
-]]-- 
+-- Name: on_vehicle_entry_2.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
 
 api_version = "1.12.0.0"
 

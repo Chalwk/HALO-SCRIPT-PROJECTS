@@ -1,12 +1,6 @@
---[[
-------------------------------------
-Description: HPC Drop PowerUp on Death (standalone), Phasor V2+
-Copyright (c) 2016-2018
-* Author: Jericho Crosby
-* IGN: Chalwk
-* Written and Created by Jericho Crosby
------------------------------------
-]]--
+-- Name: powerup_on_death_2.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
+
 players = { }
 EQUIPMENT = { }
 EQUIPMENT_TAGS = { }

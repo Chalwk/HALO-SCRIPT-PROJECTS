@@ -1,30 +1,6 @@
---[[
-------------------------------------
-Description: HPC Custom Weapon Spawns, Phasor V2+
-Copyright (c) 2016-2018
-* Author: Jericho Crosby
-* IGN: Chalwk
-* Written and Created by Jericho Crosby
------------------------------------
-]]--
---[[
-function OnObjectCreationAttempt(mapid, parentid, player)
+-- Name: custom_weapon_spawns.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
 
-	local name, type = gettaginfo(mapid)
-
-	if name == "weapons\\assault rifle\\assault rifle"
-                    or name == "weapons\\flamethrower\\flamethrower"
-                    or name == "weapons\\gravity rifle\\gravity rifle"
-                    or name == "weapons\\needler\\mp_needler"
-                    or name == "weapons\\plasma pistol\\plasma pistol"
-                    or name == "weapons\\plasma rifle\\plasma rifle"
-                    or name == "weapons\\plasma_cannon\\plasma_cannon"
-                    or name == "weapons\\rocket launcher\\rocket launcher"
-                    or name == "weapons\\shotgun\\shotgun" then
-		return false
-	end
-end
-]]
 arifle = "weapons\\assault rifle\\assault rifle"
 prifle = "weapons\\plasma rifle\\plasma rifle"
 pistol = "weapons\\pistol\\pistol"

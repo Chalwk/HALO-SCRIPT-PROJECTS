@@ -1,12 +1,5 @@
---[[
-------------------------------------
-Description: HPC Spectrum Cube Spawner, Phasor V2+
-Copyright (c) 2016-2018
-* Author: Jericho Crosby
-* IGN: Chalwk
-* Written and Created by Jericho Crosby
------------------------------------
-]]--
+-- Name: spectrum_cube.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
 
 function GetRequiredVersion()
     return

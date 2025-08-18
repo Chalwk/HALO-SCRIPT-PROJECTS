@@ -1,13 +1,5 @@
---[[
---=====================================================================================================--
-Script Name: Chat IDs, for Phasor V2, (PC & CE)
-Description: Define chat message output format on a per message-type basis.
-
-Copyright (c) 2021, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+-- Name: chat_formatter.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
 
 -- config starts --
 local chat_format = {

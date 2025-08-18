@@ -1,12 +1,5 @@
---[[
-------------------------------------
-Description: HPC SetRespawnTime, Phasor V2+
-Copyright (c) 2016-2018
-* Author: Jericho Crosby
-* IGN: Chalwk
-* Written and Created by Jericho Crosby
------------------------------------
-]]-- 
+-- Name: et_respawn_time.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
 
 RespawnTime = 1.5
 function GetRequiredVersion()

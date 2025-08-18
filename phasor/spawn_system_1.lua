@@ -1,12 +1,6 @@
---[[
-------------------------------------
-Description: HPC Spawn Points V1, Phasor V2+
-Copyright (c) 2016-2018
-* Author: Jericho Crosby
-* IGN: Chalwk
-* Written and Created by Jericho Crosby
------------------------------------
-]]--
+-- Name: spawn_protection_1.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
+
 Red_Spawn_Coords = { }
 Blue_Spawn_Coords = { }
 team_play = false

@@ -1,12 +1,5 @@
---[[
-------------------------------------
-Description: HPC Save Scores, Phasor V2+
-Copyright (c) 2016-2018
-* Author: Jericho Crosby
-* IGN: Chalwk
-* Written and Created by Jericho Crosby
------------------------------------
-]]--
+-- Name: save_scores.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
 
 math.inf = 1 / 0
 UpdateScores = false

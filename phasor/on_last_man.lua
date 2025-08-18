@@ -1,13 +1,6 @@
---[[
-    ------------------------------------
-    Description: OnLastMan (fixed function), Phasor V2+
-    Copyright (c) 2016-2018
-    * Author: Jericho Crosby
-    * IGN: Chalwk
-    * Written and Created by Jericho Crosby
-    -----------------------------------
-]]--
--- 		Called when last man exists
+-- Name: on_last_man.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
+
 function OnLastMan()
     -- 		Lookup the last man
     for i = 0, 15 do

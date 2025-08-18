@@ -1,12 +1,6 @@
---[[
-------------------------------------
-Description: HPC OnVehicleEntry (Advanced), Phasor V2+
-Copyright (c) 2016-2018
-* Author: Jericho Crosby
-* IGN: Chalwk
-* Written and Created by Jericho Crosby
------------------------------------
-]]--
+-- Name: on_vehicle_entry_4.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
+
 logging = true
 function GetRequiredVersion()
     return

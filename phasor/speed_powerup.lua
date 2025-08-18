@@ -1,13 +1,6 @@
---[[
-------------------------------------
-Description: HPC Speed PowerUp, Phasor V2+
-Copyright (c) 2016-2018
-* Author: Jericho Crosby
-* IGN: Chalwk
-* Written and Created by Jericho Crosby
------------------------------------
-]]--
--- When a player interacts with a camouflage, this script will give them a temporary speed boost.
+-- Name: speed_powerup.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
+
 function OnScriptUnload()
 end
 function GetRequiredVersion()

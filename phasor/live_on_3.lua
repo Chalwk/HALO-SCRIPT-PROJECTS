@@ -1,12 +1,5 @@
---[[
-------------------------------------
-Description: HPC Live on Three, Phasor V2+
-Copyright (c) 2016-2018
-* Author: Jericho Crosby
-* IGN: Chalwk
-* Written and Created by Jericho Crosby
------------------------------------
-]]--
+-- Name: live_on_3.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
 
 -- Script Settings
 local Live_On_Three = 07

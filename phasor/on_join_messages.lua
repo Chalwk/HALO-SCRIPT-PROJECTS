@@ -1,15 +1,6 @@
---[[
-------------------------------------
-Description: HPC OnJoinMessages (delayed), Phasor V2+
-Copyright (c) 2016-2018
-* Author: Jericho Crosby
-* IGN: Chalwk
-* Written and Created by Jericho Crosby
+-- Name: on_join_messages.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
 
-About:
-This document will send a private chat message to the player 5 seconds after joining
------------------------------------
-]]--
 local message1 = "Warning:"
 local message2 = "This server features high intensity carnage, portals, overpowered weapons and more!"
 local message3 = "Type /info for help."

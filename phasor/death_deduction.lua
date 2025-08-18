@@ -1,14 +1,5 @@
---[[
-    ------------------------------------
-    Description: HPC Death Deduction, Phasor V2+
-    Copyright (c) 2016-2018
-    * Author: Jericho Crosby
-    * IGN: Chalwk
-    * Written and Created by Jericho Crosby
-    Script Version: 2.5
-    -----------------------------------
-]]--
--- Great for zombie games on HPC - Phasor V2+
+-- Name: death_deduction.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
 
 ANNOUNCE_LEVEL_UP = " is now a human!"
 local HUMAN_MESSAGE = "YOU ARE A HUMAN - KILL THE ZOMBIES!"

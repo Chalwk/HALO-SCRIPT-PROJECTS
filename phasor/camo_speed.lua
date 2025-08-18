@@ -1,12 +1,5 @@
---[[
-------------------------------------
-Description: HPC ApplySpeed (On Camo Pickup), Phasor V2+
-Copyright (c) 2016-2018
-* Author: Jericho Crosby
-* IGN: Chalwk
-* Written and Created by Jericho Crosby
------------------------------------
-]]--
+-- Name: caomo_speed.lua
+-- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
 
 -- Settings
 local EQUIPMENT = { "powerups\\active camouflage" }
