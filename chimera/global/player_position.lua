@@ -1,16 +1,22 @@
---=====================================================================================--
--- SCRIPT NAME:      Show Player Position
--- DESCRIPTION:      Displays the player's current X, Y, Z coordinates in the console
---                   each tick while enabled. Output message format is configurable.
---                   Can be toggled on/off in-game by typing "show_pos" in the console.
---
--- AUTHOR:           Jericho Crosby (Chalwk)
--- COMPATIBILITY:    Halo PC/CE | Chimera
---
--- Copyright (c) 2025 Jericho Crosby <jericho.crosby227@gmail.com>
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      player_position.lua
+DESCRIPTION:      Real-time coordinate display with customizable output.
+
+                  Features:
+                  - Live XYZ position tracking
+                  - Configurable message format
+                  - Console toggle command
+                  - Multi-client compatibility
+
+                  Command:
+                  /show_pos - Toggle coordinate display
+
+Copyright (c) 2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 clua_version = 2.056
 

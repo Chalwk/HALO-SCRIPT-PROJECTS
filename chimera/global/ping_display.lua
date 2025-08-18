@@ -1,22 +1,25 @@
---=====================================================================================--
--- SCRIPT NAME:      Player Ping Display
--- DESCRIPTION:      Continuously calculates and visually displays the player's network
---                   ping on screen while enabled. Supports configurable display modes,
---                   color-coded ping thresholds, animated flash on spikes, and smoothing
---                   over recent ping history for stability. The display position, font,
---                   and toggle command are configurable. Toggle on/off in-game by typing
---                   the configured command (default: "ping") in the console.
---
---                   Advanced console commands allow changing display mode, resetting
---                   ping history, and viewing current configuration.
---
--- AUTHOR:           Jericho Crosby (Chalwk)
--- COMPATIBILITY:    Halo PC/CE | Chimera
---
--- Copyright (c) 2025 Jericho Crosby <jericho.crosby227@gmail.com>
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      ping_display.lua
+DESCRIPTION:      Real-time network latency monitor with visual customization.
+
+                  Key Features:
+                  - Dynamic on-screen ping display
+                  - Color-coded threshold alerts
+                  - Historical smoothing
+                  - Spike animation effects
+                  - Position/font customization
+
+                  Commands:
+                  /ping         - Toggle display
+                  /ping reset   - Reset ping history
+                  /ping config  - Show current configuration
+
+Copyright (c) 2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- CONFIG STARTS ------------------------------------------------------------------------
 local CONFIG = {
