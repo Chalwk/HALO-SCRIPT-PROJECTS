@@ -1,18 +1,18 @@
---=====================================================================================--
--- SCRIPT NAME:      Attrition
--- DESCRIPTION:      A mini-game inspired by Halo Infinite’s Attrition mode.
---                   - Players have limited lives.
---                   - The objective is to deplete the opposing team’s pool of lives.
---                   - Teammates can revive each other by crouching over their orb.
---                   - Orbs appear as floating skulls above dead players.
---
--- AUTHOR:           Jericho Crosby (Chalwk)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- COPYRIGHT © 2022 Jericho Crosby
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      attrition.lua
+DESCRIPTION:      A mini-game inspired by Halo Infinite’s Attrition mode.
+                  - Players have limited lives.
+                  - The objective is to deplete the opposing team’s pool of lives.
+                  - Teammates can revive each other by crouching over their orb.
+                  - Orbs appear as floating skulls above dead players.
+
+Copyright (c) 2022 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
+
 
 -- config starts
 local Attrition = {

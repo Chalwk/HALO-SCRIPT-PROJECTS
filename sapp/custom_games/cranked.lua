@@ -1,18 +1,17 @@
---=====================================================================================--
--- SCRIPT NAME:      Cranked
--- DESCRIPTION:      A kill-triggered mini-game inspired by Call of Duty’s Cranked mode.
---                   - Players enter a "cranked" state after getting a kill.
---                   - While cranked, they receive a speed and damage boost.
---                   - They must get another kill within a set time (e.g., 30s) or explode.
---                   - A visual timer is displayed during the cranked state.
---
--- AUTHOR:           Jericho Crosby (Chalwk)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- COPYRIGHT © 2025 Jericho Crosby
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      cranked.lua
+DESCRIPTION:      A kill-triggered mini-game inspired by Call of Duty’s Cranked mode.
+                  - Players enter a "cranked" state after getting a kill.
+                  - While cranked, they receive a speed and damage boost.
+                  - They must get another kill within a set time (e.g., 30s) or explode.
+                  - A visual timer is displayed during the cranked state.
+
+Copyright (c) 2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 ----------------------------------------
 -- Configuration starts

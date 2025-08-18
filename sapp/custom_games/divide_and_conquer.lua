@@ -5,8 +5,6 @@
 --                   - The objective is to dominate by converting all enemy players.
 --                   - The game ends when one team has no players remaining.
 --
--- AUTHOR:           Jericho Crosby (Chalwk)
--- COMPATIBILITY:    Halo PC/CE | SAPP
 --
 -- COPYRIGHT © 2023-2025 Jericho Crosby
 -- LICENSE:          MIT License
