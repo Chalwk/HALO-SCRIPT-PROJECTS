@@ -1,18 +1,18 @@
---=====================================================================================================--
--- SCRIPT NAME:      Needler-Galore
--- DESCRIPTION:      Players are restricted to using needlers only.
---
---                   * Other weapons and vehicles do not spawn.
---                   * Equipment like grenades and powerups are allowed.
---                   * Optional infinite ammo and bottomless clip features.
---
--- AUTHOR:           Jericho Crosby (Chalwk)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- Copyright (c) 2022 Jericho Crosby
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      needler_galore.lua
+DESCRIPTION:      Exclusive needler combat with customizable options:
+                  - All players spawn with needlers only
+                  - Other weapons and vehicles disabled
+                  - Configurable equipment settings (grenades/powerups)
+                  - Optional infinite ammo and bottomless clip
+                  - Needler damage and properties adjustable
+
+Copyright (c) 2022 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = '1.12.0.0'
 

@@ -1,21 +1,23 @@
---=====================================================================================================--
--- SCRIPT NAME:      Swat
--- DESCRIPTION:      Players spawn armed with a sniper rifle and pistol.
---                   Only headshots count for kills.
---                   First to 25 kills wins the match.
---
---                   * Other weapons and vehicles are disabled.
---                   * Powerups (like camo, overshield) are enabled.
---                   * Options for infinite ammo, bottomless clip, and grenade disabling.
---                   * Configurable default score limit.
---
--- AUTHOR:           Jericho Crosby (Chalwk)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- Copyright (c) 2022 Jericho Crosby
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      swat.lua
+DESCRIPTION:      Precision-based competitive shooter featuring:
+                  - Headshot-only kills (sniper rifle & pistol)
+                  - Default 25-kill victory condition (configurable)
+                  - Restricted gameplay:
+                    * All other weapons/vehicles disabled
+                    * Powerups (camo/overshield) enabled
+                  - Customization options:
+                    * Infinite ammo/bottomless clip toggles
+                    * Grenade availability settings
+                    * Score limit adjustments
+                    * Weapon loadout configurations
+
+Copyright (c) 2022 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = '1.12.0.0'
 

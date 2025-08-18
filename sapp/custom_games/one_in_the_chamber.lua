@@ -1,19 +1,18 @@
---=====================================================================================================--
--- SCRIPT NAME:      One In The Chamber
--- DESCRIPTION:      Each player starts with a pistol loaded with a single bullet.
---                   - Every shot is a guaranteed kill.
---                   - Miss a shot, and you're down to melee combat only.
---                   - Each kill awards you one bullet.
---                   - Mastery demands precision and quick reflexes.
---                   - Choose your shots wisely: snipe or close in for the kill.
---
--- AUTHOR:           Jericho Crosby (Chalwk)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- Copyright (c) 2023-2024 Jericho Crosby
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      one_in_the_chamber.lua
+DESCRIPTION:      High-stakes pistol duel mode featuring:
+                  - Single bullet starts (guaranteed one-shot kills)
+                  - Melee-only after missed shots
+                  - Bullet rewards for successful kills
+                  - Precision-based gameplay with risk/reward decisions
+                  - Configurable bullet economy and match settings
+
+Copyright (c) 2023-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = '1.12.0.0'
 

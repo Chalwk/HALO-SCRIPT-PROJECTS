@@ -1,16 +1,21 @@
---=====================================================================================================--
--- SCRIPT NAME:      Survival Slayer
--- DESCRIPTION:      Players have a limited lifespan that decreases over time.
---                   Each kill adds 10 extra seconds to your remaining life.
---                   The first player to reach 15 kills wins the game.
---
--- AUTHOR:           Jericho Crosby (Chalwk)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- Copyright (c) 2022-2025 Jericho Crosby
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      survival_slayer.lua
+DESCRIPTION:      High-stakes survival mode with time-based mechanics:
+                  - Countdown life timer for all players
+                  - +10 seconds awarded per kill
+                  - Victory condition: First to 15 kills
+                  - Configurable settings:
+                    * Base lifespan duration
+                    * Time bonus per kill
+                    * Win condition thresholds
+                  - Real-time timer HUD display
+
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- Configuration table for the Survival Slayer game mode
 local SurvivalSlayer = {

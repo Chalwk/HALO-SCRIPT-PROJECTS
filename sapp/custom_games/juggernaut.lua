@@ -1,27 +1,22 @@
---=====================================================================================================--
--- SCRIPT NAME:      Juggernaut
--- DESCRIPTION:      A dynamic power-player game.
---
---                   Juggernauts have enhanced attributes:
---                   - Health boost
---                   - Speed boost
---                   - Shield boost
---                   - Damage boost
---                   - Regenerating health
---
---                   Gameplay:
---                   - At game start, a random player becomes the Juggernaut.
---                   - Juggernaut tries to kill as many players as possible within their time limit.
---                   - When the Juggernaut dies or time expires, the next player or a random player becomes Juggernaut.
---                   - Compatible with all game types.
---
--- AUTHOR:           Jericho Crosby (Chalwk)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- Copyright (c) 2019-2023 Jericho Crosby
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      juggernaut.lua
+DESCRIPTION:      A dynamic power-player game featuring enhanced Juggernauts with:
+                  - Health, speed, and shield boosts
+                  - Increased damage output
+                  - Regenerating health
+
+                  Gameplay mechanics:
+                  - Random player becomes Juggernaut at start
+                  - Juggernaut hunts players within time limit
+                  - Role passes on death/time expiration
+                  - Works with all game types
+
+Copyright (c) 2019-2023 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 --[[
     Configuration table for the Juggernaut game mode.

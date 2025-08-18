@@ -1,22 +1,21 @@
---=====================================================================================--
--- SCRIPT NAME:      Frag Nation
--- DESCRIPTION:      A grenade mini-game with strategic resource management.
---                   - Each player starts with limited grenades and an empty plasma pistol.
---                   - Killing players with grenades rewards you with more grenades.
---                   - No grenades means you’re limited to melee combat.
---                   - Customizable kill limit to win.
---                   - Configurable starting grenades and rewards per kill.
---                   - Adjustable primary weapon and ammo settings.
---                   - Enable/disable map objects like weapons, vehicles, and equipment.
---                   - Intended for use on STOCK maps only.
---
--- AUTHOR:           Jericho Crosby (Chalwk)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- COPYRIGHT © 2021-2022 Jericho Crosby
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      frag_nation.lua
+DESCRIPTION:      A grenade mini-game with strategic resource management.
+                  - Each player starts with limited grenades and an empty plasma pistol.
+                  - Killing players with grenades rewards you with more grenades.
+                  - No grenades means you're limited to melee combat.
+                  - Customizable kill limit to win.
+                  - Configurable starting grenades and rewards per kill.
+                  - Adjustable primary weapon and ammo settings.
+                  - Enable/disable map objects like weapons, vehicles, and equipment.
+                  - Intended for use on STOCK maps only.
+
+Copyright (c) 2021-2022 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- config starts --
 

@@ -1,15 +1,17 @@
---=====================================================================================================--
--- SCRIPT NAME:      Melee Attack
--- DESCRIPTION:      Players are restricted to melee combat only.
---                   Striking an opponent with the skull results in an instant kill.
---
--- AUTHOR:           Jericho Crosby (Chalwk)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- Copyright (c) 2023-2025 Jericho Crosby
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      melee_attack.lua
+DESCRIPTION:      Intense melee-only combat with special mechanics:
+                  - Players can only use melee attacks
+                  - Skull strikes result in instant kills
+                  - Weapon pickups disabled
+                  - Configurable melee damage modifiers
+
+Copyright (c) 2023-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 --- Configuration
 local score_limit = 50

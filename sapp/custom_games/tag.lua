@@ -1,18 +1,23 @@
---=====================================================================================--
--- SCRIPT NAME:      Tag
--- DESCRIPTION:      A mini-game where one player is the "tagger" and tries
---                   to tag other players. When a runner is tagged, they become the
---                   new tagger. Runners earn points over time, while taggers earn a
---                   large score bonus for tagging someone. Optional settings allow
---                   for automatic tagger rotation, speed modifiers, and more.
---
--- AUTHOR:           Jericho Crosby (Chalwk)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- COPYRIGHT (c) 2022-2025 Jericho Crosby
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      tag.lua
+DESCRIPTION:      Dynamic tag minigame with role-swapping mechanics:
+                  - One "Tagger" chases multiple "Runners"
+                  - Successful tags transfer the Tagger role
+                  - Scoring system:
+                    * Runners earn points over time
+                    * Tagger receives large bonus per tag
+                  - Configurable options:
+                    * Automatic role rotation timer
+                    * Movement speed modifiers
+                    * Score values customization
+                    * Game duration settings
+
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- CONFIG --
 local CFG = {

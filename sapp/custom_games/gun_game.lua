@@ -1,18 +1,19 @@
---=====================================================================================--
--- SCRIPT NAME:      Gun Game (Time-Based Version)
--- DESCRIPTION:      A weapon-progression game mode where players advance through
---                   predefined weapon levels by scoring kills. Optional infinite ammo,
---                   grenade loadouts, and demotion on suicide or backtap.
---                   Game ends when a player reaches the final level, with configurable
---                   options to reset, change map, or stop play.
---
--- AUTHOR:           Chalwk (Jericho Crosby)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- Copyright (c) 2025 Jericho Crosby
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      gun_game.lua
+DESCRIPTION:      A weapon-progression game mode where players advance through
+                  predefined weapon levels by scoring kills. Features:
+                  - Optional infinite ammo
+                  - Custom grenade loadouts
+                  - Demotion on suicide or backtap
+                  - Configurable end-game actions (reset, change map, or stop play)
+                  - Game ends when a player reaches the final level
+
+Copyright (c) 2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- Configuration ------------------------------------------------------------
 local GunGame = {

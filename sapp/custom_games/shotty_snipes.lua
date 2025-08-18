@@ -1,18 +1,21 @@
---=====================================================================================================--
--- SCRIPT NAME:      Shotty-Snipes
--- DESCRIPTION:      Players are limited to shotguns and snipers only.
---
---                   * Other weapons and vehicles will not spawn.
---                   * Equipment such as grenades and powerups remain usable.
---                   * Optional features include infinite ammo and bottomless clip.
---
--- AUTHOR:           Jericho Crosby (Chalwk)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- Copyright (c) 2022-2024 Jericho Crosby
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      shotty_snipes.lua
+DESCRIPTION:      Intense close-quarters/long-range combat featuring:
+                  - Exclusive shotgun and sniper rifle gameplay
+                  - All other weapons and vehicles disabled
+                  - Equipment (grenades/powerups) remains active
+                  - Configurable weapon settings:
+                    * Infinite ammo toggle
+                    * Bottomless clip option
+                    * Damage modifiers
+                  - Map-specific weapon loadout support
+
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = '1.12.0.0'
 

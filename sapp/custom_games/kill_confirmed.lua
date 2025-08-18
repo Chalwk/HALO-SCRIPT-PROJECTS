@@ -1,16 +1,18 @@
---=====================================================================================================--
--- SCRIPT NAME:      Kill Confirmed
--- DESCRIPTION:      Inspired by Call of Duty: Modern Warfare 3.
---                   Teams score by collecting enemy dog tags (skulls) dropped on death.
---                   First team to 65 points wins or highest score when time runs out.
---
--- AUTHOR:           Chalwk (Jericho Crosby)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- Copyright (c) 2019-2025 Jericho Crosby
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      kill_confirmed.lua
+DESCRIPTION:      Modern Warfare 3-inspired team objective:
+                  - Collect enemy dog tags (skulls) dropped on death
+                  - First to 65 points wins
+                  - Highest score wins if time expires
+                  - Tags disappear after configurable delay
+                  - Team scoring notifications
+
+Copyright (c) 2019-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- CONFIG STARTS -------------------------------------------------------------
 local KillConfirmed = {

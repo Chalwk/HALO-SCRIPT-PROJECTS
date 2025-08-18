@@ -1,19 +1,18 @@
---=====================================================================================================--
--- SCRIPT NAME:      Sabotage
--- DESCRIPTION:      A bomb spawns at the center of the map.
---                   Both teams race to destroy the opposing team's base.
---                   The team that successfully destroys the enemy base wins.
---
---                   To plant or defuse the bomb:
---                   * Hold the crouch key while standing on the flag podium.
---
--- AUTHOR:           Jericho Crosby (Chalwk)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- Copyright (c) 2022 Jericho Crosby
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      sabotage.lua
+DESCRIPTION:      Bomb-based objective gameplay featuring:
+                  - Central bomb spawn location
+                  - Team-based base destruction objective
+                  - Crouch-based bomb planting/defusing mechanics
+                  - Flag podium interaction points
+                  - Configurable bomb timers and explosion effects
+
+Copyright (c) 2022 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 local Sabotage = {
 

@@ -1,21 +1,18 @@
---=====================================================================================--
--- SCRIPT NAME:      Parkour Timer
--- DESCRIPTION:      Automatically tracks a player's time as they complete
---                   a parkour course. Timers start when a player crosses the start line.
---                   Perfect for obstacle maps, jump puzzles, and skill-based events.
---                   Features:
---                   - Auto-start timer when player enters the start zone
---                   - Auto-finish detection at the end zone
---                   - Per-player best time tracking and announcements
---                   - Multi-map support with per-map checkpoint definitions
---
--- AUTHOR:           Jericho Crosby (Chalwk)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- COPYRIGHT © 2025 Jericho Crosby
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      parkour_timer.lua
+DESCRIPTION:      Automated parkour course timing system with:
+                  - Zone-based timer activation (start/finish)
+                  - Individual player time tracking
+                  - Personal best records and announcements
+                  - Multi-map configuration support
+                  - Custom checkpoint definitions per map
+
+Copyright (c) 2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = "1.12.0.0"
 

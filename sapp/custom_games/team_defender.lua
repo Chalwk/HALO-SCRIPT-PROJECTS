@@ -1,20 +1,26 @@
---=====================================================================================================--
--- SCRIPT NAME:      Team Defender (v1.5)
--- DESCRIPTION:      Call of Duty: Modern Warfare 3 style Team Defender mode.
---
---                   * A flag spawns somewhere on the map.
---                   * One player must hold the flag while teammates defend.
---                   * The team holding the flag earns double points towards the match score.
---                   * Flag holders gain +20 assist points for every teammate kill.
---                   * The flag respawns after 15 seconds if left unheld.
---
--- AUTHOR:           Jericho Crosby (Chalwk)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- Copyright (c) 2021 Jericho Crosby
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      team_defender.lua
+DESCRIPTION:      Modern Warfare 3-inspired objective mode featuring:
+                  - Strategic flag control gameplay:
+                    * Random flag spawn locations
+                    * Double team points while holding flag
+                    * +20 assist points per teammate kill
+                  - Team-based roles:
+                    * Flag carrier (objective holder)
+                    * Defenders (protect carrier)
+                    * Attackers (reclaim objective)
+                  - Configurable settings:
+                    * Flag respawn timer (default: 15s)
+                    * Point multipliers
+                    * Flag spawn locations
+                    * Game duration/score limits
+
+Copyright (c) 2021 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- config starts --
 local TD = {

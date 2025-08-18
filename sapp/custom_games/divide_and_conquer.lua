@@ -1,15 +1,16 @@
---=====================================================================================--
--- SCRIPT NAME:      Divide & Conquer
--- DESCRIPTION:      A team conversion mini-game.
---                   - When you kill someone on the opposing team, they join your team.
---                   - The objective is to dominate by converting all enemy players.
---                   - The game ends when one team has no players remaining.
---
---
--- COPYRIGHT © 2023-2025 Jericho Crosby
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      divide_and_conquer.lua
+DESCRIPTION:      A team conversion mini-game.
+                  - When you kill someone on the opposing team, they join your team.
+                  - The objective is to dominate by converting all enemy players.
+                  - The game ends when one team has no players remaining.
+
+Copyright (c) 2023-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = '1.12.0.0'
 
