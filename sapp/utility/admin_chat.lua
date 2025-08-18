@@ -1,15 +1,21 @@
---=====================================================================================================--
--- SCRIPT NAME:      Admin Chat
--- DESCRIPTION:      Toggleable admin-only chat system with command aliases, spam protection,
---                   and enhanced player management. Messages are only visible to opted-in admins.
---
--- AUTHOR:           Jericho Crosby (Chalwk)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- Copyright (c) 2025 Jericho Crosby
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      admin_chat.lua
+DESCRIPTION:      Secure admin communication system with:
+                  - Toggleable admin-only chat visibility
+                  - Custom command aliases (/ac, /adminchat)
+                  - Intelligent spam protection
+                  - Player management integration
+                  - Configurable features:
+                    * Message formatting
+                    * Permission levels
+                    * Notification sounds
+
+Copyright (c) 2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 local AdminChat = {
     -- Primary command and aliases

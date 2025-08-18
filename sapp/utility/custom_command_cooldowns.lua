@@ -1,21 +1,25 @@
 --[[
---=====================================================================================================--
-Script Name: Custom Command Cooldowns, for SAPP (PC & CE)
-Description:
-This script implements a cooldown system for specific commands.
-It allows server owners to configure cooldowns for commands, preventing players from spamming them.
-Each player has their own cooldown timer for each command, which is configurable by the server owner.
+=====================================================================================
+SCRIPT NAME:      command_cooldowns.lua
+DESCRIPTION:      Advanced command rate-limiting system featuring:
+                  - Per-command cooldown configuration:
+                    * Custom durations (1-300 seconds)
+                    * Granular player-specific timers
+                  - Anti-spam protection:
+                    * Multiple violation detection
+                    * Progressive enforcement
+                  - Management features:
+                    * Command whitelisting/blacklisting
+                    * Admin override capabilities
+                  - Real-time monitoring:
+                    * Cooldown status tracking
+                    * Player violation logging
 
-Features:
-- Configure custom cooldown times for commands.
-- Prevent command spamming by enforcing cooldown periods.
-- Easily extendable by adding new commands to the configuration table.
-
-Copyright (c) 2025, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = "1.12.0.0"
 

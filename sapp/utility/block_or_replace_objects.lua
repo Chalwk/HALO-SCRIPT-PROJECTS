@@ -1,13 +1,27 @@
 --[[
---=====================================================================================================--
-Script Name: Block or Replace Objects, for SAPP (PC & CE)
-Description: Block or replace objects easily.
+=====================================================================================
+SCRIPT NAME:      block_replace_objects.lua
+DESCRIPTION:      Advanced object management system featuring:
+                  - Dynamic object manipulation:
+                    * Block specific object spawns
+                    * Replace objects with alternatives
+                  - Map customization:
+                    * Per-map configuration
+                    * Tag-specific overrides
+                  - Runtime control:
+                    * On-the-fly adjustments
+                    * Preset configurations
+                  - Supports all object types:
+                    * Weapons
+                    * Vehicles
+                    * Equipment
+                    * Scenery
 
-Copyright (c) 2022, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2022 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 local tags = {
 

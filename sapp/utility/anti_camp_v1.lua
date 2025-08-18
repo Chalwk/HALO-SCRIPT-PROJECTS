@@ -1,23 +1,29 @@
---=====================================================================================================--
--- SCRIPT NAME:      AntiCamp
--- DESCRIPTION:      Prevents camping by monitoring player positions in defined zones.
---
---                   Features include:
---                   * Configurable camping zones per map with position, radius, and max allowed time
---                   * Warning messages sent at half the max camping time
---                   * Automatic player kill punishment when max time is exceeded
---                   * Cooldown between punishments to avoid spam
---                   * Customizable messages
---                   * Resets timers on player spawn and disconnect
---                   * Supports multiple maps with easy configuration
---
--- AUTHOR:           Jericho Crosby (Chalwk)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- Copyright (c) 2025 Jericho Crosby
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      anti_camp_v1.lua
+DESCRIPTION:      Advanced camping prevention system with:
+                  - Dynamic zone monitoring:
+                    * Per-map configurable restricted areas
+                    * Radius-based position tracking
+                    * Real-time duration calculation
+                  - Progressive enforcement:
+                    * Visual warnings at 50% threshold
+                    * Automatic punishment at max duration
+                    * Cooldown-protected penalties
+                  - Customizable parameters:
+                    * Zone timers (1-60 seconds)
+                    * Kill/death punishments
+                    * Warning/punishment messages
+                  - Smart reset conditions:
+                    * On player spawn
+                    * On disconnect
+                    * After punishment
+
+Copyright (c) 2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = "1.12.0.0"
 

@@ -1,11 +1,24 @@
---=====================================================================================================--
--- SCRIPT NAME: Chat IDs, for SAPP (PC & CE)
--- Description: Appends the player id to their message.
---
--- Copyright (c) 2014-2024, Jericho Crosby
--- Notice: You can use this script subject to the following conditions:
--- https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      chat_ids.lua
+DESCRIPTION:      Player identification system that:
+                  - Appends unique player IDs to chat messages
+                  - Supports multiple ID formats:
+                    * Slot numbers
+                    * Persistent player indices
+                  - Customizable display options:
+                    * Prefix/suffix positioning
+                    * Color coding
+                    * Visibility toggles
+                  - Integration with:
+                    * Admin chat systems
+                    * Player lookup commands
+
+Copyright (c) 2014-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- Define chat formats
 local chat = {

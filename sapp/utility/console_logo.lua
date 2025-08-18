@@ -1,21 +1,28 @@
 --[[
---=====================================================================================================--
-Script Name: Console Logo, for SAPP (PC & CE)
-Description: Custom ascii console logo
+=====================================================================================
+SCRIPT NAME:      console_logo.lua
+DESCRIPTION:      Custom ASCII console branding system featuring:
+                  - Dynamic logo generation
+                  - Font compatibility:
+                    * Tested with 'KBAN' font
+                    * Supports multi-line designs
+                  - Easy configuration:
+                    * Paste ASCII art directly
+                    * Automatic centering
+                  - Display options:
+                    * Server startup display
+                    * Manual refresh command
+                    * Color customization
 
-NOTES:
+CREATION TIP:    Generate logos at:
+                  https://patorjk.com/software/taag/
+                  (Use 'KBAN' font for best compatibility)
 
-USE THIS WEBSITE TO GENERATE YOUR LOGO:
-https://patorjk.com/software/taag/#p=display&f=Graffiti&t=Type$20Something$20
-
-Some fonts will NOT work due to something called character escaping.
-I recommend using the font "KBAN"
-
-Copyright (c) 2021, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2021 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- config starts --
 

@@ -1,16 +1,26 @@
---=====================================================================================--
--- SCRIPT NAME:      Auto Message
--- DESCRIPTION:      Periodically broadcasts pre-defined announcements to all players.
---                   Supports multi-line messages, configurable intervals, and optional
---                   console output. Designed to help servers share info, rules, or ads.
---
--- AUTHOR:           Chalwk (Jericho Crosby)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- COPYRIGHT (c) 2024, Jericho Crosby
--- NOTICE:           You may use this script subject to the following license:
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      auto_message.lua
+DESCRIPTION:      Automated announcement system featuring:
+                  - Scheduled message broadcasting:
+                    * Configurable delay intervals (30-300 seconds)
+                    * Multi-line message support
+                  - Flexible output options:
+                    * In-game chat messages
+                    * Console/RCON output
+                  - Message customization:
+                    * Color-coded text
+                    * Timestamp prefixes
+                    * Rotating message lists
+                  - Server management:
+                    * On-demand message triggers
+                    * Priority message queuing
+
+Copyright (c) 2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- Configuration table for the Auto Message script:
 local AutoMessage = {

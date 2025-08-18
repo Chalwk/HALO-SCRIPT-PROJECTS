@@ -1,16 +1,23 @@
---=====================================================================================--
--- SCRIPT NAME:      Admin Messages
--- DESCRIPTION:      Displays a humorous or custom join message based on a player's
---                   admin level. Messages are configurable and can be aligned and
---                   sent to either chat or rcon.
---
--- AUTHOR:           Chalwk (Jericho Crosby)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.11.0.0
---
--- COPYRIGHT (c) 2019–2021, Jericho Crosby
--- NOTICE:           You may use this script subject to the following license:
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      admin_messages.lua
+DESCRIPTION:      Customizable admin greeting system with:
+                  - Level-based join messages (humorous or serious)
+                  - Multiple output options:
+                    * In-game chat
+                    * RCON console
+                  - Flexible formatting:
+                    * Custom text alignment
+                    * Color coding support
+                  - Easy configuration:
+                    * Per-admin level messages
+                    * Toggleable display
+
+Copyright (c) 2019–2021 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- config starts --
 

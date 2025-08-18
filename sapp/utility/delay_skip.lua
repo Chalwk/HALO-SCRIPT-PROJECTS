@@ -1,13 +1,13 @@
 --[[
---=====================================================================================================--
-Script Name: SkipDelay, for SAPP (PC & CE)
-Description: Prevent players from skipping the map too early.
+=====================================================================================
+SCRIPT NAME:      delay_skip.lua
+DESCRIPTION:      Prevent players from skipping the map too early
 
-Copyright (c) 2020-2024, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2020-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- Configuration section:
 -- Minimum time players must wait before they can skip the map:

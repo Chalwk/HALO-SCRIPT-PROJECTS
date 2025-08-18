@@ -1,12 +1,13 @@
 --[[
---=====================================================================================================--
-Script Name: Damage Multiplier (changer), for SAPP (PC & CE)
+=====================================================================================
+SCRIPT NAME:      damage_multiplier_changer.lua
+DESCRIPTION:
 
-Copyright (c) 2019, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2019 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = "1.12.0.0"
 

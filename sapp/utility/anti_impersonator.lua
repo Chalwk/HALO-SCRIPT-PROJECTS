@@ -1,26 +1,31 @@
---=====================================================================================--
--- SCRIPT NAME:      Anti-Impersonator
--- DESCRIPTION:      Detects and removes players attempting to impersonate trusted
---                   community members based on player hash and/or IP address.
---                   Supports kicking or banning impersonators, with optional logging.
---
--- AUTHOR:           Chalwk (Jericho Crosby)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- IMPORTANT NOTES:
---   * Shared Hashes: Players using cracked or shared copies of Halo may have identical
---     hashes, resulting in false positives.
---   * Dynamic IPs: Players with changing IPs may be incorrectly flagged unless a
---     static IP or consistent hash is used.
---
--- RECOMMENDATIONS:
---   * Use player hashes where possible (they are more stable than IPs).
---   * Ensure trusted members use legitimate accounts and, if feasible, static IPs.
---
--- Copyright (c) 2019-2025 Jericho Crosby
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      anti_impersonator.lua
+DESCRIPTION:      Identity verification system that:
+                  - Detects clone accounts via:
+                    * Player hash matching
+                    * IP address comparison
+                  - Takes configurable actions:
+                    * Kick offenders
+                    * Ban repeat violators
+                    * Log incidents
+                  - Protection against:
+                    * Name spoofing
+                    * Admin impersonation
+                    * Trusted member cloning
+
+NOTICE:           [Important Considerations]
+                  - Shared game copies may generate identical hashes
+                  - Dynamic IPs can cause false positives
+                  - For best results:
+                    * Prioritize hash verification
+                    * Encourage static IPs for trusted members
+
+Copyright (c) 2019-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- Configuration -----------------------------------------------------------------
 api_version = "1.12.0.0"

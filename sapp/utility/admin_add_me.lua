@@ -1,15 +1,17 @@
 --[[
---=====================================================================================================--
-Script Name: HPC Admin-Add-Me (utility), for SAPP (PC & CE)
-Description:    Type "/admin me" in chat to add yourself as an admin - (level 4 by default)
-                This was particularly useful to me when testing other scripts.
-                I'm sure you can think of some creative reasons to use this.
+=====================================================================================
+SCRIPT NAME:      admin_add_me.lua
+DESCRIPTION:      Quick admin access utility for testing and development:
+                  - "/admin me" command grants level 4 admin privileges
+                  - Designed for SAPP (Halo PC/CE) server administration
+                  - Simplifies script testing and server management
+                  - Configurable default admin level
 
-Copyright (c) 2016-2022, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2016-2022 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 local MOD = {
 

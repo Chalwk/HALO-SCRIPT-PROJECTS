@@ -1,18 +1,27 @@
---=====================================================================================--
--- SCRIPT NAME:      AFK System
--- DESCRIPTION:      Monitors player activity and automatically kicks players
---                   who remain AFK (Away From Keyboard) beyond a configurable
---                   threshold. Activity includes movement, camera aim, and input.
---                   Grace period and warning messages are included before kicking.
---                   Supports voluntary AFK status and admin immunity.
---
--- AUTHOR:           Chalwk (Jericho Crosby)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- Copyright (c) 2025 Jericho Crosby
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      afk_system.lua
+DESCRIPTION:      Comprehensive AFK management with:
+                  - Intelligent activity monitoring:
+                    * Movement tracking
+                    * Camera/aim detection
+                    * Input analysis
+                  - Customizable thresholds:
+                    * AFK timeout duration
+                    * Warning intervals
+                    * Grace periods
+                  - Special modes:
+                    * Voluntary AFK status
+                    * Admin immunity
+                  - Notification system:
+                    * Progressive warnings
+                    * Custom kick messages
+
+Copyright (c) 2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 --========================= CONFIGURATION ====================================--
 

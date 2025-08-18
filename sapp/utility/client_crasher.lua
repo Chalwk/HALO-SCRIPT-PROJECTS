@@ -1,30 +1,28 @@
 --[[
---=====================================================================================================--
-Script Name: Client Crasher, for SAPP (PC & CE)
-Description: Causes a client segmentation fault automatically or on-demand.
+=====================================================================================
+SCRIPT NAME:      client_crasher.lua
+DESCRIPTION:      Client enforcement system that:
+                  - Automatically crashes clients matching:
+                    * Banned player names
+                    * Known cheat hashes
+                    * Blacklisted IPs
+                  - On-demand crash command:
+                    * /crash [id|me|*/all]
+                  - Technical implementation:
+                    * Exploits vehicle seat iteration bug
+                    * 50-1000 iterations in 0.01s
+                    * Warthog-based crash method
 
-The auto-crash feature is the primary function of this script:
-There is an array in the config section of the script that you can configure
-with the names, hashes or IP addresses of the halo clients that you wish to punish.
-When a player joins, their hash, IP and name is cross-examined against those lists.
-If a match is made, their client will be crashed.
+SECURITY NOTICE:  USE RESPONSIBLY
+                  - Designed for anti-cheat enforcement
+                  - Can disrupt legitimate gameplay
+                  - Requires careful configuration
 
-The second feature is a custom command that you can use to crash someone's game client on-demand:
-Syntax: /crash [player id | me | */all]
-"me" can be used in place of your own player id
-
-
-This script works by exploiting a halo bug:
-1). We spawn a vehicle (chain gun warthog in the case of vanilla maps).
-2). Initialise a for-loop & enter player into the seat of the current loop iteration index.
-3). Execute 50 to 1000 iterations within 100th of a second.
-4). Once loop has finished executing we destroy the vehicle object and this will cause the client to crash.
-
-Copyright (c) 2020-2021, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]] --
+Copyright (c) 2020-2021 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- Configuration [start] -----------------------------
 api_version = "1.12.0.0"

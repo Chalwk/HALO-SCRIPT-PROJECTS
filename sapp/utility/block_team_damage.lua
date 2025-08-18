@@ -1,15 +1,24 @@
---=====================================================================================================--
--- SCRIPT NAME:      Block Team Damage
--- DESCRIPTION:      Prevents team members from damaging each other.
---
---
--- AUTHOR:           Jericho Crosby (Chalwk)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- Copyright (c) 2023-2025 Jericho Crosby
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      block_team_damage.lua
+DESCRIPTION:      Team damage prevention system with:
+                  - Complete friendly fire blocking:
+                    * Weapon damage cancellation
+                    * Grenade/explosive protection
+                    * Vehicle collision prevention
+                  - Customizable settings:
+                    * Per-weapon damage modifiers
+                    * Warning system for offenders
+                    * Admin override capabilities
+                  - Real-time monitoring:
+                    * Damage attempt logging
+                    * Repeat offender tracking
+
+Copyright (c) 2023-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = '1.12.0.0'
 

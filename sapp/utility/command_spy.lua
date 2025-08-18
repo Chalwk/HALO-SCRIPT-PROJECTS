@@ -1,19 +1,23 @@
---=====================================================================================================--
--- SCRIPT NAME:      AntiCamp
--- DESCRIPTION:      Notifies specified admin levels when a player executes a command.
---
---                   Features:
---                   - Notifies specified admin levels when a player executes a command.
---                   - Blacklists certain commands from being monitored.
---                   - Can log commands to console.
---
--- AUTHOR:           Jericho Crosby (Chalwk)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- Copyright (c) 2022-2025 Jericho Crosby
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      command_monitor.lua
+DESCRIPTION:      Admin command monitoring system featuring:
+                  - Real-time command execution alerts:
+                    * Customizable admin notification levels
+                    * Per-command monitoring controls
+                  - Security features:
+                    * Command blacklisting
+                    * Sensitive command filtering
+                  - Logging options:
+                    * Console output logging
+                    * Timestamped command history
+                    * Player-specific tracking
+
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- Admin levels allowed to see spy messages:
 local spy_levels = {

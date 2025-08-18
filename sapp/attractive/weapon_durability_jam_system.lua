@@ -1,22 +1,24 @@
---=====================================================================================--
--- SCRIPT NAME:      Weapon Durability & Jam System
--- DESCRIPTION:      Implements weapon durability degradation and jamming mechanics.
---                   Weapons degrade when fired. Jammed weapons prevent firing and
---                   require player input (melee) to unjam.
---                   Includes:
---                     - Weapon-specific decay rates
---                     - Jam chance calculations
---                     - Overheat handling
---                     - Ammo snapshot and restoration
---                     - Debug logging
---
--- AUTHOR:           Chalwk (Jericho Crosby)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- Copyright (c) 2025 Jericho Crosby
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      weapon_durability_jam_system.lua
+DESCRIPTION:      Realistic weapon maintenance simulation featuring:
+                  - Progressive weapon degradation with use
+                  - Dynamic jamming mechanics:
+                    * Weapon-specific failure chances
+                    * Melee action required to clear jams
+                  - Advanced systems:
+                    * Customizable decay rates per weapon
+                    * Overheat prevention mechanisms
+                    * Ammo state preservation
+                  - Developer features:
+                    * Comprehensive debug logging
+                    * Configurable test parameters
+
+Copyright (c) 2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- FIXME 1: When a player picks up ammo with a jammed weapon, it auto-reloads and they can fire.
 -- FIXME 2: Doesn't immediately detect when a player fires their weapon.

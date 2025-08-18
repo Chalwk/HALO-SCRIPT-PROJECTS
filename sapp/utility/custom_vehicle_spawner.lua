@@ -1,15 +1,26 @@
 --[[
---=====================================================================================================--
-Script Name: Custom Vehicle Spawner, for SAPP (PC & CE)
-Description: This script will spawn vehicles at pre-defined coordinates.
-             If a vehicle has moved from its original position and isn't occupied,
-             it will be moved back to its original position after a delay.
+=====================================================================================
+SCRIPT NAME:      custom_vehicle_spawner.lua
+DESCRIPTION:      Advanced vehicle management system featuring:
+                  - Persistent vehicle spawning:
+                    * Pre-configured spawn locations
+                    * Automatic position reset
+                  - Intelligent vehicle tracking:
+                    * Occupancy detection
+                    * Movement monitoring
+                  - Configurable parameters:
+                    * Reset delay timers (5-60 sec)
+                    * Vehicle health thresholds
+                    * Spawn protection
+                  - Maintenance features:
+                    * Destroyed vehicle respawning
+                    * Stuck vehicle recovery
 
-Copyright (c) 2022, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2022 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 local VehicleSpawner = {
     vehicles = {},

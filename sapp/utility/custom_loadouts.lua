@@ -1,17 +1,27 @@
---=====================================================================================--
--- SCRIPT NAME:      Advanced Loadout System
--- DESCRIPTION:      Players select custom loadouts via commands, which apply on respawn.
---                   Features persistent player loadout settings, admin control
---                   commands, configurable loadouts with weapon/ammo setup, and
---                   optional death messages showing available loadouts.
---
--- AUTHOR:           Chalwk (Jericho Crosby)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- Copyright (c) 2024-2025 Jericho Crosby
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      custom_loadouts.lua
+DESCRIPTION:      Comprehensive loadout management featuring:
+                  - Custom weapon configurations:
+                    * Primary/secondary weapon sets
+                    * Grenade type selection
+                    * Ammo capacity controls
+                  - Player persistence:
+                    * Saved loadout preferences
+                    * Automatic respawn application
+                  - Administrative tools:
+                    * Loadout template creation
+                    * Player loadout overrides
+                  - UI/UX enhancements:
+                    * Death screen loadout reminders
+                    * Command-based selection menu
+                    * Visual loadout previews
+
+Copyright (c) 2024-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- CONFIG START ---------------------------------------------------------------
 local CFG = {

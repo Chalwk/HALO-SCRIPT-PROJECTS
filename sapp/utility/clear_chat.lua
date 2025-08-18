@@ -1,14 +1,21 @@
 --[[
---=====================================================================================================--
-Script Name: Clear Chat, for SAPP (PC & CE)
-Description: A simple script that allows you to clear the global server chat.
+=====================================================================================
+SCRIPT NAME:      clear_chat.lua
+DESCRIPTION:      Chat management utility featuring:
+                  - Instant global chat clearing (/clear)
+                  - Configurable options:
+                    * Admin-only access control
+                    * Custom clearance messages
+                    * Cooldown timers
+                  - Multi-mode operation:
+                    * Complete chat wipe
+                    * Line-by-line deletion
+                    * Targeted message removal
 
-* Command Syntax: /clear
-
-Copyright (c) 2016-2024, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
+Copyright (c) 2016-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
 ]]
 
 -- Configuration

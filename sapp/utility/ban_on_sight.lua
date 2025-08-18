@@ -1,23 +1,26 @@
---=====================================================================================--
--- SCRIPT NAME:      Ban On Sight
--- DESCRIPTION:      Ban players who are online or offline with efficient lookup
--- COMMANDS:         /bos [id]     - Ban player by slot ID
---                   /boslist      - List all banned players
---
--- FEATURES:
--- - Efficient IP-based banning with O(1) lookup
--- - Persistent storage in sorted format
--- - Admin-level permission control
--- - Real-time notifications for banned connections
--- - Optimized data structures and file I/O
---
--- AUTHOR:           Chalwk (Jericho Crosby)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- Copyright (c) 2016-2025 Jericho Crosby
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      ban_on_sight.lua
+DESCRIPTION:      High-performance ban management system with:
+                  - Instant player banning:
+                    * By slot ID (/bos [id])
+                    * IP-based enforcement
+                  - Admin tools:
+                    * Ban list viewing (/boslist)
+                    * Permission level controls
+                  - Optimized architecture:
+                    * O(1) lookup efficiency
+                    * Sorted persistent storage
+                  - Real-time monitoring:
+                    * Connection attempts
+                    * Ban enforcement
+                    * Admin notifications
+
+Copyright (c) 2016-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = '1.11.0.0'
 

@@ -1,25 +1,23 @@
---=====================================================================================--
--- SCRIPT NAME:      Anti-Aimbot (Advanced Aim-lock Detection)
--- DESCRIPTION:      Enhanced detection system with velocity-based thresholding,
---                   trajectory prediction, dynamic sensitivity adjustment, pattern
---                   recognition, and environmental awareness. Detects automated
---                   aim assistance while minimizing false positives.
---
--- KEY FEATURES:
---   - Velocity-adjusted aim thresholds
---   - Projectile trajectory prediction
---   - Dynamic sensitivity based on player accuracy
---   - Machine-like pattern detection
---   - Environmental visibility checks
---   - Weapon-specific detection modifiers
---
--- AUTHOR:           Chalwk (Jericho Crosby)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- Copyright (c) 2025 Jericho Crosby
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      anti_aimbot.lua
+DESCRIPTION:      Advanced aim-lock detection system featuring:
+                  - Multi-layered detection methodology:
+                    * Velocity-based threshold analysis
+                    * Projectile trajectory prediction
+                    * Dynamic sensitivity adjustment
+                  - Behavioral analysis:
+                    * Machine-like pattern recognition
+                    * Environmental visibility verification
+                  - Weapon-specific detection profiles
+                  - False positive mitigation system
+                  - Real-time monitoring and reporting
+
+Copyright (c) 2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- CONFIGURATION --------------------------------------------------------------
 local CONFIG = {

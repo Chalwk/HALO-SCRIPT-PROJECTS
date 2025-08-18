@@ -1,17 +1,21 @@
 --[[
---=====================================================================================================--
-Script Name: Auto-Lead, for SAPP (PC & CE)
-Description: This script automates the process of managing SAPP's no-lead feature based on specified
-             map and game type configurations. The script enables or disables the no-lead feature for
-             individual game types within each map, allowing for flexible and customizable control over
-             gameplay mechanics. By configuring a settings table with desired map and game type combinations,
-             the script provides an efficient way to optimize and tailor the gaming experience for various scenarios.
-            
-Copyright (c) 2019-2024, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---======================================================================================================--
-]]--
+=====================================================================================
+SCRIPT NAME:      auto_lead.lua
+DESCRIPTION:      Dynamic projectile lead control system that:
+                  - Automates SAPP's no-lead feature per map/gametype
+                  - Customizable configuration table:
+                    * Map-specific settings
+                    * Gametype-specific overrides
+                  - Real-time adjustment during:
+                    * Map rotations
+                    * Gametype changes
+                  - Supports all standard Halo projectile types
+
+Copyright (c) 2019-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = "1.12.0.0"
 

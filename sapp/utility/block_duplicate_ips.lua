@@ -1,13 +1,25 @@
 --[[
---=====================================================================================================--
-Script Name: Block Duplicate IPs (Enhanced Version), for SAPP (PC & CE)
-Description: Prevents players from joining with the same IP address as another connected player.
-             Optionally kick or ban all players sharing the same IP.
+=====================================================================================
+SCRIPT NAME:      block_duplicate_ips.lua
+DESCRIPTION:      IP-based player restriction system featuring:
+                  - Duplicate IP detection:
+                    * Real-time connection monitoring
+                    * Multiple detection methods
+                  - Configurable enforcement:
+                    * Block new connections
+                    * Kick existing duplicates
+                    * Ban repeat offenders
+                  - Exception handling:
+                    * LAN party allowances
+                    * Admin bypass options
+                  - Notification system:
+                    * Player warnings
+                    * Admin alerts
 
-Copyright (c) 2019-2024, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
+Copyright (c) 2019-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
 ]]
 
 -- API version required for the script to run:

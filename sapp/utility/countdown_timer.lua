@@ -1,13 +1,14 @@
---=====================================================================================================--
--- SCRIPT NAME: Countdown Timer, for SAPP (PC & CE)
--- Description: This script is intended for use by other developers. It provides a simple way to display a countdown
---              timer in the following format: "Game will begin in: %02d seconds".
---              This script is not intended to be used as a standalone script.
---
--- Copyright (c) 2016-2024, Jericho Crosby
--- Notice: You can use this script subject to the following conditions:
---         https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      countdown_timer.lua
+DESCRIPTION:      Simple countdown for development and testing
+
+Copyright (c) 2016-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
+
 api_version = "1.12.0.0"
 -- Timer configuration
 local delay = 5
