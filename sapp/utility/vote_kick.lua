@@ -5,8 +5,8 @@ DESCRIPTION:      Player-driven moderation system for removing disruptive player
 
                   Command Reference:
                   /votekick <player_id>  - Initiate kick vote against player
-                  /votelist             - View active vote kick sessions
-                  /cancelvote           - Cancel your active vote
+                  /votelist              - View active vote kick sessions
+                  /cancelvote            - Cancel your active vote
 
                   Features:
                   - Democratic player moderation
