@@ -1,6 +1,6 @@
 --[[
 =====================================================================================
-SCRIPT NAME:      needler_galore.lua
+SCRIPT NAME:      needles_galore.lua
 DESCRIPTION:      Exclusive needler combat with customizable options:
                   - All players spawn with needlers only
                   - Other weapons and vehicles disabled

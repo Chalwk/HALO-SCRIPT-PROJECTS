@@ -381,111 +381,111 @@
   },
   "custom_games": {
     "attrition": {
-      "title": "Attrition",
-      "shortDescription": "Team-based elimination mode",
-      "description": "Players compete in teams, aiming to reduce the opposing team's numbers to zero.",
+      "title": "Attrition Mode",
+      "shortDescription": "Limited-life team deathmatch with revival mechanics",
+      "description": "Implements Halo Infinite's Attrition game mode featuring limited lives per team and player revival mechanics. Players can revive teammates by crouching over their death orbs, represented by floating skulls. Includes visual revival progress indicators, team-based restrictions, and configurable revival timing.",
       "filename": "attrition.lua"
     },
     "cranked": {
-      "title": "Cranked",
-      "shortDescription": "High-speed kill challenge",
-      "description": "Players gain speed and urgency after each kill, encouraging constant action.",
+      "title": "Cranked Mode",
+      "shortDescription": "Kill-chained speed boost with timed explosion mechanic",
+      "description": "Implements Call of Duty's Cranked game mode where players gain speed and damage boosts after kills but must chain kills within a time limit or explode. Features per-map configuration, visual countdown timers, explosive death effects, and configurable boost parameters including duration, speed multiplier, and damage bonus.",
       "filename": "cranked.lua"
     },
     "divide_and_conquer": {
-      "title": "Divide & Conquer",
-      "shortDescription": "Territory control game mode",
-      "description": "Teams capture zones and outmaneuver opponents to control the map.",
+      "title": "Divide and Conquer",
+      "shortDescription": "Team conversion deathmatch mode",
+      "description": "Implements a unique team-switching mechanic where killing opponents converts them to your team. Features team balancing, configurable player requirements, automatic game start conditions, and victory detection when one team eliminates the other. Includes team switch announcements and automatic map rotation on game completion.",
       "filename": "divide_and_conquer.lua"
     },
     "frag_nation": {
       "title": "Frag Nation",
-      "shortDescription": "Score-based kill mode",
-      "description": "Players rack up points by eliminating enemies in a free-for-all or team setting.",
+      "shortDescription": "Grenade-focused combat with resource management",
+      "description": "A grenade-centric game mode where players start with limited grenades and must strategically manage their explosive resources. Features kill-based grenade rewards, melee-only combat when out of grenades, configurable starting loadouts, and customizable victory conditions. Includes weapon/vehicle restrictions and balanced plasma pistol as primary weapon for all players.",
       "filename": "frag_nation.lua"
     },
     "gun_game": {
       "title": "Gun Game",
-      "shortDescription": "Weapon progression mode",
-      "description": "Players progress through a series of weapons with each kill, aiming to reach the final weapon first.",
+      "shortDescription": "Weapon progression deathmatch with demotion mechanics",
+      "description": "Implements a competitive weapon progression system where players advance through predefined weapon tiers by scoring kills. Features include demotion on suicide/backtap, configurable starting loadouts, infinite ammo option, automatic weapon assignment, and multiple end-game scenarios. Includes leaderboard tracking and admin controls for game management.",
       "filename": "gun_game.lua"
     },
     "hunter_prey": {
-      "title": "Hunter-Prey",
-      "shortDescription": "Stalk or escape mode",
-      "description": "One team hunts while the other team tries to survive or complete objectives.",
+      "title": "Hunter Prey",
+      "shortDescription": "Flag-based survival free-for-all",
+      "description": "A competitive free-for-all mode where players battle to control a central flag. Features timed scoring based on flag possession, automatic flag respawning, and map-specific flag locations. Includes real-time scoring updates, end-game leaderboards, and configurable match duration. Designed for classic Halo maps with optimized flag placement coordinates.",
       "filename": "hunter_prey.lua"
     },
     "juggernaut": {
-      "title": "Juggernaut",
-      "shortDescription": "Powerful player elimination mode",
-      "description": "One player becomes the Juggernaut with enhanced abilities, while others try to take them down.",
+      "title": "Juggernaut Mode",
+      "shortDescription": "Power role survival with enhanced juggernaut abilities",
+      "description": "A dynamic game mode where one player becomes an overpowered Juggernaut with enhanced health, speed, damage and regeneration. Features timed role rotation, automatic power balancing, and configurable attributes. Includes silent kills for role transitions, visual feedback, and works with all game types. The Juggernaut role passes to the killer when defeated or after time expiration.",
       "filename": "juggernaut.lua"
     },
     "kill_confirmed": {
       "title": "Kill Confirmed",
-      "shortDescription": "Collect dog tags to score",
-      "description": "Players must collect fallen enemies' tags to score points for their team.",
+      "shortDescription": "Team objective mode with dog tag collection",
+      "description": "Implements Call of Duty's Kill Confirmed mode where teams must collect enemy dog tags to score points. Features tag confirmation/denial mechanics, timed tag despawns, team scoring notifications, and configurable match settings. Includes real-time scoring, top player tracking, and works with all standard Halo game types.",
       "filename": "kill_confirmed.lua"
     },
     "melee_attack": {
       "title": "Melee Attack",
-      "shortDescription": "Close-quarters combat mode",
-      "description": "Players can only eliminate opponents using melee attacks, emphasizing agility and timing.",
+      "shortDescription": "Intense melee-only combat with instant kill headshots",
+      "description": "Forces pure melee combat by disabling all weapons and equipment. Features skull strike instant kills, weapon pickup prevention, and configurable damage settings. Includes forced oddball melee mechanics, restricted item management, and optimized respawn system for fast-paced gameplay.",
       "filename": "melee_attack.lua"
     },
     "needles_galore": {
       "title": "Needles Galore",
-      "shortDescription": "Projectile-focused gameplay",
-      "description": "Players exclusively use Needlers to score kills and dominate the map.",
+      "shortDescription": "Exclusive needler combat with customizable settings",
+      "description": "Forces all players to use needlers exclusively with configurable weapon properties. Features equipment management, infinite ammo options, and complete vehicle/weapon restrictions. Includes automatic weapon assignment, ammo management, and customizable gameplay modifiers for varied needler combat experiences.",
       "filename": "needles_galore.lua"
     },
     "one_in_the_chamber": {
-      "title": "One In The Chamber",
-      "shortDescription": "Single-bullet showdown",
-      "description": "Players have only one bullet per life, making every shot critical.",
+      "title": "One in the Chamber",
+      "shortDescription": "High-stakes pistol duel with limited ammunition",
+      "description": "Implements a tense pistol duel mode where players start with one bullet that guarantees instant kills. Features bullet economy management (gain bullets for kills), melee combat when out of ammo, and configurable damage settings. Includes weapon restrictions, precision-based gameplay mechanics, and risk/reward decision making.",
       "filename": "one_in_the_chamber.lua"
     },
     "parkour_timer": {
       "title": "Parkour Timer",
-      "shortDescription": "Speed-run obstacle course",
-      "description": "Players race through parkour challenges while being timed, aiming for fastest completion.",
+      "shortDescription": "Automated obstacle course timing system",
+      "description": "Implements a comprehensive parkour timing system with zone-based activation, checkpoint tracking, and personal best records. Features multi-map support with custom checkpoint definitions, real-time feedback, and automatic respawn positioning. Includes progress tracking, checkpoint validation, and performance announcements.",
       "filename": "parkour_timer.lua"
     },
     "sabotage": {
       "title": "Sabotage",
-      "shortDescription": "Objective destruction mode",
-      "description": "Players aim to destroy objectives or equipment while preventing the opposing team from doing the same.",
+      "shortDescription": "Bomb planting/defusing team objective",
+      "description": "Teams compete to plant a bomb at the enemy base and defend their own. Features:\n- Central bomb spawn with respawn timer\n- Crouch-based planting/defusing mechanics\n- Configurable timers for planting/defusing/explosion\n- Multiple map configurations with precise bomb locations\n- Explosion effects and score rewards",
       "filename": "sabotage.lua"
     },
     "shotty_snipes": {
-      "title": "Shotty-Snipes",
-      "shortDescription": "Mixed-range combat",
-      "description": "Players alternate between shotguns and sniper rifles, testing versatility and positioning.",
+      "title": "Shotty Snipes",
+      "shortDescription": "Shotgun and sniper rifle only combat",
+      "description": "Intense close-quarters and long-range combat featuring:\n- Exclusive shotgun and sniper rifle gameplay\n- All other weapons and vehicles disabled\n- Equipment (grenades/powerups) remains active\n- Configurable weapon settings:\n  * Infinite ammo toggle\n  * Bottomless clip option\n  * Damage modifiers\n- Automatic weapon assignment on spawn",
       "filename": "shotty_snipes.lua"
     },
     "survival_slayer": {
       "title": "Survival Slayer",
-      "shortDescription": "Last team standing",
-      "description": "Teams fight until one survives; focus is on endurance and strategic elimination.",
+      "shortDescription": "Time-based survival with kill rewards",
+      "description": "High-stakes survival mode with unique time mechanics:\n- Countdown life timer for all players\n- +10 seconds awarded per kill (configurable)\n- Victory condition: First to reach 15 kills (configurable)\n- Real-time HUD timer display\n- Configurable settings:\n  * Base lifespan duration\n  * Time bonus per kill\n  * Win condition threshold\n- Players die when their timer reaches zero",
       "filename": "survival_slayer.lua"
     },
     "swat": {
-      "title": "Swat",
-      "shortDescription": "Precision-based competitive shooter",
-      "description": "Players face off with increased damage and no shields, emphasizing accuracy and tactics.",
+      "title": "SWAT",
+      "shortDescription": "Precision headshot-only combat",
+      "description": "Tactical shooter mode with strict rules:\n- Headshot-only kills (pistol & sniper rifle)\n- All other weapons and vehicles disabled\n- Powerups (camo/overshield) remain active\n- Configurable options:\n  * Infinite ammo/bottomless clip\n  * Score limits\n  * Weapon loadouts\n- Default 25-kill victory condition",
       "filename": "swat.lua"
     },
     "tag": {
       "title": "Tag",
-      "shortDescription": "Chase or evade",
-      "description": "Players try to tag opponents or avoid being tagged, turning the map into a giant playground.",
+      "shortDescription": "Dynamic role-swapping chase game",
+      "description": "Fast-paced tag minigame with unique mechanics:\n- One 'Tagger' chases multiple 'Runners'\n- Successful tags transfer the Tagger role\n- Scoring system:\n  * Runners earn points over time\n  * Tagger gets bonus points per tag\n- Configurable options:\n  * Auto-rotation timer\n  * Movement speed modifiers\n  * Score values\n  * Game duration settings",
       "filename": "tag.lua"
     },
     "team_defender": {
       "title": "Team Defender",
-      "shortDescription": "Protect the zone",
-      "description": "Teams defend their area while attempting to capture or attack opposing zones.",
+      "shortDescription": "Objective-based team protection mode",
+      "description": "Strategic flag control gameplay featuring:\n- Random flag spawn locations\n- Double team points while holding flag\n- +20 assist points per teammate kill\n- Team-based roles:\n  * Flag carrier (objective holder)\n  * Defenders (protect carrier)\n  * Attackers (reclaim objective)\n- Configurable settings:\n  * Flag respawn timer\n  * Point multipliers\n  * Spawn locations\n  * Game duration limits",
       "filename": "team_defender.lua"
     }
   },
