@@ -1,12 +1,968 @@
 {
   "attractive": {
-    "temp": {
-      "title": "ignore",
-      "shortDescription": "Ignore This",
-      "description": "Pay not attention to this",
-      "filename": "temp.lua"
+    "air_strike": {
+      "title": "Air Strike",
+      "shortDescription": "Periodic aerial bombardment",
+      "description": "Automated airstrike system. Spawns rockets at randomized intervals, heights, and trajectories over predefined map locations with player warnings.",
+      "filename": "air_strike.lua"
+    },
+    "ammo_resupply": {
+      "title": "Ammo Resupply",
+      "shortDescription": "Automatically replenish ammo",
+      "description": "Players receive extra ammunition periodically or on demand.",
+      "filename": "ammo_resupply.lua"
+    },
+    "april_fools_chat": {
+      "title": "April Fools - Chat",
+      "shortDescription": "Prank chat messages",
+      "description": "Funny or mischievous chat triggered for April Fools.",
+      "filename": "april_fools_chat.lua"
+    },
+    "april_fools_word_shuffler": {
+      "title": "April Fools - Word Shuffler",
+      "shortDescription": "Mix up chat words",
+      "description": "Shuffles or scrambles player chat for a humorous effect on April Fools.",
+      "filename": "april_fools_word_shuffler.lua"
+    },
+    "auto_troll": {
+      "title": "Auto-Troll",
+      "shortDescription": "Automate mischief",
+      "description": "Performs funny or unexpected actions automatically on players.",
+      "filename": "auto_troll.lua"
+    },
+    "beep_on_join": {
+      "title": "Beep On Join",
+      "shortDescription": "Announce player arrivals",
+      "description": "Plays a beep sound when a new player joins the server.",
+      "filename": "beep_on_join.lua"
+    },
+    "capture_the_flag": {
+      "title": "Capture The Flag",
+      "shortDescription": "Classic team objective mode",
+      "description": "Players try to capture the enemy flag while defending their own.",
+      "filename": "capture_the_flag.lua"
+    },
+    "color_changer": {
+      "title": "Color Changer",
+      "shortDescription": "Customize player colors",
+      "description": "Allows changing player or vehicle colors dynamically.",
+      "filename": "color_changer.lua"
+    },
+    "color_reservation": {
+      "title": "Color Reservation",
+      "shortDescription": "Lock favorite colors",
+      "description": "Reserves selected colors for specific players to avoid conflicts.",
+      "filename": "color_reservation.lua"
+    },
+    "custom_teleports": {
+      "title": "Custom Teleports",
+      "shortDescription": "Teleport anywhere",
+      "description": "Players can teleport to predefined or custom locations on the map.",
+      "filename": "custom_teleports.lua"
+    },
+    "damage_multiplier": {
+      "title": "Damage Multiplier",
+      "shortDescription": "Adjust attack strength",
+      "description": "Change how much damage weapons or abilities deal.",
+      "filename": "damage_multiplier.lua"
+    },
+    "deployable_mines": {
+      "title": "Deployable Mines",
+      "shortDescription": "Place explosive traps",
+      "description": "Players can place mines on the map to ambush opponents.",
+      "filename": "deployable_mines.lua"
+    },
+    "expressions": {
+      "title": "Expressions",
+      "shortDescription": "Custom emotes and reactions",
+      "description": "Players can display or trigger visual/emote expressions in-game.",
+      "filename": "expressions.lua"
+    },
+    "flashlight_vehicle_entry": {
+      "title": "Flashlight-Vehicle-Entry",
+      "shortDescription": "Light up while entering vehicles",
+      "description": "Activates flashlight automatically when players enter vehicles.",
+      "filename": "flashlight_vehicle_entry.lua"
+    },
+    "flip_a_coin": {
+      "title": "Flip a Coin",
+      "shortDescription": "Random binary outcome",
+      "description": "Players can flip a virtual coin to make decisions.",
+      "filename": "flip_a_coin.lua"
+    },
+    "flying_vehicles": {
+      "title": "Flying Vehicles",
+      "shortDescription": "Make vehicles airborne",
+      "description": "Allows vehicles to fly temporarily for fun or tactical advantage.",
+      "filename": "flying_vehicles.lua"
+    },
+    "force_chat": {
+      "title": "Force-Chat",
+      "shortDescription": "Send automated messages",
+      "description": "Forces players or server to display custom messages in chat.",
+      "filename": "force_chat.lua"
+    },
+    "gravity_gun": {
+      "title": "Gravity Gun",
+      "shortDescription": "Manipulate objects",
+      "description": "Pick up, throw, or manipulate objects with gravity-based mechanics.",
+      "filename": "gravity_gun.lua"
+    },
+    "grenade_launcher": {
+      "title": "Grenade Launcher",
+      "shortDescription": "Launch explosive grenades",
+      "description": "Players can fire grenades with area-of-effect damage for tactical advantage.",
+      "filename": "grenade_launcher.lua"
+    },
+    "headshot_blocker": {
+      "title": "Headshot Blocker",
+      "shortDescription": "Prevent headshot damage",
+      "description": "Blocks critical hits to make gameplay more forgiving.",
+      "filename": "headshot_blocker.lua"
+    },
+    "health_regeneration": {
+      "title": "Health Regeneration",
+      "shortDescription": "Restore player health over time",
+      "description": "Players regain health automatically after taking damage or over intervals.",
+      "filename": "health_regeneration.lua"
+    },
+    "items_from_heaven": {
+      "title": "Items from Heaven",
+      "shortDescription": "Spawn items from above",
+      "description": "Drops weapons or power-ups from the sky for players to collect.",
+      "filename": "items_from_heaven.lua"
+    },
+    "kill_counter": {
+      "title": "Kill Counter",
+      "shortDescription": "Track player kills",
+      "description": "Displays or logs the number of kills for each player in real time.",
+      "filename": "kill_counter.lua"
+    },
+    "killer_reward": {
+      "title": "Killer Reward",
+      "shortDescription": "Grant bonuses for kills",
+      "description": "Rewards players with items, points, or perks after eliminating opponents.",
+      "filename": "killer_reward.lua"
+    },
+    "market_with_account_saving": {
+      "title": "Market (with Account Saving)",
+      "shortDescription": "In-game shop with persistence",
+      "description": "Players can buy items, and their inventory is saved across sessions.",
+      "filename": "market_with_account_saving.lua"
+    },
+    "market_without_account_saving": {
+      "title": "Market (without account saving)",
+      "shortDescription": "Temporary in-game shop",
+      "description": "Players can buy items, but inventory resets each session.",
+      "filename": "market_without_account_saving.lua"
+    },
+    "melee_kicker": {
+      "title": "Melee Kicker",
+      "shortDescription": "Kick players via melee",
+      "description": "Allows melee attacks to knock back or eject opponents from areas.",
+      "filename": "melee_kicker.lua"
+    },
+    "mvp_join_alerts": {
+      "title": "MVP Join Alerts",
+      "shortDescription": "Announce top players joining",
+      "description": "Notifies everyone when a high-performing player joins the server.",
+      "filename": "mvp_join_alerts.lua"
+    },
+    "player_vanish": {
+      "title": "Player Vanish",
+      "shortDescription": "Make a player invisible",
+      "description": "Temporarily hides a player from others for stealth or fun.",
+      "filename": "player_vanish.lua"
+    },
+    "portal_gun_type_1": {
+      "title": "Portal Gun (type 1)",
+      "shortDescription": "Create linked portals",
+      "description": "Players can shoot portals to instantly travel between two points.",
+      "filename": "portal_gun_type_1.lua"
+    },
+    "portal_gun_type_2": {
+      "title": "Portal Gun (type 2)",
+      "shortDescription": "Alternate portal mechanics",
+      "description": "Variation of portal travel with unique behaviors or limitations.",
+      "filename": "portal_gun_type_2.lua"
+    },
+    "proximity_chat": {
+      "title": "Proximity Chat",
+      "shortDescription": "Voice/Chat based on distance",
+      "description": "Messages are only heard by nearby players, simulating realistic proximity.",
+      "filename": "proximity_chat.lua"
+    },
+    "rage_quit": {
+      "title": "Rage Quit",
+      "shortDescription": "Punish or detect quitting",
+      "description": "Triggers a reaction or logs when a player leaves in anger.",
+      "filename": "rage_quit.lua"
+    },
+    "random_fact_generator": {
+      "title": "Random Fact Generator",
+      "shortDescription": "Display trivia",
+      "description": "Shows random facts or info to players periodically.",
+      "filename": "random_fact_generator.lua"
+    },
+    "random_name": {
+      "title": "Random Name",
+      "shortDescription": "Generate player names",
+      "description": "Assigns random or funny names to players for variety.",
+      "filename": "random_name.lua"
+    },
+    "rcon_chat": {
+      "title": "RCON Chat",
+      "shortDescription": "Remote server messaging",
+      "description": "Allows administrators to send messages to the server remotely.",
+      "filename": "rcon_chat.lua"
+    },
+    "replace_weapon_projectile": {
+      "title": "Replace Weapon Projectile",
+      "shortDescription": "Swap bullets or projectiles",
+      "description": "Changes the behavior or type of projectiles fired by weapons.",
+      "filename": "replace_weapon_projectile.lua"
+    },
+    "rocket_launcher_malfunction": {
+      "title": "Rocket Launcher Malfunction",
+      "shortDescription": "Random rocket behavior",
+      "description": "Causes rocket launchers to occasionally behave unpredictably for fun.",
+      "filename": "rocket_launcher_malfunction.lua"
+    },
+    "roll_the_dice": {
+      "title": "Roll-The-Dice",
+      "shortDescription": "Random effects on players",
+      "description": "Applies random buffs, debuffs, or events when a dice is rolled.",
+      "filename": "roll_the_dice.lua"
+    },
+    "self_destruction": {
+      "title": "Self-Destruction",
+      "shortDescription": "Destroy your own vehicle or player",
+      "description": "Allows self-elimination of a player or vehicle, optionally with a timer.",
+      "filename": "self_destruction.lua"
+    },
+    "server_fun_plus": {
+      "title": "Server Fun Plus",
+      "shortDescription": "Miscellaneous fun features",
+      "description": "Adds entertaining mechanics or events for server enjoyment.",
+      "filename": "server_fun_plus.lua"
+    },
+    "shield_regen": {
+      "title": "Shield Regen",
+      "shortDescription": "Restore shields over time",
+      "description": "Automatically regenerates player shields gradually or after avoiding damage.",
+      "filename": "shield_regen.lua"
+    },
+    "spawn_from_sky": {
+      "title": "Spawn From Sky",
+      "shortDescription": "Random drop-in spawn",
+      "description": "Players appear dropping from above instead of normal spawn points.",
+      "filename": "spawn_from_sky.lua"
+    },
+    "spawn_protection": {
+      "title": "Spawn Protection",
+      "shortDescription": "Temporary invulnerability",
+      "description": "Players are immune to damage briefly after spawning to prevent spawn killing.",
+      "filename": "spawn_protection.lua"
+    },
+    "spawn_where_killed": {
+      "title": "Spawn Where Killed",
+      "shortDescription": "Respawn at death location",
+      "description": "Players respawn at the location they died instead of default points.",
+      "filename": "spawn_where_killed.lua"
+    },
+    "sprint_system": {
+      "title": "Sprint System",
+      "shortDescription": "Enable sprinting",
+      "description": "Adds a stamina-based sprint mechanic to players.",
+      "filename": "sprint_system.lua"
+    },
+    "stun_grenades": {
+      "title": "Stun Grenades",
+      "shortDescription": "Non-lethal crowd control",
+      "description": "Deploy grenades that temporarily disorient or slow opponents.",
+      "filename": "stun_grenades.lua"
+    },
+    "super_bloogulch": {
+      "title": "Super Bloogulch",
+      "shortDescription": "Custom super mode",
+      "description": "Enables a unique enhanced mode with exaggerated player abilities.",
+      "filename": "super_bloogulch.lua"
+    },
+    "super_jump": {
+      "title": "Super Jump",
+      "shortDescription": "Jump higher than normal",
+      "description": "Players gain enhanced jump height and distance for fun or mobility.",
+      "filename": "super_jump.lua"
+    },
+    "tactical_airstrike": {
+      "title": "Tactical Airstrike",
+      "shortDescription": "Targeted air support",
+      "description": "Call in precision airstrikes on specific locations or players.",
+      "filename": "tactical_airstrike.lua"
+    },
+    "tactical_insertion": {
+      "title": "Tactical Insertion",
+      "shortDescription": "Spawn at strategic point",
+      "description": "Allows players to respawn at custom strategic points instead of default spawn locations.",
+      "filename": "tactical_insertion.lua"
+    },
+    "taunt_on_end_messages": {
+      "title": "Taunt OnGameEnd (messages)",
+      "shortDescription": "Send taunting messages",
+      "description": "Automatically sends taunts to players when the game ends.",
+      "filename": "taunt_on_end_messages.lua"
+    },
+    "taunt_your_players": {
+      "title": "Taunt Your Players",
+      "shortDescription": "Send player taunts",
+      "description": "Displays funny or provocative messages to players in-game.",
+      "filename": "taunt_your_players.lua"
+    },
+    "taunt_your_players_v2": {
+      "title": "Taunt Your Players (v2.0)",
+      "shortDescription": "Updated player taunts",
+      "description": "Sends humorous or teasing messages to players during the game.",
+      "filename": "taunt_your_players_v2.lua"
+    },
+    "tea_bagging": {
+      "title": "Tea Bagging",
+      "shortDescription": "Fun emote mimic",
+      "description": "Allows players to perform the infamous 'tea bag' action in-game.",
+      "filename": "tea_bagging.lua"
+    },
+    "truce": {
+      "title": "Truce",
+      "shortDescription": "Temporary ceasefire mode",
+      "description": "Disables combat between players for a short duration to enforce a truce.",
+      "filename": "truce.lua"
+    },
+    "uber_taxi": {
+      "title": "Uber (TAXI)",
+      "shortDescription": "Vehicle taxi system",
+      "description": "Players can summon or ride vehicles as if using a taxi service.",
+      "filename": "uber_taxi.lua"
+    },
+    "vanish_lurker": {
+      "title": "Vanish (LURKER)",
+      "shortDescription": "Stealth mode",
+      "description": "Players become invisible or undetectable to others temporarily.",
+      "filename": "vanish_lurker.lua"
+    },
+    "weapon_durability_jam_system": {
+      "title": "Weapon Durability & Jam System",
+      "shortDescription": "Simulate weapon wear",
+      "description": "Weapons can degrade or jam after repeated use, requiring maintenance.",
+      "filename": "weapon_durability_jam_system.lua"
+    },
+    "weighted_weapons": {
+      "title": "Weighted Weapons",
+      "shortDescription": "Adjust weapon handling",
+      "description": "Changes movement speed or handling based on equipped weapons.",
+      "filename": "weighted_weapons.lua"
+    },
+    "mode_destroy_gun": {
+      "title": "[MODE] Destroy Gun",
+      "shortDescription": "Special weapon mode",
+      "description": "A custom mode where guns have destructive or altered behavior.",
+      "filename": "mode_destroy_gun.lua"
+    },
+    "mode_enter_gun": {
+      "title": "[MODE] Enter Gun",
+      "shortDescription": "Custom spawn weapon",
+      "description": "Players start with a specific gun in a unique mode.",
+      "filename": "mode_enter_gun.lua"
+    },
+    "mode_spawn_gun": {
+      "title": "[MODE] Spawn Gun",
+      "shortDescription": "Spawn weapons for players",
+      "description": "Automatically gives players guns on spawn for a custom game mode.",
+      "filename": "mode_spawn_gun.lua"
     }
   },
-  "custom_games": {},
-  "utility": {}
+  "custom_games": {
+    "attrition": {
+      "title": "Attrition",
+      "shortDescription": "Team-based elimination mode",
+      "description": "Players compete in teams, aiming to reduce the opposing team's numbers to zero.",
+      "filename": "attrition.lua"
+    },
+    "cranked": {
+      "title": "Cranked",
+      "shortDescription": "High-speed kill challenge",
+      "description": "Players gain speed and urgency after each kill, encouraging constant action.",
+      "filename": "cranked.lua"
+    },
+    "divide_and_conquer": {
+      "title": "Divide & Conquer",
+      "shortDescription": "Territory control game mode",
+      "description": "Teams capture zones and outmaneuver opponents to control the map.",
+      "filename": "divide_and_conquer.lua"
+    },
+    "frag_nation": {
+      "title": "Frag Nation",
+      "shortDescription": "Score-based kill mode",
+      "description": "Players rack up points by eliminating enemies in a free-for-all or team setting.",
+      "filename": "frag_nation.lua"
+    },
+    "gun_game": {
+      "title": "Gun Game",
+      "shortDescription": "Weapon progression mode",
+      "description": "Players progress through a series of weapons with each kill, aiming to reach the final weapon first.",
+      "filename": "gun_game.lua"
+    },
+    "hunter_prey": {
+      "title": "Hunter-Prey",
+      "shortDescription": "Stalk or escape mode",
+      "description": "One team hunts while the other team tries to survive or complete objectives.",
+      "filename": "hunter_prey.lua"
+    },
+    "juggernaut": {
+      "title": "Juggernaut",
+      "shortDescription": "Powerful player elimination mode",
+      "description": "One player becomes the Juggernaut with enhanced abilities, while others try to take them down.",
+      "filename": "juggernaut.lua"
+    },
+    "kill_confirmed": {
+      "title": "Kill Confirmed",
+      "shortDescription": "Collect dog tags to score",
+      "description": "Players must collect fallen enemies' tags to score points for their team.",
+      "filename": "kill_confirmed.lua"
+    },
+    "melee_attack": {
+      "title": "Melee Attack",
+      "shortDescription": "Close-quarters combat mode",
+      "description": "Players can only eliminate opponents using melee attacks, emphasizing agility and timing.",
+      "filename": "melee_attack.lua"
+    },
+    "needlers_galore": {
+      "title": "Needlers Galore",
+      "shortDescription": "Projectile-focused gameplay",
+      "description": "Players exclusively use Needlers to score kills and dominate the map.",
+      "filename": "needlers_galore.lua"
+    },
+    "one_in_the_chamber": {
+      "title": "One In The Chamber",
+      "shortDescription": "Single-bullet showdown",
+      "description": "Players have only one bullet per life, making every shot critical.",
+      "filename": "one_in_the_chamber.lua"
+    },
+    "parkour_timer": {
+      "title": "Parkour Timer",
+      "shortDescription": "Speed-run obstacle course",
+      "description": "Players race through parkour challenges while being timed, aiming for fastest completion.",
+      "filename": "parkour_timer.lua"
+    },
+    "sabotage": {
+      "title": "Sabotage",
+      "shortDescription": "Objective destruction mode",
+      "description": "Players aim to destroy objectives or equipment while preventing the opposing team from doing the same.",
+      "filename": "sabotage.lua"
+    },
+    "sdtm": {
+      "title": "SDTM",
+      "shortDescription": "Snipers Dream Team",
+      "description": "A custom game mode where players compete using sniper rifles, emphasizing precision, positioning, and long-range combat.",
+      "filename": "sdtm.lua"
+    },
+    "shotty_snipes": {
+      "title": "Shotty-Snipes",
+      "shortDescription": "Mixed-range combat",
+      "description": "Players alternate between shotguns and sniper rifles, testing versatility and positioning.",
+      "filename": "shotty_snipes.lua"
+    },
+    "survival_slayer": {
+      "title": "Survival Slayer",
+      "shortDescription": "Last team standing",
+      "description": "Teams fight until one survives; focus is on endurance and strategic elimination.",
+      "filename": "survival_slayer.lua"
+    },
+    "swat": {
+      "title": "Swat",
+      "shortDescription": "Tactical gunplay mode",
+      "description": "Players face off with increased damage and no shields, emphasizing accuracy and tactics.",
+      "filename": "swat.lua"
+    },
+    "tag": {
+      "title": "Tag",
+      "shortDescription": "Chase or evade",
+      "description": "Players try to tag opponents or avoid being tagged, turning the map into a giant playground.",
+      "filename": "tag.lua"
+    },
+    "team_defender": {
+      "title": "Team Defender",
+      "shortDescription": "Protect the zone",
+      "description": "Teams defend their area while attempting to capture or attack opposing zones.",
+      "filename": "team_defender.lua"
+    }
+  },
+  "utility": {
+    "admin_add_me": {
+      "title": "Admin Add Me",
+      "shortDescription": "Quick admin addition utility",
+      "description": "Allows authorized users to automatically grant themselves admin privileges.",
+      "filename": "admin_add_me.lua"
+    },
+    "admin_chat": {
+      "title": "Admin Chat",
+      "shortDescription": "Custom chat channel for server admins",
+      "description": "Toggleable admin-only chat system for communication among server administrators.",
+      "filename": "admin_chat.lua"
+    },
+    "admin_messages": {
+      "title": "Admin Messages",
+      "shortDescription": "Broadcasts special admin-vip messages",
+      "description": "Announces a special message to all players when a VIP admin joins the server.",
+      "filename": "admin_messages.lua"
+    },
+    "afk_system": {
+      "title": "AFK System",
+      "shortDescription": "Advanced AFK system",
+      "description": "Monitors player activity and automatically kicks players who remain AFK beyond a configurable threshold.",
+      "filename": "afk_system.lua"
+    },
+    "alias_system": {
+      "title": "Alias System",
+      "shortDescription": "Advanced alias look-up system",
+      "description": "Look up aliases based CD Key Hash, IP Address, ID or Name.",
+      "filename": "alias_system.lua"
+    },
+    "anti_aimbot": {
+      "title": "Anti Aimbot",
+      "shortDescription": "Detect and prevent aimbot usage",
+      "description": "Monitors player accuracy and suspicious aiming patterns to identify and mitigate aimbot usage.",
+      "filename": "anti_aimbot.lua"
+    },
+    "anti_camp_v1": {
+      "title": "Anti-Camp V1",
+      "shortDescription": "Basic camping prevention",
+      "description": "Detects players camping in restricted areas and applies warnings or penalties.",
+      "filename": "anti_camp_v1.lua"
+    },
+    "anti_camp_v2": {
+      "title": "Anti-Camp V2",
+      "shortDescription": "Advanced camping prevention",
+      "description": "Enhanced camping detection with configurable zones, timers, and punishments.",
+      "filename": "anti_camp_v2.lua"
+    },
+    "anti_impersonator": {
+      "title": "Anti Impersonator",
+      "shortDescription": "Prevent players from impersonating clan/community members",
+      "description": "Detects and removes players attempting to impersonate trusted members, supporting kick/ban and logging.",
+      "filename": "anti_impersonator.lua"
+    },
+    "auto_lead": {
+      "title": "Auto Lead",
+      "shortDescription": "SAPP Auto Lead System",
+      "description": "Automatically toggles SAPP's lead mode based on specified map and game type configurations",
+      "filename": "auto_lead.lua"
+    },
+    "auto_message": {
+      "title": "Auto Message",
+      "shortDescription": "Scheduled message broadcaster",
+      "description": "Automatically sends configurable messages to all players at set intervals.",
+      "filename": "auto_message.lua"
+    },
+    "auto_team_balance": {
+      "title": "Auto Team Balance",
+      "shortDescription": "Automatically balance teams",
+      "description": "Reassigns players to maintain even teams based on player count and skill levels.",
+      "filename": "auto_team_balance.lua"
+    },
+    "ban_on_sight": {
+      "title": "Ban On Sight",
+      "shortDescription": "Instant ban tool",
+      "description": "Allows admins to immediately ban players upon detection or suspicion of rule violations.",
+      "filename": "ban_on_sight.lua"
+    },
+    "block_duplicate_ips": {
+      "title": "Block Duplicate IPs",
+      "shortDescription": "Prevent multiple connections from same IP",
+      "description": "Blocks new connections if the IP is already connected, useful to prevent multi-clienting or alt accounts.",
+      "filename": "block_duplicate_ips.lua"
+    },
+    "block_or_replace_objects": {
+      "title": "Block or Replace Objects",
+      "shortDescription": "Server-side object management",
+      "description": "Blocks or replaces unwanted in-game objects to maintain map integrity or prevent exploits.",
+      "filename": "block_or_replace_objects.lua"
+    },
+    "block_team_damage": {
+      "title": "Block Team Damage",
+      "shortDescription": "Prevent friendly fire",
+      "description": "Prevents players from damaging teammates, configurable per team or globally.",
+      "filename": "block_team_damage.lua"
+    },
+    "chat_ids": {
+      "title": "Chat IDs",
+      "shortDescription": "Visible player IDs",
+      "description": "Shows player IDs in the chat for easier identification.",
+      "filename": "chat_ids.lua"
+    },
+    "clear_chat": {
+      "title": "Clear Chat",
+      "shortDescription": "Wipe chat history",
+      "description": "Clears the server chat for all players instantly.",
+      "filename": "clear_chat.lua"
+    },
+    "client_crasher": {
+      "title": "Client Crasher",
+      "shortDescription": "A tool to crash clients",
+      "description": "This tool will crash clients to the desktop",
+      "filename": "client_crasher.lua"
+    },
+    "console_logo": {
+      "title": "Console Logo",
+      "shortDescription": "Display custom console logo",
+      "description": "Shows a custom ASCII logo in the server console upon startup.",
+      "filename": "console_logo.lua"
+    },
+    "countdown_timer": {
+      "title": "Countdown Timer",
+      "shortDescription": "Server countdown utility",
+      "description": "Displays a configurable countdown timer to players for events or map changes.",
+      "filename": "countdown_timer.lua"
+    },
+    "custom_colors": {
+      "title": "Custom Colors",
+      "shortDescription": "Assign custom colors to players",
+      "description": "Allows modification of in-game colors for players or teams.",
+      "filename": "custom_colors.lua"
+    },
+    "custom_command_cooldowns": {
+      "title": "Custom Command Cooldowns",
+      "shortDescription": "Set cooldowns for commands",
+      "description": "Configurable cooldown periods for commands to prevent spam or abuse.",
+      "filename": "custom_command_cooldowns.lua"
+    },
+    "custom_loadouts": {
+      "title": "Custom Loadouts",
+      "shortDescription": "Assign preset equipment to players",
+      "description": "Players receive predefined weapon or equipment loadouts upon spawn or command execution.",
+      "filename": "custom_loadouts.lua"
+    },
+    "custom_vehicle_spawner": {
+      "title": "Custom Vehicle Spawner",
+      "shortDescription": "Override map vehicle spawns",
+      "description": "Replaces default vehicle spawns with custom locations and configurations.",
+      "filename": "custom_vehicle_spawner.lua"
+    },
+    "cyborg_spawner": {
+      "title": "Cyborg Spawner",
+      "shortDescription": "Spawn AI enemies",
+      "description": "Spawns cyborg AI units",
+      "filename": "cyborg_spawner.lua"
+    },
+    "damage_multiplier_changer": {
+      "title": "Damage Multiplier (Changer)",
+      "shortDescription": "Adjust player damage output",
+      "description": "Admins can modify the damage multiplier for all players or specific teams, useful for balancing gameplay.",
+      "filename": "damage_multiplier_changer.lua"
+    },
+    "delay_skip": {
+      "title": "Delay Skip",
+      "shortDescription": "Prevent players from skipping the map too early",
+      "description": "Prevents players from skipping the map too early, useful for custom game modes.",
+      "filename": "delay_skip.lua"
+    },
+    "disable_fall_damage": {
+      "title": "Disable Fall Damage",
+      "shortDescription": "Prevent players from taking fall damage",
+      "description": "Disables fall damage globally or for specific players, useful for custom game modes.",
+      "filename": "disable_fall_damage.lua"
+    },
+    "dynamic_ping_kicker": {
+      "title": "Dynamic Ping Kicker",
+      "shortDescription": "Automatically kick high-ping players",
+      "description": "Monitors player ping and kicks players who exceed a configurable threshold, reducing lag for others.",
+      "filename": "dynamic_ping_kicker.lua"
+    },
+    "dynamic_score_limit": {
+      "title": "Dynamic Score Limit",
+      "shortDescription": "Adjust game score limits",
+      "description": "Automatically adjusts the score limit based on player count or other factors.",
+      "filename": "dynamic_score_limit.lua"
+    },
+    "freeze_players": {
+      "title": "Freeze Players",
+      "shortDescription": "Temporarily immobilize players",
+      "description": "Admins can freeze selected players or entire teams, preventing movement or actions.",
+      "filename": "freeze_players.lua"
+    },
+    "game_countdown": {
+      "title": "Game Countdown",
+      "shortDescription": "Countdown to game start",
+      "description": "Displays a configurable countdown timer to signal the start of a match or event.",
+      "filename": "game_countdown.lua"
+    },
+    "get_object_identity": {
+      "title": "Get Object Identity",
+      "shortDescription": "Retrieve object IDs",
+      "description": "Displays the internal IDs and properties of objects in the game world for debugging or scripting.",
+      "filename": "get_object_identity.lua"
+    },
+    "get_server_name_example": {
+      "title": "Get Server Name (Example)",
+      "shortDescription": "Fetch current server name",
+      "description": "Demonstrates retrieving the server name programmatically for logging or display purposes.",
+      "filename": "get_server_name_example.lua"
+    },
+    "item_sky_spawner": {
+      "title": "Item Sky Spawner",
+      "shortDescription": "Spawn items from the sky",
+      "description": "Spawns objects or items from above the map at configurable intervals or locations.",
+      "filename": "item_sky_spawner.lua"
+    },
+    "kill_zones": {
+      "title": "Kill Zones",
+      "shortDescription": "Define lethal map zones",
+      "description": "Creates designated areas where players instantly die or take damage, for map control or game modes.",
+      "filename": "kill_zones.lua"
+    },
+    "list_players": {
+      "title": "List Players",
+      "shortDescription": "Display all connected players",
+      "description": "Shows a list of currently connected players with IDs, teams, and statuses.",
+      "filename": "list_players.lua"
+    },
+    "live_on_3": {
+      "title": "Live on 3",
+      "shortDescription": "Countdown audio cue",
+      "description": "Announces a 'Live on 3' countdown to signal the start of a game or match.",
+      "filename": "live_on_3.lua"
+    },
+    "map_vote_system": {
+      "title": "Map Vote System",
+      "shortDescription": "Allow players to vote for next map",
+      "description": "Players vote for the next map using a menu or chat commands, with results applied automatically.",
+      "filename": "map_vote_system.lua"
+    },
+    "mapcycle_manager": {
+      "title": "Mapcycle Manager",
+      "shortDescription": "Control map rotation",
+      "description": "Manages map cycles with automatic transitions and voting overrides.",
+      "filename": "mapcycle_manager.lua"
+    },
+    "multiclient_detector": {
+      "title": "MultiClient Detector",
+      "shortDescription": "Detect players using multiple clients",
+      "description": "Identifies players connected from multiple clients to prevent cheating or exploits.",
+      "filename": "multiclient_detector.lua"
+    },
+    "mute_system": {
+      "title": "Mute System",
+      "shortDescription": "Restrict player chat",
+      "description": "Admins can mute individual players or entire teams, blocking messages from appearing in chat.",
+      "filename": "mute_system.lua"
+    },
+    "name_ban": {
+      "title": "Name Ban",
+      "shortDescription": "Prevent players from using banned names",
+      "description": "Blocks players from using offensive or restricted names, optionally kicking or banning them.",
+      "filename": "name_ban.lua"
+    },
+    "name_replacer": {
+      "title": "Name Replacer",
+      "shortDescription": "Automatically replace player names",
+      "description": "Renames players in real-time based on configured rules to maintain community standards.",
+      "filename": "name_replacer.lua"
+    },
+    "notify_me": {
+      "title": "Notify Me",
+      "shortDescription": "Custom notifications for admins",
+      "description": "Sends notifications to admins for specific events such as player joins, map changes, or rule violations.",
+      "filename": "notify_me.lua"
+    },
+    "on_teleport": {
+      "title": "OnTeleport",
+      "shortDescription": "Trigger actions on player teleport",
+      "description": "Executes configurable actions when a player teleports, useful for event handling or logging.",
+      "filename": "on_teleport.lua"
+    },
+    "ping_checker": {
+      "title": "Ping Checker",
+      "shortDescription": "Monitor player latency",
+      "description": "Periodically checks player ping and logs or warns high-latency connections.",
+      "filename": "ping_checker.lua"
+    },
+    "play_time": {
+      "title": "Play Time",
+      "shortDescription": "Track player session duration",
+      "description": "Records and displays how long each player has been active on the server.",
+      "filename": "play_time.lua"
+    },
+    "random_grenades": {
+      "title": "Random Grenades",
+      "shortDescription": "Spawn grenades randomly",
+      "description": "Randomly spawns grenades on the map to increase chaos or fun in custom game modes.",
+      "filename": "random_grenades.lua"
+    },
+    "remove_grenades": {
+      "title": "Remove Grenades (On Spawn)",
+      "shortDescription": "Automatically remove grenades",
+      "description": "Removes grenades immediately after spawn to prevent map clutter or unbalanced gameplay.",
+      "filename": "remove_grenades.lua"
+    },
+    "restart_mapcycle": {
+      "title": "Restart Mapcycle",
+      "shortDescription": "Reset the map rotation",
+      "description": "Resets the mapcycle to the first map, optionally applying any voting overrides.",
+      "filename": "restart_mapcycle.lua"
+    },
+    "score_handler": {
+      "title": "Score Handler",
+      "shortDescription": "Custom scoring system",
+      "description": "Tracks, modifies, and displays player scores with configurable rules and multipliers.",
+      "filename": "score_handler.lua"
+    },
+    "script_manager": {
+      "title": "Script Manager",
+      "shortDescription": "Load/unload scripts dynamically",
+      "description": "Admin utility to manage active scripts, reload changes, and debug script issues in real-time.",
+      "filename": "script_manager.lua"
+    },
+    "server_logger": {
+      "title": "Server Logger",
+      "shortDescription": "Log server events",
+      "description": "Records server events such as joins, leaves, kills, and commands to files for auditing or analytics.",
+      "filename": "server_logger.lua"
+    },
+    "server_name_changer": {
+      "title": "Server Name Changer",
+      "shortDescription": "Modify server name dynamically",
+      "description": "Allows admins to change the server name on the fly, useful for events or branding.",
+      "filename": "server_name_changer.lua"
+    },
+    "set_respawn_time": {
+      "title": "Set Respawn Time",
+      "shortDescription": "Adjust player respawn delay",
+      "description": "Admins can configure respawn timers globally or per team to modify gameplay pacing.",
+      "filename": "set_respawn_time.lua"
+    },
+    "show_admin_names": {
+      "title": "Show Admin Names",
+      "shortDescription": "Display all admins",
+      "description": "Lists currently connected admins in chat or via command for transparency.",
+      "filename": "show_admin_names.lua"
+    },
+    "simple_poll_system": {
+      "title": "Simple Poll System",
+      "shortDescription": "Conduct in-game polls",
+      "description": "Allows players to vote on options, with results displayed in chat.",
+      "filename": "simple_poll_system.lua"
+    },
+    "spawn_protection_v1": {
+      "title": "Spawn Protection V1",
+      "shortDescription": "Prevent spawn kills",
+      "description": "Grants temporary invincibility to players after spawning to reduce unfair deaths.",
+      "filename": "spawn_protection_v1.lua"
+    },
+    "status_timer": {
+      "title": "Status Timer",
+      "shortDescription": "Track timed statuses",
+      "description": "Displays or logs timers for statuses such as buffs, debuffs, or cooldowns.",
+      "filename": "status_timer.lua"
+    },
+    "suicide_punisher": {
+      "title": "Suicide Punisher",
+      "shortDescription": "Penalize self-kills",
+      "description": "Applies penalties for players who repeatedly kill themselves to prevent exploits or griefing.",
+      "filename": "suicide_punisher.lua"
+    },
+    "suspend_players": {
+      "title": "Suspend Players",
+      "shortDescription": "Temporarily suspend players",
+      "description": "Allows admins to suspend player actions, including movement, chat, and attacks, for a configurable duration.",
+      "filename": "suspend_players.lua"
+    },
+    "sync_admins_utility": {
+      "title": "Sync Admins (Utility)",
+      "shortDescription": "Sync admin lists across servers",
+      "description": "Ensures all servers in a network have updated admin lists and permissions.",
+      "filename": "sync_admins_utility.lua"
+    },
+    "sync_your_files": {
+      "title": "Sync Your Files",
+      "shortDescription": "Synchronize local scripts with server",
+      "description": "Uploads or updates scripts on the server to match a local repository or file set.",
+      "filename": "sync_your_files.lua"
+    },
+    "t_slayer_team_spawns": {
+      "title": "T-Slayer Team Spawns",
+      "shortDescription": "Configure team spawn points",
+      "description": "Sets custom spawn locations for T-Slayer or similar team-based modes.",
+      "filename": "t_slayer_team_spawns.lua"
+    },
+    "team_chat": {
+      "title": "Team Chat",
+      "shortDescription": "Private team messaging",
+      "description": "Enables a separate chat channel for teams, invisible to opponents.",
+      "filename": "team_chat.lua"
+    },
+    "team_color_voting": {
+      "title": "Team Color Voting",
+      "shortDescription": "Players vote on team colors",
+      "description": "Allows players to vote for team colors before match start, applied automatically.",
+      "filename": "team_color_voting.lua"
+    },
+    "team_shuffler": {
+      "title": "Team Shuffler",
+      "shortDescription": "Randomize team assignments",
+      "description": "Randomly assigns players to teams to maintain fairness and variety in matches.",
+      "filename": "team_shuffler.lua"
+    },
+    "teleport_manager": {
+      "title": "Teleport Manager",
+      "shortDescription": "Manage player teleportation",
+      "description": "Admins can teleport players individually, in groups, or to preset locations.",
+      "filename": "teleport_manager.lua"
+    },
+    "the_punisher_v1": {
+      "title": "The Punisher (v1.0)",
+      "shortDescription": "Admin punishment tool",
+      "description": "Implements automatic punishments for players breaking configurable rules, including kicks, bans, and score penalties.",
+      "filename": "the_punisher_v1.lua"
+    },
+    "vehicle_block_utility_v1": {
+      "title": "Vehicle Block Utility v1",
+      "shortDescription": "Restrict certain vehicles",
+      "description": "Blocks specific vehicles from spawning or being used, configurable by admin.",
+      "filename": "vehicle_block_utility_v1.lua"
+    },
+    "vehicle_block_utility_v2": {
+      "title": "Vehicle Block Utility v2",
+      "shortDescription": "Advanced vehicle restrictions",
+      "description": "Enhanced vehicle blocking with additional options, such as team-specific or temporary blocks.",
+      "filename": "vehicle_block_utility_v2.lua"
+    },
+    "vote_kick": {
+      "title": "Vote Kick",
+      "shortDescription": "Player-driven kicking system",
+      "description": "Allows players to initiate votes to kick disruptive players, with configurable thresholds.",
+      "filename": "vote_kick.lua"
+    },
+    "vpn_blocker": {
+      "title": "VPN Blocker",
+      "shortDescription": "Prevent VPN connections",
+      "description": "Blocks or warns players connecting via VPN to prevent evasion of bans or multi-accounting.",
+      "filename": "vpn_blocker.lua"
+    },
+    "weapon_assigner": {
+      "title": "Weapon Assigner",
+      "shortDescription": "Assign weapons to players",
+      "description": "Automatically provides players with specific weapons on spawn or via command.",
+      "filename": "weapon_assigner.lua"
+    },
+    "welcome_message_req": {
+      "title": "Welcome Message [req]",
+      "shortDescription": "Custom welcome messages",
+      "description": "Sends personalized welcome messages to players when they join the server.",
+      "filename": "welcome_message_req.lua"
+    },
+    "word_buster": {
+      "title": "Word Buster",
+      "shortDescription": "Filter or remove words",
+      "description": "Advanced multi-lingual chat filter. Detects and removes offensive or banned words in chat messages, optionally replacing them.",
+      "filename": "word_buster.lua"
+    }
+  }
 }
