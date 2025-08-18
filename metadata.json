@@ -1,0 +1,26 @@
+{
+  "attractive": {
+    "temp": {
+      "title": "ignore",
+      "shortDescription": "Ignore This",
+      "description": "Ignore This",
+      "filename": "temp.lua"
+    }
+  },
+  "custom_games": {
+    "temp": {
+      "title": "ignore",
+      "shortDescription": "Ignore This",
+      "description": "Ignore This",
+      "filename": "temp.lua"
+    }
+  },
+  "utility": {
+    "temp": {
+      "title": "ignore",
+      "shortDescription": "Ignore This",
+      "description": "Ignore This",
+      "filename": "temp.lua"
+    }
+  }
+}
