@@ -1,6 +1,6 @@
 ![Logo](https://i.imgur.com/t0W5aJe.png)
 
-# All scripts are moving to my [NEW WEBSITE](https://chalwk.github.io/HALO%20SCRIPT%20PROJECTS/main.html)
+# All scripts are moving to my [NEW WEBSITE](https://chalwk.github.io/website/hsp-repo/main.html)
 
 # 👾 Halo Script Projects (HSP)
 
