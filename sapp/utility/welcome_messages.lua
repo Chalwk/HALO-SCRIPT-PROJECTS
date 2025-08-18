@@ -1,6 +1,6 @@
 --[[
 =====================================================================================
-SCRIPT NAME:      welcome_message.lua
+SCRIPT NAME:      welcome_messages.lua
 DESCRIPTION:      Customizable welcome messages for joining players.
                   Originally requested by mdc81 on OpenCarnage forums.
 

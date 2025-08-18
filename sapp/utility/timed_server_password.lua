@@ -1,6 +1,6 @@
 --[[
 =====================================================================================
-SCRIPT NAME:      timed_password.lua
+SCRIPT NAME:      timed_server_password.lua
 DESCRIPTION:      Automatically removes server password after configurable duration.
 
                   Features:

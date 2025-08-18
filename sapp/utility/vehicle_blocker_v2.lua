@@ -1,6 +1,6 @@
 --[[
 =====================================================================================
-SCRIPT NAME:      vehicle_block.lua
+SCRIPT NAME:      vehicle_blocker_v2.lua
 DESCRIPTION:      Advanced map-based vehicle restriction system with enhanced features.
 
                   Key Improvements from v1:

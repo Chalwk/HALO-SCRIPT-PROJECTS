@@ -1,6 +1,6 @@
 --[[
 =====================================================================================
-SCRIPT NAME:      disable_grenades.lua
+SCRIPT NAME:      remove_grenades.lua
 DESCRIPTION:      This script will remove grenades (after spawning), on per game mode basis.
                   Note: This does not prevent players from picking them up.
 

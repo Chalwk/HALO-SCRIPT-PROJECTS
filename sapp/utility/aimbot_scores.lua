@@ -1,6 +1,6 @@
 --[[
 =====================================================================================
-SCRIPT NAME:      aim_bot_scores.lua
+SCRIPT NAME:      aimbot_scores.lua
 DESCRIPTION:      Displays player accuracy statistics with customizable filters.
 
                   Command Syntax:
