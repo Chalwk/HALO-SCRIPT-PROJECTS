@@ -19,7 +19,7 @@ a wide range of scripts here to enhance, customize, and extend your multiplayer 
 
 ---
 
-### **💡 What are SAPP & Phasor?**
+### 💡 What are SAPP & Phasor?
 
 > **SAPP** and **Phasor** are server-side extensions that provide advanced scripting and customization for **Halo: PC**
 > and **Halo: CE** dedicated servers.
@@ -46,12 +46,12 @@ a wide range of scripts here to enhance, customize, and extend your multiplayer 
 
 ## 💬 Contribute & Request Features
 
-### **Submit Ideas**
+### Submit Ideas
 
 Have an idea for a new feature or script?  
 [🛠️ Submit Feature Request](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/issues/new?template=FEATURE_REQUEST.yaml)
 
-### **Report Issues**
+### Report Issues
 
 - [🐞 Bug Report Form](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/issues/new?assignees=Chalwk&labels=Bug%2CNeeds+Triage&projects=&template=BUG_REPORT.yaml&title=%5BBUG%5D+%3Ctitle%3E)
 - [✨ Feature Request Form](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/issues/new?assignees=Chalwk&labels=Feature%2CNeeds+Review&projects=&template=FEATURE_REQUEST.yaml&title=%5BFEATURE%5D+%3Ctitle%3E)
@@ -60,15 +60,19 @@ Have an idea for a new feature or script?
 
 ## 📚 Resources & Documentation
 
-### **SAPP**
+### SAPP
 
 - **Download:** [halo.isimaginary.com](http://halo.isimaginary.com)
 - **Documentation:** [SAPP Documentation (PDF)](http://halo.isimaginary.com/SAPP%20Documentation%20Revision%202.5.pdf)
 
-### **Phasor**
+### Phasor
 
 - **V1 Docs:** [Phasor V1 Documentation](http://phasor.halonet.net/archive/docs/05x.html)
 - **V2 Docs:** [Phasor V2 Documentation](http://phasor.halonet.net/archive/docs/200.html)
+
+### HAC2 Map Repository
+
+- **Custom Maps** [repo](https://maps.halonet.net/)
 
 ---
 
