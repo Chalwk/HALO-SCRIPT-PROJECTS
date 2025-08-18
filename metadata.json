@@ -496,6 +496,84 @@
       "description": "Allows authorized users to automatically grant themselves admin privileges.",
       "filename": "admin_add_me.lua"
     },
+    "aimbot_scores": {
+      "title": "Aimbot Scores",
+      "shortDescription": "",
+      "description": "",
+      "filename": "aimbot_scores.lua"
+    },
+    "cyborg_spawner": {
+      "title": "Cyborg Spawner",
+      "shortDescription": "",
+      "description": "",
+      "filename": "cyborg_spawner.lua"
+    },
+    "liberty_vehicle_spawner": {
+      "title": "Liberty Vehicle Spawner",
+      "shortDescription": "",
+      "description": "",
+      "filename": "liberty_vehicle_spawner.lua"
+    },
+    "map_list": {
+      "title": "Map List",
+      "shortDescription": "",
+      "description": "",
+      "filename": "map_list.lua"
+    },
+    "map_list_with_map_spec": {
+      "title": "Map List (with Map Spec)",
+      "shortDescription": "",
+      "description": "",
+      "filename": "map_list_with_map_spec.lua"
+    },
+    "map_skip_tally": {
+      "title": "Map Skip Tally",
+      "shortDescription": "",
+      "description": "",
+      "filename": "map_skip_tally.lua"
+    },
+    "no_damage": {
+      "title": "No Damage",
+      "shortDescription": "",
+      "description": "",
+      "filename": "no_damage.lua"
+    },
+    "object_spawner": {
+      "title": "Object Spawner",
+      "shortDescription": "",
+      "description": "",
+      "filename": "object_spawner.lua"
+    },
+    "race_assistant": {
+      "title": "Race Assistant",
+      "shortDescription": "",
+      "description": "",
+      "filename": "race_assistant.lua"
+    },
+    "reg_to_play": {
+      "title": "Registration Required to Play",
+      "shortDescription": "",
+      "description": "",
+      "filename": "reg_to_play.lua"
+    },
+    "rules_command": {
+      "title": "Rules Command",
+      "shortDescription": "",
+      "description": "",
+      "filename": "rules_command.lua"
+    },
+    "seed_score_protection": {
+      "title": "Seed Score Protection",
+      "shortDescription": "",
+      "description": "",
+      "filename": "seed_score_protection.lua"
+    },
+    "timed_server_password": {
+      "title": "Timed Server Password",
+      "shortDescription": "",
+      "description": "",
+      "filename": "timed_server_password.lua"
+    },
     "admin_chat": {
       "title": "Admin Chat",
       "shortDescription": "Custom chat channel for server admins",
