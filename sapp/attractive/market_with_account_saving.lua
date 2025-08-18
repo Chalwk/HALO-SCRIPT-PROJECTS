@@ -1,56 +1,27 @@
 --[[
---=====================================================================================================--
-Script Name: Market (with account saving), for SAPP (PC & CE)
-Description: Earn money for killing and scoring.
-Version: 1.16
+=====================================================================================
+SCRIPT NAME:      market_with_account_saving.lua
+DESCRIPTION:      Earn money for killing and scoring. Use your money to buy perks like
+                  Camouflage, God Mode, Grenades, Overshield, Health, Speed Boost,
+                  Teleport, and Damage Boost. All perks have a cooldown (default 60s).
 
-Use your money to buy the following perks:
+                  Players must create an account to use this script. Account management
+                  commands:
+                  1. /account create <username> <password>
+                  2. /account login <username> <password>
 
-Type			Command        Price        Catalogue Message
-----			-------	       -----        -----------------
-Camouflage      m1             $60          Duration: 30 seconds
-God Mode        m2             $200         Duration: 30 seconds
-Grenades        m3             $30          2x of each
-Overshield      m4             $60          Shield Percentage: Full Shield
-Health          m5             $100         Health Percentage: Full
-Speed Boost     m6             $60          1.3x
-Teleport        m7             $350         Teleport where aiming
-Damage Boost    m8             $500         1.3x damage infliction
+                  Admin commands:
+                  1. /deposit <pid> <amount>
+                  2. /withdraw <pid> <amount>
 
-All perks have a cooldown. Default 60 seconds each.
+                  Use /market to view available perks and /money to view balance.
+                  Requires JSON library installed: http://regex.info/blog/lua/json
 
----------------------------------------------------------------------------------------------------------------
-Players are required to create an account (in-game) to use this script.
-Account Management Commands:
-
-1. /account create <username> <password>
-2. /account login <username> <password>
-
-If you have an existing account, your balance will be restored when you log into your account.
-
-Your login session will expire if your ip address changes or the server is rebooted.
-If this happens, you will need to log into your account using the above command.
----------------------------------------------------------------------------------------------------------------
-
-Command to view available perks for purchase: /market
-Command to view current balance: /money
-
-Two available admin-override commands:
-1. /deposit <pid> <amount>
-2. /withdraw <pid> <amount>
-
-If a user doesn't log into an account after 30 days, it's considered stale and will be deleted.
-
-----
-This script requires that the following JSON library be installed on your server.
-Place in the same location as strings.dll & sapp.dll: http://regex.info/blog/lua/json
-----
-
-Copyright (c) 2022, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- config starts --
 

@@ -1,18 +1,16 @@
---=====================================================================================--
--- SCRIPT NAME:      Uber
--- DESCRIPTION:      Allows players to call an Uber to join teammates' vehicles
---                   by injecting themselves into available seats according to
---                   configurable priority and cooldown settings. Supports vehicle
---                   validation, auto ejection from unauthorized vehicles, crouch
---                   to Uber activation, and call limits per player per game.
---
--- AUTHOR:           Chalwk (Jericho Crosby)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- Copyright (c) 2020-2025 Jericho Crosby <jericho.crosby227@gmail.com>
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      uber_taxi.lua
+DESCRIPTION:      Allows players to call an Uber to join teammates' vehicles by
+                  injecting themselves into available seats according to configurable priority
+                  and cooldown settings. Supports vehicle validation, auto ejection from
+                  unauthorized vehicles, crouch to Uber activation, and call limits per player per game.
+
+Copyright (c) 2020-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 local Uber = {
 

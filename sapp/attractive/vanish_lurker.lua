@@ -1,43 +1,21 @@
 --[[
---=====================================================================================================--
-Script Name: Vanish (v 1.06), for SAPP (PC & CE)
-Description: Vanish yourself (or others) on demand!
+=====================================================================================
+SCRIPT NAME:      weapon_durability_and_jam_system.lua
+DESCRIPTION:      Implements weapon durability degradation and jamming mechanics.
+                  Weapons degrade when fired. Jammed weapons prevent firing and
+                  require player input (melee) to unjam. Features include:
+                    - Weapon-specific decay rates
+                    - Jam chance calculations
+                    - Overheat handling
+                    - Ammo snapshot and restoration
+                    - Debug logging
 
-Command syntax: /vanish.command on|off [me | id | */all] <flag>
+Copyright (c) 2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
-Features:
-* Invisibility:
-    - Hidden from all players (optional).
-    - Setting to hide vehicles occupied by vanished players.
-    - Setting to hide vanished players from radar.
-
-* Invincibility (God Mode):
-    - Complete invulnerability.
-
-* Speed Boost:
-    - Setting to change given speed.
-    
-* Boost (optional):
-    - Teleports you to the nearest object that you are aiming directly.
-    
-* Command Flags:
-    - Enable Vanish with camouflage only, be hidden only, or both.
-    - To enable with "hidden only", vanish.hide must be enabled.
-    - To enable with "camouflage only", vanish.camouflage must be enabled.
-    - To enable with "both", vanish.hide and vanish.camouflage must both be enabled.
-    
-* Toggle damage infliction on or off (vanish.block_damage).
-    - When enabled, players in vanish will not be able to inflict (or receive) damage.
-    
-* Customizable Messages.
-
-* Vanish status is recorded to a local file when you quit the server. This doubles as a backup solution should the server crash.
-				
-Copyright (c) 2019, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
 
 api_version = "1.12.0.0"
 local vanish = {}

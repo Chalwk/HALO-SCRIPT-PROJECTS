@@ -1,5 +1,5 @@
 -- Snipers Dream Team Mod [Other Components File] (v1.0)
--- Copyright (c) 2022, Jericho Crosby <jericho.crosby227@gmail.com>
+-- Copyright (c) 2022, Jericho Crosby
 
 -- This file is incomplete and will be expanded quite a bit in a future update.
 

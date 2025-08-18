@@ -1,15 +1,14 @@
 --[[
---=====================================================================================================--
-Script Name: Taunt Your Players (V 2.0), for SAPP (PC & CE)
+=====================================================================================
+SCRIPT NAME:      taunt_your_players_v2.lua
+DESCRIPTION:      Taunts players on death and remarks on kills at game end with humorous messages.
 
-Description: - When a player dies, this script will taunt the victim with a random (often humorous) message.
-             - When the game ends, the script will remark on each individual players current kill status with taunting or humorous messages.
+Copyright (c) 2019 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
-Copyright (c) 2019, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
 
 api_version = "1.12.0.0"
 

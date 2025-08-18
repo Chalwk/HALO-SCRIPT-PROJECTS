@@ -1,13 +1,14 @@
 --[[
---=====================================================================================================--
-Script Name: Shield Regen, for SAPP (PC & CE)
-Description: As soon as you receive damage, your shields will immediately start regenerating.
+=====================================================================================
+SCRIPT NAME:      shield_regen.lua
+DESCRIPTION:      As soon as you receive damage, your shields will immediately start regenerating.
 
-Copyright (c) 2021, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
+
 
 api_version = "1.12.0.0"
 

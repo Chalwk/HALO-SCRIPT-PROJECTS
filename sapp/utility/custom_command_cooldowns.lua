@@ -11,7 +11,7 @@ Features:
 - Prevent command spamming by enforcing cooldown periods.
 - Easily extendable by adding new commands to the configuration table.
 
-Copyright (c) 2025, Jericho Crosby <jericho.crosby227@gmail.com>
+Copyright (c) 2025, Jericho Crosby
 Notice: You can use this script subject to the following conditions:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--

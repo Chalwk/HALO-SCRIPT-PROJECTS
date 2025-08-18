@@ -19,7 +19,7 @@ Credits to 002 for HTTP Code: https://github.com/Halogen002/SAPP-HTTP-Client
 TO DO LIST:
 [!] Handle UCS-2 LE BOM encoded files for full compatibility.
 
-Copyright (c) 2016-2018, Jericho Crosby <jericho.crosby227@gmail.com>
+Copyright (c) 2016-2018, Jericho Crosby
 Notice: You can use this script subject to the following conditions:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--

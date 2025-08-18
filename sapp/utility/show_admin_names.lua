@@ -2,7 +2,7 @@
 -- SCRIPT NAME: Show Admin Names for SAPP (PC & CE)
 -- Description: Prints the name and level of admins who are currently online.
 --
--- Copyright (c) 2021-2022, Jericho Crosby <jericho.crosby227@gmail.com>
+-- Copyright (c) 2021-2022, Jericho Crosby
 -- Notice: You can use this script subject to the following conditions:
 --         https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--

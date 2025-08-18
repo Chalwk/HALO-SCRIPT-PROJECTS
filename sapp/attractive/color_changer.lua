@@ -1,13 +1,13 @@
 --[[
---=====================================================================================================--
-Script Name: Color Changer, for SAPP (PC & CE)
-Description:
+=====================================================================================
+SCRIPT NAME:      color_changer.lua
+DESCRIPTION:      This script allows players to change their color.
 
-Copyright (c) 2023, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 local ColourChanger = {
     level = 1, -- Admin level required to change color

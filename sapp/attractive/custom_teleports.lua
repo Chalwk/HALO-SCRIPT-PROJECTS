@@ -1,16 +1,15 @@
---=====================================================================================--
--- SCRIPT NAME:      Custom Teleports
--- DESCRIPTION:      Adds configurable, map-specific teleport points in Halo PC/CE.
---                   Players entering a defined activation radius are instantly moved
---                   to a set destination on the same map.
---
--- AUTHOR:           Chalwk (Jericho Crosby)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- Copyright (c) 2025 Jericho Crosby <jericho.crosby227@gmail.com>
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      custom_teleports.lua
+DESCRIPTION:      Adds configurable, map-specific teleport points.
+                  Players entering a defined activation radius are instantly moved
+                  to a set destination on the same map.
+
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -----------------
 -- CONFIG STARTS

@@ -3,7 +3,7 @@
 Script Name: Suspend Players, for SAPP (PC & CE)
 Description: This script will freeze players on the spot, take their weapons away and prevent them from typing messages.
 				
-Copyright (c) 2019, Jericho Crosby <jericho.crosby227@gmail.com>
+Copyright (c) 2019, Jericho Crosby
 Notice: You can use this script subject to the following conditions:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--

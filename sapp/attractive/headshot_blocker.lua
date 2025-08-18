@@ -1,6 +1,13 @@
--- Script: Headshot Blocker
--- Author: Chalwk
--- Version: 1.0
+--[[
+=====================================================================================
+SCRIPT NAME:      headshot_blocker.lua
+DESCRIPTION:      Prevent headshots
+
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = "1.12.0.0"
 

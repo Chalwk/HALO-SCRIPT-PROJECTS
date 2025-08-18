@@ -3,7 +3,7 @@
 Script Name: Script Manager, for SAPP (PC & CE)
 Description: Dynamically loads/unloads scripts based on current map and game mode
 
-Copyright (c) 2024, Jericho Crosby <jericho.crosby227@gmail.com>
+Copyright (c) 2024, Jericho Crosby
 Notice: You can use this script subject to the following conditions:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--

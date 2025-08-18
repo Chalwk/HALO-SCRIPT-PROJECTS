@@ -1,14 +1,15 @@
 --[[
---=====================================================================================================--
-Script Name: Killer Reward, for SAPP (PC & CE)
-Description: Random objects (weapons/equipment) will drop at your victims death location.
-             See config section for more.
+=====================================================================================
+SCRIPT NAME:      killer_reward.lua
+DESCRIPTION:      Random objects (weapons/equipment) will drop at your victim's death location.
+                  See config section for more.
 
-Copyright (c) 2022, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
+
 
 local KillerRewards = {
 

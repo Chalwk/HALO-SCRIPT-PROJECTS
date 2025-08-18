@@ -1,13 +1,13 @@
 --[[
---=====================================================================================================--
-Script Name: April Fools - Word Shuffler, for SAPP (PC & CE)
-Description: Chat messages will randomly be shuffled.
+=====================================================================================
+SCRIPT NAME:      april_fools_word_shuffler.lua
+DESCRIPTION:      Chat messages will randomly be shuffled.
 
-Copyright (c) 2022-2024, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- 1 in X chance of a message being shuffled:
 -- For example, when shuffle_chance = 10, there's a 1 in 10 chance for a message to be shuffled.

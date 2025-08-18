@@ -1,16 +1,15 @@
 --[[
---=====================================================================================================--
-Script Name: Taunt Your Players (messages), for SAPP (PC & CE)
-Implementing API version: 1.11.0.0
-Description:    This script will display 1-30 random taunting messages
-                from a lua table to your players under two events:
-                events: OnGameEnd | OnPlayerDie
-             
-Copyright (c) 2016-2018, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+=====================================================================================
+SCRIPT NAME:      taunt_your_players.lua
+DESCRIPTION:      Displays 1-30 random taunting messages to players on events:
+                  OnGameEnd or OnPlayerDie.
+
+Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
+
 
 api_version = "1.12.0.0"
 

@@ -1,15 +1,16 @@
 --[[
---=====================================================================================================--
-Script Name: Super Jump, for SAPP (PC & CE)
-Description: Jump high!
+=====================================================================================
+SCRIPT NAME:      super_jump.lua
+DESCRIPTION:      Jump high!
 
-Command Syntax: /superjump on|off
+                  Command Syntax: /superjump on|off
 
-Copyright (c) 2019, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
+
 
 api_version = "1.12.0.0"
 

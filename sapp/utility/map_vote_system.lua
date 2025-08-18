@@ -10,7 +10,7 @@ Features:
    4. Limitation on how many times a player can change their vote.
    5. Adjustable timers for map vote display, tallying votes, and map cycling.
 
-Copyright (c) 2022-2024, Jericho Crosby <jericho.crosby227@gmail.com>
+Copyright (c) 2022-2024, Jericho Crosby
 Notice: You can use this script subject to the following conditions:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--

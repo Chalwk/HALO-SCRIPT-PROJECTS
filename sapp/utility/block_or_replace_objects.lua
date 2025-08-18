@@ -3,7 +3,7 @@
 Script Name: Block or Replace Objects, for SAPP (PC & CE)
 Description: Block or replace objects easily.
 
-Copyright (c) 2022, Jericho Crosby <jericho.crosby227@gmail.com>
+Copyright (c) 2022, Jericho Crosby
 Notice: You can use this script subject to the following conditions:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--

@@ -14,7 +14,7 @@ Features:
   * Supports FFA and team-based zones.
   * Custom kill and warning messages.
 
-Copyright (c) 2024, Jericho Crosby <jericho.crosby227@gmail.com>
+Copyright (c) 2024, Jericho Crosby
 Notice: You can use this script subject to the following conditions:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--

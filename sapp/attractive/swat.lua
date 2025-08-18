@@ -1,13 +1,14 @@
 --[[
---=====================================================================================================--
-Script Name: Swat, for SAPP (PC & CE)
-Description: An extremely simple adaptation of 'swat' from Halo Reach.
+=====================================================================================
+SCRIPT NAME:      swat.lua
+DESCRIPTION:      An extremely simple adaptation of 'swat' from Halo Reach.
 
-Copyright (c) 2020, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
+
 
 api_version = '1.12.0.0'
 

@@ -1,13 +1,14 @@
 --[[
---=====================================================================================================--
-Script Name: Spawn where killed, for SAPP (PC & CE)
-Description: You will spawn where you died.
+=====================================================================================
+SCRIPT NAME:      spawn_where_killed.lua
+DESCRIPTION:      You will spawn where you died.
 
-Copyright (c) 2016-2022, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
+
 
 local loc = {}
 

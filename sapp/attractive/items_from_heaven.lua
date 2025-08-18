@@ -1,12 +1,13 @@
 --[[
-Script Name: Items from Heaven, for SAPP (PC & CE)
-Description: This script will spawn a random weapon or vehicle
-             at a random pre-defined map coordinate.
+=====================================================================================
+SCRIPT NAME:      items_from_heaven.lua
+DESCRIPTION:      Spawns a random weapon or vehicle at a random pre-defined map coordinate.
 
-Copyright (c) 2021, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-]]--
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- config starts --
 -- How often should we spawn an object (in seconds)?

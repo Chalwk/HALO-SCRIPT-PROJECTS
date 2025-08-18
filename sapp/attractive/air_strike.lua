@@ -1,3 +1,16 @@
+--[[
+=====================================================================================
+SCRIPT NAME:      ait_strike.lua
+DESCRIPTION:      Adds configurable, map-specific teleport points in Halo PC/CE.
+                  Players entering a defined activation radius are instantly moved
+                  to a set destination on the same map.
+
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
+
 api_version = "1.12.0.0"
 
 -- Configuration

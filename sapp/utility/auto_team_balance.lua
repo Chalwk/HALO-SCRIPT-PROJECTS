@@ -3,7 +3,7 @@
 Script Name: Auto Team Balance, for SAPP (PC & CE)
 Description: Automatically balances teams based on player count.
 
-Copyright (c) 2025, Jericho Crosby <jericho.crosby227@gmail.com>
+Copyright (c) 2025, Jericho Crosby
 Notice: You can use this script subject to the following conditions:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--

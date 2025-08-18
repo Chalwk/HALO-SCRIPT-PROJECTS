@@ -3,7 +3,7 @@
 Script Name: T-Slayer Team Spawns, for SAPP (PC & CE)
 Description: This mod will enforce team spawning on Team-Slayer based game types.
 
-Copyright (c) 2020-2022, Jericho Crosby <jericho.crosby227@gmail.com>
+Copyright (c) 2020-2022, Jericho Crosby
 Notice: You can use this script subject to the following conditions:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--

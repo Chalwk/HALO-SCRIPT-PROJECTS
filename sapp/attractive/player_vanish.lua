@@ -1,32 +1,28 @@
 --[[
---=====================================================================================================--
-Script Name: Player Vanish (v 1.5), for SAPP (PC & CE)
-Description: Vanish yourself (or others) on demand!
+=====================================================================================
+SCRIPT NAME:      player_vanish.lua
+DESCRIPTION:      Vanish yourself (or others) on demand.
 
-Command syntax: /vanish.command on|off [me | id | */all]
+                  Command syntax: /vanish.command on|off [me | id | */all]
 
-Features:
-* Invisibility
-    - Hidden from all players.
-    - Option to hide vehicles occupied by vanished players.
-    - Option to hide vanished players from radar.
+                  Features:
+                  * Invisibility
+                      - Hidden from all players
+                      - Option to hide vehicles occupied by vanished players
+                      - Option to hide vanished players from radar
+                  * Invincibility (God Mode)
+                      - Complete invulnerability
+                  * Speed Boost
+                      - Option to change given speed
+                  * Boost
+                      - Teleports you to the nearest object that you are aiming directly
+                  * Customizable Messages
 
-* Invincibility (God Mode)
-    - Complete invulnerability.
-
-* Speed Boost
-    - Option change given speed.
-    
-* Boost
-    - Teleports you to the nearest object that you are aiming directly.
-    
-* Customizable Messages.
-				
-Copyright (c) 2019, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- todo: Rewrite this script!
 

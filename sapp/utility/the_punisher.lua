@@ -4,7 +4,7 @@ Script Name: The Punisher (v1.0), for SAPP (PC & CE)
 Description: This script will punish players for certain actions (i.e, betrayals, teamshooting)
 
 
-Copyright (c) 2019, Jericho Crosby <jericho.crosby227@gmail.com>
+Copyright (c) 2019, Jericho Crosby
 Notice: You can use this script subject to the following conditions:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--

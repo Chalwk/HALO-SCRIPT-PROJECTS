@@ -20,7 +20,7 @@ This script works by exploiting a halo bug:
 3). Execute 50 to 1000 iterations within 100th of a second.
 4). Once loop has finished executing we destroy the vehicle object and this will cause the client to crash.
 
-Copyright (c) 2020-2021, Jericho Crosby <jericho.crosby227@gmail.com>
+Copyright (c) 2020-2021, Jericho Crosby
 Notice: You can use this script subject to the following conditions:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--

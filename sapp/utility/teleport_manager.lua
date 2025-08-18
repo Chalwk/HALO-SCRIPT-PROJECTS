@@ -20,7 +20,7 @@ Commands:
 /warplist [page #]
 > View a list of all warps linked to the current map.
 
-Copyright (c) 2020-2024, Jericho Crosby <jericho.crosby227@gmail.com>
+Copyright (c) 2020-2024, Jericho Crosby
 License: Use subject to the conditions outlined at:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--

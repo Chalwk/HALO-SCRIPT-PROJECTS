@@ -3,7 +3,7 @@
 Script Name: Live on 3, for SAPP (PC & CE)
 Description: A fun game mechanic triggering a reset event after a countdown.
 
-Copyright (c) 2022, Jericho Crosby <jericho.crosby227@gmail.com>
+Copyright (c) 2022, Jericho Crosby
 Notice: You can use this script subject to the following conditions:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--

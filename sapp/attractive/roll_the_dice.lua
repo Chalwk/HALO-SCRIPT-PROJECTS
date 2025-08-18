@@ -1,21 +1,21 @@
 --[[
---=====================================================================================================--
-Script Name: Roll-The-Dice, for SAPP (PC & CE)
-Description: You will have a 1 in 5 chance of receiving one of these things:
-*	Random Vehicle Entry
-*	Random Weapon Assignment
-*	Delete Inventory
-*	Insta-Shield
-*	Launch Player into the air
+=====================================================================================
+SCRIPT NAME:      roll_the_dice.lua
+DESCRIPTION:      You have a 1 in 5 chance of receiving one of these:
+                  * Random Vehicle Entry
+                  * Random Weapon Assignment
+                  * Delete Inventory
+                  * Insta-Shield
+                  * Launch Player into the air
 
-Type /rtd to "roll the dice"
+                  Type /rtd to "roll the dice".
 
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
-Copyright (c) 2021, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
 
 api_version = "1.12.0.0"
 local RTD = {

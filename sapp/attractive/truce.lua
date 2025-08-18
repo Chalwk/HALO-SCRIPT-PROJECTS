@@ -1,21 +1,14 @@
 --[[
---=====================================================================================================--
-Script Name: Truce, for SAPP (PC & CE)
-Description: Initiate a truce with other players.
-             While in a truce with someone, neither player can harm one another.
+=====================================================================================
+SCRIPT NAME:      truce.lua
+DESCRIPTION:      Initiate a truce with other players. While in a truce, players cannot harm each other.
 
-Command Syntax: 
-    * /truce [player id]
-    * /accept [player id]
-    * /deny [player id]
-    * /untruce [player id]
-    * /trucelist
+Copyright (c) 2016-2019 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
-Copyright (c) 2016-2019, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]] --
 
 api_version = "1.12.0.0"
 -- configuration [starts] -->

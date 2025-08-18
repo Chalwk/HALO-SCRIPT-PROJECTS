@@ -12,7 +12,7 @@ Description: This script detects whether a player is using a multi-client and re
              - High (61-80%): Likely multi-client usage.
              - Very High (81-100%): Almost certainly a multi-client user.
 
-Copyright (c) 2024, Jericho Crosby <jericho.crosby227@gmail.com>
+Copyright (c) 2024, Jericho Crosby
 Notice: You are permitted to use this script subject to the conditions outlined at:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--

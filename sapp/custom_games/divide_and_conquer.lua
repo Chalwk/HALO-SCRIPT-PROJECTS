@@ -8,7 +8,7 @@
 -- AUTHOR:           Jericho Crosby (Chalwk)
 -- COMPATIBILITY:    Halo PC/CE | SAPP
 --
--- COPYRIGHT © 2023-2025 Jericho Crosby <jericho.crosby227@gmail.com>
+-- COPYRIGHT © 2023-2025 Jericho Crosby
 -- LICENSE:          MIT License
 --                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================--

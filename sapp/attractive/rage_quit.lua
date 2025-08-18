@@ -1,13 +1,14 @@
 --[[
---====================================================================--
-Script Name: Rage Quit, for SAPP (PC & CE)
-Description: Announces a simple message when someone rage quits. Detects both kill-related and general rage quits.
+=====================================================================================
+SCRIPT NAME:      rage_quit.lua
+DESCRIPTION:      Announces a message when someone rage quits. Detects both kill-related and general rage quits.
 
-Copyright (c) 2022-2024, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---====================================================================--
-]]--
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
+
 
 -- Configuration starts --------------------------------------------------
 local GRACE_PERIOD_AFTER_KILL = 10 -- in seconds

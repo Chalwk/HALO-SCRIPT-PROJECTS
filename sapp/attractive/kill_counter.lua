@@ -1,12 +1,12 @@
 --[[
---=====================================================================================================--
-Script Name: Kill Counter, for SAPP (PC & CE)
-Description: This mod was requested by someone called planetX2 on opencarnage.net
+=====================================================================================
+SCRIPT NAME:      kill_counter.lua
+DESCRIPTION:      This mod was requested by someone called planetX2 on opencarnage.net.
 
-Copyright (c) 2016-2022, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
 ]]
 
 api_version = '1.12.0.0'

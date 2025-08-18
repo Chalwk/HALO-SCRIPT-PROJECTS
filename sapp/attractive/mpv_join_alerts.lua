@@ -1,17 +1,17 @@
---=====================================================================================--
--- SCRIPT NAME:      MPV Join Alerts
--- DESCRIPTION:      Broadcasts a custom welcome message when a "Most Valued Player" joins the server.
---                   - Each MVP can have their own unique message.
---                   - Non-MVP players get a random general welcome message.
---                   - Identification supports both IP addresses and hashes.
---
--- AUTHOR:           Chalwk (Jericho Crosby)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- Copyright (c) 2019-2025 Jericho Crosby <jericho.crosby227@gmail.com>
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      mpv_join_alerts.lua
+DESCRIPTION:      Broadcasts a custom welcome message when a "Most Valued Player" joins the server.
+                  - Each MVP can have their own unique message.
+                  - Non-MVP players get a random general welcome message.
+                  - Identification supports both IP addresses and hashes.
+
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
+
 
 -- CONFIG:
 

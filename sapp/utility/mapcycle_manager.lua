@@ -75,7 +75,7 @@ Prerequisites:
 2. Remove any commands that load maps from SAPP to avoid conflicts; this script is a drop-in replacement
    for SAPP's built-in map cycle feature.
 
-Copyright (c) 2024, Jericho Crosby <jericho.crosby227@gmail.com>
+Copyright (c) 2024, Jericho Crosby
 * Notice: You can use this document subject to the following conditions:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--

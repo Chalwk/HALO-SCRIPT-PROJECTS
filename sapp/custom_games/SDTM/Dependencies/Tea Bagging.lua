@@ -1,5 +1,5 @@
 -- Snipers Dream Team Mod [Tea Bagging File] (v1.0)
--- Copyright (c) 2022, Jericho Crosby <jericho.crosby227@gmail.com>
+-- Copyright (c) 2022, Jericho Crosby
 
 local SDTM = {}
 local time = os.time

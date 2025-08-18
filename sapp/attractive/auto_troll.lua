@@ -1,7 +1,7 @@
 --[[
---=====================================================================================================--
-Script Name: Troll, for SAPP (PC & CE)
-Description: A unique mod designed to troll your whole server (or specific players)
+=====================================================================================
+SCRIPT NAME:      auto_troll.lua
+DESCRIPTION:      A unique mod designed to troll your whole server (or specific players).
 
 Features:
 * Silent Kill               Random inexplicable deaths (no death message).
@@ -18,27 +18,17 @@ Features:
 * Inverted Controls         Randomly invert player controls.
 * Roasty Toasty             Randomly burn a player.
 * Fake Kill Messages        Randomly show the player fake kill messages.
+* Glitched Grenades         Randomly glitch out grenades (no grenade projectiles will be thrown but the throw animation will still play).
+* Fake Join/Quit Messages   Randomly show fake player join/quit messages or manually fake join/quit a player.
+* Force Chat                Randomly force a player to say something from a pre-defined list or manually with a custom command.
+* SPECIAL COMMANDS          Manually add/remove players from troll list; see config section.
+* ENABLE/DISABLE            Any feature at any time with two simple commands; see config section.
 
-* Glitched Grenades         Randomly glitch out grenades.
-                            No grenade projectiles will be thrown but the throw animation will still play.
-
-* Fake Join/Quit Messages   Randomly show fake player join/quit messages to the target or
-                            manually fake join/quit a player with a custom command.
-
-* Force Chat                Randomly force a player to say something from a list of pre-defined sentences
-                            or manually force a player to say something with a custom command:
-
-* SPECIAL COMMANDS (see settings table in config section):
-Manually add a player to the troll list (bypassing "ignore_admins" settings and "specific_users" settings)
-or manually prevent a player from being trolled by this script.
-
-* ENABLE or DISABLE any feature at any time with two simple commands (see config section)
-
-Copyright (c) 2020, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = "1.12.0.0"
 

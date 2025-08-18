@@ -1,14 +1,15 @@
 --[[
---=====================================================================================================--
-Script Name: RCON Chat, for SAPP (PC & CE)
-Description: Chat messages appear in RCON instead of normal chat.
-             See config section below for more.
+=====================================================================================
+SCRIPT NAME:      rcon_chat.lua
+DESCRIPTION:      Chat messages appear in RCON instead of normal chat.
+                  See config section below for more.
 
-Copyright (c) 2021-2022, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
+
 
 local chat = {
 

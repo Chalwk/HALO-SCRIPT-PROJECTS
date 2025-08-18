@@ -1,14 +1,14 @@
 --[[
---=====================================================================================================--
-Script Name: Capture the Flag (v1.3), for SAPP (PC & CE)
-Description: This script brings CTF-like mechanics to any Slayer (FFA/Team) game type.
-             A single flag will spawn somewhere on the map. Return it to any base to score.
+=====================================================================================
+SCRIPT NAME:      capture_the_flag.lua
+DESCRIPTION:      Brings CTF-like mechanics to any Slayer (FFA/Team) game type.
+                  A single flag will spawn somewhere on the map. Return it to any base to score.
 
-Copyright (c) 2021, Jericho Crosby <jericho.crosby227@gmail.com>
-* Notice: You can use this document subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- Configuration settings for the Capture the Flag script
 local CTF = {

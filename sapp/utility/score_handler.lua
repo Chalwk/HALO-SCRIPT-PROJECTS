@@ -4,7 +4,7 @@ Script Name: Score Handler, for SAPP (PC & CE)
 Description: This script is a powerful all-in-one score handler that lets you define
              how many points are added or deducted on a case-by-case basis.
 
-Copyright (c) 2021, Jericho Crosby <jericho.crosby227@gmail.com>
+Copyright (c) 2021, Jericho Crosby
 Notice: You can use this script subject to the following conditions:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--

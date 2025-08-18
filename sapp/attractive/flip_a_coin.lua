@@ -1,13 +1,13 @@
 --[[
---=====================================================================================================--
-Script Name: Flip a Coin, for SAPP (PC & CE)
-Description: A simple addon that lets you flip a text-based virtual coin!
+=====================================================================================
+SCRIPT NAME:      flip_a_coin.lua
+DESCRIPTION:      A simple addon that lets you flip a text-based virtual coin!
 
-Copyright (c) 2020-2024, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- Config starts here:
 local COMMAND = 'flip'

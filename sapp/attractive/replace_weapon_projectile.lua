@@ -1,15 +1,16 @@
 --[[
---=====================================================================================================--
-Script Name: Replace Weapon Projectile (v1.1), for SAPP (PC & CE)
-Description: This script will allow you to swap weapon projectiles for substitute projectiles
+=====================================================================================
+SCRIPT NAME:      replace_weapon_projectile.lua
+DESCRIPTION:      Allows you to swap weapon projectiles for substitute projectiles.
 
-NOTE: The replacement projectile will still appear as the original projectile (but function properly).
+                  NOTE: The replacement projectile will still appear as the original projectile (but function properly).
 
-Copyright (c) 2019-2024, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
+
 
 api_version = "1.12.0.0"
 local projectiles = {}

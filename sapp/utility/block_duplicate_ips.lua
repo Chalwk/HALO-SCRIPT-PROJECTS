@@ -4,7 +4,7 @@ Script Name: Block Duplicate IPs (Enhanced Version), for SAPP (PC & CE)
 Description: Prevents players from joining with the same IP address as another connected player.
              Optionally kick or ban all players sharing the same IP.
 
-Copyright (c) 2019-2024, Jericho Crosby <jericho.crosby227@gmail.com>
+Copyright (c) 2019-2024, Jericho Crosby
 Notice: You can use this script subject to the following conditions:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--

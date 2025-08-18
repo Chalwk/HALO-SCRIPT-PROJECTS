@@ -4,7 +4,7 @@ Script Name: Restart MapCycle, for SAPP (PC & CE)
 Description: When then last remaining player leaves the game,
              the map cycle will restart after 120 seconds.
 
-Copyright (c) 2019-2022, Jericho Crosby <jericho.crosby227@gmail.com>
+Copyright (c) 2019-2022, Jericho Crosby
 Notice: You can use this script subject to the following conditions:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--

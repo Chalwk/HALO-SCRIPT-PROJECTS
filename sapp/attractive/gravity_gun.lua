@@ -1,20 +1,19 @@
---=====================================================================================--
--- SCRIPT NAME:      Gravity Gun
--- DESCRIPTION:      Adds a gravity gun mechanic, allowing players to pick up,
---                   manipulate, and launch nearby objects such as vehicles, weapons, equipment,
---                   and devices. The gun works by targeting an object in the player’s crosshair,
---                   suspending it at a configurable distance, and applying an anti-
---                   gravity effect. Players can then launch the object with force based on its mass.
---                   Includes configurable settings for pickup range, rotation speed, launch velocity,
---                   cooldown timers, and allowed object types. Can be toggled per-player via a command.
---
--- AUTHOR:           Chalwk (Jericho Crosby)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- Copyright (c) 2025 Jericho Crosby <jericho.crosby227@gmail.com>
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      gravity_gun.lua
+DESCRIPTION:      Adds a gravity gun mechanic, allowing players to pick up,
+                  manipulate, and launch nearby objects such as vehicles, weapons, equipment,
+                  and devices. The gun works by targeting an object in the player’s crosshair,
+                  suspending it at a configurable distance, and applying an anti-gravity effect.
+                  Players can then launch the object with force based on its mass.
+                  Includes configurable settings for pickup range, rotation speed, launch velocity,
+                  cooldown timers, and allowed object types. Can be toggled per-player via a command.
+
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- CONFIG STARTS -------------------------------------------------------------
 local GravityGun = {

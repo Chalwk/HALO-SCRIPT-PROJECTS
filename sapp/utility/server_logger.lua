@@ -4,7 +4,7 @@ Script Name: Server Logger, for SAPP (PC & CE)
 Description: An advanced custom server logger.
              This is intended to replace SAPP's built-in logger.
 
-Copyright (c) 2022-2024, Jericho Crosby <jericho.crosby227@gmail.com>
+Copyright (c) 2022-2024, Jericho Crosby
 Notice: You can use this script subject to the following conditions:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--

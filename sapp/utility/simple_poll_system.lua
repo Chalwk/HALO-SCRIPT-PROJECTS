@@ -7,7 +7,7 @@ Description: Admins can set up a quick poll, such as deciding the next map or a 
         /poll "What map should we play next?" bloodgulch sidewinder ratrace
         To vote vote for an option, type: /vote [option number] (e.g., /vote 1 = bloodgulch, /vote 2 = sidewinder, etc.)
 
-Copyright (c) 2025, Jericho Crosby <jericho.crosby227@gmail.com>
+Copyright (c) 2025, Jericho Crosby
 Notice: You can use this script subject to the following conditions:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--

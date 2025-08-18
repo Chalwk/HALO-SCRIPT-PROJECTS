@@ -1,20 +1,19 @@
---=====================================================================================--
--- SCRIPT NAME:      Expressions
--- DESCRIPTION:      Fun, family-friendly(-ish) ways to express yourself in chat.
---                   - Rage ("!anger")
---                   - Taunt ("!taunt")
---                   - Mild cussing ("!cuss")
---
---                   Players type a trigger command in chat to send a random phrase from the relevant category.
---                   The system preserves the player's name in the output format.
---
--- AUTHOR:           Chalwk (Jericho Crosby)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- Copyright (c) 2019-2025 Jericho Crosby <jericho.crosby227@gmail.com>
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      expressions.lua
+DESCRIPTION:      Fun, family-friendly(-ish) ways to express yourself in chat.
+                  - Rage ("!anger")
+                  - Taunt ("!taunt")
+                  - Mild cussing ("!cuss")
+
+                  Players type a trigger command in chat to send a random phrase from the relevant category.
+                  The system preserves the player's name in the output format.
+
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- CONFGIGURATION --
 

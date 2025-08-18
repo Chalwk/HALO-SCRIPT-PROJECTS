@@ -11,7 +11,7 @@ Commands:
 	* /votecolor <set id>
 	Use this command to vote for your choice of color set
 
-Copyright (c) 2020, Jericho Crosby <jericho.crosby227@gmail.com>
+Copyright (c) 2020, Jericho Crosby
 Notice: You can use this script subject to the following conditions:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --======================================================================================================--

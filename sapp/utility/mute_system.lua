@@ -8,7 +8,7 @@ You can download them from link below and follow the instructions on this page:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/1.0
 
 
-Copyright (c) 2020, Jericho Crosby <jericho.crosby227@gmail.com>
+Copyright (c) 2020, Jericho Crosby
 Notice: You can use this script subject to the following conditions:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--

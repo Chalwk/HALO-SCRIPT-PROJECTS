@@ -1,19 +1,19 @@
 --[[
---=====================================================================================================--
-Script Name: Random Facts Generator, for SAPP (PC & CE)
-Description: This script will periodically announce a random fact from the Chuck Norris Joke API.
+=====================================================================================
+SCRIPT NAME:      random_fact_generator.lua
+DESCRIPTION:      Periodically announces a random fact from the Chuck Norris Joke API.
 
-Requirements:
-1. Install the following plugins on your server:
-    - https://opencarnage.net/index.php?/topic/5998-sapp-http-client/
-    - http://regex.info/blog/lua/json
+                  Requirements:
+                  1. Install the following plugins on your server:
+                     - https://opencarnage.net/index.php?/topic/5998-sapp-http-client/
+                     - http://regex.info/blog/lua/json
+                  2. Place "json.lua" and the contents of "sapp-http-client" in your server's root directory.
 
-2. Place "json.lua" and the contents of "sapp-http-client" in your server's root directory.
-
-Author: Jericho Crosby <jericho.crosby227@gmail.com>
-License: https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- API version required by SAPP
 api_version = "1.12.0.0"

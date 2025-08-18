@@ -3,7 +3,7 @@
 Script Name: Server Name Changer (UTILITY), for SAPP (PC & CE)
 Description: This script will periodically change the name of the server.
 
-Copyright (c) 2021, Jericho Crosby <jericho.crosby227@gmail.com>
+Copyright (c) 2021, Jericho Crosby
 Notice: You can use this script subject to the following conditions:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--

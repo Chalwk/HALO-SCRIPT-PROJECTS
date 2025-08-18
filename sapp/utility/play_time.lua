@@ -13,7 +13,7 @@ LINK: http://regex.info/blog/lua/json
 Technical Note:
 Playtime data will only begin to be collected from the moment you install the script.
 
-Copyright (c) 2020-2021, Jericho Crosby <jericho.crosby227@gmail.com>
+Copyright (c) 2020-2021, Jericho Crosby
 Notice: You can use this script subject to the following conditions:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--

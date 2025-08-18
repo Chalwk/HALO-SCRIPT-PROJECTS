@@ -1,14 +1,14 @@
---=====================================================================================================--
--- SCRIPT NAME:     Tactical Insertion
--- DESCRIPTION:     Players can use a command to set their next spawn point.
---
--- AUTHOR:          Jericho Crosby (Chalwk)
--- COMPATIBILITY:   Halo PC/CE | SAPP 1.12.0.0
---
--- Copyright (c) 2019-2025 Jericho Crosby <jericho.crosby227@gmail.com>
--- LICENSE:         MIT License
---                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      tactical_insertion.lua
+DESCRIPTION:      Players can use a command to set their next spawn point.
+
+Copyright (c) 2019-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
+
 
 -- config starts
 local command = 'ti'

@@ -1,13 +1,13 @@
 --[[
---======================================================================================================--
-Script Name: April Fools - Chat, for SAPP (PC & CE)
-Description: Other players will start speaking for you....
+=====================================================================================
+SCRIPT NAME:      april_fools_chat.lua
+DESCRIPTION:      Other players will start speaking for you...
 
-Copyright (c) 2020-2024, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---======================================================================================================--
-]]--
+Copyright (c) 2020-2024 Jericho Crosby
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = "1.12.0.0"
 

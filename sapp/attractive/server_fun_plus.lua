@@ -1,29 +1,28 @@
 --[[
---=====================================================================================================--
-Script Name: Server Fun Plus, for SAPP (PC & CE)
+=====================================================================================
+SCRIPT NAME:      server_fun_plus.lua
+DESCRIPTION:      Adds multiple fun/mod features for players and admins, including:
+                  * rocket: turn a player into a rocket (players in vehicles only)
+                  * force chat: force a player to say something
+                  * fake join: pretend a player joins the game
+                  * fake quit: pretend a player left the game
+                  * random tp: teleport player to a random location on the map
+                  * slap: slap target player
+                  * spam: spam a message to the designated player
+                  * zap: zap target player (deals X damage)
+                  * god: broadcast a message as god
+                  * nuke: nuke the target player
+                  * colour changer: change a player's colour
+                  * crash: crash player's game client
 
-Features:
-*   rocket:             turn a player into a rocket (player's in vehicles only)
-*   force chat:         force a player to say something
-*   fake join:          pretend player joins the game
-*   fake quit:          pretend player left the game
-    random tp:          teleport player to a random location on the map
-*   slap:               slap target player
-*   spam:               spam a message to the designated player
-    zap:                zap target player (deals X damage)
-*   god:                broadcast a message as god
-*   nuke:               nuke the target player
-    colour changer:     change a player's colour
-*   crash:              crash player's game client
+                  IN DEVELOPMENT
 
-    IN DEVELOPMENT
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
-
-Copyright (c) 2016-2018, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
 
 api_version = "1.12.0.0"
 

@@ -5,7 +5,7 @@
 --              Command syntax for vote list: /votelist
 --              Command syntax for cancel vote: /cancelvote
 --
--- Copyright (c) 2020-2024, Jericho Crosby <jericho.crosby227@gmail.com>
+-- Copyright (c) 2020-2024, Jericho Crosby
 -- License: Use subject to the conditions outlined at:
 --         https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--

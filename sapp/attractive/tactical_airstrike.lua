@@ -1,40 +1,27 @@
 --[[
---=====================================================================================================--
-Script Name: Tactical Airstrike, for SAPP (PC & CE)
-Description: Players who achieve a five-kill streak (killing five enemy players consecutively without dying)
-             are given the ability to call in an airstrike.
+=====================================================================================
+SCRIPT NAME:      tactical_airstrike.lua
+DESCRIPTION:      Players on a five-kill streak can call in an airstrike.
 
-Players will have the opportunity to select from 1 of 3 "strike" modes.
-To view a list of Strike Modes, type "/nuke info" - you will see the list of modes and their respective IDs.
-To select a mode, type "/nuke mode [mode id]".
+                  Players can choose from 3 strike modes:
+                  MODE 1: Airstrike at a specific player's coordinates (/nuke [player id])
+                  MODE 2: Airstrike to one of multiple locations around enemy base (/nuke)
+                  MODE 3: Airstrike to a random pre-defined map coordinate (/nuke)
 
-MODE 1). Call an airstrike at a specific player's X, Y, Z map coordinates.
-- To view a list of player IDs, type "/nuke pl".
-- To call an airstrike on a specific player, type "/nuke [player id]".
+                  Commands:
+                  * /nuke [player id]
+                  * /nuke mode [mode id]
+                  * /nuke info
+                  * /nuke pl
 
-MODE 2). Call an airstrike to (1 of X) locations surrounding the enemy base.
-- To call a Mode 2 Airstrike, type "/nuke".
+Credits to "D Stroyer" for the idea.
 
-MODE 3). Call an airstrike to a random (pre-defined) x,y,z coordinate on the map.
-- To call a Mode 3 Airstrike, type "/nuke".
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
-Note: Make sure you're in the right mode before sending an airstrike!
-
-Players will be in Mode 1 by default when they join the server.
-
-Command Syntax:
-* /nuke [player id]
-* /nuke mode [mode id]
-* /nuke info
-* /nuke pl
-
-Credits to a player named "D Stroyer" for the idea. You rock man!
-
-Copyright (c) 2020, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
 
 api_version = "1.12.0.0"
 

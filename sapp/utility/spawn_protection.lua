@@ -7,7 +7,7 @@ Description: Simple spawn protection script where players are invulnerable to da
              The newly spawned player can optionally be prevented from
              dealing damage. See config below for more.
 
-Copyright (c) 2022, Jericho Crosby <jericho.crosby227@gmail.com>
+Copyright (c) 2022, Jericho Crosby
 Notice: You can use this script subject to the following conditions:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--

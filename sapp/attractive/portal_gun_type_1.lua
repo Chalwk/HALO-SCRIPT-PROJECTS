@@ -1,18 +1,17 @@
 --[[
---=====================================================================================================--
-Script Name: Portal Gun (type 1), for SAPP (PC & CE)
-Description: Aim & Shoot to teleport.
+=====================================================================================
+SCRIPT NAME:      portal_gun_type_1.lua
+DESCRIPTION:      Aim & shoot to teleport.
 
-----------------------------------------------------------------
-NOTE: In this version, you can portal-gun while in a vehicle.
-Players do not need to crouch to teleport.
-----------------------------------------------------------------
+                  NOTE: In this version, you can portal-gun while in a vehicle.
+                        Players do not need to crouch to teleport.
 
-Copyright (c) 2022, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]] --
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
+
 
 api_version = "1.12.0.0"
 

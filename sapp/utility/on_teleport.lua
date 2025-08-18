@@ -4,7 +4,7 @@ Script Name: OnTeleport, for SAPP (PC & CE)
 Description: An example script that detects when a player has teleported.
              This script is intended to be used by other developers.
 
-Copyright (c) 2022, Jericho Crosby <jericho.crosby227@gmail.com>
+Copyright (c) 2022, Jericho Crosby
 Notice: You can use this script subject to the following conditions:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--

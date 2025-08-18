@@ -1,21 +1,22 @@
---=====================================================================================--
--- SCRIPT NAME:      Sprint System
--- DESCRIPTION:      A lightweight stamina-based sprinting system using flashlight toggles.
---                   Features:
---                   - Flashlight key enables/disables sprinting
---                   - Stamina drains while sprinting and regenerates while idle
---                   - Sprinting speed boost and exhausted slowdown
---                   - Exhaustion state triggers when stamina is depleted
---                   - Text-based HUD shows stamina bar and status
---                   - Fully customizable stamina, speed, and rates
---
--- AUTHOR:           Jericho Crosby (Chalwk)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- COPYRIGHT © 2025 Jericho Crosby <jericho.crosby227@gmail.com>
--- LICENSE:         MIT License
---                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      sprint_system.lua
+DESCRIPTION:      Lightweight stamina-based sprinting system using flashlight toggles.
+
+                  Features:
+                  - Flashlight key enables/disables sprinting
+                  - Stamina drains while sprinting and regenerates while idle
+                  - Sprinting speed boost and exhausted slowdown
+                  - Exhaustion state triggers when stamina is depleted
+                  - Text-based HUD shows stamina bar and status
+                  - Fully customizable stamina, speed, and rates
+
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
+
 
 ---------------------------------
 -- CONFIGURATION

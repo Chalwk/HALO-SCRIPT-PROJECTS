@@ -4,7 +4,7 @@ Script Name: Disable Grenades, for SAPP (PC & CE)
 Description: This script will remove nades (after spawning), on per game mode basis.
              Note: This does not prevent players from picking them up.
 
-Copyright (c) 2020-2022, Jericho Crosby <jericho.crosby227@gmail.com>
+Copyright (c) 2020-2022, Jericho Crosby
 Notice: You can use this script subject to the following conditions:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--

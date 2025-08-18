@@ -3,7 +3,7 @@
 Script Name: Get Server Name (example), for SAPP (PC & CE)
 Description: This script serves as an example of accessing the server name.
 
-Copyright (c) 2016-2022, Jericho Crosby <jericho.crosby227@gmail.com>
+Copyright (c) 2016-2022, Jericho Crosby
 Notice: You can use this script subject to the following conditions:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--

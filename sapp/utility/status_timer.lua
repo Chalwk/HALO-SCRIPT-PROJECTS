@@ -2,7 +2,7 @@
 -- SCRIPT NAME: Status Timer for SAPP (PC & CE)
 -- Description: Prints the number of players currently online (to console).
 --
--- Copyright (c) 2016-2024, Jericho Crosby <jericho.crosby227@gmail.com>
+-- Copyright (c) 2016-2024, Jericho Crosby
 -- Notice: You can use this script subject to the following conditions:
 --         https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--

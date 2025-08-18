@@ -1,13 +1,13 @@
 --[[
---======================================================================================================--
-Script Name: Beep On Join, for SAPP (PC & CE)
-Description: Added a new script that produces an audible beep when someone joins the server.
+=====================================================================================
+SCRIPT NAME:      beep_on_join.lua
+DESCRIPTION:      Produces an audible beep when someone joins the server.
 
-Copyright (c) 2020-2022, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---======================================================================================================--
-]]--
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = '1.12.0.0'
 

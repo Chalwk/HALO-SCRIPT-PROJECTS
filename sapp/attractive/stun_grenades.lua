@@ -1,20 +1,21 @@
 --[[
---=====================================================================================================--
-Script Name: Stun Grenades, for SAPP (PC & CE)
-Description: Make frags and plasmas behave like stun grenades.
+=====================================================================================
+SCRIPT NAME:      stun_grenades.lua
+DESCRIPTION:      Make frags and plasmas behave like stun grenades.
 
-			 When someone is damaged by a grenade,
-			 their speed is reduced to 0.5% for 5-10 seconds (depending on damage type).
+                  When someone is damaged by a grenade,
+                  their speed is reduced to 0.5% for 5-10 seconds depending on damage type.
 
-			 Plasma explosion  = 5 seconds
-			 Plasma sticky     = 10 seconds
-			 Frag explosion    = 5 seconds
+                  Plasma explosion  = 5 seconds
+                  Plasma sticky     = 10 seconds
+                  Frag explosion    = 5 seconds
 
-Copyright (c) 2019-2022, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
+
 
 -- config starts --
 local tags = {

@@ -3,7 +3,7 @@
 Script Name: Cyborg Spawner, for SAPP (PC & CE)
 Description: A useless script that spawns cyborgs at pre-defined locations, on a per-map basis.
 
-Copyright (c) 2016-2022, Jericho Crosby <jericho.crosby227@gmail.com>
+Copyright (c) 2016-2022, Jericho Crosby
 Notice: You can use this script subject to the following conditions:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--

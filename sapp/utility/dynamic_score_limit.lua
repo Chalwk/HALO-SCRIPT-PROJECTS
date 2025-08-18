@@ -7,7 +7,7 @@ Description: Automatically adjusts the score limit based on the current number o
             If your game mode isn't listed in the `score_limits` table,
             the server will default to pre-configured game type values.
 
-Copyright (c) 2022-2025, Jericho Crosby <jericho.crosby227@gmail.com>
+Copyright (c) 2022-2025, Jericho Crosby
 Notice: You can use this script under the following conditions:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--

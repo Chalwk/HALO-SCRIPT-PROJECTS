@@ -1,13 +1,14 @@
 --[[
---=====================================================================================================--
-Script Name: Self-Destruction, for SAPP (PC & CE)
-Description: Self-detonate with flashlight key!
+=====================================================================================
+SCRIPT NAME:      self_destruction.lua
+DESCRIPTION:      Self-detonate with flashlight key!
 
-Copyright (c) 2021, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
+
 
 -- [ config ] --
 -- Time (in seconds) between player detonations:

@@ -1,15 +1,15 @@
---=====================================================================================--
--- SCRIPT NAME:      Gravity Gun
--- DESCRIPTION:      Turns hand-held/vehicle weapons into grenade launchers.
---                   Type /gl on|off to toggle.
---
--- AUTHOR:           Chalwk (Jericho Crosby)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- Copyright (c) 2019-2025 Jericho Crosby <jericho.crosby227@gmail.com>
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      gravity_gun_grenade.lua
+DESCRIPTION:      Turns hand-held/vehicle weapons into grenade launchers.
+                  Type /gl on|off to toggle.
+
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
+
 
 -- CONFIG STARTS -------------------------------------------------------------
 

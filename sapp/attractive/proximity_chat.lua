@@ -1,13 +1,14 @@
 --[[
---=====================================================================================================--
-Script Name: Proximity Chat, for SAPP (PC & CE)
-Description: You can only chat with players who are within a certain range from you (see config)
+=====================================================================================
+SCRIPT NAME:      proximity_chat.lua
+DESCRIPTION:      You can only chat with players who are within a certain range from you (see config).
 
-Copyright (c) 2021, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
+
 
 -- configuration starts  --
 -- Custom command used to change the chat range:

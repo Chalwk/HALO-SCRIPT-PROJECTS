@@ -1,16 +1,13 @@
 --[[
---=====================================================================================================--
-Script Name: Color Reservation, for SAPP (PC & CE)
-Description: Reserve spartan armor colors for VIP members (based on hash)
+=====================================================================================
+SCRIPT NAME:      color_reservation.lua
+DESCRIPTION:      Reserve spartan armor colors for VIP members (based on hash).
 
-* Implementing Lua API version 1.11.0.0 (works fine on the latest version: 1.12.0.0)
-* NOTE: This mod will only work on NON team based game modes!
-
-Copyright (c) 2019, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = "1.11.0.0"
 color_table = {}

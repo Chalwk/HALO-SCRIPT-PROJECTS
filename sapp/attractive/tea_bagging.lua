@@ -1,14 +1,13 @@
---=====================================================================================================--
--- SCRIPT NAME:      Tea Bagging
--- DESCRIPTION:      Players are automatically t-bagged when they crouch near a corpse.
---
--- AUTHOR:           Jericho Crosby (Chalwk)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- Copyright (c) 2019-2025 Jericho Crosby <jericho.crosby227@gmail.com>
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      tea_bagging.lua
+DESCRIPTION:      Players are automatically t-bagged when they crouch near a corpse.
+
+Copyright (c) 2019-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- CONFIGURATION --
 

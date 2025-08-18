@@ -1,18 +1,16 @@
 --[[
---=====================================================================================================--
-Script Name: Portal Gun (type 2), for SAPP (PC & CE)
-Description: Crouch, Aim & Shoot to teleport.
+=====================================================================================
+SCRIPT NAME:      portal_gun_type_2.lua
+DESCRIPTION:      Crouch, aim & shoot to teleport.
 
-----------------------------------------------------------------
-NOTE: In this version, you can only portal-gun while walking.
-Players need to crouch & fire to teleport.
-----------------------------------------------------------------
+                  NOTE: In this version, you can only portal-gun while walking.
+                        Players need to crouch & fire to teleport.
 
-Copyright (c) 2022, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]] --
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = "1.12.0.0"
 

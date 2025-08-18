@@ -7,7 +7,7 @@ Description: This script automates the process of managing SAPP's no-lead featur
              gameplay mechanics. By configuring a settings table with desired map and game type combinations,
              the script provides an efficient way to optimize and tailor the gaming experience for various scenarios.
             
-Copyright (c) 2019-2024, Jericho Crosby <jericho.crosby227@gmail.com>
+Copyright (c) 2019-2024, Jericho Crosby
 Notice: You can use this script subject to the following conditions:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --======================================================================================================--

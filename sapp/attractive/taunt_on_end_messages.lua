@@ -1,14 +1,13 @@
 --[[
---=====================================================================================================--
-Script Name: Taunt OnGameEnd (messages), for SAPP (PC & CE)
-Implementing API version: 1.11.0.0
-Description: This script will display taunting messages to the player when the game ends.
+=====================================================================================
+SCRIPT NAME:      taunt_on_end_messages.lua
+DESCRIPTION:      Displays taunting messages to the player when the game ends.
 
-Copyright (c) 2016-2018, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = "1.12.0.0"
 

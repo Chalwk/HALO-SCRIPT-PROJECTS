@@ -1,15 +1,15 @@
 --[[
---=====================================================================================================--
-Script Name: Damage Multiplier, for SAPP (PC & CE)
-Description: Set the damage multiplier of any player.
-             Command Syntax: /damage [id] [range]
-             * Use '-1' for the range definition to reset someone's multiplier.
+=====================================================================================
+SCRIPT NAME:      damage_multiplier.lua
+DESCRIPTION:      Set the damage multiplier of any player.
+                  Command Syntax: /damage [id] [range]
+                  * Use '-1' for the range definition to reset someone's multiplier.
 
-Copyright (c) 2024, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = '1.12.0.0'
 

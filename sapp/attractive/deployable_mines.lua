@@ -1,14 +1,14 @@
 --[[
---=====================================================================================================--
-Script Name: Deployable Mines, for SAPP (PC & CE)
-Description: This Lua script allows players to deploy mines that explode
-             when enemies come within a certain radius.
+=====================================================================================
+SCRIPT NAME:      deployable_mines.lua
+DESCRIPTION:      Allows players to deploy mines that explode when enemies come
+                  within a certain radius.
 
-Copyright (c) 2019-2024, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- Configuration table for the deployable mines script
 local config = {

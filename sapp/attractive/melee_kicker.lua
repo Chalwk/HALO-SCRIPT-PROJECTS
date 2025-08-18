@@ -1,14 +1,15 @@
 --[[
---=====================================================================================================--
-Script Name: Melee Kicker, for SAPP (PC & CE)
-Description: Killing a player with any melee attack will result in the victim being kicked from the server.
-             * A fun and humorous mod for shits and giggles.
+=====================================================================================
+SCRIPT NAME:      melee_kicker.lua
+DESCRIPTION:      Killing a player with any melee attack will result in the victim being kicked from the server.
+                  * A fun and humorous mod for shits and giggles.
 
-Copyright (c) 2020, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
+
 
 -- Config [STARTS] -----------------------
 

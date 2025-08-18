@@ -1,18 +1,21 @@
 --[[
---=====================================================================================================--
-Script Name: Spawngun, for SAPP (PC & CE)
-Description: This mod allows you to spawn any object when your fire your weapon.
+=====================================================================================
+SCRIPT NAME:      mode_spawn_gun.lua
+DESCRIPTION:      This mod allows you to spawn any object when you fire your weapon.
 
-Command Syntax: /spawngun [object]
-                /spawngun off|0|false
-                /clean
-                * clean command deletes all objects you spawn
-                * all objects are deleted automatically when you die.
-Copyright (c) 2016-2018, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
+                  Command Syntax:
+                  /spawngun [object]
+                  /spawngun off|0|false
+                  /clean
+                  * clean command deletes all objects you spawn
+                  * all objects are deleted automatically when you die.
+
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
 ]]
+
 
 api_version = '1.12.0.0'
 spawngun_command = "spawngun"

@@ -3,7 +3,7 @@
 Script Name: Disable Fall Damage, for SAPP (PC & CE)
 Description: This script will allow you to disable fall damage on a per-map-per-game mode basis.
 
-Copyright (c) 2020, Jericho Crosby <jericho.crosby227@gmail.com>
+Copyright (c) 2020, Jericho Crosby
 Notice: You can use this script subject to the following conditions:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--

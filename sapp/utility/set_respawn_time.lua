@@ -12,7 +12,7 @@ Description: This script will allow you to set respawn times on a per-map, per-g
             /setrespawn <pid> <time>
 
 
-Copyright (c) 2020-2021, Jericho Crosby <jericho.crosby227@gmail.com>
+Copyright (c) 2020-2021, Jericho Crosby
 Notice: You can use this script subject to the following conditions:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--

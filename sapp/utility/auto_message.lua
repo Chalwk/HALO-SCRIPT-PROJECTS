@@ -7,7 +7,7 @@
 -- AUTHOR:           Chalwk (Jericho Crosby)
 -- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
 --
--- COPYRIGHT (c) 2024, Jericho Crosby <jericho.crosby227@gmail.com>
+-- COPYRIGHT (c) 2024, Jericho Crosby
 -- NOTICE:           You may use this script subject to the following license:
 --                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================--

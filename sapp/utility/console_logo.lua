@@ -11,7 +11,7 @@ https://patorjk.com/software/taag/#p=display&f=Graffiti&t=Type$20Something$20
 Some fonts will NOT work due to something called character escaping.
 I recommend using the font "KBAN"
 
-Copyright (c) 2021, Jericho Crosby <jericho.crosby227@gmail.com>
+Copyright (c) 2021, Jericho Crosby
 Notice: You can use this script subject to the following conditions:
 https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 --=====================================================================================================--

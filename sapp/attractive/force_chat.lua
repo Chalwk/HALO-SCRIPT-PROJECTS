@@ -1,19 +1,19 @@
 --[[
---=====================================================================================================--
-Script Name: Force Chat, for SAPP (PC & CE)
-Description: Force a player to say something.
+=====================================================================================
+SCRIPT NAME:      force_chat.lua
+DESCRIPTION:      Force a player to say something.
 
-             Syntax: /fc <player> <message>
-             Example: /fc 1 Hello World!
-             Output: Player 1 will say "Chalwk: Hello World!"
+                  Syntax: /fc <player> <message>
+                  Example: /fc 1 Hello World!
+                  Output: Player 1 will say "Chalwk: Hello World!"
 
-             Note: For players using Chimera, fake chat messages will appear as server messages, thus will be obvious they're fake.
+                  Note: For players using Chimera, fake chat messages will appear as server messages, thus will be obvious they're fake.
 
-Copyright (c) 2022, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- Custom command used to force a player to say something:
 local command = 'fc'

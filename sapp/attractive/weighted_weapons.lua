@@ -1,19 +1,18 @@
---=====================================================================================================--
--- SCRIPT NAME:     Weighted Weapons
--- DESCRIPTION:     This script dynamically adjusts player movement speed based on the combined weight of
---                  weapons they carry or just their active weapon, depending on configuration.
---                  It features a stamina system that depletes as players move and regenerates while resting.
---                  When stamina runs out, players suffer a speed penalty simulating exhaustion.
---                  A visual stamina bar is displayed to each player using rprint to track stamina status.
---                  Ideal for adding tactical movement effects and realism to gameplay.
---
--- AUTHOR:          Jericho Crosby (Chalwk)
--- COMPATIBILITY:   Halo PC/CE | SAPP 1.12.0.0
---
--- Copyright (c) 2019-2025 Jericho Crosby <jericho.crosby227@gmail.com>
--- LICENSE:         MIT License
---                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      weighted_weapons.lua
+DESCRIPTION:      Dynamically adjusts player movement speed based on weapon weight.
+                  Can calculate total weapon weight or just active weapon.
+                  Features a stamina system: stamina depletes while moving and
+                  regenerates while resting. Exhaustion causes speed penalties.
+                  Visual stamina bar displayed via rprint for each player.
+                  Adds tactical movement effects and realism.
+
+Copyright (c) 2019-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- Configuration Settings --
 local CONFIG = {
