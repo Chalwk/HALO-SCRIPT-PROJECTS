@@ -20,26 +20,26 @@
     },
     "april_fools_word_shuffler": {
       "title": "April Fools - Word Shuffler",
-      "shortDescription": "Mix up chat words",
-      "description": "Shuffles or scrambles player chat for a humorous effect on April Fools.",
+      "shortDescription": "Randomly scrambles player chat messages",
+      "description": "Adds a 1 in 3 chance that any chat message will be randomly scrambled, creating humorous confusion. Perfect for April Fools' Day pranks in-game. Players' messages remain readable but become amusingly jumbled.",
       "filename": "april_fools_word_shuffler.lua"
     },
     "auto_troll": {
-      "title": "Auto-Troll",
-      "shortDescription": "Automate mischief",
-      "description": "Performs funny or unexpected actions automatically on players.",
+      "title": "Auto Troll",
+      "shortDescription": "Comprehensive server trolling toolkit with 17+ prank features",
+      "description": "A powerful all-in-one trolling script with 17+ customizable prank features to mess with players. Includes silent kills, damage modifiers, chat scramblers, teleportation, forced vehicle exits, ammo manipulation, fake messages, inverted controls, and more. Fully configurable with permissions and target filters for controlled chaos.",
       "filename": "auto_troll.lua"
     },
     "beep_on_join": {
       "title": "Beep On Join",
-      "shortDescription": "Announce player arrivals",
-      "description": "Plays a beep sound when a new player joins the server.",
+      "shortDescription": "Audible alert when players join",
+      "description": "Plays a system beep sound whenever a new player joins the server, providing an audible notification of player connections. Useful for server admins who want audio cues for player activity without visual monitoring.",
       "filename": "beep_on_join.lua"
     },
     "capture_the_flag": {
       "title": "Capture The Flag",
-      "shortDescription": "Classic team objective mode",
-      "description": "Players try to capture the enemy flag while defending their own.",
+      "shortDescription": "Adds CTF gameplay to Slayer modes",
+      "description": "Transforms any Slayer (FFA or Team) game into a Capture the Flag experience. Spawns a single flag that players must return to any base to score points. Features configurable scoring, flag respawning, capture points for all standard maps, and team/FFA support. Perfect for adding objective-based gameplay to traditional deathmatch modes.",
       "filename": "capture_the_flag.lua"
     },
     "color_changer": {
