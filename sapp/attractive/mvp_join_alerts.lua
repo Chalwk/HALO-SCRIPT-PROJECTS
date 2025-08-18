@@ -1,6 +1,6 @@
 --[[
 =====================================================================================
-SCRIPT NAME:      mpv_join_alerts.lua
+SCRIPT NAME:      mvp_join_alerts.lua
 DESCRIPTION:      Broadcasts a custom welcome message when a "Most Valued Player" joins the server.
                   - Each MVP can have their own unique message.
                   - Non-MVP players get a random general welcome message.

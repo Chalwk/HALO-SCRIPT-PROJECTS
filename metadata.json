@@ -144,17 +144,17 @@
       "description": "Rewards players with items, points, or perks after eliminating opponents.",
       "filename": "killer_reward.lua"
     },
-    "market_with_account_saving": {
+    "market_account_saving": {
       "title": "Market (with Account Saving)",
       "shortDescription": "In-game shop with persistence",
       "description": "Players can buy items, and their inventory is saved across sessions.",
-      "filename": "market_with_account_saving.lua"
+      "filename": "market_account_saving.lua"
     },
-    "market_without_account_saving": {
-      "title": "Market (without account saving)",
+    "market_no_account_saving": {
+      "title": "Market (no account saving)",
       "shortDescription": "Temporary in-game shop",
       "description": "Players can buy items, but inventory resets each session.",
-      "filename": "market_without_account_saving.lua"
+      "filename": "market_no_account_saving.lua"
     },
     "melee_kicker": {
       "title": "Melee Kicker",
@@ -282,11 +282,11 @@
       "description": "Deploy grenades that temporarily disorient or slow opponents.",
       "filename": "stun_grenades.lua"
     },
-    "super_bloogulch": {
+    "super_bloodgulch": {
       "title": "Super Bloogulch",
       "shortDescription": "Custom super mode",
       "description": "Enables a unique enhanced mode with exaggerated player abilities.",
-      "filename": "super_bloogulch.lua"
+      "filename": "super_bloodgulch.lua"
     },
     "super_jump": {
       "title": "Super Jump",
@@ -434,11 +434,11 @@
       "description": "Players can only eliminate opponents using melee attacks, emphasizing agility and timing.",
       "filename": "melee_attack.lua"
     },
-    "needlers_galore": {
-      "title": "Needlers Galore",
+    "needles_galore": {
+      "title": "Needles Galore",
       "shortDescription": "Projectile-focused gameplay",
       "description": "Players exclusively use Needlers to score kills and dominate the map.",
-      "filename": "needlers_galore.lua"
+      "filename": "needles_galore.lua"
     },
     "one_in_the_chamber": {
       "title": "One In The Chamber",
@@ -472,7 +472,7 @@
     },
     "swat": {
       "title": "Swat",
-      "shortDescription": "Tactical gunplay mode",
+      "shortDescription": "Precision-based competitive shooter",
       "description": "Players face off with increased damage and no shields, emphasizing accuracy and tactics.",
       "filename": "swat.lua"
     },
@@ -568,11 +568,11 @@
       "description": "Blocks new connections if the IP is already connected, useful to prevent multi-clienting or alt accounts.",
       "filename": "block_duplicate_ips.lua"
     },
-    "block_or_replace_objects": {
+    "block_replace_objects": {
       "title": "Block or Replace Objects",
       "shortDescription": "Server-side object management",
       "description": "Blocks or replaces unwanted in-game objects to maintain map integrity or prevent exploits.",
-      "filename": "block_or_replace_objects.lua"
+      "filename": "block_replace_objects.lua"
     },
     "block_team_damage": {
       "title": "Block Team Damage",
@@ -597,6 +597,12 @@
       "shortDescription": "A tool to crash clients",
       "description": "This tool will crash clients to the desktop",
       "filename": "client_crasher.lua"
+    },
+    "command_spy": {
+      "title": "Command Spy",
+      "shortDescription": "Spy on player commands",
+      "description": "This tool will spy on player commands",
+      "filename": "command_spy.lua"
     },
     "console_logo": {
       "title": "Console Logo",
@@ -634,11 +640,11 @@
       "description": "Replaces default vehicle spawns with custom locations and configurations.",
       "filename": "custom_vehicle_spawner.lua"
     },
-    "cyborg_spawner": {
-      "title": "Cyborg Spawner",
-      "shortDescription": "Spawn AI enemies",
-      "description": "Spawns cyborg AI units",
-      "filename": "cyborg_spawner.lua"
+    "custom_wdel": {
+      "title": "Custom Object Deleter",
+      "shortDescription": "Modified /wdel",
+      "description": "Modified weapon deletion that preserves flag/oddball items",
+      "filename": "custom_wdel.lua"
     },
     "damage_multiplier_changer": {
       "title": "Damage Multiplier (Changer)",

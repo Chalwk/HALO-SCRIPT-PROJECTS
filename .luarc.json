@@ -32,6 +32,7 @@
         "to_real_index",
         "say_all",
         "sync_ammo",
-        "intersect"
+        "intersect",
+        "assign_weapon"
     ]
 }
