@@ -10,7 +10,7 @@ DESCRIPTION:      Make frags and plasmas behave like stun grenades.
                   Plasma sticky     = 10 seconds
                   Frag explosion    = 5 seconds
 
-Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

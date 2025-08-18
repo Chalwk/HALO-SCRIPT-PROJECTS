@@ -1,20 +1,26 @@
---=====================================================================================--
--- SCRIPT NAME:      Word Buster
--- DESCRIPTION:      An advanced, multilingual profanity filter.
---
--- FEATURES:         Monitors chat messages for offensive words with flexible pattern matching
---                   to catch leet-speak (e.g., "a$$hole"). Tracks player infractions
---                   over time, issues warnings, and enforces punishments like kicks or temporary bans.
---                   Supports 21 languages, admin immunity, configurable settings, and in-game
---                   commands to manage word lists and languages dynamically.
---
--- AUTHOR:           Chalwk (Jericho Crosby)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- Copyright (c) 2025 Jericho Crosby
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      word_buster.lua
+DESCRIPTION:      Advanced multilingual profanity filter with dynamic enforcement.
+
+                  Key Features:
+                  - 21+ language support
+                  - Leet-speak detection (e.g., "a$$hole")
+                  - Progressive infraction system (warnings → kicks → bans)
+                  - Admin immunity
+                  - Real-time word list management
+                  - Configurable thresholds
+
+                  Commands:
+                  /filter add [word]    - Add a banned word
+                  /filter remove [word] - Remove a banned word
+                  /filter list          - View active filters
+
+Copyright (c) 2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- ========================
 -- Configurable Settings

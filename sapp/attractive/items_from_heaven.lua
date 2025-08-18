@@ -3,7 +3,7 @@
 SCRIPT NAME:      items_from_heaven.lua
 DESCRIPTION:      Spawns a random weapon or vehicle at a random pre-defined map coordinate.
 
-Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

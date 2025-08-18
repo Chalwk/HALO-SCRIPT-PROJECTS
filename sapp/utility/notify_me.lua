@@ -1,17 +1,19 @@
---=====================================================================================--
--- SCRIPT NAME:      Notify Me
--- DESCRIPTION:      Beautifies the SAPP server terminal by printing formatted, color-coded
---                   notifications for a wide range of player and game events.
---                   Includes a customizable ASCII art logo on script load, and a fully
---                   configurable system for chat, join, leave, death events, and more.
---
--- AUTHOR:           Chalwk (Jericho Crosby)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- COPYRIGHT (c) 2025, Jericho Crosby
--- NOTICE:           You may use this script subject to the following license:
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      notify_me.lua
+DESCRIPTION:      Terminal beautification system featuring:
+                  - Color-coded event notifications:
+                    * Player joins/leaves
+                    * Chat messages
+                    * Death events
+                  - Custom ASCII art logo display
+                  - Fully configurable output formatting
+
+Copyright (c) 2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 --
 -- Configuration starts here -----------------------------------------------------------------------

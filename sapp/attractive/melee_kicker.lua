@@ -4,7 +4,7 @@ SCRIPT NAME:      melee_kicker.lua
 DESCRIPTION:      Killing a player with any melee attack will result in the victim being kicked from the server.
                   * A fun and humorous mod for shits and giggles.
 
-Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

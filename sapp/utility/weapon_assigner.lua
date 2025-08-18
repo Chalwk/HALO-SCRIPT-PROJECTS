@@ -1,17 +1,25 @@
---=====================================================================================--
--- SCRIPT NAME:      Weapon Assigner
--- DESCRIPTION:      Dynamically assigns weapons to players based on map and game mode.
---                   Supports per-map and per-game-mode loadouts for Red, Blue, and FFA
---                   teams with up to four weapons per player. Validates weapon tags and
---                   provides fallback configurations.
---
--- AUTHOR:           Chalwk (Jericho Crosby)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- Copyright (c) 2022-2025 Jericho Crosby
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      weapon_assigner.lua
+DESCRIPTION:      Advanced weapon distribution system with contextual loadout management.
+
+                  Key Features:
+                  - Map-specific weapon configurations
+                  - Game-mode aware assignments (Team/FFA)
+                  - Multi-weapon loadouts (up to 4 per player)
+                  - Weapon tag validation
+                  - Fallback configuration system
+
+                  Supports:
+                  - Team-specific loadouts (Red/Blue)
+                  - Free-for-all configurations
+                  - Custom default weapons
+
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 --[[
 CONFIGURATION GUIDE:

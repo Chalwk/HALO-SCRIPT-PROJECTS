@@ -1,17 +1,17 @@
 --[[
---=====================================================================================================--
-Script Name: Simple Poll System, for SAPP (PC & CE)
-Description: Admins can set up a quick poll, such as deciding the next map or a rule change.
+=====================================================================================
+SCRIPT NAME:      simple_poll_system.lua
+DESCRIPTION:      Allows admins to create quick polls for map votes or rule changes.
 
-    Command Examples:
-        /poll "What map should we play next?" bloodgulch sidewinder ratrace
-        To vote vote for an option, type: /vote [option number] (e.g., /vote 1 = bloodgulch, /vote 2 = sidewinder, etc.)
+                  Command Examples:
+                  /poll "Question?" option1 option2 option3
+                  /vote [number] (e.g., /vote 1 = option1, /vote 2 = option2)
 
-Copyright (c) 2025, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = "1.12.0.0"
 

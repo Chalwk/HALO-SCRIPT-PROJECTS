@@ -3,7 +3,7 @@
 SCRIPT NAME:      april_fools_word_shuffler.lua
 DESCRIPTION:      Chat messages will randomly be shuffled.
 
-Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

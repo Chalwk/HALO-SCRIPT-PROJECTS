@@ -9,7 +9,7 @@ DESCRIPTION:      Fun, family-friendly(-ish) ways to express yourself in chat.
                   Players type a trigger command in chat to send a random phrase from the relevant category.
                   The system preserves the player's name in the output format.
 
-Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

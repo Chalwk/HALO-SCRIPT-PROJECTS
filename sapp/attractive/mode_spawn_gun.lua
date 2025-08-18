@@ -10,7 +10,7 @@ DESCRIPTION:      This mod allows you to spawn any object when you fire your wea
                   * clean command deletes all objects you spawn
                   * all objects are deleted automatically when you die.
 
-Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

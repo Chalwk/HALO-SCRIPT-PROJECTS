@@ -1,14 +1,24 @@
---=====================================================================================================--
--- SCRIPT NAME: Vote Kick Manager for SAPP (PC & CE)
--- Description: Manage vote kicks for disruptive players on the server.
---              Command syntax for voting: /votekick (player id)
---              Command syntax for vote list: /votelist
---              Command syntax for cancel vote: /cancelvote
---
--- Copyright (c) 2020-2024, Jericho Crosby
--- License: Use subject to the conditions outlined at:
---         https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      vote_kick.lua
+DESCRIPTION:      Player-driven moderation system for removing disruptive players.
+
+                  Command Reference:
+                  /votekick <player_id>  - Initiate kick vote against player
+                  /votelist             - View active vote kick sessions
+                  /cancelvote           - Cancel your active vote
+
+                  Features:
+                  - Democratic player moderation
+                  - Vote tracking and validation
+                  - Configurable thresholds
+                  - Cooldown protection
+
+Copyright (c) 2020-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 local VoteKick = {
     vote_command = 'votekick', -- Command to initiate a vote kick

@@ -1,21 +1,22 @@
 --[[
---=====================================================================================================--
-Script Name: Multiclient Detector.lua for SAPP (PC & CE)
-Description: This script detects whether a player is using a multi-client and retrieves an overall probability score.
-             The probability score is derived from multiple analyzed factors, including known pirated hashes,
-             player port ranges, and client behavior. While this script cannot guarantee 100% accuracy,
-             it provides a reliable indication of potential multi-client usage.
+=====================================================================================
+SCRIPT NAME:      multiclient_detector.lua
+DESCRIPTION:      Multi-client detection system with:
+                  - Probability-based scoring (0-100%)
+                  - Detection categories:
+                    * Low (0-40%)
+                    * Moderate (41-60%)
+                    * High (61-80%)
+                    * Very High (81-100%)
+                  - Analysis factors:
+                    * Known pirated hashes
+                    * Network port ranges
+                    * Client behavior patterns
 
-             The script categorizes the probability into four levels:
-             - Low (0-40%): Unlikely to be a multi-client user.
-             - Moderate (41-60%): Possible multi-client usage.
-             - High (61-80%): Likely multi-client usage.
-             - Very High (81-100%): Almost certainly a multi-client user.
-
-Copyright (c) 2024, Jericho Crosby
-Notice: You are permitted to use this script subject to the conditions outlined at:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
+Copyright (c) 2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
 ]]
 
 -- Define the Multiclient module

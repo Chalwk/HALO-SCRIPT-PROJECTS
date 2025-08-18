@@ -1,6 +1,6 @@
 --[[
 =====================================================================================
-SCRIPT NAME:      command_cooldowns.lua
+SCRIPT NAME:      custom_command_cooldowns.lua
 DESCRIPTION:      Advanced command rate-limiting system featuring:
                   - Per-command cooldown configuration:
                     * Custom durations (1-300 seconds)

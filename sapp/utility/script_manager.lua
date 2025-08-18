@@ -1,13 +1,14 @@
 --[[
---=====================================================================================================--
-Script Name: Script Manager, for SAPP (PC & CE)
-Description: Dynamically loads/unloads scripts based on current map and game mode
+=====================================================================================
+SCRIPT NAME:      script_manager.lua
+DESCRIPTION:      Dynamically loads and unloads scripts based on
+                  the current map and game mode.
 
-Copyright (c) 2024, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = '1.12.0.0'
 

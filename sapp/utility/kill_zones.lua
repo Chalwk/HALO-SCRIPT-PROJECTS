@@ -1,24 +1,22 @@
 --[[
---=====================================================================================================--
-Script Name: Kill Zones, for SAPP (PC & CE)
-Description: This script creates and manages 'kill zones' in the game. These are configurable areas where
-             players receive a warning message with a countdown timer, forcing them to leave the zone or
-             face instant death after the timer expires.
+=====================================================================================
+SCRIPT NAME:      kill_zones.lua
+DESCRIPTION:      Configurable danger zone system with:
+                  - Map-specific kill zones:
+                    * Custom locations and radii
+                    * Adjustable kill delay timers
+                  - Player warnings:
+                    * Countdown notifications
+                    * Custom alert messages
+                  - Team support:
+                    * FFA and team-specific zones
+                    * Custom death messages
 
-             Administrators can configure the kill zones per map, including the delay before a player is killed,
-             customize warning messages, and manage player team-specific zones.
-
-Features:
-  * Configurable kill zones (location, radius, and kill delay).
-  * Per-player countdown timer with custom messages.
-  * Supports FFA and team-based zones.
-  * Custom kill and warning messages.
-
-Copyright (c) 2024, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = '1.12.0.0'
 

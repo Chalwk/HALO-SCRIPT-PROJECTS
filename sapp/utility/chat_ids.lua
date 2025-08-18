@@ -14,7 +14,7 @@ DESCRIPTION:      Player identification system that:
                     * Admin chat systems
                     * Player lookup commands
 
-Copyright (c) 2014-2024 Jericho Crosby (Chalwk)
+Copyright (c) 2014-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

@@ -1,14 +1,14 @@
 --[[
---=====================================================================================================--
-Script Name: Disable Grenades, for SAPP (PC & CE)
-Description: This script will remove nades (after spawning), on per game mode basis.
-             Note: This does not prevent players from picking them up.
+=====================================================================================
+SCRIPT NAME:      disable_grenades.lua
+DESCRIPTION:      This script will remove grenades (after spawning), on per game mode basis.
+                  Note: This does not prevent players from picking them up.
 
-Copyright (c) 2020-2022, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2022 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = "1.12.0.0"
 

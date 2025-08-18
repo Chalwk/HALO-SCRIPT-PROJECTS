@@ -4,7 +4,7 @@ SCRIPT NAME:      capture_the_flag.lua
 DESCRIPTION:      Brings CTF-like mechanics to any Slayer (FFA/Team) game type.
                   A single flag will spawn somewhere on the map. Return it to any base to score.
 
-Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

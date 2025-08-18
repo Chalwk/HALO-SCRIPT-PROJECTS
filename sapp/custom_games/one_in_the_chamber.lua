@@ -8,7 +8,7 @@ DESCRIPTION:      High-stakes pistol duel mode featuring:
                   - Precision-based gameplay with risk/reward decisions
                   - Configurable bullet economy and match settings
 
-Copyright (c) 2023-2024 Jericho Crosby (Chalwk)
+Copyright (c) 2023-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

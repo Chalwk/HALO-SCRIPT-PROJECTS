@@ -11,7 +11,6 @@ DESCRIPTION:      Custom ASCII console branding system featuring:
                     * Automatic centering
                   - Display options:
                     * Server startup display
-                    * Manual refresh command
                     * Color customization
 
 CREATION TIP:    Generate logos at:

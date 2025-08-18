@@ -18,7 +18,7 @@ DESCRIPTION:      Vanish yourself (or others) on demand.
                       - Teleports you to the nearest object that you are aiming directly
                   * Customizable Messages
 
-Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

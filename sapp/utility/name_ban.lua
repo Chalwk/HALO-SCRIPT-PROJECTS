@@ -1,13 +1,18 @@
 --[[
---=====================================================================================================--
-Script Name: Name Ban, for SAPP (PC & CE)
-Description: Automatically kicks or bans players that join with "default" names after a grace period.
+=====================================================================================
+SCRIPT NAME:      name_ban.lua
+DESCRIPTION:      Default name protection system:
+                  - Detects "default" player names
+                  - Enforces after configurable grace period
+                  - Action options:
+                    * Kick offenders
+                    * Ban repeat violators
 
-Copyright (c) 2024, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- config starts --
 

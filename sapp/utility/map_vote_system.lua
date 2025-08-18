@@ -1,20 +1,20 @@
 --[[
---=====================================================================================================--
-Script Name: Custom Map Voting System (v2), for SAPP (PC & CE)
-Description: A custom map voting system that replaces the built-in SAPP voting mechanism.
+=====================================================================================
+SCRIPT NAME:      map_vote_system.lua
+DESCRIPTION:      Enhanced voting system replacing SAPP's default with:
+                  - Re-voting capability
+                  - Support for >6 map options
+                  - Configurable vote limits
+                  - Adjustable timing controls:
+                    * Vote display duration
+                    * Tally period
+                    * Map transition delay
 
-Features:
-   1. Players can cast and recast their votes.
-   2. Support for displaying more than six voting options.
-   3. Fully configurable settings and messages.
-   4. Limitation on how many times a player can change their vote.
-   5. Adjustable timers for map vote display, tallying votes, and map cycling.
-
-Copyright (c) 2022-2024, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = "1.12.0.0"
 

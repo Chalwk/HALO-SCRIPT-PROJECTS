@@ -9,7 +9,7 @@ DESCRIPTION:      Periodically announces a random fact from the Chuck Norris Jok
                      - http://regex.info/blog/lua/json
                   2. Place "json.lua" and the contents of "sapp-http-client" in your server's root directory.
 
-Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

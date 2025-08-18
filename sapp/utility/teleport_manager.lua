@@ -1,30 +1,26 @@
 --[[
---=====================================================================================================--
-Script Name: Teleport Manager (Enhanced)
-Description: Create and manage custom teleports, with additional features for improved usability.
+=====================================================================================
+SCRIPT NAME:      teleport_manager.lua
+DESCRIPTION:      Advanced teleport system with location memory and map-linked warps.
 
-Command Syntax:
-/setwarp [warp name] [options]
-> Create a new warp. Use '-o' to overwrite an existing warp.
+                  Command Reference:
+                  /setwarp [name] [-o]    - Create/overwrite warp points
+                  /warp [name]            - Teleport to saved location
+                  /delwarp [name]         - Delete existing warp
+                  /warplist [page]        - Browse available warps
+                  /back                   - Return to previous location
 
-Commands:
-/back
-> Teleport to your previous location
+                  Features:
+                  - Map-specific warp persistence
+                  - Location history tracking
+                  - Warp overwrite protection
+                  - Paginated warp listings
 
-/warp [warp name]
-> Teleport to the defined warp
-
-/delwarp [warp name]
-> Delete the specified warp
-
-/warplist [page #]
-> View a list of all warps linked to the current map.
-
-Copyright (c) 2020-2024, Jericho Crosby
-License: Use subject to the conditions outlined at:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2020-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = "1.12.0.0"
 

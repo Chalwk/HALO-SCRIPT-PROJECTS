@@ -1,15 +1,17 @@
---=====================================================================================================--
--- SCRIPT NAME:      Team Chat
--- DESCRIPTION:      Private team chat system with invite functionality, multiple channels,
---                   and toggleable chat modes. Allows 1-3+ players to communicate privately.
---
--- AUTHOR:           Jericho Crosby (Chalwk)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- Copyright (c) 2025 Jericho Crosby
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      team_chat.lua
+DESCRIPTION:      Private team chat system featuring:
+                  - Invite functionality
+                  - Multiple chat channels
+                  - Toggleable chat modes
+                  - Support for 1-3+ player private communications
+
+Copyright (c) 2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 local TeamChat = {
     -- Primary command and aliases

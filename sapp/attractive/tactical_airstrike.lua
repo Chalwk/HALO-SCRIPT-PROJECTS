@@ -16,7 +16,7 @@ DESCRIPTION:      Players on a five-kill streak can call in an airstrike.
 
 Credits to "D Stroyer" for the idea.
 
-Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

@@ -16,7 +16,7 @@ DESCRIPTION:      IP-based player restriction system featuring:
                     * Player warnings
                     * Admin alerts
 
-Copyright (c) 2019-2024 Jericho Crosby (Chalwk)
+Copyright (c) 2019-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

@@ -4,7 +4,7 @@ SCRIPT NAME:      killer_reward.lua
 DESCRIPTION:      Random objects (weapons/equipment) will drop at your victim's death location.
                   See config section for more.
 
-Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

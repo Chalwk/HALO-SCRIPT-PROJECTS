@@ -1,7 +1,7 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      weapon_durability_jam_system.lua
-DESCRIPTION:      Realistic weapon maintenance simulation featuring:
+DESCRIPTION:      Features:
                   - Progressive weapon degradation with use
                   - Dynamic jamming mechanics:
                     * Weapon-specific failure chances

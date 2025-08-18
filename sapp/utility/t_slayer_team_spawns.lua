@@ -1,13 +1,13 @@
 --[[
---=====================================================================================================--
-Script Name: T-Slayer Team Spawns, for SAPP (PC & CE)
-Description: This mod will enforce team spawning on Team-Slayer based game types.
+=====================================================================================
+SCRIPT NAME:      t_slayer_team_spawns.lua
+DESCRIPTION:      Enforces team-specific spawning in Team Slayer game modes.
 
-Copyright (c) 2020-2022, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2020-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = '1.12.0.0'
 

@@ -1,6 +1,6 @@
 --[[
 =====================================================================================
-SCRIPT NAME:      command_monitor.lua
+SCRIPT NAME:      command_spy.lua
 DESCRIPTION:      Admin command monitoring system featuring:
                   - Real-time command execution alerts:
                     * Customizable admin notification levels

@@ -24,7 +24,7 @@ Features:
 * SPECIAL COMMANDS          Manually add/remove players from troll list; see config section.
 * ENABLE/DISABLE            Any feature at any time with two simple commands; see config section.
 
-Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

@@ -6,7 +6,7 @@ DESCRIPTION:      Aim & shoot to teleport.
                   NOTE: In this version, you can portal-gun while in a vehicle.
                         Players do not need to crouch to teleport.
 
-Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

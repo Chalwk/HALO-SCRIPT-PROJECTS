@@ -1,13 +1,15 @@
 --[[
---=====================================================================================================--
-Script Name: Freeze Players, for SAPP (PC & CE)
-Description: Freeze any player on demand with /freeze [player id] | /unfreeze [player id]
+=====================================================================================
+SCRIPT NAME:      freeze_players.lua
+DESCRIPTION:      Player freezing system with:
+                  - /freeze [player id] command
+                  - /unfreeze [player id] command
 
-Copyright (c) 2020, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2020 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- Config [Starts] ----------------------------------------------------------------
 

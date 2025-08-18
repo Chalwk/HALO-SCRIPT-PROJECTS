@@ -4,7 +4,7 @@ SCRIPT NAME:      deployable_mines.lua
 DESCRIPTION:      Allows players to deploy mines that explode when enemies come
                   within a certain radius.
 
-Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

@@ -1,22 +1,17 @@
 --[[
---=====================================================================================================--
-Script Name: Set Respawn Time, for SAPP (PC & CE)
-Description: This script will allow you to set respawn times on a per-map, per-gametype basis.
+=====================================================================================
+SCRIPT NAME:      set_respawn_time.lua
+DESCRIPTION:      Allows setting respawn times on a per-map, per-gametype basis.
 
-            COMMAND SYNTAX:
+                  Command Syntax:
+                  /setrespawn <time>          - Set global respawn time
+                  /setrespawn <pid> <time>    - Set respawn time for specific player
 
-            Set the global respawn time on demand with the following command:
-            /setrespawn <time>
-
-            Additionally, you can manually set a specific player's respawn time on demand with the following command:
-            /setrespawn <pid> <time>
-
-
-Copyright (c) 2020-2021, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2021 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- Configuration Starts --
 local SRT = {

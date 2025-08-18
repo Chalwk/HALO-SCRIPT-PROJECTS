@@ -3,7 +3,7 @@
 SCRIPT NAME:      spawn_from_sky.lua
 DESCRIPTION:      Players will spawn 35 w/units above the ground when they first join.
 
-Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

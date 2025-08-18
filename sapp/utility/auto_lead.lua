@@ -11,7 +11,7 @@ DESCRIPTION:      Dynamic projectile lead control system that:
                     * Gametype changes
                   - Supports all standard Halo projectile types
 
-Copyright (c) 2019-2024 Jericho Crosby (Chalwk)
+Copyright (c) 2019-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

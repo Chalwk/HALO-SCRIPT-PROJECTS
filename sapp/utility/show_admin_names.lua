@@ -1,11 +1,14 @@
---=====================================================================================================--
--- SCRIPT NAME: Show Admin Names for SAPP (PC & CE)
--- Description: Prints the name and level of admins who are currently online.
---
--- Copyright (c) 2021-2022, Jericho Crosby
--- Notice: You can use this script subject to the following conditions:
---         https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      show_admin_names.lua
+DESCRIPTION:      Displays the name and permission level of all currently
+                  online administrators.
+
+Copyright (c) 2022 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- Command used to check for admins
 local command = 'whois'

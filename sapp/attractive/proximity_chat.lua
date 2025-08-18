@@ -3,7 +3,7 @@
 SCRIPT NAME:      proximity_chat.lua
 DESCRIPTION:      You can only chat with players who are within a certain range from you (see config).
 
-Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

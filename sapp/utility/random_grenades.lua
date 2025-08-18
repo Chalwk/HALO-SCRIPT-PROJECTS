@@ -1,15 +1,16 @@
 --[[
---=====================================================================================================--
-Script Name: Random Grenades, for SAPP (PC & CE)
-Description: Generates a random number of grenades when a player spawns,
-             based on defined minimum and maximum values.
+=====================================================================================
+SCRIPT NAME:      random_grenades.lua
+DESCRIPTION:      Randomized grenade spawn system:
+                  - Generates grenades on player spawn
+                  - Configurable quantity ranges
+                  - Map-specific customization
 
-             Allows manual configuration for specific maps.
-
-Copyright (c) 2016-2025, Jericho Crosby
-License: https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2016-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = "1.12.0.0"
 

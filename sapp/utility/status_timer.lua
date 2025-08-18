@@ -1,11 +1,13 @@
---=====================================================================================================--
--- SCRIPT NAME: Status Timer for SAPP (PC & CE)
--- Description: Prints the number of players currently online (to console).
---
--- Copyright (c) 2016-2024, Jericho Crosby
--- Notice: You can use this script subject to the following conditions:
---         https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      status_timer.lua
+DESCRIPTION:      Displays current player count in server console at regular intervals.
+
+Copyright (c) 2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- Specify the interval to print the number of players (in seconds)
 local interval = 3

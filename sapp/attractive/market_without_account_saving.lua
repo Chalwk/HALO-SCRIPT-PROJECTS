@@ -11,7 +11,7 @@ DESCRIPTION:      Earn money for killing and scoring. Use your money to buy perk
 
                   Use /market to view available perks and /money to view balance.
 
-Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

@@ -1,13 +1,14 @@
 --[[
---=====================================================================================================--
-Script Name: Get Server Name (example), for SAPP (PC & CE)
-Description: This script serves as an example of accessing the server name.
+=====================================================================================
+SCRIPT NAME:      get_server_name.lua
+DESCRIPTION:      Example script demonstrating:
+                  - Server name access functionality
 
-Copyright (c) 2016-2022, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2016-2022 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = '1.12.0.0'
 

@@ -1,18 +1,17 @@
 --[[
---=====================================================================================================--
-Script Name: Disable Fall Damage, for SAPP (PC & CE)
-Description: This script will allow you to disable fall damage on a per-map-per-game mode basis.
+=====================================================================================
+SCRIPT NAME:      disable_fall_damage.lua
+DESCRIPTION:      Simple script to disable fall damage on specific maps
 
-Copyright (c) 2020, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2020 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = "1.12.0.0"
 
 local maps = {
-    ["putput"] = { ["game_mode_here"] = true, ['another_mode'] = true },
     ["putput"] = { ["game_mode_here"] = true },
     ["wizard"] = { ["game_mode_here"] = true },
     ["longest"] = { ["game_mode_here"] = true },

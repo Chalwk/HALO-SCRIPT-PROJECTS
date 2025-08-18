@@ -1,12 +1,12 @@
 --[[
---=====================================================================================================--
-Script Name: Live on 3, for SAPP (PC & CE)
-Description: A fun game mechanic triggering a reset event after a countdown.
+=====================================================================================
+SCRIPT NAME:      live_on_3.lua
+DESCRIPTION:      Countdown-triggered game reset event
 
-Copyright (c) 2022, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
+Copyright (c) 2022 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
 ]]
 
 -- Configuration section

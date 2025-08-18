@@ -1,14 +1,22 @@
 --[[
---=====================================================================================================--
-Script Name: The Punisher (v1.0), for SAPP (PC & CE)
-Description: This script will punish players for certain actions (i.e, betrayals, teamshooting)
+=====================================================================================
+SCRIPT NAME:      the_punisher.lua
+DESCRIPTION:      Automated player punishment system for:
+                  - Team betrayals
+                  - Friendly fire incidents
+                  - Other configurable offenses
 
+                  Features:
+                  - Customizable punishment thresholds
+                  - Progressive penalty system
+                  - Configurable forgiveness options
+                  - Detailed offense logging
 
-Copyright (c) 2019, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2019-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = "1.12.0.0"
 
@@ -40,7 +48,7 @@ function punish:Init()
                 warnings = 5, -- Player has this many warnings before action is taken:
                 edit_respawn_time = true, -- If true, an offender's respawn time will be changed to "respawn_time":
                 respawn_time = 10, -- Offenders will respawn after this many seconds (requires edit_respawn_time to be enabled)
-                deduct_death = true, -- If true then players wont get a death penalty point:                
+                deduct_death = true, -- If true then players wont get a death penalty point:
                 notify_console = true, -- If true, console will be notified when action is taken on an offender:
                 -- Warning Message:
                 message1 = "%offender_name%, do not betray or you will be punished! Warning: (%warnings_left%/%total_warnings%)",
@@ -97,7 +105,7 @@ function OnScriptLoad()
 
     punish:Init()
 
-    -- Register needed Event Callbacks: 
+    -- Register needed Event Callbacks:
 
     register_callback(cb['EVENT_GAME_START'], "OnGameStart")
     register_callback(cb['EVENT_TICK'], "OnTick")

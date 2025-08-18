@@ -1,15 +1,17 @@
 --[[
---=====================================================================================================--
-Script Name: Welcome Message, for SAPP (PC & CE)
-Description: This script was requested by "mdc81" on opencarnage.net for use on their private server.
+=====================================================================================
+SCRIPT NAME:      welcome_message.lua
+DESCRIPTION:      Customizable welcome messages for joining players.
+                  Originally requested by mdc81 on OpenCarnage forums.
 
-            NOTE: This can be easily achieved by using SAPP's event system:
-            event_join 'say $n "Welcome friend, $name"'
+                  Implementation Note:
+                  Basic functionality can be achieved with SAPP's built-in:
+                  event_join 'say $n "Welcome message here"'
 
-Copyright (c) 2016-2022, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
+Copyright (c) 2016-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
 ]]
 
 api_version = '1.12.0.0'

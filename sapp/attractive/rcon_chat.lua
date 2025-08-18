@@ -4,7 +4,7 @@ SCRIPT NAME:      rcon_chat.lua
 DESCRIPTION:      Chat messages appear in RCON instead of normal chat.
                   See config section below for more.
 
-Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

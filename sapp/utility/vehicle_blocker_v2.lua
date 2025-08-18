@@ -1,17 +1,27 @@
 --[[
---=====================================================================================================--
-Script Name: Vehicle Block Utility v2, for SAPP (PC & CE)
-Implementing API version: 1.12.0.0
-Description:    Block Vehicle Entry on a per map basis
-                See Vehicle Settings function on line 141 for configuration.
-                
-                This is an improved version of my Vehicle Block Utility (v1) mod!
+=====================================================================================
+SCRIPT NAME:      vehicle_block.lua
+DESCRIPTION:      Advanced map-based vehicle restriction system with enhanced features.
 
-Copyright (c) 2016-2018, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+                  Key Improvements from v1:
+                  - More granular vehicle control
+                  - Improved configuration structure
+                  - Additional customization options
+                  - Better error handling
+
+                  Configuration:
+                  Modify the Vehicle Settings function (line 141) to customize:
+                  - Vehicle class restrictions
+                  - Map-specific exceptions
+                  - Player permission levels
+                  - Custom denial messages
+
+Copyright (c) 2016-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
+
 api_version = "1.12.0.0"
 players = { }
 

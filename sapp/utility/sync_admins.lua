@@ -1,29 +1,24 @@
 --[[
---=====================================================================================================--
-Script Name: Sync-Admins (utility), for SAPP (PC & CE)
-Implementing API version: 1.12.0.0
-Description: This script synchronizes your admins.txt and users.txt files with a remote server.
-             An automatic backup solution is activated if the host is offline or unavailable.
+=====================================================================================
+SCRIPT NAME:      sync_admins.lua
+DESCRIPTION:      Synchronizes admins.txt and users.txt with a remote server,
+                  with automatic fallback to local backups when offline.
 
-Change Log:
-    [+] Added sync commands: /sync admins|users|all
-    [+] Reorganized functions for better readability.
-    [+] Improved backup solution handling.
-    [+] Added universal message handler.
-    [+] Improved file reading and writing logic.
-    [+] Added potential lag notification during sync.
+                  Features:
+                  - Commands: /sync admins|users|all
+                  - Improved backup handling
+                  - Universal message handler
+                  - Optimized file I/O operations
+                  - Connection status notifications
 
-Credits to 002 for HTTP Code: https://github.com/Halogen002/SAPP-HTTP-Client
+                  Credits: HTTP implementation by 002
+                  (https://github.com/Halogen002/SAPP-HTTP-Client)
 
--------------------------------------------------------------------------------------------------------------
-TO DO LIST:
-[!] Handle UCS-2 LE BOM encoded files for full compatibility.
-
-Copyright (c) 2016-2018, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2016-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = "1.12.0.0"
 

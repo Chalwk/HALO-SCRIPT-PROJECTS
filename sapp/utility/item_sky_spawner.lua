@@ -1,12 +1,15 @@
 --[[
-Script Name: Item Sky Spawner, for SAPP (PC & CE)
-Description: This script will spawn a random weapon or vehicle
-             at a random pre-defined map coordinate,.
+=====================================================================================
+SCRIPT NAME:      item_sky_spawner.lua
+DESCRIPTION:      Random item spawning system:
+                  - Spawns weapons/vehicles
+                  - Uses pre-defined map coordinates
 
-Copyright (c) 2021, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-]]--
+Copyright (c) 2021 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- config starts --
 -- How often should we spawn an object (in seconds)?

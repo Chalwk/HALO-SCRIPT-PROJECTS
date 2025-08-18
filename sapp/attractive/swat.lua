@@ -3,7 +3,7 @@
 SCRIPT NAME:      swat.lua
 DESCRIPTION:      An extremely simple adaptation of 'swat' from Halo Reach.
 
-Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

@@ -9,7 +9,7 @@ DESCRIPTION:      Adds a gravity gun mechanic, allowing players to pick up,
                   Includes configurable settings for pickup range, rotation speed, launch velocity,
                   cooldown timers, and allowed object types. Can be toggled per-player via a command.
 
-Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

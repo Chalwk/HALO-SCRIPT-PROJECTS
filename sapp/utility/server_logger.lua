@@ -1,14 +1,14 @@
 --[[
---=====================================================================================================--
-Script Name: Server Logger, for SAPP (PC & CE)
-Description: An advanced custom server logger.
-             This is intended to replace SAPP's built-in logger.
+=====================================================================================
+SCRIPT NAME:      server_logger.lua
+DESCRIPTION:      An advanced custom server logger designed to replace
+                  SAPP's built-in logging functionality.
 
-Copyright (c) 2022-2024, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = '1.12.0.0'
 

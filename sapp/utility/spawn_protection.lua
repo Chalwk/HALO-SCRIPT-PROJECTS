@@ -1,17 +1,14 @@
 --[[
---=====================================================================================================--
-Script Name: Spawn Protection, for SAPP (PC & CE)
-Description: Simple spawn protection script where players are invulnerable to damage
-             for 5 (default) seconds after they spawn.
+=====================================================================================
+SCRIPT NAME:      spawn_protection.lua
+DESCRIPTION:      Provides temporary invulnerability (default: 5 seconds) after spawning.
+                  Configurable to prevent protected players from dealing damage.
 
-             The newly spawned player can optionally be prevented from
-             dealing damage. See config below for more.
-
-Copyright (c) 2022, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2022 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = '1.12.0.0'
 

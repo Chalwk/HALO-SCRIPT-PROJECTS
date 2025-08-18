@@ -3,7 +3,7 @@
 SCRIPT NAME:      kill_counter.lua
 DESCRIPTION:      This mod was requested by someone called planetX2 on opencarnage.net.
 
-Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

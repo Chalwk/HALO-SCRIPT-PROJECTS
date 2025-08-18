@@ -3,7 +3,7 @@
 SCRIPT NAME:      flashlight_vehicle_entry.lua
 DESCRIPTION:      Aim your reticle at an unoccupied vehicle and press your flashlight key to enter it.
 
-Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

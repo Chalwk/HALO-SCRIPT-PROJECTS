@@ -4,7 +4,7 @@ SCRIPT NAME:      gravity_gun_grenade.lua
 DESCRIPTION:      Turns hand-held/vehicle weapons into grenade launchers.
                   Type /gl on|off to toggle.
 
-Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

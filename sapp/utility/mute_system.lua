@@ -1,18 +1,16 @@
 --[[
---=====================================================================================================--
-Script Name: Mute System, for SAPP (PC & CE)
-Description: A completely custom mute system for SAPP servers.
+=====================================================================================
+SCRIPT NAME:      mute_system.lua
+DESCRIPTION:      Custom chat mute system for SAPP servers
 
-NOTE: This mod requires that you download and install two files.
-You can download them from link below and follow the instructions on this page:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/1.0
+NOTE:             Requires additional files from:
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/1.0
 
-
-Copyright (c) 2020, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2020 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 local MuteSystem = {
 

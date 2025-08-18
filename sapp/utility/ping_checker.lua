@@ -1,14 +1,15 @@
 --[[
---=====================================================================================================--
-Script Name: PingChecker, for SAPP (PC & CE)
-Description: A simple addon to check your ping (or others)
+=====================================================================================
+SCRIPT NAME:      ping_checker.lua
+DESCRIPTION:      Ping monitoring utility:
+                  - Checks player latency
+                  - Supports self/others checking
 
-Copyright (c) 2020-2024, Jericho Crosby
-
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2020-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- config starts:
 

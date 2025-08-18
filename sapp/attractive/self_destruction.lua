@@ -3,7 +3,7 @@
 SCRIPT NAME:      self_destruction.lua
 DESCRIPTION:      Self-detonate with flashlight key!
 
-Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

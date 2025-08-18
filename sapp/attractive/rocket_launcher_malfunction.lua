@@ -3,7 +3,7 @@
 SCRIPT NAME:      rocket_launcher_malfunction.lua
 DESCRIPTION:      Your rocket launcher will spontaneously explode at random times, killing you and nearby players.
 
-Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

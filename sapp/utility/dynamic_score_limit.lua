@@ -1,17 +1,16 @@
 --[[
---=====================================================================================================--
-Script Name: Dynamic Score Limit, for SAPP (PC & CE)
-Description: Automatically adjusts the score limit based on the current number of online players.
+=====================================================================================
+SCRIPT NAME:      dynamic_score_limit.lua
+DESCRIPTION:      Automatically adjusts score limit based on player count:
+                  - Custom game mode overrides
+                  - Falls back to pre-configured defaults
+                  - Supports all standard game types
 
-            Supports custom game mode overrides.
-            If your game mode isn't listed in the `score_limits` table,
-            the server will default to pre-configured game type values.
-
-Copyright (c) 2022-2025, Jericho Crosby
-Notice: You can use this script under the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -----------------------------------------
 -- Config starts here, edit as needed --

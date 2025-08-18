@@ -1,13 +1,15 @@
 --[[
---=====================================================================================================--
-Script Name: Name Replacer, for SAPP (PC & CE)
-Description: Replaces player names with random names from a predefined list.
+=====================================================================================
+SCRIPT NAME:      name_replacer.lua
+DESCRIPTION:      Player name randomization system:
+                  - Replaces names with random selections
+                  - Uses predefined name list
 
-Copyright (c) 2025, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -----------------------------------------
 -- Config starts here, edit as needed --

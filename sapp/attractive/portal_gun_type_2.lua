@@ -6,7 +6,7 @@ DESCRIPTION:      Crouch, aim & shoot to teleport.
                   NOTE: In this version, you can only portal-gun while walking.
                         Players need to crouch & fire to teleport.
 
-Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

@@ -1,23 +1,25 @@
 --[[
---=====================================================================================================--
-Script Name: Play Time, for SAPP (PC & CE)
-Description: Display your playtime with a simple command: /playtime [number: 1-16] | */all | me
-             Playtime is the total time you have spent on the server during its lifetime.
-             This script will also show how many times you have joined the server.
+=====================================================================================
+SCRIPT NAME:      play_time.lua
+DESCRIPTION:      Playtime tracking system:
+                  - /playtime command:
+                    * Check individual players
+                    * View all players (/all)
+                    * Check yourself (me)
+                  - Tracks:
+                    * Total connection time
+                    * Join count
 
------[!] IMPORTANT [!] -----
+REQUIREMENT:      JSON library must be installed:
+                  http://regex.info/blog/lua/json
 
-This script requires that the following json library is installed to the servers root directory:
-LINK: http://regex.info/blog/lua/json
+NOTE:             Data collection begins after installation
 
-Technical Note:
-Playtime data will only begin to be collected from the moment you install the script.
-
-Copyright (c) 2020-2021, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2020-2021 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = "1.12.0.0"
 

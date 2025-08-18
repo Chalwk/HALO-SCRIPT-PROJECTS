@@ -1,14 +1,15 @@
 --[[
---=====================================================================================================--
-Script Name: Dynamic Ping Kicker (Enhanced), for SAPP (PC & CE)
-Description: This script dynamically adjusts ping limits based on player count. It issues warnings for high
-             ping and kicks players if they exceed the limit after a grace period. Admins are immune based
-             on level or name.
+=====================================================================================
+SCRIPT NAME:      dynamic_ping_kicker.lua
+DESCRIPTION:      Dynamically adjusts ping limits based on player count:
+                  - Issues warnings for high ping
+                  - Kicks players exceeding limits after grace period
+                  - Admin immunity by level or name
 
-Copyright (c) 2020-2024, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
+Copyright (c) 2020-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
 ]]
 
 api_version = '1.12.0.0'

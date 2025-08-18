@@ -5,7 +5,7 @@ DESCRIPTION:      Set the damage multiplier of any player.
                   Command Syntax: /damage [id] [range]
                   * Use '-1' for the range definition to reset someone's multiplier.
 
-Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

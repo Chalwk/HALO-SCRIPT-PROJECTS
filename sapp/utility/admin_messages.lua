@@ -4,7 +4,7 @@ SCRIPT NAME:      admin_messages.lua
 DESCRIPTION:      Customizable admin greeting system with:
                   - Level-based join messages (humorous or serious)
                   - Multiple output options:
-                    * In-game chat
+                    * General hat
                     * RCON console
                   - Flexible formatting:
                     * Custom text alignment

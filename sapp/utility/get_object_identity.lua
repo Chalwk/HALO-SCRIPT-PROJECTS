@@ -1,27 +1,18 @@
 --[[
-=====================================================================================================
-Script Name: Get Object Identity, for SAPP (PC & CE)
+=====================================================================================
+SCRIPT NAME:      get_object_identity.lua
+DESCRIPTION:      Object inspection tool with:
+                  - /get_objects command
+                  - Displays crosshair-targeted object info:
+                    * Type (vehicle/weapon/etc)
+                    * Name (internal path)
+                    * Meta ID
+                    * XYZ coordinates
 
-Command: /get_objects
-
-Point your crosshair at any object and fire your weapon.
-The script will display the following information:
-
-    - Object Type
-    - Object Name
-    - Object Meta ID
-    - Object X, Y, Z coordinates
-
-    For example:
-        Type: vehicle
-        Name: vehicles\warthog\mp_warthog
-        Meta: 0
-        X, Y, Z: 0.000000, 0.000000, 0.000000
-
-Copyright (c) 2016-2025, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================================
+Copyright (c) 2016-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
 ]]
 
 api_version = '1.12.0.0'

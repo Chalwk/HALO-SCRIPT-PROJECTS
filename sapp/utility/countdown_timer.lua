@@ -3,7 +3,7 @@
 SCRIPT NAME:      countdown_timer.lua
 DESCRIPTION:      Simple countdown for development and testing
 
-Copyright (c) 2016-2024 Jericho Crosby (Chalwk)
+Copyright (c) 2016-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

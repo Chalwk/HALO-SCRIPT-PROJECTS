@@ -1,11 +1,14 @@
---=====================================================================================================--
--- SCRIPT NAME: Suicide Punisher for SAPP (PC & CE)
--- Description: If a player excessively commits suicide, this script will kick or ban them (see config).
---
--- Copyright (c) 2022-2024, Jericho Crosby
--- Notice: You can use this script subject to the following conditions:
---         https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      suicide_punisher.lua
+DESCRIPTION:      Automatically punishes players who excessively commit suicide
+                  with configurable kick/ban actions.
+
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- Configuration
 local config = {

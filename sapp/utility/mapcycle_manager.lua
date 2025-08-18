@@ -1,85 +1,28 @@
 --[[
---=====================================================================================================--
-Script Name: Mapcycle Manager (1.0.4), for SAPP (PC & CE)
-Description:
+=====================================================================================
+SCRIPT NAME:      mapcycle_manager.lua
+DESCRIPTION:      Advanced map rotation system with:
+                  - Multiple rotation modes:
+                    * Classic maps
+                    * Custom maps
+                    * Size-based rotations (small/medium/large)
+                  - Admin commands:
+                    * /custom, /classic, /small, /medium, /large
+                    * /whatis, /nextmap, /prev, /restart
+                    * /loadmap with parameters
+                  - Dynamic adjustments:
+                    * Player count-based auto-cycling
+                    * Configurable size thresholds
+                  - Configuration options:
+                    * Default map/gametype settings
+                    * Randomization toggles
+                    * Permission levels
 
-    The Mapcycle Manager script enables server administrators to manage map rotations efficiently and
-    facilitates seamless switching between classic and custom map rotations using simple commands.
-
-    Upon loading, the script initializes with a predefined set of classic maps, their corresponding
-    game types, and placeholders for custom maps. Administrators can easily switch between five modes:
-
-    - Classic Mode: Loads a predefined rotation of classic Halo maps.
-    - Custom Mode: Loads a rotation of user-defined custom maps.
-    - Small Mode: Loads a rotation of small maps.
-    - Medium Mode: Loads a rotation of medium maps.
-    - Large Mode: Loads a rotation of large maps.
-
-    The commands for toggling the map cycles are simple and can be issued by admins:
-
-    - /custom:                            Set the map cycle to all custom maps.
-    - /classic:                           Set the map cycle to all classic maps.
-    - /small:                             Set the map cycle to small maps only.
-    - /medium:                            Set the map cycle to medium maps only.
-    - /large:                             Set the map cycle to large maps only.
-    - /whatis:                            Provide information about the next map in the current cycle.
-    - /nextmap:                           Show and load the next map in the current cycle.
-    - /prev:                              Show and load the previous map in the current cycle.
-    - /restart:                           Restart the map cycle.
-    - /loadmap <map_name> <gametype_name> <mapcycle_type>:  Load a specific map and gametype from the defined cycle.
-
-    The script automatically cycles through the selected map rotation at the end of each game, with the
-    flexibility for administrators to manually set the map cycle if desired. Permissions can be set to restrict
-    who can add or remove maps from the cycles.
-
-    Automatic Map Cycle Adjustments:
-    The script includes an optional feature that allows for automatic adjustments of the map cycle based on the current player count.
-    When enabled, the script will dynamically change the map cycle to small, medium, or large maps based on the number of players in the game.
-    This feature can be toggled on or off by the server administrator.
-
-    The configuration settings for this script can be customized as follows:
-
-    ------------------------
-    -- Command Configuration
-    ------------------------
-    Each command can have an associated permission level, aliases for ease of use, and a cooldown period.
-    Example: The command `/custom` has a permission level of 4, aliases like `set_custom`, and a cooldown of 10 seconds.
-
-    -----------------------------
-    -- Default Map Configuration
-    -----------------------------
-    - `default_mapcycle`: Sets the default map cycle upon loading (options: 'CLASSIC', 'CUSTOM', etc.).
-    - `default_map`: Specifies the default map to load when the script starts (e.g., 'beavercreek').
-    - `default_gametype`: Defines the default gametype to use (e.g., 'ctf').
-
-    --------------------------
-    -- Map Cycle Configuration
-    --------------------------
-    - `mapcycle_randomization`: Allows enabling/disabling randomization for each map cycle type.
-    - `mapcycle`: Defines the maps and gametypes for each rotation (CLASSIC, CUSTOM, SMALL, MEDIUM, LARGE).
-
-    ------------------------------------
-    -- Automatic Map Cycle Configuration
-    ------------------------------------
-    - `automatic_map_adjustments`: Enables or disables automatic map cycle adjustments based on player count.
-        - `enabled`: Set to `true` to enable this feature.
-        - `small`, `medium`, `large`: Specify player count ranges for each map size.
-
-    --------------------------
-    -- Customizable Messages
-    --------------------------
-    Customize messages displayed to players for various script events, such as permission denial or map loading.
-
-Prerequisites:
-1. Disable SAPP's built-in map cycle feature for this script to function correctly.
-2. Remove any commands that load maps from SAPP to avoid conflicts; this script is a drop-in replacement
-   for SAPP's built-in map cycle feature.
-
-Copyright (c) 2024, Jericho Crosby
-* Notice: You can use this document subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2024 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 --------------------------------------------
 -- Configuration starts

@@ -12,7 +12,7 @@ DESCRIPTION:      Chat management utility featuring:
                     * Line-by-line deletion
                     * Targeted message removal
 
-Copyright (c) 2016-2024 Jericho Crosby (Chalwk)
+Copyright (c) 2016-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

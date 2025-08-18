@@ -3,7 +3,7 @@
 SCRIPT NAME:      mode_destroy_gun.lua
 DESCRIPTION:      A mode that allows players to destroy objects with their gun.
 
-Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

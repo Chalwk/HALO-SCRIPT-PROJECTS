@@ -1,11 +1,16 @@
 --[[
---=====================================================================================================--
-Script Name: Enhanced Player List, for SAPP (PC & CE)
+=====================================================================================
+SCRIPT NAME:      list_players.lua
+DESCRIPTION:      Player information display with:
+                  - /list and /pls commands
+                  - Shows player IP addresses
+                  - Displays team assignments
+                  - Configurable output formatting
 
-Copyright (c) 2019-2025, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
+Copyright (c) 2019-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
 ]]
 
 -- CONFIG STARTS -------------------------------------------------------------

@@ -1,25 +1,22 @@
---=====================================================================================--
--- SCRIPT NAME:      Team Shuffler
--- DESCRIPTION:      Enhanced team shuffling system with configurable options, delay,
---                   shuffle frequency control, and minimum player count requirement.
---                   Shuffles teams automatically after a configurable delay or manually
---                   via command. Prevents shuffling in Free-For-All (FFA) modes.
---
--- FEATURES:
---                   - Configurable shuffle delay after game start
---                   - Shuffle every X games or every game
---                   - Manual shuffle command with permission control
---                   - Configurable minimum players required to shuffle teams
---                   - Automatic shuffle disable in FFA (Free-For-All) game modes
---                   - Customizable messages for all shuffle events and errors
---
--- AUTHOR:           Jericho Crosby (Chalwk)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- COPYRIGHT (c) 2025 Jericho Crosby
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      team_shuffler.lua
+DESCRIPTION:      Advanced team balancing system with automatic and manual shuffling,
+                  configurable rules, and FFA mode detection.
+
+                  Key Features:
+                  - Automatic shuffling after configurable delay
+                  - Manual shuffle command with permissions
+                  - Minimum player count requirement
+                  - Game frequency controls (every X games)
+                  - Smart FFA mode detection
+                  - Customizable notification messages
+
+Copyright (c) 2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 ---------------------------------
 -- CONFIGURATION

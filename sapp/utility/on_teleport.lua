@@ -1,14 +1,17 @@
 --[[
---=====================================================================================================--
-Script Name: OnTeleport, for SAPP (PC & CE)
-Description: An example script that detects when a player has teleported.
-             This script is intended to be used by other developers.
+=====================================================================================
+SCRIPT NAME:      on_teleport.lua
+DESCRIPTION:      Developer example demonstrating:
+                  - Player teleportation detection
 
-Copyright (c) 2022, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+NOTE:             Intended for developer use
+                  Not for standalone implementation
+
+Copyright (c) 2022 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 local max_distance = 10
 local players = {}

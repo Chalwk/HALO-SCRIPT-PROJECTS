@@ -1,21 +1,17 @@
 --[[
---======================================================================================================--
-Script Name: Team Color Voting (v1.6), for SAPP (PC & CE)
-Description: Players vote for the color set in the next game.
+=====================================================================================
+SCRIPT NAME:      team_color_voting.lua
+DESCRIPTION:      Enables players to vote for team colors in the next game.
 
-Commands:
+                  Commands:
+                  /votelist       - Shows available color sets
+                  /votecolor <id> - Votes for a specific color set
 
-	* /votelist
-	This command shows a list of all available color sets.
-
-	* /votecolor <set id>
-	Use this command to vote for your choice of color set
-
-Copyright (c) 2020, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---======================================================================================================--
-]]--
+Copyright (c) 2020-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 local mod, color_table = {}
 function mod:LoadSettings()

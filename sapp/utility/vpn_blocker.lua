@@ -1,48 +1,29 @@
---=====================================================================================--
--- SCRIPT NAME:      VPN Blocker
--- DESCRIPTION:      A modular IP screening system that integrates with the IPQualityScore API
---                   to detect and block connections using VPNs, proxies, Tor nodes, bots,
---                   and other anonymized or high-risk IP addresses.
---
---                   Each player's IP is evaluated on join using HTTP requests powered by
---                   the SAPP HTTP Client. The results include flags for VPN/proxy usage,
---                   Tor relays, bot activity, and a calculated "Fraud Score" based on
---                   machine learning and traffic analysis provided by IPQualityScore.
---
---                   Based on the configurable detection criteria and thresholds, the script
---                   can take automated action (kick or ban) and provides real-time feedback
---                   to players and the server console.
---
--- SETUP & REQUIREMENTS:
---   1) SAPP HTTP Client:
---      https://opencarnage.net/index.php?/topic/5998-sapp-http-client/
---
---   2) Lua JSON Parser:
---      http://regex.info/blog/lua/json
---
---   3) IPQualityScore API Key:
---      - Sign up at https://www.ipqualityscore.com
---      - Navigate to the Proxy Detection Overview page.
---      - Copy your private API key and paste it into the 'api_key' field in the config.
---
--- INSTALLATION:
---   - Place `json.lua` and all HTTP client files in your server's root directory (next to sapp.dll).
---
--- DISCLAIMER:
---   This tool cannot distinguish intent. While some players use VPNs for privacy or safety,
---   others may do so to evade bans or disrupt servers. VPN Blocker treats all anonymized
---   traffic equally and enforces policy based on the API's risk assessment.
---
---   For more accurate results, consider upgrading your IPQualityScore account to enable
---   premium detection features (optional, at your own expense).
---
--- AUTHOR:           Chalwk (Jericho Crosby)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- COPYRIGHT (c) 2023–2025, Jericho Crosby
--- NOTICE:           You may use this script subject to the following license:
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      vpn_blocker.lua
+DESCRIPTION:      Advanced IP screening system using IPQualityScore API to detect and
+                  block VPNs, proxies, Tor nodes, and high-risk connections.
+
+                  Key Features:
+                  - Real-time IP reputation analysis
+                  - Automated kick/ban actions
+                  - Customizable risk thresholds
+                  - Detailed connection logging
+                  - Fraud scoring system
+
+                  Requirements:
+                  1. SAPP HTTP Client
+                  2. Lua JSON Parser
+                  3. IPQualityScore API Key
+
+                  Note: This is a security tool that treats all anonymized
+                  connections equally based on risk assessment data.
+
+Copyright (c) 2023-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 local config = {
 

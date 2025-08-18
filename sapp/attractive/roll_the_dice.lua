@@ -10,7 +10,7 @@ DESCRIPTION:      You have a 1 in 5 chance of receiving one of these:
 
                   Type /rtd to "roll the dice".
 
-Copyright (c) 2022-2024 Jericho Crosby (Chalwk)
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

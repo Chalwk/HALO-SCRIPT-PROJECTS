@@ -1,20 +1,22 @@
 --[[
---=====================================================================================================--
-Script Name: Sync Your Files (utility), for SAPP (PC & CE)
-Implementing API version: 1.11.0.0
-Description:    This script will sync your <filename>.<ext> file with a remote server.
-                An automatic backup solution will kick in if the host is offline/unavailable.
+=====================================================================================
+SCRIPT NAME:      sync_your_files.lua
+DESCRIPTION:      Synchronizes specified files with a remote server,
+                  with automatic local backup fallback when offline.
 
-    Change Log:
-        [-] nil
+                  Features:
+                  - Supports any <filename>.<ext> format
+                  - Robust backup system
+                  - HTTP functionality via SAPP-HTTP-Client
 
-[^] Credits to 002 for HTTP Code: https://github.com/Halogen002/SAPP-HTTP-Client
+                  Credits: HTTP implementation by 002
+                  (https://github.com/Halogen002/SAPP-HTTP-Client)
 
-Copyright (c) 2016-2018, Jericho Crosby
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2016-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 
 api_version = "1.12.0.0"

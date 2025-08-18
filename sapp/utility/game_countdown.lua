@@ -1,3 +1,15 @@
+--[[
+=====================================================================================
+SCRIPT NAME:      game_countdown.lua
+DESCRIPTION:      Example script demonstrating:
+                  - Game time access functionality
+
+Copyright (c) 2016-2022 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
+
 local timelimit_address
 local tick_counter_address
 local sv_map_reset_tick_address
