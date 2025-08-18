@@ -1,10 +1,15 @@
 --[[
-========================================================================================================
-Script Name: Doctor, Doctor! (SAPP - PC & CE)
-Description: Allows players to heal themselves by command.
-Author: Jericho Crosby <jericho.crosby227@gmail.com>
-License: https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-========================================================================================================
+=====================================================================================
+SCRIPT NAME:      doctor_heal.lua
+DESCRIPTION:      On-demand player healing system with configurable options.
+
+                  Command:
+                  /heal - Restores health (configurable amount)
+
+Copyright (c) 2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
 ]]
 
 --=====================================

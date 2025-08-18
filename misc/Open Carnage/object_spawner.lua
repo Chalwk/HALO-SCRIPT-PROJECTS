@@ -1,13 +1,19 @@
 --[[
---=====================================================================================================--
-Script Name: Object Spawner, for SAPP (PC & CE)
-Description: Easily define custom object spawns /w rotation 
+=====================================================================================
+SCRIPT NAME:      object_spawner.lua
+DESCRIPTION:      Custom object placement system with rotation control.
 
-Copyright (c) 2021, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+                  Features:
+                  - Precise coordinate positioning
+                  - Customizable object rotation
+                  - Multi-object spawning
+                  - Persistent spawn configurations
+
+Copyright (c) 2021-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = "1.12.0.0"
 

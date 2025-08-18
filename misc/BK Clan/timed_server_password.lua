@@ -1,13 +1,20 @@
 --[[
-Script Name: Timed Server Password (v1.1), for SAPP (PC & CE)
-Description: This script automatically removes the server password after a specified duration.
+=====================================================================================
+SCRIPT NAME:      timed_password.lua
+DESCRIPTION:      Automatically removes server password after configurable duration.
 
-For @Rev - BK Clan.
+                  Features:
+                  - Set password expiration time (minutes/hours)
+                  - Optional notifications before removal
+                  - Customizable for private sessions/events
 
-Copyright (c) 2022, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-]]--
+                  Developed for BK Clan (@Rev)
+
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- Configuration Starts ---------------------------
 local duration = 300  -- Duration (in seconds) before the server password is removed

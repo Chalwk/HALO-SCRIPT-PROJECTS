@@ -1,26 +1,29 @@
 --[[
---=====================================================================================================--
-Script Name: Map Skip Tally, for SAPP (PC & CE)
-Description: This script maintains a historical record of map skips on a per-mode basis in Halo.
+=====================================================================================
+SCRIPT NAME:      map_skip_tally.lua
+DESCRIPTION:      Tracks and persists map skip votes across game sessions.
 
-             Players can register a skip by typing "skip" in the chat, which increments the skip count for the
-             current map and game mode. The script tracks individual player skips and allows players to query
-             their total skips and the overall tally for the current map and mode. The skip data is saved in
-             a JSON file for persistent storage, ensuring that skip counts are retained across server restarts.
+                  Key Features:
+                  - Mode-specific skip tracking
+                  - Player-specific vote counting
+                  - JSON data persistence
+                  - Real-time skip queries
+                  - Cross-session data retention
 
-This script requires the following JSON library to be installed on your server:
-http://regex.info/blog/lua/json
+                  Commands:
+                  skip       - Register a skip vote
+                  skiptally  - View current map's skip count
+                  myskips    - View your personal skip contributions
 
-Place "json.lua" in your server's root directory (same location as sapp.dll).
+                  Requirements:
+                  - json.lua library (place next to sapp.dll)
+                  - Output file: skip_tally.json (auto-generated)
 
-The database of historical skips will be in a file called "skip_tally.json" (located in the same directory as mapcycle.txt).
-
-Copyright (c) 2022, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
-
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = "1.12.0.0"
 

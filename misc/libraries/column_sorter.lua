@@ -1,12 +1,13 @@
 --[[
---=====================================================================================================--
-Script Name: Column sorting routine, for SAPP (PC & CE)
+=====================================================================================
+SCRIPT NAME:      column_sorter.lua
+DESCRIPTION:      Utility for organizing datawith multi-column sorting.
 
-Copyright (c) 2023, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2023-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 local names = {
     "Elijah", "Samuel", "Nathaniel", "Jericho",

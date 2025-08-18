@@ -1,17 +1,20 @@
---=====================================================================================--
--- SCRIPT NAME:      Race Assistant
--- DESCRIPTION:      Ensures fair racing by requiring players to use vehicles. Features:
---                   - Configurable grace periods with visual warnings
---                   - Safe zones protection (players in these zones will not be punished)
---                   - Admin exemptions
---
--- AUTHOR:           Jericho Crosby (Chalwk)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- COPYRIGHT © 2025 Jericho Crosby <jericho.crosby227@gmail.com>
--- LICENSE:         MIT License
---                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      race_assistant.lua
+DESCRIPTION:      Enforces vehicle usage in race gametypes with protective features.
+
+                  Key Features:
+                  - Visual countdown warnings
+                  - Configurable grace periods
+                  - Protected safe zones
+                  - Admin permission system
+                  - Multi-stage violation handling
+
+Copyright (c) 2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 ---------------------------------
 -- CONFIGURATION

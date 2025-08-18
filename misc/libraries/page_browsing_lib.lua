@@ -1,35 +1,24 @@
---=====================================================================================--
--- SCRIPT NAME:      Page Browsing Library
--- DESCRIPTION:      A lightweight library for displaying paginated data as RCON
---                   console output to players or the server console. Supports
---                   configurable page size, column count, spacing, and automatic
---                   formatting for clean table-style display. Designed for minimal
---                   performance impact, even with large datasets.
---
--- CONFIGURATION:
--- 1. Place 'Page Browsing Library.lua' in the server root (same folder as sapp.dll).
---
--- 2. Include the library at the top of your script:
---      local PageBrowser = loadfile("Page Browsing Library.lua")()
---
--- 3. Show paginated results with:
---      PageBrowser:ShowResults(player_id, page, max_results, max_columns, spaces, data_table)
---
--- PARAMETERS:
---   player_id   [number] – Player memory ID (use 0 to print to server console).
---   page        [number] – Page number (1-indexed; defaults to 1 if omitted).
---   max_results [number] – Maximum results per page (min 1).
---   max_columns [number] – Number of columns to display per row (min 1).
---   spaces      [number] – Number of spaces between columns (min 0).
---   data_table  [table]  – Array-style table (1..n) containing string entries to display.
---
--- AUTHOR:           Chalwk (Jericho Crosby)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- Copyright (c) 2018-2025 Jericho Crosby <jericho.crosby227@gmail.com>
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      page_browsing_lib.lua
+DESCRIPTION:      Lightweight pagination library for formatted console output.
+
+                  Key Features:
+                  - Configurable page/column layouts
+                  - Server console & player output
+                  - Low-memory table processing
+                  - Auto-adjusted spacing
+
+                  Usage:
+                  local PageBrowser = loadfile("page_browsing_lib.lua")()
+                  PageBrowser:ShowResults(player_id, page, max_results,
+                                        max_columns, spaces, data_table)
+
+Copyright (c) 2018-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- Cache frequently used globals
 local floor       = math.floor

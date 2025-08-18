@@ -1,5 +1,5 @@
 -- Map Coordinates Library
--- Copyright (c) 2021, Jericho Crosby <jericho.crosby227@gmail.com>
+-- Copyright (c) 2021-2025, Jericho Crosby (Chalwk)
 
 return {
     ["bloodgulch"] = {

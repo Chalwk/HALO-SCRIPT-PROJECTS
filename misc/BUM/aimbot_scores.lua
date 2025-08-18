@@ -1,9 +1,21 @@
--- Aim Bot Scores Script by Chalwk
--- Shows a player's Aim Bot scores.
--- Command to show bot scores:
--- Syntax: /command [1-16/me/all/*] [0/1]
+--[[
+=====================================================================================
+SCRIPT NAME:      aim_bot_scores.lua
+DESCRIPTION:      Displays player accuracy statistics with customizable filters.
 
--- Concept credit: mouseboyx (original version released on Open Carange).
+                  Command Syntax:
+                  /aimstats [target] [mode]
+                  - target: 1-16 | me | all | *
+                  - mode: 0 (basic) | 1 (detailed)
+
+                  Credits:
+                  Original concept by mouseboyx (OpenCarnage)
+
+Copyright (c) 2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = '1.12.0.0'
 

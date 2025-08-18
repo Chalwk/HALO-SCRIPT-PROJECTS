@@ -1,3 +1,26 @@
+--[[
+=====================================================================================
+SCRIPT NAME:      seed_score_protection.lua
+DESCRIPTION:      Prevents score loss when players kill seed clients.
+
+                  Key Features:
+                  - Configurable seed name list
+                  - Negative score prevention
+                  - Automatic stat correction
+                  - Localhost IP detection
+
+                  Protected Stats:
+                  - Score
+                  - Kills
+                  - Assists
+                  - Deaths
+
+Copyright (c) 2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
+
 api_version = "1.12.0.0"
 
 local preventNegatives = true

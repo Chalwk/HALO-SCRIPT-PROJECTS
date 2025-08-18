@@ -1,13 +1,16 @@
 --[[
---=====================================================================================================--
-Script Name: Rules Command, for SAPP (PC & CE)
-Description: This script provides a custom command to display server rules to players.
+=====================================================================================
+SCRIPT NAME:      rules_command.lua
+DESCRIPTION:      Displays server rules to players via chat command.
 
-Copyright (c) 2021, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+                  Command:
+                  /rules - Displays the server rules
+
+Copyright (c) 2021-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 --------------------------
 -- Configuration Starts --
@@ -35,7 +38,7 @@ local server_prefix = "**BK**"  -- Server prefix for messages
 
 api_version = "1.12.0.0"
 
-local ConsoleText = (loadfile "Console Text Library.lua")()
+local ConsoleText = (loadfile "console_text_lib.lua")()
 local game_started = false  -- Flag to track if the game has started
 
 -- Load script and register callbacks

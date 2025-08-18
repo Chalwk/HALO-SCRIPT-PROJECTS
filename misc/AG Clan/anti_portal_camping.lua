@@ -1,18 +1,20 @@
 --[[
---======================================================================================================--
-Script Name: Anti-Portal-Camping (v1.0), for SAPP (PC & CE)
-Description: Prevent players from camping portals.
+=====================================================================================
+SCRIPT NAME:      anti_portal_camping.lua
+DESCRIPTION:      Prevents players from camping near portals by enforcing
+                  a 3.5-world-unit exclusion zone with progressive penalties.
 
-Players will be considered portal camping if they are within 3.5 world units
-of any portal. They will be warned to move away after 5 seconds and killed after 10.
+                  Enforcement Rules:
+                  - Warning after 5 seconds of camping
+                  - Lethal enforcement after 10 seconds
 
-* Made specifically for AG Clan (http://agclan1.proboards.com/)
+                  Developed for AG Clan: http://agclan1.proboards.com/
 
-Copyright (c) 2020, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---======================================================================================================--
-]]--
+Copyright (c) 2020-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- Configuration Starts --
 local time_until_kill = 10 -- in seconds

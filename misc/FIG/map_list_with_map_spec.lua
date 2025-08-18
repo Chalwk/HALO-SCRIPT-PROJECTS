@@ -1,15 +1,19 @@
 --[[
---=====================================================================================================--
-Script Name: Map List, for SAPP (PC & CE)
-Description: Display current/next map & mode in mapcycle.txt
+=====================================================================================
+SCRIPT NAME:      map_list_with_map_spec.lua
+DESCRIPTION:      Displays current and upcoming map rotation information from mapcycle.txt.
 
-See config for command syntax.
+                  Features:
+                  - Real-time map cycle tracking
+                  - Position-based map queries
+                  - Case-insensitive parsing
+                  - Configurable commands
 
-Copyright (c) 2022, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- config starts --
 

@@ -1,17 +1,22 @@
 --[[
---=====================================================================================================--
-Script Name: Custom Wdel, for SAPP (PC & CE)
-Description: This script overrides SAPP's built-in wdel command.
-             The flag/oddball will not be removed from a players inventory.
+=====================================================================================
+SCRIPT NAME:      custom_wdel.lua
+DESCRIPTION:      Modified weapon deletion that preserves flag/oddball items.
 
-             Credits for idea: "no one"
-             Request Link: https://opencarnage.net/index.php?/topic/7091-block-wdel-n-with-the-flag/
+                  Key Features:
+                  - Blocks accidental objective item deletion
+                  - Maintains standard weapon removal
+                  - Seamless SAPP command override
 
-Copyright (c) 2021-2022, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+                  Credits:
+                  Inspired by OpenCarnage discussion:
+                  https://opencarnage.net/index.php?/topic/7091-block-wdel-n-with-the-flag/
+
+Copyright (c) 2021-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- config starts --
 

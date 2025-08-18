@@ -1,40 +1,26 @@
 --[[
---=====================================================================================================--
-Script Name: Map List, for SAPP (PC & CE)
-Description: Display current/next map & mode in mapcycle.txt
+=====================================================================================
+SCRIPT NAME:      map_list.lua
+DESCRIPTION:      Displays current and upcoming map rotation information.
 
-Command Syntax:
-    1. /maplist
-    2. /whatis [number]
+                  Commands:
+                  /maplist       - Shows current and next map+mode
+                  /whatis [num]  - Displays specific map position details
 
-    1. /maplist - Displays the current map and mode, and the next map and mode.
-    2. /whatis [number] - Displays the map and mode at the specified position in the mapcycle.txt file.
+                  Example Output:
+                  Current Map: guardian (slayer) | Position: 1/4
+                  Next Map: construct (ctf) | Position: 2/4
 
-    Note: The mapcycle.txt file is located in the sapp folder.
+                  Notes:
+                  - Reads from mapcycle.txt in SAPP folder
+                  - Case-insensitive parsing
+                  - Supports all standard game modes
 
-    Example:
-    mapcycle.txt:
-    guardian:slayer
-    construct:ctf
-    narrows:oddball
-    thepit:infection
-
-    /maplist
-    Output:
-    Current Map: guardian (slayer) | Pos: (1/4)
-    Next Map: construct (ctf) | Pos: (2/4)
-
-    /whatis 3
-    Output:
-    narrows (oddball) | Pos: 3/4
-
-    Note: The map and mode are not case-sensitive.
-
-Copyright (c) 2022, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = "1.12.0.0"
 

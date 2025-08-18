@@ -139,7 +139,7 @@ local floor = math.floor
 local time_scale = 1 / 30
 local script_version = 1.2
 local json = (loadfile "json.lua")()
-local PageBrowser = (loadfile "Page Browsing Library.lua")()
+local PageBrowser = (loadfile "page_browsing_lib.lua")()
 local gsub, sub = string.gsub, string.sub
 local gmatch, format, lower = string.gmatch, string.format, string.lower
 

@@ -1,17 +1,23 @@
---=====================================================================================--
--- SCRIPT NAME:      Console Text Override
--- DESCRIPTION:      A lightweight library for sending timed RCON console messages
---                   to individual players. Supports single or multi-line messages,
---                   optional console clearing, and automatic expiration.
---                   Designed for minimal performance impact in high-activity servers.
---
--- AUTHOR:           Chalwk (Jericho Crosby)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- Copyright (c) 2018-2025 Jericho Crosby <jericho.crosby227@gmail.com>
--- LICENSE:          MIT License
---                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      console_text_lib.lua
+DESCRIPTION:      Dynamic RCON message system with expiration and targeting.
+
+                  Key Features:
+                  - Player-specific console messaging
+                  - Multi-line text support
+                  - Timed auto-clear functionality
+                  - Low-memory footprint
+                  - Optional forced console clears
+
+                  Basic Usage:
+                  SendMessage(player_id, message, duration_secs, clear_console)
+
+Copyright (c) 2018-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- Cache global functions for performance
 local os_time      = os.time

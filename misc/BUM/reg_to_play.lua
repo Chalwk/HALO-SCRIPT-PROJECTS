@@ -1,14 +1,23 @@
 --[[
---=====================================================================================================--
-Script Name: RegToPlay, for SAPP (PC & CE)
-Description: Players must register using a secret command/password within 10 seconds of joining.
-             Unregistered players are automatically kicked. Registered player data (IP|name)
-             is persistently stored in players.txt.
+=====================================================================================
+SCRIPT NAME:      reg_to_play.lua
+DESCRIPTION:      Mandatory player registration system with timed enforcement.
 
-Copyright (c) 2022, Jericho Crosby <jericho.crosby227@gmail.com>
-License: https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+                  Key Features:
+                  - 10-second registration window
+                  - Persistent player data storage (IP/name)
+                  - Automatic kick for unregistered players
+                  - Encrypted password verification
+                  - Configurable grace period
+
+                  Data File:
+                  players.txt (stored with mapcycle.txt)
+
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- Configuration Settings --
 local CONFIG = {

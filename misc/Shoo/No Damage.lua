@@ -1,13 +1,13 @@
 --[[
---=====================================================================================================--
-Script Name: No Damage, for SAPP (PC & CE)
-Description: Prevents players from taking damage.
+=====================================================================================
+SCRIPT NAME:      no_damage.lua
+DESCRIPTION:      Global damage prevention system for invulnerability modes.
 
-Copyright (c) 2023, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+Copyright (c) 2023-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 api_version = '1.12.0.0'
 

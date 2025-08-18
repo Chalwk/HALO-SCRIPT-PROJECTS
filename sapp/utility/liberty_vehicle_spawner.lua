@@ -1,18 +1,25 @@
---=====================================================================================--
--- SCRIPT NAME:      Liberty Vehicle Spawner
--- DESCRIPTION:      Allows players to spawn and instantly enter a vehicle
---                   at their current location using keywords.
---                   Vehicles automatically despawn after a configurable
---                   timeout if left unoccupied. Its respawn timer will reset
---                   if the player re-enters the vehicle.
---
--- AUTHOR:           Chalwk (Jericho Crosby)
--- COMPATIBILITY:    Halo PC/CE | SAPP 1.12.0.0
---
--- COPYRIGHT © 2025 Jericho Crosby <jericho.crosby227@gmail.com>
--- LICENSE:         MIT License
---                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================--
+--[[
+=====================================================================================
+SCRIPT NAME:      liberty_vehicle_spawner.lua
+DESCRIPTION:      On-demand vehicle spawning system with intelligent cleanup.
+
+                  Key Features:
+                  - Keyword-triggered instant spawning
+                  - Automatic entry on creation
+                  - Configurable abandonment timeout
+                  - Occupancy-based respawn timer
+                  - Multi-vehicle support
+
+                  Usage:
+                  Type vehicle name (e.g., "warthog") to spawn and enter
+
+                  Developed for the Liberty Clan
+
+Copyright (c) 2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 --========================= CONFIGURATION ====================================--
 

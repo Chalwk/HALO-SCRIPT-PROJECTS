@@ -1,15 +1,22 @@
 --[[
---=====================================================================================================--
-Script Name: Block Team Damage, for SAPP (PC & CE)
-Description: Prevent grenades/rocket launcher damage from killing teammates.
+=====================================================================================
+SCRIPT NAME:      block_team_damage.lua
+DESCRIPTION:      Prevents explosive weapon damage between teammates while
+                  preserving legitimate combat mechanics.
 
-Designed in response to this post: https://opencarnage.net/index.php?/topic/8587-friendly-fire-desync/
+                  Key Protections:
+                  - Rocket launcher team kills
+                  - Grenade team collateral
+                  - Splash damage mitigation
 
-Copyright (c) 2022, Jericho Crosby <jericho.crosby227@gmail.com>
-Notice: You can use this script subject to the following conditions:
-https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
---=====================================================================================================--
-]]--
+                  Inspired by OpenCarnage discussion:
+                  https://opencarnage.net/index.php?/topic/8587-friendly-fire-desync/
+
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
 -- config starts:
 local jpt_tags = {
