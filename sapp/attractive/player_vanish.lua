@@ -1,22 +1,25 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      player_vanish.lua
-DESCRIPTION:      Vanish yourself (or others) on demand.
+DESCRIPTION:      Advanced player vanishing system with multiple stealth features
+                  - Complete invisibility from other players
+                  - Optional vehicle/radar hiding
+                  - Built-in invincibility and speed boosts
+                  - Persistent vanish state across sessions
+                  - Admin-controlled permissions
 
-                  Command syntax: /vanish.command on|off [me | id | */all]
+                  Core Features:
+                  - /vanish command with on/off toggle
+                  - Multiple identification methods (IP/hash/name)
+                  - Configurable speed boost (default 2x)
+                  - Optional teleport-to-target function
+                  - Automatic or manual cleanup options
 
-                  Features:
-                  * Invisibility
-                      - Hidden from all players
-                      - Option to hide vehicles occupied by vanished players
-                      - Option to hide vanished players from radar
-                  * Invincibility (God Mode)
-                      - Complete invulnerability
-                  * Speed Boost
-                      - Option to change given speed
-                  * Boost
-                      - Teleports you to the nearest object that you are aiming directly
-                  * Customizable Messages
+                  Admin Controls:
+                  - Permission level requirements
+                  - Per-player vanish management
+                  - Global vanish settings
+                  - Customizable messages
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

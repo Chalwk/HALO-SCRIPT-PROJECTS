@@ -1,14 +1,44 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      super_bloogulch.lua
-DESCRIPTION:      Super Bloogulch mod for SAPP.
+DESCRIPTION:      Comprehensive weapon/vehicle overhaul mod that transforms gameplay
+                  into an intense, high-powered combat experience.
+
+FEATURES:
+                - Overhauls 20+ weapons and vehicle armaments
+                - Enhanced projectile physics and damage profiles
+                - Custom explosion effects and impact behaviors
+                - Weapon-specific modifications (AR, Pistol, Sniper, etc.)
+                - Vehicle weapon upgrades (Warthog, Scorpion, Banshee, etc.)
+                - Grenade behavior modifications
+                - Global gameplay tweaks
+
+MODIFICATIONS INCLUDE:
+                - Assault Rifle bullet physics
+                - Pistol damage and melee enhancements
+                - Warthog chain gun upgrades
+                - Scorpion tank shell behavior
+                - Ghost plasma bolts
+                - Rocket Launcher projectiles
+                - Banshee fuel rod cannon
+                - Plasma Rifle charged shots
+                - Frag/Plasma grenade effects
+                - Sniper Rifle ballistic overhaul
+
+TECHNICAL NOTES:
+                - Direct memory modification of game tags
+                - No external dependencies required
+                - Compatible with most game modes
+                - Preserves original gameplay balance
+
+WARNING: This mod significantly alters core gameplay mechanics.
+         Not recommended for competitive play.
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
-
 
 api_version = "1.12.0.0"
 

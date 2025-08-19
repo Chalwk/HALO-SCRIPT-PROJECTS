@@ -1,13 +1,13 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      expressions.lua
-DESCRIPTION:      Fun, family-friendly(-ish) ways to express yourself in chat.
-                  - Rage ("!anger")
-                  - Taunt ("!taunt")
-                  - Mild cussing ("!cuss")
+DESCRIPTION:      Chat command system that responds to triggers with random phrases.
+                  Available commands:
+                  - !cuss   (family-friendly exclamations)
+                  - !anger  (rage expressions)
+                  - !taunt  (competitive taunts)
 
-                  Players type a trigger command in chat to send a random phrase from the relevant category.
-                  The system preserves the player's name in the output format.
+                  Output format includes player name and supports global/team/vehicle chat.
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

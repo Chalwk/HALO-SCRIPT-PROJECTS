@@ -1,15 +1,24 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      rcon_chat.lua
-DESCRIPTION:      Chat messages appear in RCON instead of normal chat.
-                  See config section below for more.
+DESCRIPTION:      Redirects in-game chat messages to RCON with customizable formatting.
+                  Supports global, team, and vehicle chat modes.
+
+FEATURES:
+                 - Customizable message formatting for different chat types
+                 - Configurable ignore list for specific keywords
+                 - Preserves original chat functionality for commands (starting with / or \)
+                 - Automatic team tracking for team-based chat
+
+CONFIGURATION:
+                 - Edit the 'chat' table to modify message formats
+                 - Add keywords to ignore_list to prevent formatting
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
-
 
 local chat = {
 

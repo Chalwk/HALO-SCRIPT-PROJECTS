@@ -1,21 +1,31 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      roll_the_dice.lua
-DESCRIPTION:      You have a 1 in 5 chance of receiving one of these:
-                  * Random Vehicle Entry
-                  * Random Weapon Assignment
-                  * Delete Inventory
-                  * Insta-Shield
-                  * Launch Player into the air
+DESCRIPTION:      Random effect generator with "/rtd" command. Players get one of:
+                  - Random vehicle entry
+                  - Random weapon assignment
+                  - Inventory deletion
+                  - Temporary invulnerability
+                  - High-velocity launch
 
-                  Type /rtd to "roll the dice".
+FEATURES:
+                  - Five distinct random effects
+                  - Configurable vehicle and weapon pools
+                  - Permission system for command access
+                  - Customizable messages for each effect
+                  - Insta-shield duration control
+
+CONFIGURATION:
+                  - Enable/disable individual features
+                  - Set insta-shield duration
+                  - Adjust launch height
+                  - Customize vehicle and weapon tables
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
-
 
 api_version = "1.12.0.0"
 local RTD = {

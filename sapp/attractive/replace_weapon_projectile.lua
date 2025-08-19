@@ -1,16 +1,24 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      replace_weapon_projectile.lua
-DESCRIPTION:      Allows you to swap weapon projectiles for substitute projectiles.
+DESCRIPTION:      Replaces weapon projectiles with custom projectiles while maintaining
+                  original visual effects. Includes damage multiplier configuration.
 
-                  NOTE: The replacement projectile will still appear as the original projectile (but function properly).
+FEATURES:
+                - Seamless projectile replacement without visual glitches
+                - Customizable damage multipliers for each projectile
+                - Supports all standard Halo weapons and vehicles
+                - Easy configuration via the projectiles table
+
+CONFIGURATION:
+                - Edit the projectiles table to define replacements
+                - Set damage multipliers (1 = normal, max 10)
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
-
 
 api_version = "1.12.0.0"
 local projectiles = {}

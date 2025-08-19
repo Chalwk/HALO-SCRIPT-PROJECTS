@@ -1,14 +1,22 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      mode_destroy_gun.lua
-DESCRIPTION:      A mode that allows players to destroy objects with their gun.
+DESCRIPTION:      Enables destructive weapon mode that can delete in-game objects
+                  - Toggle with: /destroygun [on/off] (requires permission level 1)
+                  - Destroys any object in weapon crosshairs when fired
+                  - Shows object type and name in confirmation message
+                  - Works with all weapon types
+                  - Configurable permission requirements
+
+                  WARNING:
+                  This powerful tool can significantly impact gameplay and map integrity.
+                  Use with caution on live servers.
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
-
 
 api_version = '1.12.0.0'
 

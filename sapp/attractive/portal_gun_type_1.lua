@@ -1,17 +1,17 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      portal_gun_type_1.lua
-DESCRIPTION:      Aim & shoot to teleport.
-
-                  NOTE: In this version, you can portal-gun while in a vehicle.
-                        Players do not need to crouch to teleport.
+DESCRIPTION:      Teleportation tool that works by aiming and shooting.
+                  - Works while in vehicles
+                  - No crouching required to teleport
+                  - Admin-configurable permissions
+                  - Persistent activation (optional)
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
-
 
 api_version = "1.12.0.0"
 

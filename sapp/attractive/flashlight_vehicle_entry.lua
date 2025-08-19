@@ -1,7 +1,17 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      flashlight_vehicle_entry.lua
-DESCRIPTION:      Aim your reticle at an unoccupied vehicle and press your flashlight key to enter it.
+DESCRIPTION:      Allows players to enter unoccupied vehicles by:
+                  1. Aiming at the vehicle
+                  2. Pressing flashlight key (default: L key)
+
+                  Supported vehicles:
+                  - Ghost
+                  - Rocket Warthog
+                  - Banshee
+                  - Warthog
+                  - Scorpion
+                  - Gun Turret
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

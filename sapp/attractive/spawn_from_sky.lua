@@ -1,14 +1,34 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      spawn_from_sky.lua
-DESCRIPTION:      Players will spawn 35 w/units above the ground when they first join.
+DESCRIPTION:      Makes players spawn high above the ground (35 world units) when joining,
+                  creating a dramatic falling spawn effect.
+
+FEATURES:
+                 - Configurable spawn heights per map
+                 - Team-specific spawn locations (Red/Blue)
+                 - Automatic un-godding when players land
+                 - Supports all standard Halo CE maps
+                 - Lightweight and efficient implementation
+
+CONFIGURATION:
+                 - Edit the 'maps' table to:
+                   * Add new maps
+                   * Adjust spawn coordinates
+                   * Modify spawn heights (35 = default)
+                 - First array position = Red team
+                 - Second array position = Blue team
+
+NOTES:
+                 - 1 world unit ≈ 10 feet (3.048 meters)
+                 - Players are temporarily godded to prevent fall damage
+                 - Works automatically with no player input needed
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
-
 
 api_version = '1.12.0.0'
 

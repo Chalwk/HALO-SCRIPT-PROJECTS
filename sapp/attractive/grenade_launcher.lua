@@ -1,15 +1,23 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      grenade_launcher.lua
-DESCRIPTION:      Turns hand-held/vehicle weapons into grenade launchers.
-                  Type /gl on|off to toggle.
+DESCRIPTION:      Converts weapons into grenade launchers
+                  - Toggle with: /gl [on/off] (permission level -1)
+                  - Works with all standard weapons and vehicle weapons
+                  - Configurable projectile behavior and velocity
+                  - Automatic map-specific grenade types
+                  - Optional auto-disable on player death
+
+                  Supported weapons include:
+                  - Pistol, Plasma Pistol, Shotgun
+                  - Plasma Rifle, Assault Rifle
+                  - Warthog, Ghost, Banshee weapons
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
-
 
 -- CONFIG STARTS -------------------------------------------------------------
 

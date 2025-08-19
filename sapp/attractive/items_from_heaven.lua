@@ -1,7 +1,18 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      items_from_heaven.lua
-DESCRIPTION:      Spawns a random weapon or vehicle at a random pre-defined map coordinate.
+DESCRIPTION:      Random item/vehicle spawn system
+                  - Spawns weapons and vehicles at random map locations
+                  - Configurable spawn frequency (10-60 seconds by default)
+                  - Automatic cleanup of unused items (30 second despawn timer)
+                  - Map-specific spawn coordinates (pre-configured for Blood Gulch)
+                  - Supports all standard weapons and vehicles
+
+                  Features:
+                  - Dynamic spawn intervals (randomized between min/max)
+                  - Items spawn at specified heights above ground
+                  - Vehicles despawn when unused
+                  - Weapons persist while held by players
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

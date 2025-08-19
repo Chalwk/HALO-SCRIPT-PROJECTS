@@ -1,15 +1,32 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      spawn_protection.lua
-DESCRIPTION:      Simple spawn protection where players are invulnerable for a default of 5 seconds after spawning.
-                  The newly spawned player can optionally be prevented from dealing damage. See config below for more.
+DESCRIPTION:      Provides temporary invulnerability to newly spawned players,
+                  preventing spawn-killing while maintaining fair gameplay.
+
+FEATURES:
+                 - Configurable protection duration (default: 5 seconds)
+                 - Optional damage prevention during protection
+                 - Visual feedback for protected players
+                 - Automatic protection on respawn
+                 - Lightweight and efficient implementation
+
+CONFIGURATION:
+                 - grace_period: Set protection duration in seconds
+                 - inflict_damage: Control whether protected players can deal damage
+                                   (true = can deal damage, false = cannot)
+
+NOTES:
+                 - Protection automatically ends when timer expires
+                 - Players receive a message when protection begins
+                 - Works seamlessly with all game modes
+                 - No special permissions required
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
-
 
 api_version = '1.12.0.0'
 

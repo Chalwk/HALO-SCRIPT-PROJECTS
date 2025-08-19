@@ -1,16 +1,40 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      super_jump.lua
-DESCRIPTION:      Jump high!
+DESCRIPTION:      Grants players enhanced jumping abilities with configurable height
+                  and cooldown settings. Toggleable via chat command.
 
-                  Command Syntax: /superjump on|off
+FEATURES:
+                  - Configurable jump height (default: 3 world units)
+                  - Toggleable super jump with /superjump command
+                  - Cooldown system between jumps
+                  - Vehicle detection (disabled in vehicles)
+                  - Permission level requirement
+                  - Player feedback messages
+
+CONFIGURATION:
+                  - jump_height:          Vertical boost amount (world units)
+                  - min_privilege_level:  Required admin level (-1 = all players)
+                  - cooldown_duration:    Seconds between jumps
+                  - base_command:         Chat command name
+                  - Customize all feedback messages
+
+USAGE:
+                  1. Type "/superjump on" to activate
+                  2. Press jump key for super jump
+                  3. Type "/superjump off" to deactivate
+
+TECHNICAL NOTES:
+                  - 1 world unit ≈ 10 feet (3.048 meters)
+                  - Cooldown timer resets on spawn
+                  - Works in all game modes
+                  - No effect while in vehicles
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
-
 
 api_version = "1.12.0.0"
 

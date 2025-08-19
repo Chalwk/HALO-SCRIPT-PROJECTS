@@ -1,28 +1,37 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      server_fun_plus.lua
-DESCRIPTION:      Adds multiple fun/mod features for players and admins, including:
-                  * rocket: turn a player into a rocket (players in vehicles only)
-                  * force chat: force a player to say something
-                  * fake join: pretend a player joins the game
-                  * fake quit: pretend a player left the game
-                  * random tp: teleport player to a random location on the map
-                  * slap: slap target player
-                  * spam: spam a message to the designated player
-                  * zap: zap target player (deals X damage)
-                  * god: broadcast a message as god
-                  * nuke: nuke the target player
-                  * colour changer: change a player's colour
-                  * crash: crash player's game client
+DESCRIPTION:      Comprehensive admin fun/mod toolkit with 12+ gameplay-altering commands
+                  for creating chaotic and entertaining server experiences.
 
-                  IN DEVELOPMENT
+FEATURES:
+                - Rocket: Launch players in vehicles with custom trajectories
+                - Force Chat: Make players say anything you want
+                - Fake Join/Quit: Simulate player connections/disconnections
+                - Random Teleport: Move players to random map locations
+                - Slap: Physically knock players around
+                - Spam: Flood players with annoying messages
+                - Zap: Deal customizable damage to players
+                - God Mode: Broadcast messages as "God"
+                - Nuke: Obliterate players with massive explosions
+                - Color Changer: Modify player colors
+                - Weapon Removal: Strip players of their weapons
+                - Client Crash: Disconnect players (admin use only)
+
+CONFIGURATION:
+                - Customize permission levels for each command
+                - Adjust spam duration and intensity
+                - Configure projectile types for nuke command
+                - Set custom messages and prefixes
+
+                WARNING: Some features (like client crash) should be used responsibly and only on
+                         consenting players/administrators. May cause gameplay disruption.
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
-
 
 api_version = "1.12.0.0"
 

@@ -1,14 +1,25 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      rocket_launcher_malfunction.lua
-DESCRIPTION:      Your rocket launcher will spontaneously explode at random times, killing you and nearby players.
+DESCRIPTION:      Causes rocket launchers to randomly explode, killing the wielder
+                  and nearby players. Adds chaotic gameplay elements.
+
+FEATURES:
+                - Configurable explosion frequency (5-10 seconds)
+                - Customizable explosion message
+                - Spawns multiple projectiles for dramatic effect
+                - Works with both stationary and moving players
+
+CONFIGURATION:
+                - Adjust min/max explosion times
+                - Set number of spawned projectiles
+                - Customize explosion announcement message
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
-
 
 -------------------
 -- Config starts --

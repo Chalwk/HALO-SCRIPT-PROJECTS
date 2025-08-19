@@ -1,17 +1,24 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      mvp_join_alerts.lua
-DESCRIPTION:      Broadcasts a custom welcome message when a "Most Valued Player" joins the server.
-                  - Each MVP can have their own unique message.
-                  - Non-MVP players get a random general welcome message.
-                  - Identification supports both IP addresses and hashes.
+DESCRIPTION:      Customizable join announcements with MVP recognition
+                  - Personalized welcome messages for VIP players
+                  - General messages for regular players
+                  - Multiple identification methods (IP, hash, or exact name)
+                  - Configurable server message prefix
+
+                  Features:
+                  - Unique messages per MVP player
+                  - Random general messages for non-MVPs
+                  - Supports both IP-based and hash-based identification
+                  - Name-based recognition for exact matches
+                  - Customizable server message prefix
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
-
 
 -- CONFIG:
 

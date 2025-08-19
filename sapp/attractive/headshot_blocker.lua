@@ -1,7 +1,10 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      headshot_blocker.lua
-DESCRIPTION:      Prevent headshots
+DESCRIPTION:      Completely prevents headshot damage in multiplayer
+                  - Blocks all headshot damage between players
+                  - Does not affect body shots or other damage types
+                  - Simple zero-configuration implementation
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

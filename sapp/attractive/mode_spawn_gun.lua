@@ -1,21 +1,31 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      mode_spawn_gun.lua
-DESCRIPTION:      This mod allows you to spawn any object when you fire your weapon.
+DESCRIPTION:      Advanced object spawning system using weapon targeting
+                  - Spawn objects by aiming and shooting
+                  - Over 40 spawnable items (vehicles, weapons, equipment, projectiles)
+                  - Automatic cleanup system
+                  - Precise object placement and physics
 
-                  Command Syntax:
-                  /spawngun [object]
-                  /spawngun off|0|false
-                  /clean
-                  * clean command deletes all objects you spawn
-                  * all objects are deleted automatically when you die.
+                  Key Features:
+                  - Command: /spawngun [object] (e.g. "/spawngun banshee")
+                  - Command: /clean (removes all spawned objects)
+                  - Objects auto-delete on player death
+                  - Realistic physics on spawned objects
+                  - Complete list of spawnable objects in config
+
+                  Object Categories:
+                  - Characters (cyborg)
+                  - Equipment (camo, overshield)
+                  - Weapons (all standard weapons)
+                  - Vehicles (all standard vehicles)
+                  - Projectiles (all weapon projectiles)
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
-
 
 api_version = '1.12.0.0'
 spawngun_command = "spawngun"

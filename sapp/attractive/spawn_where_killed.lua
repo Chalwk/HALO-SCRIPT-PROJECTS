@@ -1,14 +1,31 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      spawn_where_killed.lua
-DESCRIPTION:      You will spawn where you died.
+DESCRIPTION:      Players respawn at their death locations, creating intense revenge
+                  opportunities and persistent combat zones.
+
+FEATURES:
+                 - Exact death location respawning (including vehicles)
+                 - Automatic position clearing after respawn
+                 - Memory-efficient implementation
+                 - Works with all weapons and damage sources
+                 - Seamless integration with existing spawn system
+
+CONFIGURATION:
+                 - No configuration needed - works automatically
+                 - Simply install and the feature is active
+
+NOTES:
+                 - Players respawn at their exact death coordinates
+                 - Works for both on-foot and in-vehicle deaths
+                 - Position data is cleared after respawning
+                 - No performance impact during gameplay
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
-
 
 local loc = {}
 

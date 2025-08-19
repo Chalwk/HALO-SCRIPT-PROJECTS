@@ -1,14 +1,24 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      shield_regen.lua
-DESCRIPTION:      As soon as you receive damage, your shields will immediately start regenerating.
+DESCRIPTION:      Instantly triggers shield regeneration when players take damage,
+                  bypassing the normal delay period.
+
+FEATURES:
+                 - Immediate shield recharge after taking damage
+                 - Configurable delay before regeneration (default: instant)
+                 - Works seamlessly with existing shield mechanics
+                 - Lightweight and efficient implementation
+
+CONFIGURATION:
+                 - delay: Set regeneration delay in ticks (0 for instant)
+                   30 ticks = 1 second
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
-
 
 api_version = "1.12.0.0"
 

@@ -1,7 +1,19 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      mode_enter_gun.lua
-DESCRIPTION:
+DESCRIPTION:      Vehicle entry system using weapon targeting
+                  - Toggle with: /entergun [on/off] (requires permission level 1)
+                  - Enter vehicles by aiming and shooting at them
+                  - Supports all standard Halo vehicles
+                  - Shows vehicle name confirmation message
+                  - Lightweight implementation
+
+                  Supported Vehicles:
+                  - Warthog (standard and rocket)
+                  - Ghost
+                  - Banshee
+                  - Scorpion Tank
+                  - Gun Turret
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

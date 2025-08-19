@@ -1,21 +1,22 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      market_account_saving.lua
-DESCRIPTION:      Earn money for killing and scoring. Use your money to buy perks like
-                  Camouflage, God Mode, Grenades, Overshield, Health, Speed Boost,
-                  Teleport, and Damage Boost. All perks have a cooldown (default 60s).
+DESCRIPTION:      In-game economy system with purchasable perks and account management
+                  - Players earn money for kills and objectives
+                  - Spend money on temporary power-ups and abilities
+                  - Persistent account system with login/registration
+                  - Admin-controlled economy management
 
-                  Players must create an account to use this script. Account management
-                  commands:
-                  1. /account create <username> <password>
-                  2. /account login <username> <password>
+                  Key Features:
+                  - 8 purchasable perks with cooldowns (God Mode, Camo, Teleport, etc.)
+                  - Automatic money rewards/deductions for gameplay events
+                  - Account system with password protection
+                  - Admin fund management tools
+                  - Automatic cleanup of inactive accounts
 
-                  Admin commands:
-                  1. /deposit <pid> <amount>
-                  2. /withdraw <pid> <amount>
-
-                  Use /market to view available perks and /money to view balance.
-                  Requires JSON library installed: http://regex.info/blog/lua/json
+                  Requirements:
+                  - JSON library installed: http://regex.info/blog/lua/json
+                  - SAPP version 1.12.0.0
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

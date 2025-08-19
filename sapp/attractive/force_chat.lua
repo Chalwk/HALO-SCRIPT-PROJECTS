@@ -1,13 +1,11 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      force_chat.lua
-DESCRIPTION:      Force a player to say something.
-
-                  Syntax: /fc <player> <message>
-                  Example: /fc 1 Hello World!
-                  Output: Player 1 will say "Chalwk: Hello World!"
-
-                  Note: For players using Chimera, fake chat messages will appear as server messages, thus will be obvious they're fake.
+DESCRIPTION:      Forces a player to send a chat message
+                  - Command: /fc <player#> <message>
+                  - Output format: "PlayerName: message"
+                  - Requires permission level 1
+                  - Works with all players (including Chimera users)
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

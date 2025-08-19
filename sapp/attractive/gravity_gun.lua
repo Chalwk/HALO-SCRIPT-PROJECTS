@@ -1,13 +1,17 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      gravity_gun.lua
-DESCRIPTION:      Adds a gravity gun mechanic, allowing players to pick up,
-                  manipulate, and launch nearby objects such as vehicles, weapons, equipment,
-                  and devices. The gun works by targeting an object in the player’s crosshair,
-                  suspending it at a configurable distance, and applying an anti-gravity effect.
-                  Players can then launch the object with force based on its mass.
-                  Includes configurable settings for pickup range, rotation speed, launch velocity,
-                  cooldown timers, and allowed object types. Can be toggled per-player via a command.
+DESCRIPTION:      Half-Life style gravity gun for Halo
+                  - Command: !ggun [on/off] (permission level -1)
+                  - Pick up objects by aiming and shooting
+                  - Launch objects with secondary fire
+                  - Physics-based velocity (heavier objects move slower)
+                  - Works with vehicles, weapons, equipment, and devices
+
+                  Configurable settings:
+                  - Pickup range, rotation speed, launch power
+                  - Cooldown timers, mass limits
+                  - Allowed object types
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

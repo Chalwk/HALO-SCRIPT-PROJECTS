@@ -1,7 +1,15 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      flying_vehicles.lua
-DESCRIPTION:      Fly vehicles that normally do not fly!
+DESCRIPTION:      Enables flying capability for ground vehicles
+                  - Toggle with: !fly [on/off]
+                  - Configurable per vehicle type
+                  - Permission level protection
+                  - Auto-reset when server empties (configurable)
+
+                  Default enabled vehicles:
+                  - Rocket Warthog
+                  - Warthog
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

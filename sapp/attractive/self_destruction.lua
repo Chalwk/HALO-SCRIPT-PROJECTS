@@ -1,14 +1,28 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      self_destruction.lua
-DESCRIPTION:      Self-detonate with flashlight key!
+DESCRIPTION:      Allows players to self-destruct using the flashlight key,
+                  with configurable cooldown period and explosion effects.
+
+FEATURES:
+                 - Flashlight-key activated self-destruction
+                 - Configurable cooldown timer between uses
+                 - Customizable explosion projectile and count
+                 - Optional cooldown reset on spawn
+                 - Ready notification system
+
+CONFIGURATION:
+                 - cooldown: Time between detonations (seconds)
+                 - explosion_effect: Projectile tag for explosion
+                 - projectile_count: Number of spawned projectiles
+                 - reset_on_spawn: Reset cooldown when respawning
+                 - on_ready: Custom ready notification message
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
-
 
 -- [ config ] --
 -- Time (in seconds) between player detonations:

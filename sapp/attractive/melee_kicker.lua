@@ -1,15 +1,20 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      melee_kicker.lua
-DESCRIPTION:      Killing a player with any melee attack will result in the victim being kicked from the server.
-                  * A fun and humorous mod for shits and giggles.
+DESCRIPTION:      Forces instant kick for players killed by melee attacks
+                  - Applies to all melee weapon types (including flag/ball melee)
+                  - Optional admin-only restriction
+                  - Lightweight implementation with minimal configuration
+
+                  WARNING:
+                  This is a novelty script designed for fun servers and custom gametypes.
+                  Not recommended for competitive play.
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
-
 
 -- Config [STARTS] -----------------------
 

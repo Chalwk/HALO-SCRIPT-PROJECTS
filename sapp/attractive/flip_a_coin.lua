@@ -1,7 +1,11 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      flip_a_coin.lua
-DESCRIPTION:      A simple addon that lets you flip a text-based virtual coin!
+DESCRIPTION:      Simulates coin flips with statistical results
+                  - Usage: !flip (default: 10,000 flips)
+                  - Shows heads/tails count and percentages
+                  - Includes execution time measurement
+                  - Configurable permission level
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

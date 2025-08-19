@@ -1,15 +1,22 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      market_no_account_saving.lua
-DESCRIPTION:      Earn money for killing and scoring. Use your money to buy perks like
-                  Camouflage, God Mode, Grenades, Overshield, Health, Speed Boost,
-                  Teleport, and Damage Boost. All perks have a cooldown (default 60s).
+DESCRIPTION:      Session-based economy system with purchasable perks
+                  - Players earn/deduct money for in-game actions
+                  - Temporary perks available for purchase
+                  - Admin-controlled economy management
+                  - No persistent accounts (resets each game)
 
-                  Admin commands:
-                  1. /deposit <pid> <amount>
-                  2. /withdraw <pid> <amount>
+                  Core Features:
+                  - 8 power-ups with cooldowns (God Mode, Teleport, Damage Boost, etc.)
+                  - Automatic money rewards for kills/objectives
+                  - Penalties for deaths/suicides/betrayals
+                  - Real-time balance tracking
 
-                  Use /market to view available perks and /money to view balance.
+                  Admin Controls:
+                  - Fund deposits/withdrawals
+                  - Perk customization
+                  - Economy balancing
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

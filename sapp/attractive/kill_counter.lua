@@ -1,7 +1,14 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      kill_counter.lua
-DESCRIPTION:      This mod was requested by someone called planetX2 on opencarnage.net.
+DESCRIPTION:      Displays kill count to players after each kill
+                  - Shows current kill count in a private message
+                  - Customizable message format
+                  - Only triggers on valid player kills (no suicides or team kills)
+                  - Lightweight with no configuration required
+
+                  Default message format: "Kill Counter: X"
+                  Customize by editing the 'output' variable
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

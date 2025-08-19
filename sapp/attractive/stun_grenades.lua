@@ -1,21 +1,37 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      stun_grenades.lua
-DESCRIPTION:      Make frags and plasmas behave like stun grenades.
+DESCRIPTION:      Converts standard grenades into tactical stun devices that
+                  temporarily reduce movement speed of affected players.
 
-                  When someone is damaged by a grenade,
-                  their speed is reduced to 0.5% for 5-10 seconds depending on damage type.
+FEATURES:
+                 - Three distinct stun effects based on grenade type:
+                   * Frag explosion: 5 second stun
+                   * Plasma explosion: 5 second stun
+                   * Plasma sticky: 10 second stun
+                 - Configurable stun durations and speed reduction
+                 - Automatic speed restoration after stun expires
+                 - Preserves original grenade damage effects
+                 - Works in all game modes
 
-                  Plasma explosion  = 5 seconds
-                  Plasma sticky     = 10 seconds
-                  Frag explosion    = 5 seconds
+CONFIGURATION:
+                 - Edit the 'tags' table to:
+                   * Add new stun effects
+                   * Modify existing stun durations
+                   * Adjust speed reduction percentage
+                 - Format: {'tag_name', duration_seconds, speed_percent}
+
+NOTES:
+                 - Speed reduction defaults to 0.5% (crawling speed)
+                 - Stun effects persist through death
+                 - Works with both PvP and PvE scenarios
+                 - No special permissions required
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
-
 
 -- config starts --
 local tags = {

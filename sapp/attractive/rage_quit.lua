@@ -1,14 +1,17 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      rage_quit.lua
-DESCRIPTION:      Announces a message when someone rage quits. Detects both kill-related and general rage quits.
+DESCRIPTION:      Detects and announces rage quits with different message types.
+                  - Detects kill-related rage quits
+                  - Detects general quick disconnects
+                  - Customizable detection time thresholds
+                  - Custom announcement messages
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
-
 
 -- Configuration starts --------------------------------------------------
 local GRACE_PERIOD_AFTER_KILL = 10 -- in seconds

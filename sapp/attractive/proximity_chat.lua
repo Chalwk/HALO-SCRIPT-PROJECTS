@@ -1,14 +1,17 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      proximity_chat.lua
-DESCRIPTION:      You can only chat with players who are within a certain range from you (see config).
+DESCRIPTION:      Implements proximity-based voice chat with configurable range.
+                  - Per-map range customization
+                  - Adjustable range via admin command
+                  - Configurable chat behavior for dead players
+                  - Custom chat message formatting
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
-
 
 -- configuration starts  --
 -- Custom command used to change the chat range:

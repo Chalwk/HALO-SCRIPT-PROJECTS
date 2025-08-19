@@ -1,13 +1,12 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      random_fact_generator.lua
-DESCRIPTION:      Periodically announces a random fact from the Chuck Norris Joke API.
+DESCRIPTION:      Periodically announces random Chuck Norris facts from an external API.
+                  Optionally replaces "Chuck Norris" with a random player's name.
 
-                  Requirements:
-                  1. Install the following plugins on your server:
-                     - https://opencarnage.net/index.php?/topic/5998-sapp-http-client/
-                     - http://regex.info/blog/lua/json
-                  2. Place "json.lua" and the contents of "sapp-http-client" in your server's root directory.
+REQUIREMENTS:     - SAPP HTTP Client (https://opencarnage.net/index.php?/topic/5998-sapp-http-client/)
+                  - JSON.lua (http://regex.info/blog/lua/json)
+                  Place both in your server's root directory.
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

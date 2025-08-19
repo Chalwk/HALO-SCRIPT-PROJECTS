@@ -1,22 +1,37 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      sprint_system.lua
-DESCRIPTION:      Lightweight stamina-based sprinting system using flashlight toggles.
+DESCRIPTION:      Advanced stamina-based sprinting system with toggle controls,
+                  exhaustion mechanics, and real-time HUD feedback.
 
-                  Features:
-                  - Flashlight key enables/disables sprinting
-                  - Stamina drains while sprinting and regenerates while idle
-                  - Sprinting speed boost and exhausted slowdown
-                  - Exhaustion state triggers when stamina is depleted
-                  - Text-based HUD shows stamina bar and status
-                  - Fully customizable stamina, speed, and rates
+FEATURES:
+                 - Flashlight key toggles sprinting (press to start/stop)
+                 - Dynamic stamina management with drain/regen rates
+                 - Three sprint states: Ready, Active, Exhausted
+                 - Speed modifiers for sprinting and exhaustion
+                 - Text-based stamina HUD with visual bar
+                 - Configurable thresholds and rates
+                 - Automatic state transitions
+
+CONFIGURATION:
+                 - stamina_max:          Maximum stamina capacity (default: 100)
+                 - sprint_speed:         Speed multiplier while sprinting (default: 1.5x)
+                 - exhaust_speed:        Speed penalty when exhausted (default: 0.8x)
+                 - drain_rate:           Stamina depletion rate per tick (default: 0.35)
+                 - regen_rate:           Stamina recovery rate per tick (default: 0.2)
+                 - exhaust_threshold:    Minimum stamina to begin sprinting (default: 25)
+                 - hud_update_interval:  HUD refresh rate in ticks (default: 30)
+
+USAGE:
+1. Press flashlight key to start sprinting
+2. Release to stop or continue until exhausted
+3. Wait for stamina to recover after exhaustion
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
-
 
 ---------------------------------
 -- CONFIGURATION

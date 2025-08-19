@@ -1,15 +1,24 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      killer_reward.lua
-DESCRIPTION:      Random objects (weapons/equipment) will drop at your victim's death location.
-                  See config section for more.
+DESCRIPTION:      Drops random weapons/equipment at victim death locations
+                  - Configurable drop conditions (consecutive kills required)
+                  - Customizable drop tables (weapons and/or equipment)
+                  - Detailed kill streak rewards system
+                  - Player-specific tracking and notifications
+
+                  Features:
+                  - Three drop modes: Weapons only, Equipment only, or Both
+                  - Optional consecutive kills requirement (default: 5 kills)
+                  - Customizable drop item tables
+                  - Death location detection (ground/vehicle)
+                  - Player notifications about drops
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
-
 
 local KillerRewards = {
 
