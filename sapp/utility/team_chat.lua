@@ -1,11 +1,34 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      team_chat.lua
-DESCRIPTION:      Private team chat system featuring:
-                  - Invite functionality
-                  - Multiple chat channels
-                  - Toggleable chat modes
-                  - Support for 1-3+ player private communications
+DESCRIPTION:      Advanced team-based private chat system with invite functionality,
+                  multiple channels, and flexible communication modes.
+
+FEATURES:
+                  - Create/manage private team chat channels
+                  - Invite system with player notifications
+                  - Multiple chat modes (team-only or global)
+                  - Team ownership and moderation controls
+                  - Cooldown system to prevent spam
+                  - Comprehensive help system
+
+COMMANDS:
+                  /team create <name>      - Create new team
+                  /team invite <player>    - Invite player to your team
+                  /team join <name>        - Join a team
+                  /team leave              - Leave current team
+                  /team kick <player>      - Kick player from team (owner)
+                  /team members            - List team members
+                  /team list               - List all available teams
+                  /team disband            - Disband team (owner)
+                  /team mode [team|global] - Set chat mode
+                  /team help               - Show command help
+                  /t <message>             - Send team message (alias)
+
+CONFIGURATION:
+                  commands = {'team', 't'}  - Primary command and aliases
+                  permission = -1           - Required access level (-1 = all players)
+                  cooldown = 1.5            - Message cooldown in seconds
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

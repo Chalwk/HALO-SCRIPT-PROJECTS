@@ -1,8 +1,18 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      spawn_protection.lua
-DESCRIPTION:      Provides temporary invulnerability (default: 5 seconds) after spawning.
-                  Configurable to prevent protected players from dealing damage.
+DESCRIPTION:      Provides temporary invulnerability to newly spawned players.
+                  Prevents protected players from taking damage (configurable).
+
+FEATURES:
+                  - Configurable protection duration (default: 5 seconds)
+                  - Toggle whether protected players can deal damage
+                  - Visual feedback when protection is active
+                  - Automatic protection on spawn
+
+CONFIGURATION:
+                  grace_period = 5       -- Protection duration in seconds
+                  inflict_damage = true  -- Whether protected players can deal damage
 
 Copyright (c) 2022 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

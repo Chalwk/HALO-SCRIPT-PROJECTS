@@ -1,8 +1,26 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      suicide_punisher.lua
-DESCRIPTION:      Automatically punishes players who excessively commit suicide
-                  with configurable kick/ban actions.
+DESCRIPTION:      Automatically punishes players who commit excessive suicides
+                  with configurable kick/ban actions and grace periods.
+
+FEATURES:
+                  - Configurable suicide threshold before punishment
+                  - Adjustable grace period timer
+                  - Choice of kick or ban actions
+                  - Customizable ban duration
+                  - Clear console notifications
+
+CONFIGURATION:
+                  threshold = 5    -- Max allowed suicides before punishment
+                  grace = 30       -- Grace period in seconds
+                  action = 'kick'  -- 'kick' or 'ban'
+                  ban_time = 10    -- Ban duration in minutes (0 = permanent)
+                  reason = 'Excessive Suicide'
+
+USAGE:
+                  Simply load the script - automatically monitors suicides
+                  Punishments are applied when threshold is exceeded
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

@@ -1,15 +1,31 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      sync_your_files.lua
-DESCRIPTION:      Synchronizes specified files with a remote server,
-                  with automatic local backup fallback when offline.
+DESCRIPTION:      Synchronizes any file type with a remote server while maintaining
+                  local backups for offline reliability.
 
-                  Features:
-                  - Supports any <filename>.<ext> format
-                  - Robust backup system
-                  - HTTP functionality via SAPP-HTTP-Client
+FEATURES:
+                  - Universal file synchronization (supports any file extension)
+                  - Automatic backup system when offline
+                  - Configurable sync options
+                  - Data verification via keyword matching
+                  - Connection status notifications
 
-                  Credits: HTTP implementation by 002
+CONFIGURATION:
+                  url = 'www.example.com/files/'  - Remote server directory
+                  filename = 'test.txt'           - File to synchronize
+                  keyword = 'your_keyword'        - Verification string
+                  BackupMethod = true             - Enable local backups
+                  DisplayConsoleOutput = true     - Show status messages
+
+USAGE:
+                  /sync files  - Initiate file synchronization
+
+BACKUP SYSTEM:
+                  Edit backup_table contents to match your desired backup file data
+
+REQUIREMENTS:
+                  SAPP-HTTP-Client by 002
                   (https://github.com/Halogen002/SAPP-HTTP-Client)
 
 Copyright (c) 2016-2025 Jericho Crosby (Chalwk)
@@ -17,7 +33,6 @@ LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
-
 
 api_version = "1.12.0.0"
 
@@ -27,8 +42,7 @@ function OnScriptLoad()
     backup_table = {}
 end
 
-function OnScriptUnload()
-end
+function OnScriptUnload() end
 
 -- Configuration --
 --===>>>===>>>===>>>===>>>===>>>===>>>===>>>===>>>===>>>===

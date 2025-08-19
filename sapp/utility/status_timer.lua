@@ -1,7 +1,20 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      status_timer.lua
-DESCRIPTION:      Displays current player count in server console at regular intervals.
+DESCRIPTION:      Periodically displays current player count in server console.
+
+FEATURES:
+                  - Configurable update interval (default: 3 seconds)
+                  - Displays current/max player count ratio
+                  - Lightweight background operation
+                  - Color-formatted console output
+
+CONFIGURATION:
+                  interval = 3  -- Update frequency in seconds
+
+USAGE:
+                  Simply load the script - no commands needed
+                  Output format: "Players: X/Y" (current/max)
 
 Copyright (c) 2024 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

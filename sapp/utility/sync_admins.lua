@@ -1,17 +1,31 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      sync_admins.lua
-DESCRIPTION:      Synchronizes admins.txt and users.txt with a remote server,
-                  with automatic fallback to local backups when offline.
+DESCRIPTION:      Synchronizes admin and user files with a remote server while
+                  maintaining local backups for offline reliability.
 
-                  Features:
-                  - Commands: /sync admins|users|all
-                  - Improved backup handling
-                  - Universal message handler
-                  - Optimized file I/O operations
+FEATURES:
+                  - Automatic remote-to-local file synchronization
+                  - Fallback to local backups when offline
+                  - Configurable sync options (admins/users/both)
                   - Connection status notifications
+                  - Data validation for security
+                  - Temporary lag warnings during sync
 
-                  Credits: HTTP implementation by 002
+CONFIGURATION:
+                  url = 'http://example.com/files/'  -- Remote server path
+                  Sync_Admins = true                -- Enable admin file sync
+                  Sync_Users = true                 -- Enable user file sync
+                  BackupMethod = true               -- Enable local backups
+                  DisplayConsoleOutput = true        -- Show sync status messages
+
+USAGE:
+                  /sync admins   - Sync only admin file
+                  /sync users    - Sync only user file
+                  /sync all      - Sync both files
+
+REQUIREMENTS:
+                  HTTP Client implementation by 002
                   (https://github.com/Halogen002/SAPP-HTTP-Client)
 
 Copyright (c) 2016-2025 Jericho Crosby (Chalwk)

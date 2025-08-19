@@ -1,11 +1,22 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      simple_poll_system.lua
-DESCRIPTION:      Allows admins to create quick polls for map votes or rule changes.
+DESCRIPTION:      Admin-controlled in-game polling system for map votes or rule changes.
 
-                  Command Examples:
+FEATURES:
+                  - Create polls with custom questions and options
+                  - Players vote using numbered options
+                  - Automatic results calculation
+                  - Admin-only poll cancellation
+                  - Configurable duration and permissions
+
+USAGE:
+                  Admin commands:
                   /poll "Question?" option1 option2 option3
-                  /vote [number] (e.g., /vote 1 = option1, /vote 2 = options2)
+                  /cancel (stops current poll)
+
+                  Player commands:
+                  /vote [number] (e.g., /vote 1 = option1)
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

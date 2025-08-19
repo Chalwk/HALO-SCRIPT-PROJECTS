@@ -1,8 +1,29 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      suspend_players.lua
-DESCRIPTION:      Freezes players in place, removes their weapons, and prevents
-                  them from sending chat messages.
+DESCRIPTION:      Admin tool to freeze players in place, remove weapons, and mute chat.
+                  Persists across sessions when configured.
+
+FEATURES:
+                  - Freezes player movement completely
+                  - Removes all weapons and prevents new pickups
+                  - Optional chat muting functionality
+                  - Configurable persistence across sessions
+                  - Customizable admin messages
+                  - Supports targeting individuals or all players
+
+CONFIGURATION:
+                  command = "suspend"       -- Admin command to use
+                  permission = 1            -- Required admin level
+                  mute = true               -- Whether to block chat messages
+                  keep_suspended = true     -- Persist suspensions across sessions
+                  default_running_speed = 1 -- Speed after unsuspending
+
+USAGE:
+                  /suspend [playerID|*/all] [on|off]
+                  Examples:
+                  /suspend 3 on      - Suspend player 3
+                  /suspend all off   - Unsuspend all players
 
 Copyright (c) 2019 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

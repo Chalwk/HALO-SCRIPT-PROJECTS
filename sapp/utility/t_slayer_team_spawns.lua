@@ -1,7 +1,23 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      t_slayer_team_spawns.lua
-DESCRIPTION:      Enforces team-specific spawning in Team Slayer game modes.
+DESCRIPTION:      Enforces team-specific spawning in Team Slayer game modes by
+                  restricting players to their team's designated spawn points.
+
+FEATURES:
+                  - Loads spawn points from scenario tag data
+                  - Automatically activates only in Team Slayer games
+                  - Randomly selects valid spawn points for each team
+                  - Supports both Red and Blue team spawns
+
+BEHAVIOR:
+                  - Only activates in Team Slayer (non-FFA) games
+                  - Players spawn at random locations from their team's spawn pool
+                  - Automatically disables in non-team game modes
+
+USAGE:
+                  Simply load the script - no commands needed
+                  Works automatically when Team Slayer is detected
 
 Copyright (c) 2020-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
