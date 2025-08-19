@@ -43,19 +43,19 @@
       "filename": "capture_the_flag.lua"
     },
     "color_changer": {
-      "title": "Player Color Changer",
+      "title": "Color Changer",
       "shortDescription": "Allows players to customize their armor color",
       "description": "Enables players with sufficient permissions to change their armor color using a simple command. Offers 18 different color options from white to salmon. Maintains color consistency through respawns while respecting game mechanics. Includes admin-level restrictions for controlled customization.",
       "filename": "color_changer.lua"
     },
     "color_reservation": {
-      "title": "VIP Color Reservation",
+      "title": "Color Reservation",
       "shortDescription": "Reserves armor colors for VIP players based on their unique hash",
       "description": "Allows server administrators to reserve specific armor colors for VIP players by configuring their unique player hashes. Supports all 18 armor colors in FFA Slayer mode only. Automatically assigns random colors to non-VIP players while preserving reserved colors for authorized users through respawns. Includes protection against color conflicts.",
       "filename": "color_reservation.lua"
     },
     "custom_teleports": {
-      "title": "Custom Teleporters",
+      "title": "Custom Teleports",
       "shortDescription": "Configurable instant teleport points for any map",
       "description": "Creates customizable teleportation zones that instantly transport players between locations on the same map. Supports map-specific configurations with adjustable activation radius and destination points. Optional crouch-only activation prevents accidental teleports. Perfect for creating shortcuts, secret passages, or gameplay variations in any map.",
       "filename": "custom_teleports.lua"
@@ -73,7 +73,7 @@
       "filename": "deployable_mines.lua"
     },
     "expressions": {
-      "title": "Fun Chat Expressions",
+      "title": "Expressions (chat)",
       "shortDescription": "Family-friendly chat reactions and taunts",
       "description": "Adds playful, moderated chat commands for expressing emotions like anger (!anger), taunting opponents (!taunt), or mild frustration (!cuss). Features multiple randomized responses for each command while maintaining player identity in chat. Perfect for adding personality to gameplay without offensive language. Fully configurable with custom phrase lists and output formatting.",
       "filename": "expressions.lua"
@@ -85,13 +85,13 @@
       "filename": "flashlight_vehicle_entry.lua"
     },
     "flip_a_coin": {
-      "title": "Coin Flip Simulator",
+      "title": "Flip a Coin",
       "shortDescription": "Virtual coin flipping with statistics",
       "description": "Adds a fun virtual coin flip command that simulates thousands of flips instantly and displays detailed statistics. Features configurable flip counts, probability percentages, and execution timing. Provides entertaining random results while demonstrating probability concepts in real-time. Simple permission system controls access.",
       "filename": "flip_a_coin.lua"
     },
     "flying_vehicles": {
-      "title": "Flying Vehicles Mod",
+      "title": "Flying Vehicles",
       "shortDescription": "Enable flight for ground vehicles",
       "description": "Transforms standard ground vehicles into flying machines with a simple command. Supports configurable vehicle selection, permission-based access control, and automatic reset options. Perfect for creating custom game modes or just having fun with unconventional vehicle physics. Includes safety features to prevent conflicts with normal gameplay.",
       "filename": "flying_vehicles.lua"
@@ -103,13 +103,13 @@
       "filename": "force_chat.lua"
     },
     "gravity_gun": {
-      "title": "Gravity Gun Mod",
+      "title": "Gravity Gun",
       "shortDescription": "Half-Life inspired object manipulation tool",
       "description": "Adds a physics-based gravity gun that lets players pick up, carry, and launch objects with realistic mass-based physics. Supports vehicles, weapons, equipment and devices with configurable pickup range, rotation speed, and launch velocity. Includes cooldown timers, mass restrictions, and permission controls for balanced gameplay. Perfect for creating custom game modes or just having fun with physics.",
       "filename": "gravity_gun.lua"
     },
     "grenade_launcher": {
-      "title": "Grenade Launcher Mod",
+      "title": "Grenade Launcher",
       "shortDescription": "Convert weapons into grenade launchers",
       "description": "Transforms standard weapons and vehicle armaments into grenade launchers with configurable projectile physics. Features map-specific grenade types, adjustable velocity settings, and toggleable activation. Supports multiple weapon types with realistic ballistic behavior. Includes permission controls and optional auto-disable on death for balanced gameplay.",
       "filename": "grenade_launcher.lua"
@@ -139,7 +139,7 @@
       "filename": "kill_counter.lua"
     },
     "killer_reward": {
-      "title": "Killer Reward System",
+      "title": "Killer Reward",
       "shortDescription": "Drops weapons/equipment on player kills",
       "description": "Rewards successful kills by spawning random weapons or equipment at the victim's death location. Features configurable drop tables, consecutive kill requirements, and multiple reward modes (weapons-only, equipment-only, or mixed). Includes kill streak tracking and customizable drop chances. Perfect for creating dynamic combat scenarios where players are rewarded for consistent performance.",
       "filename": "killer_reward.lua"
