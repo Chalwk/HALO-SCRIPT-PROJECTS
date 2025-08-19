@@ -4,13 +4,27 @@ SCRIPT NAME:      team_shuffler.lua
 DESCRIPTION:      Advanced team balancing system with automatic and manual shuffling,
                   configurable rules, and FFA mode detection.
 
-                  Key Features:
+FEATURES:
                   - Automatic shuffling after configurable delay
                   - Manual shuffle command with permissions
                   - Minimum player count requirement
                   - Game frequency controls (every X games)
                   - Smart FFA mode detection
                   - Customizable notification messages
+                  - Anti-duplicate team assignment protection
+                  - Death message suppression during shuffles
+
+COMMANDS:
+                  /shuffle - Manually shuffle teams (requires permission)
+
+CONFIGURATION:
+                  shuffle_command = 'shuffle'        - Command name
+                  shuffle_command_permission = 3     - Required permission level
+                  auto_shuffle = true                - Enable auto-shuffle
+                  shuffle_after_games = 1            - Auto-shuffle frequency
+                  shuffle_delay = 3                  - Shuffle delay (seconds)
+                  min_players_required = 2           - Minimum players to shuffle
+                  show_shuffle_message = true        - Toggle shuffle notifications
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

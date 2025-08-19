@@ -19,8 +19,8 @@ CONFIGURATION:
                   output:           Customizable response templates
                   ClientIndexType:  Player identification method (1=IP:PORT, 2=IP, 3=Hash)
 
-REQUIREMENTS:     JSON library must be installed:
-                  http://regex.info/blog/lua/json
+REQUIREMENTS:     Install to the same directory as sapp.dll
+                  - Lua JSON Parser:  http://regex.info/blog/lua/json
 
 USAGE EXAMPLES:
                   /playtime         (shows your own stats)

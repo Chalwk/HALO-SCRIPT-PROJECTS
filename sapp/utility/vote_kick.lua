@@ -3,18 +3,26 @@
 SCRIPT NAME:      vote_kick.lua
 DESCRIPTION:      Player-driven moderation system for removing disruptive players.
 
-                  Command Reference:
-                  /votekick <player_id>  - Initiate kick vote against player
-                  /votelist              - View active vote kick sessions
-                  /cancelvote            - Cancel your active vote
-
-                  Features:
-                  - Democratic player moderation
+FEATURES:
+                  - Democratic player moderation system
+                  - Configurable vote thresholds (minimum players, percentage)
                   - Vote tracking and validation
-                  - Configurable thresholds
-                  - Cooldown protection
-                  - Vote expiration
-                  - Name-based kick tracking
+                  - Cooldown protection against abuse
+                  - Vote expiration system
+                  - Admin immunity option
+                  - Anonymous voting option
+
+COMMANDS:
+                  /votekick <player_id>    - Initiate kick vote against player
+                  /votelist                - View active vote kick sessions
+                  /cancelvote              - Cancel your active vote
+
+CONFIGURATION:
+                  vote_percentage = 60     - Required vote percentage to kick
+                  minimum_players = 2      - Minimum players needed to vote
+                  vote_grace_period = 30   - Vote duration in seconds
+                  kicked_grace_period = 60 - Cooldown for kicked players
+                  admin_immunity = true    - Protect admins from votes
 
 Copyright (c) 2020-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

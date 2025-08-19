@@ -1,12 +1,10 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      welcome_messages.lua
-DESCRIPTION:      Customizable welcome messages for joining players.
-                  Originally requested by mdc81 on OpenCarnage forums.
+DESCRIPTION:      Simple player greeting system
 
-                  Implementation Note:
-                  Basic functionality can be achieved with SAPP's built-in:
-                  event_join 'say $n "Welcome message here"'
+CREDITS:
+                  Originally requested by 'mdc81' on OpenCarnage forums
 
 Copyright (c) 2016-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

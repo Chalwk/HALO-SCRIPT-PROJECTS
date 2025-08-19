@@ -1,16 +1,41 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      the_punisher.lua
-DESCRIPTION:      Automated player punishment system for:
-                  - Team betrayals
-                  - Friendly fire incidents
-                  - Other configurable offenses
+DESCRIPTION:      Automated player punishment system for team betrayals and friendly fire.
 
-                  Features:
+FEATURES:
                   - Customizable punishment thresholds
-                  - Progressive penalty system
-                  - Configurable forgiveness options
-                  - Detailed offense logging
+                  - Progressive warning system
+                  - Multiple punishment types (kill/kick/crash)
+                  - Detailed offense tracking
+                  - Configurable warning messages
+                  - Respawn time adjustment
+                  - Death penalty control
+
+COMMANDS:         (Automatic - no player commands needed)
+
+CONFIGURATION:
+                  punish.betrayals = {    - Betrayal punishment settings:
+                    actions = {
+                      KILL = {use=true, warnings=5, respawn_time=10},
+                      KICK = {use=false, warnings=5},
+                      CRASH = {use=false, warnings=5}
+                    }
+                  }
+                  punish.teamshooting = { - Teamshooting punishment settings
+                    actions = {
+                      KILL = {use=false, warnings=5},
+                      KICK = {use=false, warnings=5},
+                      CRASH = {use=true, warnings=5}
+                    }
+                  }
+                  punish.duration = 5      - Message display duration
+                  punish.message_alignment = "|l" - Message alignment
+
+PUNISHMENT TYPES:
+                  KILL  - Silently kills offender with configurable respawn
+                  KICK  - Kicks offender from server
+                  CRASH - Crashes offender's game client
 
 Copyright (c) 2019-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

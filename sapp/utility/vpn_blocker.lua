@@ -1,23 +1,35 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      vpn_blocker.lua
-DESCRIPTION:      Advanced IP screening system using IPQualityScore API to detect and
-                  block VPNs, proxies, Tor nodes, and high-risk connections.
+DESCRIPTION:      Advanced IP screening system to detect and block VPNs/proxies.
 
-                  Key Features:
+FEATURES:
                   - Real-time IP reputation analysis
-                  - Automated kick/ban actions
+                  - Integration with IPQualityScore API
                   - Customizable risk thresholds
                   - Detailed connection logging
                   - Fraud scoring system
+                  - IP exclusion list
+                  - Multiple detection methods
 
-                  Requirements:
-                  1. SAPP HTTP Client
-                  2. Lua JSON Parser
-                  3. IPQualityScore API Key
+CONFIGURATION:
+                  api_key = 'YOUR_KEY'    - IPQualityScore API key
+                  action = 'k'            - Kick ('k') or ban ('b')
+                  ban_time = 10           - Ban duration in minutes
+                  minChecks = 2           - Minimum failed checks required
 
-                  Note: This is a security tool that treats all anonymized
-                  connections equally based on risk assessment data.
+DETECTION METHODS:
+                  - VPN detection
+                  - Proxy detection
+                  - Tor node detection
+                  - Crawler detection
+                  - Fraud scoring
+                  - Bot activity detection
+
+REQUIREMENTS:     Install to the same directory as sapp.dll
+                  - Lua JSON Parser:        http://regex.info/blog/lua/json
+                  - SAPP HTTP Client:       https://opencarnage.net/index.php?/topic/5998-sapp-http-client/)
+                  - IPQualityScore API Key: https://www.ipqualityscore.com/
 
 Copyright (c) 2023-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

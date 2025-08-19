@@ -3,51 +3,51 @@
 SCRIPT NAME:      weapon_assigner.lua
 DESCRIPTION:      Advanced weapon distribution system with contextual loadout management.
 
-                  Key Features:
+FEATURES:
                   - Map-specific weapon configurations
                   - Game-mode aware assignments (Team/FFA)
                   - Multi-weapon loadouts (up to 4 per player)
-                  - Weapon tag validation
+                  - Weapon tag validation system
                   - Fallback configuration system
-
-                  Supports:
                   - Team-specific loadouts (Red/Blue)
                   - Free-for-all configurations
                   - Custom default weapons
+                  - Error logging for invalid configurations
+
+CONFIGURATION:
+                  Config.weapon_tags = {  - Define all available weapons
+                    [1] = 'weapons\\pistol\\pistol',
+                    [2] = 'weapons\\sniper rifle\\sniper rifle',
+                    ...etc
+                  }
+
+                  Config.maps = {        - Map-specific configurations
+                    bloodgulch = {
+                      default = {        - Default loadout
+                        red = {1, 2},    - Red team weapons (by index)
+                        blue = {1, 2},   - Blue team weapons
+                        ffa = {1, 2}     - FFA weapons
+                      },
+                      ["ctf"] = {       - Game-mode specific override
+                        red = {1, 3, 7},
+                        blue = {1, 4, 8},
+                        ffa = {1, 2}     - Fallback to default if missing
+                      }
+                    }
+                  }
+
+USAGE:
+                  1. Add weapons to weapon_tags table using correct tag paths
+                  2. Configure map-specific loadouts in maps table
+                  3. Supports up to 4 weapons per player
+                  4. System automatically falls back to default if:
+                     - No game-mode specific config exists
+                     - Invalid weapon tags are detected
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
-]]
-
---[[
-CONFIGURATION GUIDE:
-
-The "Config" table defines which weapons players spawn with on a per-map, per-game-mode basis.
-
-1. **weapon_tags Table**
-   - This table lists all available weapons by assigning them a numerical index.
-   - Each weapon is represented by its corresponding tag path.
-   - You do NOT need to modify this unless you want to add custom weapons.
-
-2. **maps Table**
-   - This table contains configurations for specific maps.
-   - Each map has a "default" configuration and optional game-mode-specific configurations.
-   - The "default" configuration applies if no specific game mode is configured for that map.
-   - Each configuration contains weapon assignments for "red", "blue", and "ffa" (Free-for-All) teams.
-   - Each weapon assignment is defined as an array of numerical indices that refer to "weapon_tags".
-   - You can assign up to **4 weapons** per player.
-
-Example:
-   - "bloodgulch": The "["default"]" setup gives both Red and Blue teams the pistol (1) and sniper rifle (2).
-   - "["example_game_mode"]": Red team gets three weapons (pistol, sniper, plasma cannon), Blue gets four weapons, and FFA gets three.
-
-How to customize:
-1. To change weapon loadouts, modify the numerical indices inside the team tables.
-2. To add a new map, create a new entry in "maps" with a structure similar to the examples provided.
-3. To add a new game mode to a map, define a new key within that map's table and specify the weapons for each team.
-
 ]]
 
 api_version = "1.12.0.0"

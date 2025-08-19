@@ -3,16 +3,24 @@
 SCRIPT NAME:      vehicle_blocker_v1.lua
 DESCRIPTION:      Map-based vehicle entry restriction system with configurable settings.
 
-                  Key Features:
+FEATURES:
                   - Per-map vehicle blocking configuration
                   - Customizable restrictions by vehicle type
+                  - Seat-specific controls (driver/passenger/gunner)
+                  - Automatic vehicle exit enforcement
+                  - Custom denial messages
                   - Simple in-script configuration
-                  - Detailed access denial messages
 
-                  Configuration:
-                  - Blocked vehicle classes
+CONFIGURATION:
+                  Modify VehicleSettings() function to customize:
+                  - Vehicle class restrictions
                   - Map-specific exceptions
-                  - Player permission overrides
+                  - Seat permissions (driver/passenger/gunner)
+                  - Exit delay timing (in milliseconds)
+
+SUPPORTED VEHICLES:
+                  - Ghost, Scorpion, Warthog, Banshee
+                  - Rocket Hog, Turret, and more
 
 Copyright (c) 2016-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

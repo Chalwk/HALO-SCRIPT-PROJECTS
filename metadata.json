@@ -713,7 +713,7 @@
       "filename": "get_server_name.lua"
     },
     "item_sky_spawner": {
-      "title": "Random Item Spawner",
+      "title": "Item Sky Spawner",
       "shortDescription": "Drops random weapons and vehicles from the sky at map locations",
       "description": "Automatically spawns random weapons and vehicles at predefined map coordinates with configurable timing, height, and despawn behavior.",
       "filename": "item_sky_spawner.lua"
@@ -731,43 +731,43 @@
       "filename": "liberty_vehicle_spawner.lua"
     },
     "list_players": {
-      "title": "Player List Utility",
+      "title": "List Players",
       "shortDescription": "Displays detailed player information with configurable output format",
       "description": "Provides admins with comprehensive player listings including IP addresses, team assignments, and connection status through simple chat commands with customizable display options.",
       "filename": "list_players.lua"
     },
     "live_on_3": {
-      "title": "Live On Three",
+      "title": "Live On 3",
       "shortDescription": "Competitive match countdown system with automatic map reset",
       "description": "Provides tournament-standard 'Live on 3' countdown functionality with map resets, customizable permissions, and temporary death message suppression for clean competitive play.",
       "filename": "live_on_3.lua"
     },
     "map_list": {
-      "title": "Map Rotation Manager",
+      "title": "Map List",
       "shortDescription": "Displays current and upcoming map rotation information",
       "description": "Provides players with detailed map cycle information including current/next maps and modes through intuitive chat commands, with support for custom mapcycle.txt configurations.",
       "filename": "map_list.lua"
     },
     "map_list_with_map_spec": {
-      "title": "Advanced Map Rotation Tracker",
+      "title": "Map List with Map Spec",
       "shortDescription": "Enhanced map cycle monitoring with position tracking and spec indexing",
       "description": "Provides comprehensive map rotation management with real-time tracking, position queries, and special indexing capabilities for tournament and custom game configurations.",
       "filename": "map_list_with_map_spec.lua"
     },
     "map_skip_tally": {
-      "title": "Persistent Skip Vote Tracker",
+      "title": "Map Skip Tally",
       "shortDescription": "Tracks and persists map skip votes across game sessions with detailed statistics",
       "description": "Advanced skip voting system that maintains vote counts between matches, with player-specific tracking, JSON data persistence, and admin query commands for competitive server management.",
       "filename": "map_skip_tally.lua"
     },
     "map_vote_system": {
-      "title": "Advanced Map Voting System",
+      "title": "Map Voting System",
       "shortDescription": "Enhanced replacement for SAPP's default voting with expanded features and customization",
       "description": "Comprehensive voting system supporting unlimited map options, re-voting, streak protection, and configurable timing controls with detailed player feedback and vote tracking.",
       "filename": "map_vote_system.lua"
     },
     "mapcycle_manager": {
-      "title": "Advanced Map Cycle Manager",
+      "title": "Map Rotation Manager",
       "shortDescription": "Comprehensive map rotation system with multiple cycle types and dynamic adjustments",
       "description": "Powerful map rotation manager featuring size-based cycles, admin controls, automatic player count adjustments, and extensive configuration options for customized server experiences.",
       "filename": "mapcycle_manager.lua"
@@ -845,7 +845,7 @@
       "filename": "random_grenades.lua"
     },
     "reg_to_play": {
-      "title": "Registration Required to Play",
+      "title": "Reg to Play",
       "shortDescription": "Enforces mandatory player registration with timed kick enforcement.",
       "description": "Requires all players to register within a configurable time window upon joining. Supports password verification, persistent player data storage, automatic kicks for unregistered players, and permission-based exemptions. Stores registration data in players.txt and optionally saves immediately or at game end.",
       "filename": "reg_to_play.lua"
@@ -935,19 +935,19 @@
       "filename": "suicide_punisher.lua"
     },
     "suspend_players": {
-      "title": "Player Suspension",
+      "title": "Suspend Players",
       "shortDescription": "Admin tool to freeze players in place",
       "description": "Allows admins to suspend players (freeze position, remove weapons, mute chat) with configurable persistence across sessions. Includes unsuspend functionality.",
       "filename": "suspend_players.lua"
     },
     "sync_admins": {
-      "title": "Admin Sync Utility",
+      "title": "Sync Admins",
       "shortDescription": "Remote synchronization of admin/user files",
       "description": "Synchronizes admins.txt and users.txt with a remote server, with automatic fallback to local backups when offline. Features HTTP requests, validation, and backup systems.",
       "filename": "sync_admins.lua"
     },
     "sync_your_files": {
-      "title": "File Synchronizer",
+      "title": "Sync Your Files",
       "shortDescription": "Remote file synchronization with backup fallback",
       "description": "Synchronizes specified files with a remote server, with automatic local backup fallback when offline. Supports any file type, includes validation via keyword matching, and features HTTP functionality.",
       "filename": "sync_your_files.lua"
@@ -959,7 +959,7 @@
       "filename": "t_slayer_team_spawns.lua"
     },
     "team_chat": {
-      "title": "Advanced Team Chat",
+      "title": "Team Chat",
       "shortDescription": "Private team communication system with invite functionality",
       "description": "Comprehensive team chat system featuring private channels, invite system, multiple chat modes (team/global), and team management commands. Supports 1-3+ player private communications with configurable permissions.",
       "filename": "team_chat.lua"
@@ -971,7 +971,7 @@
       "filename": "team_color_voting.lua"
     },
     "team_shuffler": {
-      "title": "Team Balancer",
+      "title": "Team Shuffler",
       "shortDescription": "Automatic and manual team balancing system",
       "description": "Advanced team shuffler with configurable auto-shuffle timing, manual shuffle commands, minimum player requirements, and FFA mode detection. Temporarily disables death messages during shuffling for cleaner transitions.",
       "filename": "team_shuffler.lua"
@@ -983,7 +983,7 @@
       "filename": "teleport_manager.lua"
     },
     "the_punisher": {
-      "title": "Automated Punishment System",
+      "title": "The Punisher",
       "shortDescription": "Team betrayal and friendly fire enforcement",
       "description": "Configurable punishment system for team betrayals and friendly fire incidents. Features progressive warnings, multiple punishment actions (kill/kick/crash), customizable thresholds, and detailed offense logging with player notifications.",
       "filename": "the_punisher.lua"
@@ -1019,7 +1019,7 @@
       "filename": "vpn_blocker.lua"
     },
     "weapon_assigner": {
-      "title": "Advanced Weapon Assigner",
+      "title": "Weapon Assigner",
       "shortDescription": "Contextual weapon loadout management system",
       "description": "Provides map-specific and game-mode-aware weapon distribution with support for multi-weapon loadouts (up to 4 per player). Features team-specific configurations (Red/Blue/FFA), weapon tag validation, and fallback configurations. Supports custom default weapons and flexible assignment rules.",
       "filename": "weapon_assigner.lua"
@@ -1031,7 +1031,7 @@
       "filename": "welcome_messages.lua"
     },
     "word_buster": {
-      "title": "Advanced Profanity Filter",
+      "title": "Word Buster",
       "shortDescription": "Multilingual chat moderation with progressive enforcement",
       "description": "Comprehensive profanity detection system supporting 21+ languages with leet-speak recognition. Features configurable warnings, kick/ban thresholds, admin immunity, and real-time word list management. Includes commands for dynamic filter updates and language toggling.",
       "filename": "word_buster.lua"

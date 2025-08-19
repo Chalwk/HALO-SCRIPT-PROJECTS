@@ -21,6 +21,9 @@ USAGE:
                   - Admins can manually check players with /mc [playerID]
                   - Configure known hashes and port ranges in config
 
+REQUIREMENTS:     Install to the same directory as sapp.dll
+                  - Lua JSON Parser:  http://regex.info/blog/lua/json
+
 Copyright (c) 2024 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE

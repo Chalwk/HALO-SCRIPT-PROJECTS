@@ -16,10 +16,9 @@ FEATURES:
                     * /unmute <pid>
                     * /mutes (view active mutes)
 
-REQUIREMENTS:
-                  - Additional files:
-                    https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/misc/json.lua
-                    https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/misc/libraries/page_browsing_lib.lua
+REQUIREMENTS:     Install to the same directory as sapp.dll
+                  - Lua JSON Parser:   http://regex.info/blog/lua/json
+                  - Page Browsing Lib: https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/misc/libraries/page_browsing_lib.lua
 
 USAGE:
                   - Configure settings in the MuteSystem table

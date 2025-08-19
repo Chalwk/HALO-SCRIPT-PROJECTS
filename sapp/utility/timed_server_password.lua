@@ -3,12 +3,23 @@
 SCRIPT NAME:      timed_server_password.lua
 DESCRIPTION:      Automatically removes server password after configurable duration.
 
-                  Features:
-                  - Set password expiration time (minutes/hours)
-                  - Optional notifications before removal
-                  - Customizable for private sessions/events
+FEATURES:
+                  - Set password expiration time (seconds)
+                  - Automatic password clearing
+                  - Server-wide notifications
+                  - Admin command integration
+                  - Simple configuration
 
-                  Developed for BK Clan (@Rev)
+CONFIGURATION:
+                  duration = 300 - Password duration in seconds (5 minutes)
+                  - Edit script directly to change duration
+
+USAGE:
+                  - Password automatically removes after set duration
+                  - New passwords reset the timer
+                  - Notifies players when password is removed
+
+DEVELOPED FOR:    BK Clan (@Rev)
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

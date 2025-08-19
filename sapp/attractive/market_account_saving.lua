@@ -14,9 +14,8 @@ DESCRIPTION:      In-game economy system with purchasable perks and account mana
                   - Admin fund management tools
                   - Automatic cleanup of inactive accounts
 
-                  Requirements:
-                  - JSON library installed: http://regex.info/blog/lua/json
-                  - SAPP version 1.12.0.0
+REQUIREMENTS:     Install to the same directory as sapp.dll
+                  - Lua JSON Parser:  http://regex.info/blog/lua/json
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

@@ -3,18 +3,35 @@
 SCRIPT NAME:      teleport_manager.lua
 DESCRIPTION:      Advanced teleport system with location memory and map-linked warps.
 
-                  Command Reference:
+FEATURES:
+                  - Map-specific warp persistence
+                  - Location history tracking (/back command)
+                  - Warp overwrite protection
+                  - Paginated warp listings
+                  - JSON-based storage system
+                  - Permission-based command access
+                  - Player position restoration
+
+COMMANDS:
                   /setwarp [name] [-o]    - Create/overwrite warp points
                   /warp [name]            - Teleport to saved location
                   /delwarp [name]         - Delete existing warp
-                  /warplist [page]        - Browse available warps
+                  /warplist [page]        - Browse available warps (paginated)
                   /back                   - Return to previous location
 
-                  Features:
-                  - Map-specific warp persistence
-                  - Location history tracking
-                  - Warp overwrite protection
-                  - Paginated warp listings
+CONFIGURATION:
+                  file = "teleports.json"  - Warp point storage file
+                  max_results = 5          - Warps per page in listings
+                  commands = {             - Command permissions:
+                    warp = {permission = 1},
+                    back = {permission = 1},
+                    setwarp = {permission = 1},
+                    delwarp = {permission = 1},
+                    warplist = {permission = 1}
+                  }
+
+REQUIREMENTS:     Install to the same directory as sapp.dll
+                  - Lua JSON Parser:  http://regex.info/blog/lua/json
 
 Copyright (c) 2020-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

@@ -3,18 +3,44 @@
 SCRIPT NAME:      word_buster.lua
 DESCRIPTION:      Advanced multilingual profanity filter with dynamic enforcement.
 
-                  Key Features:
-                  - 21+ language support
-                  - Leet-speak detection (e.g., "a$$hole")
-                  - Progressive infraction system (warnings → kicks → bans)
-                  - Admin immunity
+FEATURES:
+                  - 21+ language support with customizable dictionaries
+                  - Leet-speak detection (e.g., "a$$hole", "f*ck")
+                  - Progressive punishment system (warnings → kicks → bans)
+                  - Admin immunity system
                   - Real-time word list management
-                  - Configurable thresholds
+                  - Configurable thresholds and grace periods
+                  - Comprehensive logging system
 
-                  Commands:
-                  /filter add [word]    - Add a banned word
-                  /filter remove [word] - Remove a banned word
-                  /filter list          - View active filters
+COMMANDS:
+                  /wb_langs                   - List enabled languages
+                  /wb_add_word <word> <lang>  - Add word to filter
+                  /wb_del_word <word> <lang>  - Remove word from filter
+                  /wb_enable_lang <lang>      - Enable language filter
+                  /wb_disable_lang <lang>     - Disable language filter
+
+CONFIGURATION:
+                  warnings = 5                - Warnings before punishment
+                  punishment = "kick"         - "kick" or "ban"
+                  ban_duration = 10           - Minutes for temp bans
+                  grace_period = 1            - Days before infractions expire
+                  languages = {               - Enable/disable languages
+                    ["en.txt"] = true,        - English enabled
+                    ["es.txt"] = false        - Spanish disabled
+                  }
+
+ADVANCED SETTINGS:
+                  pattern_settings = {        - Customize detection patterns
+                    separator = "[-*_. ]*",   - Characters between letters
+                    leet_map = {              - Leet-speak substitutions
+                      a = "[aA@*#]",          - Matches a, A, @, *, #
+                      e = "[eE3]",            - Matches e, E, 3
+                      ...etc
+                    }
+                  }
+
+REQUIREMENTS:     Install to the same directory as sapp.dll
+                  - Lua JSON Parser:  http://regex.info/blog/lua/json
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

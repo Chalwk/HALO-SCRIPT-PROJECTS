@@ -8,9 +8,8 @@ COMMANDS:
                   tally     - View current map's skip count
                   tallydetails - View your personal skip contributions
 
-REQUIREMENTS:
-                  - json.lua library (place next to sapp.dll)
-                    http://regex.info/blog/lua/json
+REQUIREMENTS:     Install to the same directory as sapp.dll
+                  - Lua JSON Parser:  http://regex.info/blog/lua/json
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

@@ -1,11 +1,24 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      team_color_voting.lua
-DESCRIPTION:      Enables players to vote for team colors in the next game.
+DESCRIPTION:      Allows players to vote for team colors to be used in the next game.
 
-                  Commands:
-                  /votelist       - Shows available color sets
-                  /votecolor <id> - Votes for a specific color set
+FEATURES:
+                  - Vote from predefined color sets
+                  - Automatic color application next game
+                  - Vote tally and result announcements
+                  - Default color fallback
+                  - Permission-based command access
+
+COMMANDS:
+                  /votelist        - Show available color sets
+                  /votecolor <id>  - Vote for a specific color set
+
+CONFIGURATION:
+                  vote_command = "votecolor"     - Main voting command
+                  vote_list_command = "votelist" - List command
+                  permission_level = -1          - Required access level (-1 = all)
+                  default_color_set = 10         - Default color set ID
 
 Copyright (c) 2020-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

@@ -1,20 +1,32 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      vehicle_blocker_v2.lua
-DESCRIPTION:      Advanced map-based vehicle restriction system with enhanced features.
+DESCRIPTION:      Enhanced vehicle restriction system with advanced features.
 
-                  Key Improvements from v1:
+KEY IMPROVEMENTS FROM V1:
                   - More granular vehicle control
+                  - Player teleportation system
                   - Improved configuration structure
-                  - Additional customization options
                   - Better error handling
+                  - Enhanced player tracking
 
-                  Configuration:
-                  Modify the Vehicle Settings function (line 141) to customize:
+FEATURES:
+                  - Map-specific vehicle restrictions
+                  - Seat-based permission system
+                  - Vehicle respawn system
+                  - Player position restoration
+                  - Customizable denial messages
+
+CONFIGURATION:
+                  Modify VehicleSettings() function to customize:
                   - Vehicle class restrictions
                   - Map-specific exceptions
-                  - Player permission levels
-                  - Custom denial messages
+                  - Seat permissions (driver/passenger/gunner)
+                  - Teleport behavior settings
+
+SUPPORTED VEHICLES:
+                  - All standard Halo vehicles
+                  - Custom vehicle support
 
 Copyright (c) 2016-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

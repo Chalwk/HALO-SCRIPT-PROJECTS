@@ -25,8 +25,7 @@ BACKUP SYSTEM:
                   Edit backup_table contents to match your desired backup file data
 
 REQUIREMENTS:
-                  SAPP-HTTP-Client by 002
-                  (https://github.com/Halogen002/SAPP-HTTP-Client)
+                  - SAPP HTTP Client:       https://opencarnage.net/index.php?/topic/5998-sapp-http-client/
 
 Copyright (c) 2016-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
