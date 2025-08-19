@@ -360,11 +360,11 @@
       "description": "Allows players to summon themselves into teammates' vehicles with configurable seat priority, cooldowns, and restrictions. Supports vehicle validation, auto-ejection, crouch activation, and call limits.",
       "filename": "uber_taxi.lua"
     },
-    "vanish_lurker": {
-      "title": "Vanish (Lurker)",
+    "vanish": {
+      "title": "Vanish",
       "shortDescription": "Advanced player invisibility system",
       "description": "Provides comprehensive vanish mode with configurable stealth features including invisibility, camouflage, speed boosts, invincibility, radar hiding, and objective restrictions. Includes warning system for objective carriers and admin controls.",
-      "filename": "vanish_lurker.lua"
+      "filename": "vanish.lua"
     },
     "weapon_durability_jam_system": {
       "title": "Weapon Durability & Jam System",
