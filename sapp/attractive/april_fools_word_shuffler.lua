@@ -1,7 +1,18 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      april_fools_word_shuffler.lua
-DESCRIPTION:      Chat messages will randomly be shuffled.
+DESCRIPTION:      Randomly scrambles player chat messages as an April Fools prank,
+                  making text appear jumbled while preserving original sender info.
+
+FEATURES:
+                  - Configurable frequency (1 in X chance per message)
+                  - Handles all chat message types (team/all/private)
+                  - Preserves player name display
+                  - Maintains UTF-8 character integrity
+                  - Simple toggle via chance setting
+
+CONFIGURATION:
+                  shuffle_chance = 3  -- 1 in 3 chance to scramble (adjust as needed)
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

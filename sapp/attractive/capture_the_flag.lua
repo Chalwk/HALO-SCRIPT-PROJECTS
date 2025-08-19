@@ -1,8 +1,30 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      capture_the_flag.lua
-DESCRIPTION:      Brings CTF-like mechanics to any Slayer (FFA/Team) game type.
-                  A single flag will spawn somewhere on the map. Return it to any base to score.
+DESCRIPTION:      Adds full CTF gameplay to any Slayer (FFA/Team) game mode by
+                  spawning a single flag that players must return to designated
+                  capture points.
+
+FEATURES:
+                  - Works with both FFA and Team Slayer modes
+                  - Configurable flag spawn and capture points per map
+                  - Customizable scoring system with point bonuses
+                  - Automatic flag respawning with warnings
+                  - Team-specific messaging and announcements
+                  - Vehicle capture toggle option
+
+CONFIGURATION:
+                  - Supports 20+ official Halo maps out of the box
+                  - Adjustable capture radius and respawn timers
+                  - Customizable messages for all game events
+                  - Score limit control
+                  - Server prefix customization
+
+MAP SUPPORT:
+                  Blood Gulch, Death Island, Ice Fields, Infinity, Sidewinder,
+                  Timberland, Danger Canyon, Beaver Creek, Boarding Action,
+                  Carousel, Chill Out, Damnation, Gephyrophobia, Hang 'Em High,
+                  Longest, Prisoner, Putput, Rat Race, Wizard
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

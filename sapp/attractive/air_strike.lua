@@ -1,9 +1,14 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      air_strike.lua
-DESCRIPTION:      Adds configurable, map-specific teleport points in Halo PC/CE.
-                  Players entering a defined activation radius are instantly moved
-                  to a set destination on the same map.
+DESCRIPTION:      Simulates random airstrikes in Halo PC/CE with configurable:
+                  - Rocket count per strike
+                  - Strike frequency
+                  - Spawn heights
+                  - Projectile trajectories
+                  - Map-specific target locations
+
+                  Players receive warning when a strike is incoming.
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

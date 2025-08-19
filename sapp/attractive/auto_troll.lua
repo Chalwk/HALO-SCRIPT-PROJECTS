@@ -1,28 +1,28 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      auto_troll.lua
-DESCRIPTION:      A unique mod designed to troll your whole server (or specific players).
+DESCRIPTION:      Comprehensive server trolling system with 16+ customizable prank features
+                  that can target specific players or the entire server.
 
-Features:
-* Silent Kill               Random inexplicable deaths (no death message).
-* Damage Modifier           Randomly change damage multipliers.
-* Chat Text Randomizer      Randomly jumbles up characters in some sentences.
-* Teleport Under Map        Randomly teleports a player under the map.
-* Flag Dropper              Randomly force a player to drop the flag.
-* Vehicle Exit              Randomly eject a player from their vehicle.
-* Ammo Changer              Randomly change weapon ammo, battery and grenade count.
-* Silent Kick               Randomly force a player to disconnect (no kick message output).
-* Random Color Change       Randomly change a player's colour when they spawn.
-* Client Crasher            Randomly crash a player's game client.
-* Name Changer              Randomly change newly joined player's name to a random pre-defined name.
-* Inverted Controls         Randomly invert player controls.
-* Roasty Toasty             Randomly burn a player.
-* Fake Kill Messages        Randomly show the player fake kill messages.
-* Glitched Grenades         Randomly glitch out grenades (no grenade projectiles will be thrown but the throw animation will still play).
-* Fake Join/Quit Messages   Randomly show fake player join/quit messages or manually fake join/quit a player.
-* Force Chat                Randomly force a player to say something from a pre-defined list or manually with a custom command.
-* SPECIAL COMMANDS          Manually add/remove players from troll list; see config section.
-* ENABLE/DISABLE            Any feature at any time with two simple commands; see config section.
+KEY FEATURES:
+                  - 16+ unique trolling mechanisms with individual toggle controls
+                  - Granular configuration for each prank type
+                  - Admin permission system with level-based restrictions
+                  - Player-specific targeting with IP whitelist/blacklist
+                  - Real-time command control without server restart
+
+MAIN CATEGORIES:
+                  * Player Manipulation: Name changes, color swaps, inverted controls
+                  * Combat Disruption: Damage modifiers, silent kills, fake kill messages
+                  * Environment Chaos: Map teleports, vehicle ejections, flag drops
+                  * Chat Pranks: Message scrambling, forced chat, fake join/quit messages
+                  * Client Effects: Silent kicks, client crashes, ammo/grenade glitches
+
+CONFIGURATION:
+                  - All features can be toggled via simple commands
+                  - Each prank has customizable intensity/timing parameters
+                  - Detailed permission controls per feature
+                  - IP-based targeting system
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

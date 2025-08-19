@@ -1,7 +1,34 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      color_reservation.lua
-DESCRIPTION:      Reserve spartan armor colors for VIP members (based on hash).
+DESCRIPTION:      Reserves specific armor colors for VIP players based on their unique
+                  hash identifiers, preventing unauthorized use of reserved colors.
+
+FEATURES:
+                  - Exclusive color assignment by player hash
+                  - 18 reservable armor colors (0-17)
+                  - Automatic color reassignment for non-VIP players
+                  - FFA game mode support (team play disabled)
+                  - Hash-based VIP system
+
+CONFIGURATION:
+                  - Edit color_table to assign colors to player hashes
+                  - Format: color_table[index] = {colorID, "hash1", "hash2", ...}
+                  - Supports multiple hashes per color
+                  - Color IDs must remain unchanged (0-17)
+
+COLOR REFERENCE:
+                  0:white   1:black   2:red      3:blue     4:gray
+                  5:yellow  6:green   7:pink     8:purple   9:cyan
+                  10:cobalt 11:orange 12:teal    13:sage    14:brown
+                  15:tan    16:maroon 17:salmon
+
+USAGE:
+                  1. Add player hashes to desired color entries
+                  2. Non-VIP players automatically assigned random colors (excluding teal)
+                  3. VIPs always get their reserved colors when spawning
+
+NOTE:             Only works in Free-For-All (FFA) game modes
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

@@ -1,7 +1,14 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      april_fools_chat.lua
-DESCRIPTION:      Other players will start speaking for you...
+DESCRIPTION:      Randomly modifies player chat messages to appear as if they were
+                  sent by other players when trigger words are detected.
+
+FEATURES:
+                  - Configurable trigger words that activate the effect
+                  - Permission level restriction (default: level 1+)
+                  - Preserves chat commands and server messages
+                  - Temporary effect that can be toggled via trigger words
 
 Copyright (c) 2020-2024 Jericho Crosby
 LICENSE:          MIT License

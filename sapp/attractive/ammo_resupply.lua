@@ -1,15 +1,19 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      ammo_resupply.lua
-DESCRIPTION:      This Lua script provides a configurable command, 'res',
-                  for resupplying ammo, grenades, and battery.
+DESCRIPTION:      Adds a configurable '/res' command that allows players to:
+                  - Replenish ammo, grenades, and battery
+                  - Customizable resupply amounts
+                  - Permission level restriction
+                  - Cooldown timer between uses
+
+                  Server operators can configure all aspects of the resupply.
 
 Copyright (c) 2019-2024 Jericho Crosby
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
-
 -- Configuration table for the resupply script
 local config = {
 

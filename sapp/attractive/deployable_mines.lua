@@ -1,8 +1,42 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      deployable_mines.lua
-DESCRIPTION:      Allows players to deploy mines that explode when enemies come
-                  within a certain radius.
+DESCRIPTION:      Adds tactical mine deployment system allowing players to place
+                  explosive traps that trigger when enemies approach.
+
+FEATURES:
+                  - Vehicle-based mine deployment system
+                  - Configurable mine count per life
+                  - Timed despawn for placed mines
+                  - Adjustable explosion radius
+                  - Team damage toggle
+                  - Death message customization
+                  - Vehicle-specific deployment restrictions
+
+DEPLOYMENT MECHANICS:
+                  - Mines deploy using vehicle flashlight button
+                  - Driver seat only (for applicable vehicles)
+                  - Visual feedback on deployment
+                  - Mine count tracking per life
+
+CONFIGURATION:
+                  mines_per_life:       Max mines per player life (default: 20)
+                  despawn_rate:        Seconds before mine despawns (default: 60)
+                  radius:              Trigger detection radius (default: 0.7)
+                  death_messages:      Toggle kill announcements (default: false)
+                  mines_kill_teammates:Allow team damage (default: false)
+                  mine_object:         Mine model/type
+                  vehicles:            Whitelist of deploy-capable vehicles
+
+VEHICLE SUPPORT:
+                  Ghost, Warthog (all variants), Banshee
+                  (Configurable in vehicles table)
+
+PERFORMANCE:
+                  - Optimized mine tracking
+                  - Efficient proximity detection
+                  - Minimal per-tick processing
+                  - Clean object cleanup
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

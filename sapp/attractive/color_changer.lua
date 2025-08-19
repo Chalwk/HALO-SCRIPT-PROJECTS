@@ -1,7 +1,30 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      color_changer.lua
-DESCRIPTION:      This script allows players to change their color.
+DESCRIPTION:      Allows players to change their armor color via command with
+                  admin-level restrictions and 18 color options.
+
+FEATURES:
+                  - 18 customizable armor colors (0-17)
+                  - Admin-level permission system
+                  - Preserves player position during color change
+                  - Works in all game modes
+                  - Safe memory patching for color changes
+
+COMMAND USAGE:
+                  /setcolor [0-17] - Changes player armor color
+                  Example: /setcolor 5 (yellow)
+
+COLOR OPTIONS:
+                  0:white  1:black  2:red     3:blue    4:gray
+                  5:yellow 6:green  7:pink    8:purple  9:cyan
+                  10:cobalt 11:orange 12:teal 13:sage   14:brown
+                  15:tan   16:maroon 17:salmon
+
+CONFIGURATION:
+                  - Change required admin level (default: 1)
+                  - Customize command name
+                  - Add/remove color options as needed
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

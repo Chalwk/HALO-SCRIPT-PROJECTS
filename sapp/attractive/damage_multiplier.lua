@@ -1,9 +1,38 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      damage_multiplier.lua
-DESCRIPTION:      Set the damage multiplier of any player.
-                  Command Syntax: /damage [id] [range]
-                  * Use '-1' for the range definition to reset someone's multiplier.
+DESCRIPTION:      Allows administrators to modify player damage output with customizable
+                  multipliers for gameplay balancing or special events.
+
+FEATURES:
+                  - Per-player damage multiplier configuration
+                  - Admin-controlled with permission levels
+                  - Adjustable multiplier range (1-10x by default)
+                  - Quick reset functionality (-1 parameter)
+                  - Real-time damage calculation
+                  - Multiplayer compatible
+
+COMMAND USAGE:
+                  /damage [player_id] [multiplier]
+                  - player_id: Target player (1-16)
+                  - multiplier: Damage factor (1-10) or -1 to reset
+
+CONFIGURATION:
+                  COMMAND_NAME: Change the command prefix
+                  DAMAGE_RANGE: Adjust min/max multiplier values
+                  REQUIRED_PERMISSION_LEVEL: Set admin access level
+
+PERFORMANCE:
+                  - Lightweight memory usage
+                  - Optimized damage calculation
+                  - Minimal per-tick processing
+                  - Efficient player tracking
+
+EXAMPLE SCENARIOS:
+                  - Create "power player" events
+                  - Balance team gameplay
+                  - Run special server challenges
+                  - Test weapon damage values
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

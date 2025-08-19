@@ -1,9 +1,39 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      custom_teleports.lua
-DESCRIPTION:      Adds configurable, map-specific teleport points.
-                  Players entering a defined activation radius are instantly moved
-                  to a set destination on the same map.
+DESCRIPTION:      Creates configurable instant teleport zones that transport players
+                  between locations when they enter defined activation areas.
+
+FEATURES:
+                  - Map-specific teleport configuration
+                  - Adjustable activation radius for each teleport
+                  - Optional crouch activation requirement
+                  - Cooldown system to prevent rapid teleportation
+                  - Vehicle usage protection
+                  - Visual feedback on teleportation
+
+CONFIGURATION:
+                  - Define teleports per map in the Teleports table
+                  - Format: {srcX, srcY, srcZ, radius, destX, destY, destZ, zOffset}
+                  - Toggle crouch activation with crouchActivated
+                  - Adjust teleport_cooldown for rate limiting
+
+USAGE:
+                  1. Add teleport entries for each supported map
+                  2. Set activation radius (smaller values = more precise activation)
+                  3. Configure zOffset for destination height adjustment
+                  4. Enable crouchActivated for crouch-only teleports
+
+EXAMPLE CONFIG:
+                  ["bloodgulch"] = {
+                      {98.80, -156.30, 1.70, 0.5, 72.58, -126.33, 1.18, 0}, -- Red base to mid
+                      {36.87, -82.33, 1.70, 0.5, 72.58, -126.33, 1.18, 0}   -- Blue base to mid
+                  }
+
+PERFORMANCE:
+                  - Optimized distance calculations
+                  - Minimal per-tick processing
+                  - Efficient memory usage
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
