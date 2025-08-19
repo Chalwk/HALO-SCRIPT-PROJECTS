@@ -2,7 +2,8 @@ name: Update Flagship Metadata
 
 on:
   release:
-    types: [published]   # Runs only when a new release is published
+    types: [published]   # Runs automatically on new releases
+  workflow_dispatch:      # Allows manual triggering
 
 jobs:
   update-metadata:
