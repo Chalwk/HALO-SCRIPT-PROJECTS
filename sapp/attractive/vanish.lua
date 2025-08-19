@@ -57,8 +57,6 @@ local get_object_memory, get_player, get_dynamic_player, player_present, player_
     get_object_memory, get_player, get_dynamic_player, player_present, player_alive
 local register_callback, get_var = register_callback, get_var
 
-local format = string.format
-
 local base_tag_table = 0x40440000
 local tag_entry_size = 0x20
 local tag_data_offset = 0x14
@@ -67,8 +65,8 @@ local bit_index = 3
 
 local players = {}
 
-local function send(id, ...)
-    rprint(id, format(...))
+local function send(id, message)
+    rprint(id, message)
 end
 
 local function has_objective(dyn_player)
