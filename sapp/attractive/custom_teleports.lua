@@ -32,8 +32,8 @@ LICENSE:          MIT License
 -- CONFIG STARTS
 -----------------
 
--- If true, players must crouch to activate a teleport:
-local CROUCH_ACTIVATED = false
+local CROUCH_ACTIVATED = false  -- Set to true for crouch-only activation
+local COOLDOWN = 0              -- Cooldown in seconds (0 = disabled)
 
 local CFG = {
     ["bloodgulch"] = {
@@ -55,7 +55,6 @@ api_version = "1.12.0.0"
 local map
 local map_cfg
 local last_teleport = {}
-local teleport_cooldown = 0
 
 local format = string.format
 local os_time = os.time
@@ -118,7 +117,7 @@ function OnTick()
 
         -- Check teleport cooldown
         local last = last_teleport[i]
-        if last and os_time() < last + teleport_cooldown then goto continue end
+        if last and os_time() < last + COOLDOWN then goto continue end
 
         for j = 1, #map_cfg do
             local t = map_cfg[j]
