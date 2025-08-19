@@ -1,12 +1,26 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      needles_galore.lua
-DESCRIPTION:      Exclusive needler combat with customizable options:
-                  - All players spawn with needlers only
-                  - Other weapons and vehicles disabled
-                  - Configurable equipment settings (grenades/powerups)
-                  - Optional infinite ammo and bottomless clip
-                  - Needler damage and properties adjustable
+DESCRIPTION:      Exclusive Needler combat mode featuring:
+                  - All players spawn with Needlers only
+                  - Comprehensive weapon/vehicle restrictions
+                  - Customizable equipment settings
+                  - Optional infinite ammo and bottomless clips
+                  - Focused Needler-versus-Needler combat
+
+KEY FEATURES:
+                 - Forced Needler loadouts
+                 - Configurable weapon restrictions
+                 - Equipment management system
+                 - Ammo customization options
+                 - Balanced competitive environment
+
+CONFIGURATION OPTIONS:
+                 - Toggle infinite ammo
+                 - Enable/disable bottomless clips
+                 - Customize equipment availability
+                 - Manage weapon spawns
+                 - Control vehicle availability
 
 Copyright (c) 2022 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

@@ -1,16 +1,26 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      juggernaut.lua
-DESCRIPTION:      A dynamic power-player game featuring enhanced Juggernauts with:
-                  - Health, speed, and shield boosts
-                  - Increased damage output
-                  - Regenerating health
+DESCRIPTION:      Asymmetric combat mode featuring a powerful Juggernaut that
+                  hunts down other players with enhanced abilities.
 
-                  Gameplay mechanics:
-                  - Random player becomes Juggernaut at start
-                  - Juggernaut hunts players within time limit
-                  - Role passes on death/time expiration
-                  - Works with all game types
+KEY FEATURES:
+                 - Random Juggernaut selection
+                 - Time-limited Juggernaut turns
+                 - Enhanced Juggernaut attributes:
+                   * Increased health and shields
+                   * Movement speed boost
+                   * Damage amplification
+                   * Health regeneration
+                 - Role passing on death/timeout
+                 - Supports all game types
+
+CONFIGURATION OPTIONS:
+                 - Adjustable player requirements
+                 - Customizable Juggernaut attributes
+                 - Configurable turn duration
+                 - Game start delay
+                 - Server message prefix
 
 Copyright (c) 2019-2023 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -18,27 +28,6 @@ LICENSE:          MIT License
 =====================================================================================
 ]]
 
---[[
-    Configuration table for the Juggernaut game mode.
-    This table contains various settings and attributes that define the behavior of the Juggernaut.
-
-    Fields:
-    - required_players (number): Minimum number of players required to start the game.
-    - delay (number): Delay in seconds before the game starts.
-    - turn_time (number): Duration in seconds for each Juggernaut turn.
-    - prefix (string): Prefix used for in-game messages.
-    - attributes (table): A table containing various attributes for the Juggernaut.
-        - health_boost (boolean): Whether the Juggernaut receives a health boost.
-        - health_percentage (number): Percentage increase in health for the Juggernaut.
-        - speed (boolean): Whether the Juggernaut receives a speed boost.
-        - speed_percentage (number): Multiplier for the Juggernaut's speed.
-        - shield (boolean): Whether the Juggernaut receives a shield boost.
-        - shield_percentage (number): Percentage increase in shield for the Juggernaut.
-        - damage (boolean): Whether the Juggernaut receives a damage boost.
-        - damage_percentage (number): Multiplier for the Juggernaut's damage.
-        - health_regen (boolean): Whether the Juggernaut's health regenerates over time.
-        - health_increment (number): Incremental value for health regeneration.
-]]
 local Juggernaut = {
     required_players = 2,
     delay = 5,

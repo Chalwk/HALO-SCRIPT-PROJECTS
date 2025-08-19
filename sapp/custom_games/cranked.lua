@@ -1,11 +1,22 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      cranked.lua
-DESCRIPTION:      A kill-triggered mini-game inspired by Call of Duty’s Cranked mode.
-                  - Players enter a "cranked" state after getting a kill.
-                  - While cranked, they receive a speed and damage boost.
-                  - They must get another kill within a set time (e.g., 30s) or explode.
-                  - A visual timer is displayed during the cranked state.
+DESCRIPTION:      Implements Call of Duty-style Cranked mode with time-limited kill chains
+                  and explosive consequences for failing to maintain momentum.
+
+KEY FEATURES:
+                 - Kill-triggered "cranked" state with timer
+                 - Speed and damage boosts while cranked
+                 - Explosive penalty for failing to chain kills
+                 - Visual countdown timer display
+                 - Map-specific configuration options
+                 - Multiplayer-compatible mechanics
+
+CONFIGURATION OPTIONS:
+                 - Adjustable cranked duration per map
+                 - Customizable speed/damage multipliers
+                 - Explosion effect customization
+                 - Cross-map settings consistency
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

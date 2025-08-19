@@ -1,12 +1,14 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      parkour_timer.lua
-DESCRIPTION:      Automated parkour course timing system with:
-                  - Zone-based timer activation (start/finish)
-                  - Individual player time tracking
-                  - Personal best records and announcements
+DESCRIPTION:      Parkour timing system with:
+                  - Start/finish zone detection
+                  - Checkpoint progression tracking
+                  - Personal best time records
+                  - Automatic respawn at last checkpoint on death
                   - Multi-map configuration support
-                  - Custom checkpoint definitions per map
+
+COMMANDS:         /reset - Returns player to start position
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

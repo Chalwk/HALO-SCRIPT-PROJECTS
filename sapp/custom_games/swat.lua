@@ -1,17 +1,22 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      swat.lua
-DESCRIPTION:      Precision-based competitive shooter featuring:
-                  - Headshot-only kills (sniper rifle & pistol)
-                  - Default 25-kill victory condition (configurable)
-                  - Restricted gameplay:
-                    * All other weapons/vehicles disabled
-                    * Powerups (camo/overshield) enabled
-                  - Customization options:
-                    * Infinite ammo/bottomless clip toggles
-                    * Grenade availability settings
-                    * Score limit adjustments
-                    * Weapon loadout configurations
+DESCRIPTION:      Tactical SWAT game mode featuring:
+                  - Precision-based headshot-only kills
+                  - Restricted weapon loadout (pistol + sniper rifle)
+                  - Competitive 25-kill victory condition (configurable)
+
+GAMEPLAY RULES:
+                  - Only headshots deal damage (instant kill)
+                  - All other weapons and vehicles disabled
+                  - Powerups (camo/overshield) remain available
+                  - Players spawn with designated loadout
+
+CONFIGURATION:
+                  - Toggle infinite ammo/bottomless clips
+                  - Enable/disable grenades
+                  - Adjust score limit
+                  - Customize weapon restrictions
 
 Copyright (c) 2022 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

@@ -1,15 +1,22 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      survival_slayer.lua
-DESCRIPTION:      High-stakes survival mode with time-based mechanics:
+DESCRIPTION:      Time-based survival mode featuring:
                   - Countdown life timer for all players
-                  - +10 seconds awarded per kill
-                  - Victory condition: First to 15 kills
-                  - Configurable settings:
-                    * Base lifespan duration
-                    * Time bonus per kill
-                    * Win condition thresholds
-                  - Real-time timer HUD display
+                  - Time bonus awarded for kills (+10 seconds)
+                  - Victory condition: First to reach kill limit (15)
+                  - Automatic player elimination when timer expires
+
+GAMEPLAY MECHANICS:
+                  - Players start with 45 second life timer
+                  - Timer counts down while alive
+                  - Kills extend your remaining time
+                  - Last player standing wins if kill limit isn't reached
+
+CONFIGURATION:
+                  - Adjustable base lifespan (default: 45s)
+                  - Customizable time bonus per kill (default: +10s)
+                  - Configurable win condition (default: 15 kills)
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

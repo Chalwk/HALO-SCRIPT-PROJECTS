@@ -1,15 +1,29 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      frag_nation.lua
-DESCRIPTION:      A grenade mini-game with strategic resource management.
-                  - Each player starts with limited grenades and an empty plasma pistol.
-                  - Killing players with grenades rewards you with more grenades.
-                  - No grenades means you're limited to melee combat.
-                  - Customizable kill limit to win.
-                  - Configurable starting grenades and rewards per kill.
-                  - Adjustable primary weapon and ammo settings.
-                  - Enable/disable map objects like weapons, vehicles, and equipment.
-                  - Intended for use on STOCK maps only.
+DESCRIPTION:      Grenade-focused combat mode with strategic resource management
+                  where players must carefully conserve and earn grenade supplies.
+
+KEY FEATURES:
+                 - Grenade-based economy system:
+                   * Limited starting grenades
+                   * Kill rewards replenish supplies
+                   * Melee-only when depleted
+                 - Custom weapon loadouts:
+                   * Plasma pistol as primary
+                   * Configurable starting ammo
+                 - Map control options:
+                   * Toggle weapons/vehicles/equipment
+                   * Stock map optimization
+                 - Adjustable victory conditions
+
+CONFIGURATION OPTIONS:
+                 - Customizable score limit
+                 - Starting grenade quantities
+                 - Kill reward values
+                 - Primary weapon selection
+                 - Ammo settings
+                 - Map object management
 
 Copyright (c) 2021-2022 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

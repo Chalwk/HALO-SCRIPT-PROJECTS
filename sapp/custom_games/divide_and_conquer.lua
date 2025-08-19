@@ -1,10 +1,24 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      divide_and_conquer.lua
-DESCRIPTION:      A team conversion mini-game.
-                  - When you kill someone on the opposing team, they join your team.
-                  - The objective is to dominate by converting all enemy players.
-                  - The game ends when one team has no players remaining.
+DESCRIPTION:      Team conversion warfare mode where kills convert enemies to allies,
+                  creating dynamic team shifts and strategic gameplay.
+
+KEY FEATURES:
+                 - Team conversion mechanics:
+                   * Kills convert victims to killer's team
+                   * Real-time team composition changes
+                   * Automatic team balancing on game start
+                 - Victory condition when one team is eliminated
+                 - Player count-based game activation
+                 - Countdown timer before match start
+                 - Team switch announcements
+
+CONFIGURATION OPTIONS:
+                 - Adjustable minimum player requirement
+                 - Customizable pre-game countdown
+                 - Admin message prefix
+                 - Team balancing controls
 
 Copyright (c) 2023-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

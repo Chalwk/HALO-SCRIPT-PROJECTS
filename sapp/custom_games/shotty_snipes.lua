@@ -1,15 +1,18 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      shotty_snipes.lua
-DESCRIPTION:      Intense close-quarters/long-range combat featuring:
-                  - Exclusive shotgun and sniper rifle gameplay
+DESCRIPTION:      Competitive shotgun/sniper rifle gameplay featuring:
+                  - Forced weapon loadouts (shotgun + sniper rifle)
                   - All other weapons and vehicles disabled
-                  - Equipment (grenades/powerups) remains active
-                  - Configurable weapon settings:
-                    * Infinite ammo toggle
-                    * Bottomless clip option
-                    * Damage modifiers
-                  - Map-specific weapon loadout support
+                  - Configurable gameplay options:
+                    * Infinite ammo
+                    * Bottomless clips
+                  - Automatic weapon reassignment on spawn
+
+GAMEPLAY RULES:
+                  - Players spawn with both weapons
+                  - Equipment (grenades/powerups) remains available
+                  - Vehicles are automatically disabled
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

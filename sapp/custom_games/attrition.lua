@@ -1,18 +1,31 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      attrition.lua
-DESCRIPTION:      A mini-game inspired by Halo Infinite’s Attrition mode.
-                  - Players have limited lives.
-                  - The objective is to deplete the opposing team’s pool of lives.
-                  - Teammates can revive each other by crouching over their orb.
-                  - Orbs appear as floating skulls above dead players.
+DESCRIPTION:      Implements Halo Infinite-style Attrition mode with team revival
+                  mechanics and limited respawns.
+
+KEY FEATURES:
+                 - Limited lives pool per team
+                 - Team-based revival system:
+                   * Crouch-to-revive mechanics
+                   * Progress-based revival timer
+                   * Visual feedback for both reviver and revivee
+                 - Orb markers for downed players
+                 - Tactical respawn positioning
+                 - Team-specific revival restrictions
+
+CONFIGURATION OPTIONS:
+                 - Adjustable revival time
+                 - Customizable revival range
+                 - Orb height offset
+                 - Admin message prefix
+                 - Orb object customization
 
 Copyright (c) 2022 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
-
 
 -- config starts
 local Attrition = {

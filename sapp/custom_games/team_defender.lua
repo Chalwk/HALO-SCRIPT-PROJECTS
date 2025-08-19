@@ -1,20 +1,23 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      team_defender.lua
-DESCRIPTION:      Modern Warfare 3-inspired objective mode featuring:
-                  - Strategic flag control gameplay:
-                    * Random flag spawn locations
-                    * Double team points while holding flag
-                    * +20 assist points per teammate kill
-                  - Team-based roles:
-                    * Flag carrier (objective holder)
-                    * Defenders (protect carrier)
-                    * Attackers (reclaim objective)
-                  - Configurable settings:
-                    * Flag respawn timer (default: 15s)
-                    * Point multipliers
-                    * Flag spawn locations
-                    * Game duration/score limits
+DESCRIPTION:      Objective-based team mode featuring:
+                  - Dynamic flag control gameplay
+                  - Team role specialization (carrier/defenders/attackers)
+                  - Strategic point scoring system
+
+GAMEPLAY MECHANICS:
+                  - Random flag spawns create dynamic battles
+                  - Holding flag doubles team point earnings
+                  - Assist points for protecting your carrier
+                  - Special bonuses for eliminating enemy carriers
+
+CONFIGURATION:
+                  - Adjustable flag respawn timers
+                  - Customizable scoring values
+                  - Multiple flag spawn locations per map
+                  - Toggleable friendly fire protection
+                  - Nav marker options for flag carriers
 
 Copyright (c) 2021 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

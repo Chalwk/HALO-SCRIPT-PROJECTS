@@ -1,13 +1,28 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      gun_game.lua
-DESCRIPTION:      A weapon-progression game mode where players advance through
-                  predefined weapon levels by scoring kills. Features:
-                  - Optional infinite ammo
-                  - Custom grenade loadouts
-                  - Demotion on suicide or backtap
-                  - Configurable end-game actions (reset, change map, or stop play)
-                  - Game ends when a player reaches the final level
+DESCRIPTION:      Competitive weapon progression mode where players advance through
+                  weapon tiers by scoring kills, with the first to complete all
+                  levels declared the winner.
+
+KEY FEATURES:
+                 - Progressive weapon unlocks through kills
+                 - Penalties for suicides and backtaps
+                 - Configurable weapon progression tiers
+                 - Infinite ammo toggle
+                 - Custom grenade loadouts per level
+                 - Multiple end-game options
+                 - Top player tracking
+                 - Admin control commands
+
+CONFIGURATION OPTIONS:
+                 - Fully customizable weapon progression
+                 - Adjustable starting level
+                 - Infinite ammo settings
+                 - End-game behavior (reset/continue/change map)
+                 - Player command permissions
+                 - Message templates
+                 - Game object restrictions
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

@@ -1,11 +1,24 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      melee_attack.lua
-DESCRIPTION:      Intense melee-only combat with special mechanics:
-                  - Players can only use melee attacks
-                  - Skull strikes result in instant kills
-                  - Weapon pickups disabled
-                  - Configurable melee damage modifiers
+DESCRIPTION:      Brutal melee-only combat mode featuring:
+                  - Forced melee weapon loadouts
+                  - Instant-kill skull attacks
+                  - Restricted weapon pickups
+                  - Fast-paced close-quarters combat
+
+KEY FEATURES:
+                 - Exclusive melee combat system
+                 - One-hit kill mechanics
+                 - Comprehensive weapon restrictions
+                 - Instant respawns
+                 - Balanced gameplay environment
+
+CONFIGURATION OPTIONS:
+                 - Adjustable score limit
+                 - Customizable respawn timer
+                 - Weapon/vehicle blacklist
+                 - Equipment restrictions
 
 Copyright (c) 2023-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

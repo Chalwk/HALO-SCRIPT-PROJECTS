@@ -1,12 +1,23 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      hunter_prey.lua
-DESCRIPTION:      A free-for-all flag survival game.
-                  - The flag spawns in the center of the map
-                  - Players compete to hold the flag longest
-                  - Winner is determined by longest cumulative hold time
-                  - Flag respawns after configurable delay when dropped
-                  - Supports multiple classic Halo maps with preset flag locations
+DESCRIPTION:      Intense free-for-all flag survival mode where players compete
+                  to hold the flag for the longest cumulative time.
+
+KEY FEATURES:
+                 - Central flag spawn with strategic positioning
+                 - Timed flag holding mechanics
+                 - Automatic flag respawn system
+                 - Real-time score tracking
+                 - End-game winner announcements
+                 - Multi-map support with predefined flag locations
+
+CONFIGURATION OPTIONS:
+                 - Adjustable score limit
+                 - Customizable flag respawn delay
+                 - Map-specific flag coordinates
+                 - Server message prefix
+                 - Free-for-all enforcement
 
 Copyright (c) 2022 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

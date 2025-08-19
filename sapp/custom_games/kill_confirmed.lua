@@ -1,12 +1,28 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      kill_confirmed.lua
-DESCRIPTION:      Modern Warfare 3-inspired team objective:
-                  - Collect enemy dog tags (skulls) dropped on death
-                  - First to 65 points wins
-                  - Highest score wins if time expires
-                  - Tags disappear after configurable delay
-                  - Team scoring notifications
+DESCRIPTION:      Team-based objective mode where players must collect enemy dog tags
+                  to score points, inspired by Call of Duty's Kill Confirmed.
+
+KEY FEATURES:
+                 - Dog tag collection mechanics:
+                   * Tags spawn on player death
+                   * Team-based confirmation/denial system
+                   * Configurable despawn timer
+                 - Competitive scoring system:
+                   * Points for confirming kills
+                   * Penalties for team kills
+                   * Score limit victory condition
+                 - Comprehensive player stats tracking
+                 - Top players ranking system
+
+CONFIGURATION OPTIONS:
+                 - Adjustable score limit
+                 - Customizable point values
+                 - Dog tag despawn timer
+                 - Friendly fire controls
+                 - In-game command permissions
+                 - Message templates
 
 Copyright (c) 2019-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

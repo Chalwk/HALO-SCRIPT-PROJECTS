@@ -1,17 +1,23 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      tag.lua
-DESCRIPTION:      Dynamic tag minigame with role-swapping mechanics:
-                  - One "Tagger" chases multiple "Runners"
-                  - Successful tags transfer the Tagger role
-                  - Scoring system:
-                    * Runners earn points over time
-                    * Tagger receives large bonus per tag
-                  - Configurable options:
-                    * Automatic role rotation timer
-                    * Movement speed modifiers
-                    * Score values customization
-                    * Game duration settings
+DESCRIPTION:      Dynamic tag minigame featuring:
+                  - Rotating "Tagger" role with speed advantage
+                  - Score-based progression system
+                  - Automatic role rotation mechanics
+
+GAMEPLAY RULES:
+                  - One player is Tagger (faster movement)
+                  - Tagger scores points by tagging others
+                  - Runners earn points over time
+                  - Tag transfers on successful touch
+                  - Role auto-rotates after timeout
+
+CONFIGURATION:
+                  - Adjustable score limits
+                  - Customizable speed modifiers
+                  - Toggle automatic role rotation
+                  - Set point values and intervals
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

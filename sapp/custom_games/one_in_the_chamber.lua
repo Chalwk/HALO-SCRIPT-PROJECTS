@@ -1,12 +1,25 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      one_in_the_chamber.lua
-DESCRIPTION:      High-stakes pistol duel mode featuring:
-                  - Single bullet starts (guaranteed one-shot kills)
-                  - Melee-only after missed shots
-                  - Bullet rewards for successful kills
-                  - Precision-based gameplay with risk/reward decisions
-                  - Configurable bullet economy and match settings
+DESCRIPTION:      Intense pistol duel mode where every shot counts:
+                  - Players start with one bullet (guaranteed one-shot kill)
+                  - Earn bullets by eliminating opponents
+                  - Switch to melee when out of ammo
+                  - High-risk, high-reward gameplay
+
+KEY FEATURES:
+                 - Precision-based pistol combat
+                 - Limited ammo economy
+                 - Melee fallback system
+                 - Custom damage multipliers
+                 - Weapon/vehicle restrictions
+
+CONFIGURATION OPTIONS:
+                 - Adjustable starting ammo
+                 - Custom kill rewards
+                 - Damage multiplier settings
+                 - Equipment management
+                 - Match customization
 
 Copyright (c) 2023-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
