@@ -1,8 +1,27 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      restart_mapcycle.lua
-DESCRIPTION:      When the last remaining player leaves the game,
-                  the map cycle will restart after 120 seconds.
+DESCRIPTION:      Automatically restarts the map cycle when server becomes empty.
+
+FEATURES:
+                  - Restarts map cycle after configurable delay
+                  - Cancels restart if players rejoin
+                  - Resets timer on game end
+                  - Lightweight and efficient implementation
+
+CONFIGURATION:
+                  delay:            Time (in seconds) to wait before restarting
+                                    map cycle when empty (default: 120)
+
+USAGE:
+                  Simply load the script - no commands needed
+                  Adjust the 'delay' variable to change wait time
+
+BEHAVIOR:
+                  - Triggers when last player leaves
+                  - Counts down from specified delay
+                  - Cancels if any player joins during countdown
+                  - Executes 'mapcycle_begin' when timer completes
 
 Copyright (c) 2022 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

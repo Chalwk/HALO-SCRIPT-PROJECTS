@@ -1,8 +1,36 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      script_manager.lua
-DESCRIPTION:      Dynamically loads and unloads scripts based on
-                  the current map and game mode.
+DESCRIPTION:      Dynamic script loader that automatically manages script execution
+                  based on current map and game mode.
+
+FEATURES:
+                  - Automatic script loading/unloading when map/gamemode changes
+                  - Map-specific and gamemode-specific script configurations
+                  - Error handling for script loading/unloading
+                  - Clean unloading of all scripts on game end
+                  - Real-time status messages
+
+CONFIGURATION:
+                  maps:           Nested table defining script associations:
+                                  maps[map_name][gamemode] = { 'script1', 'script2' }
+
+                                  Example:
+                                  ['bloodgulch'] = {
+                                      ['ctf'] = { 'ctf_helper', 'flag_alerts' },
+                                      ['slayer'] = { 'slayer_enhancer' }
+                                  }
+
+USAGE:
+                  1. Configure the 'maps' table with your script associations
+                  2. Scripts will automatically load/unload during gameplay
+                  3. No commands needed - fully automatic operation
+
+ADVANCED:
+                  - Supports dynamic script loading without server restart
+                  - Tracks currently loaded scripts to prevent duplicates
+                  - Graceful error handling for missing scripts
+                  - Clean shutdown procedure
 
 Copyright (c) 2024 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

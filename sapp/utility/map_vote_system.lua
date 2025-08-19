@@ -1,14 +1,23 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      map_vote_system.lua
-DESCRIPTION:      Enhanced voting system replacing SAPP's default with:
-                  - Re-voting capability
-                  - Support for >6 map options
-                  - Configurable vote limits
-                  - Adjustable timing controls:
-                    * Vote display duration
-                    * Tally period
-                    * Map transition delay
+DESCRIPTION:      Advanced map voting system with the following features:
+                  - Configurable vote limits and re-voting
+                  - Supports more than 6 map options
+                  - Map repeat prevention
+                  - Customizable vote timing and messaging
+
+FEATURES:
+                  - Players vote by typing numbers in chat
+                  - Re-vote capability with configurable limits
+                  - Dynamic map selection that prevents excessive repeats
+                  - Customizable vote thresholds and timing controls
+                  - Clear console option for better visibility
+
+USAGE:
+                  - Configure settings in the MapVoteConfig table
+                  - System automatically activates at game end
+                  - Players vote by typing the map number (1-8 by default)
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

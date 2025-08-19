@@ -1,22 +1,22 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      mapcycle_manager.lua
-DESCRIPTION:      Advanced map rotation system with:
-                  - Multiple rotation modes:
-                    * Classic maps
-                    * Custom maps
-                    * Size-based rotations (small/medium/large)
-                  - Admin commands:
-                    * /custom, /classic, /small, /medium, /large
-                    * /whatis, /nextmap, /prev, /restart
-                    * /loadmap with parameters
-                  - Dynamic adjustments:
-                    * Player count-based auto-cycling
-                    * Configurable size thresholds
-                  - Configuration options:
-                    * Default map/gametype settings
-                    * Randomization toggles
-                    * Permission levels
+DESCRIPTION:      Advanced map rotation system with multiple rotation modes and admin controls.
+
+FEATURES:
+                  - Multiple rotation modes (classic, custom, size-based)
+                  - Dynamic player count-based adjustments
+                  - Comprehensive admin commands:
+                    * Cycle control: /custom, /classic, /small, /medium, /large
+                    * Navigation: /nextmap, /prev, /restart
+                    * Information: /whatis
+                    * Direct loading: /loadmap
+                  - Configurable randomization and permissions
+
+USAGE:
+                  - Configure rotation settings in the config table
+                  - Use admin commands to control rotation
+                  - System automatically handles player count adjustments when enabled
 
 Copyright (c) 2024 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

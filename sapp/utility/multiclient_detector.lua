@@ -1,17 +1,25 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      multiclient_detector.lua
-DESCRIPTION:      Multi-client detection system with:
-                  - Probability-based scoring (0-100%)
-                  - Detection categories:
+DESCRIPTION:      Advanced detection system for identifying players using multiple clients.
+
+FEATURES:
+                  - Probability-based scoring (0-100%) with risk categories:
                     * Low (0-40%)
                     * Moderate (41-60%)
                     * High (61-80%)
                     * Very High (81-100%)
-                  - Analysis factors:
-                    * Known pirated hashes
-                    * Network port ranges
+                  - Detection methods:
+                    * Known pirated client hashes
+                    * Network port analysis
                     * Client behavior patterns
+                  - Admin command (/mc) to check players
+                  - Automatic high-risk player notifications
+
+USAGE:
+                  - System runs automatically on player join
+                  - Admins can manually check players with /mc [playerID]
+                  - Configure known hashes and port ranges in config
 
 Copyright (c) 2024 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

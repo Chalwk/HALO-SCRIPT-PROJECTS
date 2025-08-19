@@ -1,10 +1,31 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      rules_command.lua
-DESCRIPTION:      Displays server rules to players via chat command.
+DESCRIPTION:      Displays server rules to players via chat command with timed
+                  announcements and formatted console output.
 
-                  Command:
-                  /rules - Displays the server rules
+FEATURES:
+                  - Customizable rules display via chat command
+                  - Automatic periodic announcements
+                  - Console-formatted text output
+                  - Configurable timing and messages
+                  - Server prefix preservation
+
+CONFIGURATION:
+                  command:          Rules command (default: "rules")
+                  announcement:     Automatic reminder message
+                  interval:         Announcement frequency in seconds (default: 180)
+                  show_time:        Duration to display rules in seconds (default: 10)
+                  Rules:            Table containing your server rules (editable)
+                  server_prefix:    Custom server message prefix
+
+USAGE:
+                  Players type: /rules
+                  Automatic announcements every 3 minutes
+                  Rules display for 10 seconds in console format
+
+DEPENDENCIES:
+                  Requires console_text_lib.lua for formatted text display
 
 Copyright (c) 2021-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

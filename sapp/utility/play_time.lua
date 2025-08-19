@@ -1,19 +1,31 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      play_time.lua
-DESCRIPTION:      Playtime tracking system:
-                  - /playtime command:
-                    * Check individual players
-                    * View all players (/all)
-                    * Check yourself (me)
-                  - Tracks:
-                    * Total connection time
-                    * Join count
+DESCRIPTION:      Comprehensive player session tracking and statistics system
 
-REQUIREMENT:      JSON library must be installed:
+FEATURES:
+                  - Tracks total connection time and join counts
+                  - Detailed time breakdown (years/weeks/days/hours/minutes/seconds)
+                  - Multiple query options:
+                    * Individual players (/playtime <ID>)
+                    * All players (/playtime all)
+                    * Self-check (/playtime me)
+                  - Persistent JSON data storage
+                  - Automatic tracking on join/leave
+
+CONFIGURATION:
+                  command:          Primary command trigger (default: "playtime")
+                  permission:       Minimum admin level required (default: 1)
+                  output:           Customizable response templates
+                  ClientIndexType:  Player identification method (1=IP:PORT, 2=IP, 3=Hash)
+
+REQUIREMENTS:     JSON library must be installed:
                   http://regex.info/blog/lua/json
 
-NOTE:             Data collection begins after installation
+USAGE EXAMPLES:
+                  /playtime         (shows your own stats)
+                  /playtime 3       (shows stats for player ID 3)
+                  /playtime all     (shows stats for all players)
 
 Copyright (c) 2020-2021 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

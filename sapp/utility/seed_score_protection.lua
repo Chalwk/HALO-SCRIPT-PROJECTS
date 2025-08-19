@@ -1,19 +1,11 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      seed_score_protection.lua
-DESCRIPTION:      Prevents score loss when players kill seed clients.
+DESCRIPTION:      Prevents score loss when players kill seed (bot) clients.
+                  Automatically corrects stats (score, kills, assists, deaths) to prevent negative values.
 
-                  Key Features:
-                  - Configurable seed name list
-                  - Negative score prevention
-                  - Automatic stat correction
-                  - Localhost IP detection
-
-                  Protected Stats:
-                  - Score
-                  - Kills
-                  - Assists
-                  - Deaths
+CONFIGURATION:    - Edit 'bots' table to customize protected seed names
+                  - Set 'preventNegatives' to false to allow negative scores
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

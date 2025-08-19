@@ -1,8 +1,24 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      remove_grenades.lua
-DESCRIPTION:      This script will remove grenades (after spawning), on per game mode basis.
-                  Note: This does not prevent players from picking them up.
+DESCRIPTION:      Removes grenades after spawn on a per-gamemode basis.
+
+FEATURES:
+                  - Removes grenades after player spawn
+                  - Configurable per gamemode
+                  - Preserves grenade pickups (only removes spawned grenades)
+
+CONFIGURATION:
+                  modes:            Table of gamemodes where grenades should be disabled
+                                   Format: ["Gamemode Name"] = true/false
+
+USAGE:
+                  Add gamemodes to the 'modes' table at the top of the script
+                  Script will automatically handle grenade removal during gameplay
+
+LIMITATIONS:
+                  Does not prevent players from picking up grenades
+                  Only removes grenades after spawn
 
 Copyright (c) 2022 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

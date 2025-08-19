@@ -1,7 +1,21 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      server_name_changer.lua
-DESCRIPTION:      Periodically changes the name of the server.
+DESCRIPTION:      Cycles through server names at regular intervals for dynamic branding.
+
+CONFIGURATION:
+                  - interval:   Time between name changes (in milliseconds)
+                  - server_names: Table of names to cycle through
+                  Note: Blank names (" ") will show no server name
+
+EXAMPLE:
+                  local interval = 1000 * 15  -- Change every 15 seconds
+                  local server_names = {
+                      "Pro Halo Server",
+                      "Custom Maps Rotation",
+                      " ",
+                     "VIPs Welcome!"
+                  }
 
 Copyright (c) 2021 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

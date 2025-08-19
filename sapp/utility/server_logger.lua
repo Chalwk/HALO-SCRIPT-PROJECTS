@@ -1,8 +1,20 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      server_logger.lua
-DESCRIPTION:      An advanced custom server logger designed to replace
-                  SAPP's built-in logging functionality.
+DESCRIPTION:      Advanced server logging system that replaces SAPP's default logs.
+                  Tracks player activity, game events, and admin commands with
+                  customizable verbosity.
+
+FEATURES:
+                  - Detailed player join/quit logging (IP, hash, piracy status)
+                  - Comprehensive death tracking (PVP, suicides, betrayals, etc.)
+                  - Command and chat logging (with sensitive command filtering)
+                  - Game state tracking (start/end, map resets)
+                  - Customizable event types and verbosity
+
+CONFIGURATION:    - Edit 'events' table to enable/disable specific log types
+                  - Add known pirated hashes to 'known_pirated_hashes' table
+                  - Add sensitive commands to 'sensitive_commands' table
 
 Copyright (c) 2024 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

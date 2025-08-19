@@ -1,14 +1,30 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      race_assistant.lua
-DESCRIPTION:      Enforces vehicle usage in race gametypes with protective features.
+DESCRIPTION:      Enforces vehicle usage in race gametypes with configurable
+                  penalties for violations.
 
-                  Key Features:
-                  - Visual countdown warnings
-                  - Configurable grace periods
-                  - Protected safe zones
-                  - Admin permission system
-                  - Multi-stage violation handling
+FEATURES:
+                  - Visual countdown warnings before penalty
+                  - Configurable grace periods for vehicle entry/re-entry
+                  - Protected safe zones (map-configurable)
+                  - Admin exemption system
+                  - Multi-stage violation handling (warnings → kill/kick)
+
+CONFIGURATION:
+                  warnings:         Warnings before penalty (default: 2)
+                  initial_grace_period: Time to find first vehicle (default: 10s)
+                  exit_grace_period: Time to re-enter after exiting (default: 10s)
+                  driving_grace_period: Time driving to clear warnings (default: 10s)
+                  enable_safe_zones: Toggle safe zone protection (default: true)
+                  allow_exemptions:  Toggle admin exemptions (default: true)
+                  exempt_admin_levels: Configurable admin exemption levels
+                  punishment:       Penalty type (kill or kick)
+                  safe_zones:       Map-specific safe zones (x,y,z,radius)
+
+USAGE:
+                  No commands needed - works automatically during race gametypes.
+                  Configure settings in the RaceAssistant table at script top.
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

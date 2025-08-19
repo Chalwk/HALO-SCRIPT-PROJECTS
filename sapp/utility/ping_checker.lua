@@ -1,9 +1,23 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      ping_checker.lua
-DESCRIPTION:      Ping monitoring utility:
-                  - Checks player latency
-                  - Supports self/others checking
+DESCRIPTION:      Player latency monitoring system with configurable command interface
+
+FEATURES:
+                  - Real-time ping checking for any player
+                  - Customizable command and output format
+                  - Permission level restrictions
+                  - Supports both console and in-game execution
+
+CONFIGURATION:
+                  pingCommand:       Command trigger (default: 'ping')
+                  permissionLevel:   Minimum admin level required (default: -1 for public)
+                  outputTemplate:    Customizable response format with $name and $ping variables
+
+USAGE:
+                  Basic:             "ping <playerID>"
+                  Example:           "ping 2" checks ping for player ID 2
+                  Self-check:       "ping" (checks your own ping)
 
 Copyright (c) 2020-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

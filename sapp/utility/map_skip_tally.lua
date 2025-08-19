@@ -3,21 +3,14 @@
 SCRIPT NAME:      map_skip_tally.lua
 DESCRIPTION:      Tracks and persists map skip votes across game sessions.
 
-                  Key Features:
-                  - Mode-specific skip tracking
-                  - Player-specific vote counting
-                  - JSON data persistence
-                  - Real-time skip queries
-                  - Cross-session data retention
-
-                  Commands:
+COMMANDS:
                   skip       - Register a skip vote
-                  skiptally  - View current map's skip count
-                  myskips    - View your personal skip contributions
+                  tally     - View current map's skip count
+                  tallydetails - View your personal skip contributions
 
-                  Requirements:
+REQUIREMENTS:
                   - json.lua library (place next to sapp.dll)
-                  - Output file: skip_tally.json (auto-generated)
+                    http://regex.info/blog/lua/json
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

@@ -1,8 +1,47 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      score_handler.lua
-DESCRIPTION:      A powerful all-in-one score handler that lets you define
-                  how many points are added or deducted on a case-by-case basis.
+DESCRIPTION:      Comprehensive score management system with customizable point values
+                  for all game events and advanced scoring mechanics.
+
+FEATURES:
+                  - Custom point values for every game action (kills, deaths, events)
+                  - Support for special scoring scenarios:
+                    * First blood rewards
+                    * Headshot bonuses
+                    * Assassination (back tap) bonuses
+                    * Killing sprees and multi-kill combos
+                    * Zombie infection mechanics
+                  - Team-specific flag carrier kill bonuses
+                  - Detailed damage source tracking (weapons, vehicles, grenades)
+                  - Customizable scoring messages
+                  - Vehicle collision detection
+
+CONFIGURATION:
+                  custom_messages:  Toggle scoring notifications (default: true)
+                  score:           Base points for flag captures
+                  red_flag_kill:   Points for killing red flag carrier
+                  blue_flag_kill:  Points for killing blue flag carrier
+                  assist:          Points for assists
+                  first_blood:     Bonus for first kill
+                  head_shot:       Headshot bonus
+                  assassination:   Back tap melee bonus
+                  suicide:         Penalty for suicide
+                  betrayal:        Penalty for team kills
+                  spree:           Killing spree bonuses (configurable tiers)
+                  multi_kill:      Combo kill bonuses (configurable tiers)
+                  tags:            Detailed weapon/vehicle damage point values
+
+USAGE:
+                  Fully automatic operation - no commands needed
+                  Configure all settings in the Scoring table at script top
+                  Set point values to 0 to disable specific scoring events
+
+ADVANCED FEATURES:
+                  - Zombie mode configuration (human/zombie teams, infection points)
+                  - Vehicle-specific collision detection
+                  - Weapon-specific damage tracking
+                  - Custom damage messages for each damage source
 
 Copyright (c) 2021 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

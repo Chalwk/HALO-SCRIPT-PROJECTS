@@ -1,12 +1,27 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      name_ban.lua
-DESCRIPTION:      Default name protection system:
-                  - Detects "default" player names
-                  - Enforces after configurable grace period
-                  - Action options:
-                    * Kick offenders
-                    * Ban repeat violators
+DESCRIPTION:      Default name protection system with automated enforcement.
+
+FEATURES:
+                  - Detects and blocks default player names
+                  - Configurable grace period before action
+                  - Multiple enforcement options:
+                    * Kick offenders immediately
+                    * Ban repeat violators temporarily
+                  - Customizable warning messages
+                  - Easily extensible banned names list
+
+CONFIGURATION:
+                  - Set action type (kick/ban) and duration
+                  - Adjust grace period (seconds)
+                  - Customize warning/ban messages
+                  - Edit banned names list as needed
+
+USAGE:
+                  - Configure settings at top of script
+                  - System runs automatically on player join
+                  - No admin commands needed
 
 Copyright (c) 2024 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

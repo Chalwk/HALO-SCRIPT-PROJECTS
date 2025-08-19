@@ -1,9 +1,25 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      name_replacer.lua
-DESCRIPTION:      Player name randomization system:
-                  - Replaces names with random selections
-                  - Uses predefined name list
+DESCRIPTION:      Automated player name randomization system with blacklist protection.
+
+FEATURES:
+                  - Automatic detection and replacement of blacklisted names
+                  - Randomized name assignment from predefined list
+                  - Fallback random name generation when list is exhausted
+                  - Name length enforcement (configurable max length)
+                  - Name tracking to prevent duplicates
+
+CONFIGURATION:
+                  - Edit blacklist for prohibited names
+                  - Customize replacement name pool
+                  - Adjust maximum name length (default: 11)
+                  - No admin commands needed - runs automatically
+
+USAGE:
+                  - Configure blacklist and name list at top of script
+                  - System activates automatically on player join
+                  - Names are tracked throughout game session
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

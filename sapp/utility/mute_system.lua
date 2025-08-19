@@ -1,10 +1,30 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      mute_system.lua
-DESCRIPTION:      Custom chat mute system for SAPP servers
+DESCRIPTION:      Advanced player mute management system with anti-spam protection.
 
-NOTE:             Requires additional files from:
-                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/1.0
+FEATURES:
+                  - Comprehensive mute functionality:
+                    * Timed mutes with duration display
+                    * Manual and automatic spam-based muting
+                    * Whitelist system for protected players
+                  - Anti-spam system with configurable thresholds
+                  - Command whitelisting for muted players
+                  - Persistent mute storage through game sessions
+                  - Admin commands:
+                    * /mute <pid> <time>
+                    * /unmute <pid>
+                    * /mutes (view active mutes)
+
+REQUIREMENTS:
+                  - Additional files:
+                    https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/misc/json.lua
+                    https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/misc/libraries/page_browsing_lib.lua
+
+USAGE:
+                  - Configure settings in the MuteSystem table
+                  - Use admin commands to manage mutes
+                  - System automatically handles spam detection
 
 Copyright (c) 2020 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

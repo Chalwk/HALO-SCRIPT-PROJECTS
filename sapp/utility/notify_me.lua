@@ -1,13 +1,18 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      notify_me.lua
-DESCRIPTION:      Terminal beautification system featuring:
-                  - Color-coded event notifications:
-                    * Player joins/leaves
-                    * Chat messages
-                    * Death events
-                  - Custom ASCII art logo display
-                  - Fully configurable output formatting
+DESCRIPTION:      Enhanced console notification system for SAPP servers that provides:
+                  - Color-coded event notifications (joins, quits, deaths, etc.)
+                  - Customizable timestamp formatting
+                  - Optional ASCII art logo display
+                  - Support for all major server events
+
+FEATURES:
+                  - 16-color support using SAPP's color codes
+                  - Dynamic message templates with placeholder substitution
+                  - Configurable output for each event type
+                  - First blood detection
+                  - Detailed death cause reporting
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

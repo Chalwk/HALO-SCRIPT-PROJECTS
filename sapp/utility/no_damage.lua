@@ -1,7 +1,23 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      no_damage.lua
-DESCRIPTION:      Global damage prevention system for invulnerability modes.
+DESCRIPTION:      Player invulnerability system with toggleable damage prevention.
+
+FEATURES:
+                  - Toggleable player invulnerability via command
+                  - Prevents all external damage sources
+                  - Preserves original damage state for restoration
+                  - Individual player control (not global)
+                  - Memory-safe implementation
+
+COMMAND USAGE:
+                  - /damage - Toggles damage protection on/off
+                  - Players receive confirmation messages
+
+TECHNICAL DETAILS:
+                  - Modifies in-memory damage flags
+                  - Tracks original states for proper restoration
+                  - Handles player disconnects gracefully
 
 Copyright (c) 2023-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

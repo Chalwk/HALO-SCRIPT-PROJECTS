@@ -1,10 +1,23 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      random_grenades.lua
-DESCRIPTION:      Randomized grenade spawn system:
-                  - Generates grenades on player spawn
-                  - Configurable quantity ranges
-                  - Map-specific customization
+DESCRIPTION:      Randomized grenade spawn system with map-specific customization
+
+FEATURES:
+                  - Automatic grenade assignment on player spawn
+                  - Two operational modes:
+                    * Random quantity within defined ranges
+                    * Manual map-specific presets
+                  - Independent control for frag/plasma grenades
+                  - Supports all standard Halo maps
+
+CONFIGURATION:
+                  Mode Selection:
+                  random_grenades.FRAGS = true/false
+                  random_grenades.PLASMAS = true/false
+
+USAGE:
+                  Simply load the script - no commands required
 
 Copyright (c) 2016-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -15,8 +28,6 @@ LICENSE:          MIT License
 api_version = "1.12.0.0"
 
 -- Configuration --
-local MIN_FRAGS, MAX_FRAGS = 1, 4
-local MIN_PLASMAS, MAX_PLASMAS = 1, 4
 
 local random_grenades = {
     FRAGS = true, -- If false, uses manual configuration

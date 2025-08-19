@@ -1,8 +1,18 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      show_admin_names.lua
-DESCRIPTION:      Displays the name and permission level of all currently
-                  online administrators.
+DESCRIPTION:      Identifies and displays all online administrators with their
+                  permission levels via simple chat command.
+
+FEATURES:
+                  - Real-time admin list display
+                  - Shows admin name and permission level
+                  - Works for all online admins
+                  - Lightweight with minimal overhead
+
+USAGE:
+                  Simply type: /whois
+                  Output format: "AdminName [level: X]"
 
 Copyright (c) 2022 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

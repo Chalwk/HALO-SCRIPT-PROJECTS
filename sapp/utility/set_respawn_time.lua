@@ -1,11 +1,36 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      set_respawn_time.lua
-DESCRIPTION:      Allows setting respawn times on a per-map, per-gametype basis.
+DESCRIPTION:      Configurable respawn timer system with per-map/per-gametype settings
+                  and real-time adjustments via admin commands.
 
-                  Command Syntax:
-                  /setrespawn <time>          - Set global respawn time
-                  /setrespawn <pid> <time>    - Set respawn time for specific player
+FEATURES:
+                  - Map/gametype specific respawn times
+                  - Global and per-player time settings
+                  - Silent command execution option
+                  - Default fallback time for unlisted maps
+
+COMMANDS:
+                  /setrespawn <time>          - Set global respawn time (seconds)
+                  /setrespawn <pid> <time>   - Set time for specific player
+                  /setrespawn all <time>      - Set time for all players
+                  Add "-s" flag for silent execution
+
+CONFIGURATION:
+                  - command:        Admin command name
+                  - permission_level: Required admin level
+                  - default_respawn_time: Fallback time (seconds)
+                  - maps:           Per-map gametype settings table
+                    Format: ["mapname"] = {ctf, slayer_ffa, slayer_team, koth_ffa, koth_team, ...}
+
+EXAMPLE MAP CONFIG:
+                  ["bloodgulch"] = {
+                      3.0, -- CTF
+                      1,   -- Slayer (FFA)
+                      3.0, -- Slayer (Team)
+                      3.0, -- KOTH (FFA)
+                      3.0  -- KOTH (Team)
+                  }
 
 Copyright (c) 2021 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

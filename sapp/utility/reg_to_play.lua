@@ -1,17 +1,26 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      reg_to_play.lua
-DESCRIPTION:      Mandatory player registration system with timed enforcement.
+DESCRIPTION:      Enforces mandatory player registration with timed kick system.
 
-                  Key Features:
-                  - 10-second registration window
+FEATURES:
+                  - 10-second registration window (configurable)
                   - Persistent player data storage (IP/name)
                   - Automatic kick for unregistered players
-                  - Encrypted password verification
-                  - Configurable grace period
+                  - Password-protected registration (!register <password>)
 
-                  Data File:
-                  players.txt (stored with mapcycle.txt)
+CONFIGURATION:
+                  kick_delay:       Registration time window (default: 10s)
+                  command:          Registration trigger command (default: !register)
+                  password:         Registration password (default: secret123)
+                  permission_level: Minimum required permission level (default: -1)
+                  filename:         Player database filename (default: players.txt)
+                  save_on_register: Save mode (true = immediate, false = on game end)
+
+USAGE:
+                  Players must register using: !register <password>
+                  Unregistered players are automatically kicked after grace period
+                  Configure settings in the CONFIG table at script top.
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

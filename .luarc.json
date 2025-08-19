@@ -33,6 +33,7 @@
         "say_all",
         "sync_ammo",
         "intersect",
-        "assign_weapon"
+        "assign_weapon",
+        "write_word"
     ]
 }

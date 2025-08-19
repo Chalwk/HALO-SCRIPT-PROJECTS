@@ -1,11 +1,24 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      on_teleport.lua
-DESCRIPTION:      Developer example demonstrating:
-                  - Player teleportation detection
+DESCRIPTION:      Teleportation detection system for player movement monitoring
 
-NOTE:             Intended for developer use
-                  Not for standalone implementation
+FEATURES:
+                  - Detects abnormal player movement (teleportation)
+                  - Configurable distance threshold
+                  - Supports both on-foot and in-vehicle movement
+                  - Tracks player positions every game tick
+
+DEVELOPER NOTES:
+                  - Uses Euclidean distance calculation between positions
+                  - Threshold adjustable via max_distance variable
+                  - Event triggers when movement exceeds threshold
+                  - Includes vehicle position tracking
+
+USAGE:
+                  1. Adjust max_distance for sensitivity (default: 10 units)
+                  2. Implement custom logic in OnTeleport() function
+                  3. Works automatically after game start
 
 Copyright (c) 2022 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

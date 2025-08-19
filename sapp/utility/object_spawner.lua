@@ -1,13 +1,20 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      object_spawner.lua
-DESCRIPTION:      Custom object placement system with rotation control.
+DESCRIPTION:      Map-specific object spawning system with precise positioning control.
 
-                  Features:
-                  - Precise coordinate positioning
-                  - Customizable object rotation
-                  - Multi-object spawning
-                  - Persistent spawn configurations
+FEATURES:
+                  - Per-map object configuration
+                  - Exact coordinate placement (X,Y,Z)
+                  - Rotation control (in radians)
+                  - Supports all tag types (weapons, vehicles, scenery, etc.)
+                  - Automatic spawning on game start
+
+USAGE:
+                  1. Add entries to the objects table using format:
+                     { "tag_type", "tag_path", x, y, z, rotation }
+                  2. Multiple objects can be spawned per map
+                  3. Rotation values must be in radians
 
 Copyright (c) 2021-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
