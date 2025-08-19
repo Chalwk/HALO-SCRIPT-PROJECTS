@@ -1,7 +1,27 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      tea_bagging.lua
-DESCRIPTION:      Players are automatically t-bagged when they crouch near a corpse.
+DESCRIPTION:      Automatically detects and announces tea-bagging when players
+                  crouch near corpses, with customizable messages and parameters.
+
+CONFIGURATION:
+                  enabled = true           - Enable/disable the entire system
+                  admin_level_required = 4 - Admin level needed for commands
+                  radius = 2.5             - Detection radius from corpses
+                  expire_time = 120        - How long corpses remain detectable
+                  required_crouches = 3    - Crouches needed to trigger
+                  cooldown_time = 30       - Cooldown between triggers per player
+
+FEATURES:
+                  - 7+ customizable taunt messages
+                  - Admin toggle command (/tbag toggle)
+                  - Configurable detection parameters
+                  - Cooldown system to prevent spam
+                  - Automatic corpse position cleanup
+                  - Distance-based detection
+
+COMMANDS:
+                  /tbag toggle - Toggle system on/off (admin only)
 
 Copyright (c) 2019-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

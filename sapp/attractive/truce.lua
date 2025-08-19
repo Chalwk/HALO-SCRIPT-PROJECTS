@@ -1,14 +1,43 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      truce.lua
-DESCRIPTION:      Initiate a truce with other players. While in a truce, players cannot harm each other.
+DESCRIPTION:      Enables players to establish temporary truces preventing mutual
+                  damage, with request/accept system and admin controls.
+
+
+CONFIGURATION:
+                  privilege_level = -1              - Minimum admin level for commands (-1 = all players)
+                  save_on_newgame = true            - Persist truces across map changes
+                  base_command = "truce"            - Main command prefix
+                  accept_command = "accept"         - Accept truce command
+                  deny_command = "deny"             - Deny truce command
+                  untruce_command = "untruce"       - End truce command
+                  trucelist_command = "trucelist"   - List active truces
+
+FEATURES:
+                  - Request/accept/deny system for truces
+                  - Prevents damage between truced players
+                  - Persistence across map changes (configurable)
+                  - Admin-level controls
+                  - List active/pending truces
+                  - Team-based restrictions
+                  - Customizable messages
+
+COMMANDS:
+                  /truce [player]   - Request truce
+                  /accept [player]  - Accept truce request
+                  /deny [player]    - Deny truce request
+                  /untruce [player] - End existing truce
+                  /trucelist        - View active/pending truces
+
+MESSAGE TEMPLATES:
+                  Supports variables: %target_name%, %executor_name%, %executor_id%
 
 Copyright (c) 2016-2019 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
-
 
 api_version = "1.12.0.0"
 -- configuration [starts] -->

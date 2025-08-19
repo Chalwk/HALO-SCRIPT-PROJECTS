@@ -1,10 +1,24 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      uber_taxi.lua
-DESCRIPTION:      Allows players to call an Uber to join teammates' vehicles by
-                  injecting themselves into available seats according to configurable priority
-                  and cooldown settings. Supports vehicle validation, auto ejection from
-                  unauthorized vehicles, crouch to Uber activation, and call limits per player per game.
+DESCRIPTION:      Team-based vehicle transport system that allows players to join
+                  teammates' vehicles via chat command or crouch action.
+
+KEY FEATURES:
+                 - Configurable vehicle whitelist with seat priority
+                 - Smart seat assignment based on insertion order
+                 - Cooldown system and call limits
+                 - Objective carrier restrictions
+                 - Automatic ejection from invalid vehicles
+                 - Driver presence verification
+                 - Team-based functionality
+
+CONFIGURATION OPTIONS:
+                 - Customizable chat triggers
+                 - Adjustable cooldown timers
+                 - Per-game call limits
+                 - Vehicle-specific settings
+                 - Seat role definitions
 
 Copyright (c) 2020-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

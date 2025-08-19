@@ -1,27 +1,23 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      tactical_airstrike.lua
-DESCRIPTION:      Players on a five-kill streak can call in an airstrike.
+DESCRIPTION:      Players on a kill streak can call in an airstrike with 3 modes:
+                  - Target specific player
+                  - Strike enemy base locations
+                  - Random map coordinates
 
-                  Players can choose from 3 strike modes:
-                  MODE 1: Airstrike at a specific player's coordinates (/nuke [player id])
-                  MODE 2: Airstrike to one of multiple locations around enemy base (/nuke)
-                  MODE 3: Airstrike to a random pre-defined map coordinate (/nuke)
-
-                  Commands:
-                  * /nuke [player id]
-                  * /nuke mode [mode id]
-                  * /nuke info
-                  * /nuke pl
-
-Credits to "D Stroyer" for the idea.
+COMMANDS:
+                  /nuke [player id]    - Call airstrike on player (Mode 1)
+                  /nuke                - Call airstrike (Modes 2 & 3)
+                  /nuke mode [mode id] - Switch between strike modes (1-3)
+                  /nuke info           - Show mode information
+                  /nuke pl             - Show online player IDs
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
-
 
 api_version = "1.12.0.0"
 

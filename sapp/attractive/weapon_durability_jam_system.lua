@@ -1,18 +1,24 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      weapon_durability_jam_system.lua
-DESCRIPTION:      Features:
-                  - Progressive weapon degradation with use
-                  - Dynamic jamming mechanics:
-                    * Weapon-specific failure chances
-                    * Melee action required to clear jams
-                  - Advanced systems:
-                    * Customizable decay rates per weapon
-                    * Overheat prevention mechanisms
-                    * Ammo state preservation
-                  - Developer features:
-                    * Comprehensive debug logging
-                    * Configurable test parameters
+DESCRIPTION:      Realistic weapon degradation and jamming system that adds
+                  durability mechanics to Halo's weapons.
+
+KEY FEATURES:
+                 - Weapon-specific durability profiles
+                 - Dynamic jamming probability based on condition
+                 - Melee-action unjamming mechanic
+                 - Ammo state preservation during jams
+                 - Energy weapon support
+                 - Vehicle usage detection
+                 - Comprehensive debug mode
+
+CONFIGURATION OPTIONS:
+                 - Global durability thresholds
+                 - Per-weapon decay rates
+                 - Jam chance multipliers
+                 - Energy weapon classification
+                 - Unjam durability cost
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

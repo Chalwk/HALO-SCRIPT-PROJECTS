@@ -1,14 +1,22 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      tactical_insertion.lua
-DESCRIPTION:      Players can use a command to set their next spawn point.
+DESCRIPTION:      Allows players to set custom spawn points using a command.
+                  Players get limited uses per game.
+
+COMMANDS:
+                  /ti - Set your tactical insertion (spawn point)
+                  (Automatically shows remaining uses on spawn)
+
+CONFIGURATION:
+                  command = 'ti'         - Command to set spawn point
+                  uses_per_game = 5      - Uses allowed per player per game
 
 Copyright (c) 2019-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
-
 
 -- config starts
 local command = 'ti'

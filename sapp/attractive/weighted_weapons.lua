@@ -1,12 +1,30 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      weighted_weapons.lua
-DESCRIPTION:      Dynamically adjusts player movement speed based on weapon weight.
-                  Can calculate total weapon weight or just active weapon.
-                  Features a stamina system: stamina depletes while moving and
-                  regenerates while resting. Exhaustion causes speed penalties.
-                  Visual stamina bar displayed via rprint for each player.
-                  Adds tactical movement effects and realism.
+DESCRIPTION:      Realistic weapon weight system that affects player movement speed
+                  with optional stamina mechanics for enhanced tactical gameplay.
+
+KEY FEATURES:
+                 - Weapon-specific weight values affecting mobility
+                 - Dual calculation modes (active weapon vs all carried weapons)
+                 - Comprehensive stamina system:
+                   * Dynamic depletion during movement
+                   * Gradual regeneration while resting
+                   * Visual stamina bar display
+                   * Exhaustion penalties
+                 - Configurable weight values for all weapons
+                 - Real-time speed adjustments
+
+CONFIGURATION OPTIONS:
+                 - Toggle between active/all weapon weight modes
+                 - Adjustable stamina parameters:
+                   * Depletion/regeneration rates
+                   * Maximum stamina capacity
+                   * Exhaustion penalties
+                 - Customizable visual display:
+                   * Stamina bar length
+                   * Refresh rate
+                 - Weapon-specific weight tuning
 
 Copyright (c) 2019-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

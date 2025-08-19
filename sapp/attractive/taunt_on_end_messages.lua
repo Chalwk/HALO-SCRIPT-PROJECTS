@@ -1,7 +1,13 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      taunt_on_end_messages.lua
-DESCRIPTION:      Displays taunting messages to the player when the game ends.
+DESCRIPTION:      Displays humorous taunt messages based on player performance
+                  when the game ends. Messages vary by kill count.
+
+FEATURES:
+                  - Custom taunt messages for different kill counts (0-4+)
+                  - Automatic triggering at game end
+                  - Lighthearted player feedback
 
 Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

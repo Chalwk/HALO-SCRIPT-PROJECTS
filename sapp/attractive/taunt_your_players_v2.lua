@@ -1,14 +1,20 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      taunt_your_players_v2.lua
-DESCRIPTION:      Taunts players on death and remarks on kills at game end with humorous messages.
+DESCRIPTION:      Sends humorous taunt messages to players when they die and
+                  personalized remarks based on their kill count at game end.
+
+FEATURES:
+                  - Configurable death taunts (toggle on/off)
+                  - Configurable end-game kill count remarks
+                  - Customizable message alignment
+                  - Random message selection from predefined lists
 
 Copyright (c) 2019 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
-
 
 api_version = "1.12.0.0"
 

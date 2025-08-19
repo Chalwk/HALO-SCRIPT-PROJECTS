@@ -1,15 +1,37 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      taunt_your_players_v1.lua
-DESCRIPTION:      Displays 1-30 random taunting messages to players on events:
-                  OnGameEnd or OnPlayerDie.
+DESCRIPTION:      Delivers humorous taunts to players based on in-game events,
+                  with customizable messages and triggers.
+
+REQUIREMENTS:     None
+
+CONFIGURATION:
+                  tPrefix = "[TAUNT]"    - Prefix for taunt messages
+                  tauntsonDeath = true   - Enable taunts on player deaths
+                  tauntsOnGameEnd = true - Enable taunts at game end
+
+FEATURES:
+                  - 30+ unique death taunt messages
+                  - Performance-based end-game taunts
+                  - Customizable message prefix
+                  - Separate triggers for deaths and game end
+                  - Preserves server message prefix
+                  - Random message selection
+                  - Kill-count specific end messages
+
+MESSAGE TYPES:
+                  - Death taunts (triggered when killed by another player)
+                  - End-game taunts (based on final kill count 0-11+)
+
+USAGE:
+                  Simply install - taunts trigger automatically based on config
 
 Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
-
 
 api_version = "1.12.0.0"
 

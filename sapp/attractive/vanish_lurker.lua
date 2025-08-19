@@ -1,14 +1,34 @@
 --[[
 =====================================================================================
-SCRIPT NAME:      vasnish_lurker.lua
-DESCRIPTION:      Allows players to turn on Vanish Mode.
+SCRIPT NAME:      vanish_lurker.lua
+DESCRIPTION:      Advanced vanish mode system that allows players to become invisible
+                  with configurable stealth features and gameplay restrictions.
+
+KEY FEATURES:
+                 - Multiple vanish modes (hidden, camouflaged, or both)
+                 - Objective carrier detection and punishment system
+                 - Warning point system for rule violations
+                 - Vehicle handling compatibility
+                 - Radar invisibility
+                 - Speed boost options
+                 - Damage blocking
+                 - Persistent vanish across sessions
+                 - Admin control system with permissions
+
+CONFIGURATION OPTIONS:
+                 - Customizable vanish modes and parameters
+                 - Adjustable warning system
+                 - Objective handling settings
+                 - Speed boost controls
+                 - Vanish persistence options
+                 - Permission levels
+                 - Announcement messages
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
-
 
 api_version = "1.12.0.0"
 local vanish = {}
