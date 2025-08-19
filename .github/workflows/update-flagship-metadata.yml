@@ -1,0 +1,38 @@
+name: Update Flagship Metadata
+
+on:
+  release:
+    types: [published]   # Runs only when a new release is published
+
+jobs:
+  update-metadata:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Fetch latest releases
+        run: |
+          curl -s https://api.github.com/repos/${{ github.repository }}/releases \
+          | jq '[.[] | {
+              id: .id,
+              name: .name,
+              tag_name: .tag_name,
+              body: .body,
+              published_at: .published_at,
+              html_url: .html_url,
+              assets: [.assets[] | {
+                name: .name,
+                download_url: .browser_download_url,
+                size: .size
+              }]
+            }]' > flagship_metadata.json
+
+      - name: Commit and push metadata.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add flagship_metadata.json
+          git commit -m "Update flagship metadata (release ${{ github.event.release.tag_name }})"
+          git push
