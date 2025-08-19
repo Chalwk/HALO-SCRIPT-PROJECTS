@@ -55,7 +55,6 @@ local write_float, write_bit, execute_command, destroy_object =
     write_float, write_bit, execute_command, destroy_object
 local get_object_memory, get_player, get_dynamic_player, player_present, player_alive =
     get_object_memory, get_player, get_dynamic_player, player_present, player_alive
-local register_callback, get_var = register_callback, get_var
 
 local base_tag_table = 0x40440000
 local tag_entry_size = 0x20
