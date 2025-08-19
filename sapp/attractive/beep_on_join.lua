@@ -13,7 +13,7 @@ FEATURES:
 NOTE:              Requires server console to be in focus for beep to be audible
                    on some operating systems.
 
-Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
+Copyright (c) 2022 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

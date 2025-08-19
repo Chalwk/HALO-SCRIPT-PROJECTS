@@ -273,7 +273,7 @@ local function DeleteWeapons(Ply, Tab)
 end
 
 local function Launch(Pos, Height)
-    if (pos) then
+    if (Pos) then
         local obj = (Pos.obj ~= 0 and Pos.obj or Pos.dyn)
         if (Pos.obj) then
             write_float(Pos.obj + 0x94, 0.75)

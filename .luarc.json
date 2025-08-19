@@ -34,6 +34,11 @@
         "sync_ammo",
         "intersect",
         "assign_weapon",
-        "write_word"
+        "write_word",
+        "write_float",
+        "write_bit",
+        "execute_command_sequence",
+        "write_vector3d",
+        "unregister_callback"
     ]
 }

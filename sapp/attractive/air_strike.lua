@@ -10,6 +10,8 @@ DESCRIPTION:      Simulates random airstrikes in Halo PC/CE with configurable:
 
                   Players receive warning when a strike is incoming.
 
+LAST UPADTED:     August, 2025
+
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE

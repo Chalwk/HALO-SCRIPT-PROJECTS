@@ -26,6 +26,8 @@ CONFIGURATION OPTIONS:
                    * Refresh rate
                  - Weapon-specific weight tuning
 
+LAST UPADTED:     August, 2025
+
 Copyright (c) 2019-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE

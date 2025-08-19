@@ -21,7 +21,9 @@ FEATURES:
                   - Distance-based detection
 
 COMMANDS:
-                  /tbag toggle - Toggle system on/off (admin only)
+                  /tbag - Toggle system on/off (admin only)
+
+LAST UPADTED:     August, 2025
 
 Copyright (c) 2019-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -59,43 +61,26 @@ local sqrt = math.sqrt
 
 api_version = "1.12.0.0"
 
--- UTILS --
-
--- Get a player's coordinates and dynamic object pointer
-local function GetPlayerCoords(id)
+local function get_player_position(id)
     local dyn = get_dynamic_player(id)
     if dyn == 0 then return nil end
     local x, y, z = read_vector3d(dyn + 0x5C)
     return x, y, z, dyn
 end
 
--- Calculate distance between two 3D points
-local function IsInRange(x1, y1, z1, x2, y2, z2, radius)
-    return sqrt((x1 - x2) ^ 2 + (y1 - y2) ^ 2 + (z1 - z2) ^ 2) <= radius
+local function is_in_range(x1, y1, z1, x2, y2, z2)
+    return sqrt((x1 - x2) ^ 2 + (y1 - y2) ^ 2 + (z1 - z2) ^ 2) <= config.radius
 end
 
--- Format a random message with attacker and victim names
 local function GetRandomMessage(attackerName, victimName)
     local template = config.messages[rand(1, #config.messages + 1)]
     return template:gsub("$attacker", attackerName):gsub("$victim", victimName)
 end
 
--- Check if player is crouching
-local function IsCrouching(dyn)
+local function is_crouching(dyn)
     if dyn == 0 then return false end
     return read_bit(dyn + 0x208, 0) == 1
 end
-
--- Send a message to all players
-local function SendGlobalMessage(msg)
-    for i = 1, 16 do
-        if player_present(i) then
-            rprint(i, msg)
-        end
-    end
-end
-
--- PLAYER DATA CLASS --
 
 local Player = {}
 Player.__index = Player
@@ -111,11 +96,11 @@ function Player.new(id)
     return self
 end
 
-function Player:AddDeathPosition(x, y, z)
+function Player:add_death_position(x, y, z)
     table.insert(self.death_positions, { x = x, y = y, z = z, expire_time = time() + config.expire_time })
 end
 
-function Player:CleanExpiredPositions()
+function Player:clean_expired_conditions()
     local now = time()
     for i = #self.death_positions, 1, -1 do
         if self.death_positions[i].expire_time < now then
@@ -124,26 +109,24 @@ function Player:CleanExpiredPositions()
     end
 end
 
--- CORE LOGIC --
-
-local function HandleTBag(attacker, victim, deathIndex)
+local function handle_tbag(attacker, victim, deathIndex)
     local msg = GetRandomMessage(attacker.name, victim.name)
-    SendGlobalMessage(msg)
+    say_all(msg)
     attacker.last_tbag_time = time()
     attacker.crouch_count = 0
     table.remove(victim.death_positions, deathIndex)
 end
 
-local function CheckTBagCondition(attacker, victim)
-    attacker:CleanExpiredPositions()
+local function check_condition(attacker, victim)
+    attacker:clean_expired_conditions()
 
-    local ax, ay, az, aDyn = GetPlayerCoords(attacker.id)
+    local ax, ay, az, aDyn = get_player_position(attacker.id)
     if not ax then return end
 
     for i, pos in ipairs(victim.death_positions) do
-        if IsInRange(ax, ay, az, pos.x, pos.y, pos.z, config.radius) then
+        if is_in_range(ax, ay, az, pos.x, pos.y, pos.z) then
 
-            local crouching = IsCrouching(aDyn)
+            local crouching = is_crouching(aDyn)
             if crouching and not attacker.last_crouch_state then
                 attacker.crouch_count = attacker.crouch_count + 1
             end
@@ -151,31 +134,27 @@ local function CheckTBagCondition(attacker, victim)
 
             local time_since_last = time() - attacker.last_tbag_time
             if attacker.crouch_count >= config.required_crouches and time_since_last >= config.cooldown_time then
-                HandleTBag(attacker, victim, i)
+                handle_tbag(attacker, victim, i)
                 break
             end
         end
     end
 end
 
--- COMMAND HANDLER --
-
-local function OnServerCommand(id, command)
-    if command == "tbag toggle" then
+function OnServerCommand(id, command)
+    if command == "tbag" then
         local access = tonumber(get_var(id, "$lvl"))
         if access and access <= config.admin_level_required then
             config.enabled = not config.enabled
             local status = config.enabled and "ENABLED" or "DISABLED"
-            SendGlobalMessage("[Tea Bagging] has been " .. status .. " by " .. get_var(id, "$name"))
+            say_all("[Tea Bagging] has been " .. status .. " by " .. get_var(id, "$name"))
         else
             rprint(id, "You do not have permission to use this command.")
         end
-        return false -- Prevent command from going to chat
+        return false
     end
-    return true -- Allow other commands
+    return true
 end
-
--- CALLBACKS --
 
 function OnScriptLoad()
     register_callback(cb["EVENT_JOIN"], "OnJoin")
@@ -212,9 +191,9 @@ end
 function OnDeath(id)
     local player = players[id]
     if player then
-        local x, y, z = GetPlayerCoords(id)
+        local x, y, z = get_player_position(id)
         if x then
-            player:AddDeathPosition(x, y, z)
+            player:add_death_position(x, y, z)
         end
     end
 end
@@ -224,7 +203,7 @@ function OnTick()
     for attackerID, attacker in pairs(players) do
         for victimID, victim in pairs(players) do
             if attackerID ~= victimID and #victim.death_positions > 0 then
-                CheckTBagCondition(attacker, victim)
+                check_condition(attacker, victim)
             end
         end
     end

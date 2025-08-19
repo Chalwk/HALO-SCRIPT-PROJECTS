@@ -22,6 +22,8 @@ CONFIGURATION:
                   vanish_y_offset     = -1000  -- Y-axis vanish offset
                   vanish_z_offset     = -1000  -- Z-axis vanish offset
 
+LAST UPADTED:     August, 2025
+
 Copyright (c) 2020-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE

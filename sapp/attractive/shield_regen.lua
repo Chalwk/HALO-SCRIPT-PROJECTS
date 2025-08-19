@@ -11,8 +11,7 @@ FEATURES:
                  - Lightweight and efficient implementation
 
 CONFIGURATION:
-                 - delay: Set regeneration delay in ticks (0 for instant)
-                   30 ticks = 1 second
+                 - delay: Set regeneration delay in seconds (0 for instant)
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -22,9 +21,7 @@ LICENSE:          MIT License
 
 api_version = "1.12.0.0"
 
--- Time until shields begin regenerating (in ticks) - 1/30th tick = 1 second
--- 0 = instant
-local delay = 0
+local delay = 0 -- in seconds
 
 function OnScriptLoad()
     register_callback(cb['EVENT_TICK'], 'OnTick')

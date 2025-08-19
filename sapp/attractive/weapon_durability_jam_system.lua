@@ -20,6 +20,8 @@ CONFIGURATION OPTIONS:
                  - Energy weapon classification
                  - Unjam durability cost
 
+LAST UPADTED:     August, 2025
+
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
