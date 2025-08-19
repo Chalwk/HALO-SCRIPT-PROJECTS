@@ -1,15 +1,27 @@
 --[[
-=====================================================================================
+===============================================================================
 SCRIPT NAME:      dynamic_score_limit.lua
-DESCRIPTION:      Automatically adjusts score limit based on player count:
-                  - Custom game mode overrides
-                  - Falls back to pre-configured defaults
-                  - Supports all standard game types
+DESCRIPTION:      Automatically adjusts score limits based on player count with:
+                  - Custom configurations for each game type
+                  - Team vs FFA mode differentiation
+                  - Dynamic message formatting
+
+FEATURES:
+                  - Player count-based score limits
+                  - Custom messages per game mode
+                  - Automatic pluralization handling
+                  - Supports all standard Halo game types
+
+CONFIGURATION:    Edit the config table to:
+                  - Add custom game modes
+                  - Adjust player count thresholds
+                  - Modify score limit values
+                  - Customize notification messages
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================
 ]]
 
 -----------------------------------------

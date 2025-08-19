@@ -1,22 +1,26 @@
 --[[
-=====================================================================================
+===============================================================================
 SCRIPT NAME:      command_spy.lua
-DESCRIPTION:      Admin command monitoring system featuring:
-                  - Real-time command execution alerts:
-                    * Customizable admin notification levels
-                    * Per-command monitoring controls
-                  - Security features:
-                    * Command blacklisting
-                    * Sensitive command filtering
-                  - Logging options:
-                    * Console output logging
-                    * Timestamped command history
-                    * Player-specific tracking
+DESCRIPTION:      Monitors and logs admin commands with:
+                  - Real-time command execution alerts
+                  - Customizable admin notification levels
+                  - Sensitive command filtering
+
+FEATURES:
+                  - Blacklist for sensitive commands
+                  - Admin-level visibility controls
+                  - Optional console logging
+
+CONFIGURATION:    Adjust these settings:
+                  - spy_levels: Which admin levels receive alerts
+                  - blacklist: Commands to ignore
+                  - messages: Notification formats
+                  - log_to_console: Toggle console output
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================
 ]]
 
 -- Admin levels allowed to see spy messages:

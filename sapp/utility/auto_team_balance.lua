@@ -1,25 +1,21 @@
 --[[
-=====================================================================================
+===============================================================================
 SCRIPT NAME:      auto_team_balance.lua
-DESCRIPTION:      Intelligent team balancing system featuring:
-                  - Dynamic player redistribution:
-                    * Count-based team balancing
-                    * Skill-aware balancing (optional)
-                  - Configurable parameters:
-                    * Balancing frequency (30-300 sec)
-                    * Minimum player threshold
-                    * Force balance options
-                  - Gameplay preservation:
-                    * Mid-game balancing avoidance
-                    * Party/friend group protection
-                  - Notification system:
-                    * Pre-balance warnings
-                    * Post-balance reports
+DESCRIPTION:      Automatically balances teams based on player counts with:
+                  - Configurable balancing thresholds
+                  - Multiple switching priority options
+                  - Minimum player requirements
+
+CONFIGURATION:    Adjust these settings in the config table:
+                  - delay: Balancing frequency (seconds)
+                  - minPlayersPerTeam: Minimum players before balancing
+                  - maxTeamDifference: Allowed team size difference
+                  - switchingPriority: "smaller" or "larger" team preference
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================
 ]]
 
 api_version = "1.12.0.0"

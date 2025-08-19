@@ -1,25 +1,26 @@
 --[[
-=====================================================================================
+===============================================================================
 SCRIPT NAME:      map_list.lua
-DESCRIPTION:      Displays current and upcoming map rotation information.
+DESCRIPTION:      Map rotation information system with:
+                  - Current/next map display
+                  - Position lookup functionality
+                  - Clean output formatting
 
-                  Commands:
-                  /maplist       - Shows current and next map+mode
-                  /whatis [num]  - Displays specific map position details
+FEATURES:
+                  - Reads from mapcycle.txt
+                  - Two command interfaces:
+                    * /maplist - Shows current and next map
+                    * /whatis [num] - Shows specific rotation position
+                  - Automatic mode detection
 
-                  Example Output:
-                  Current Map: guardian (slayer) | Position: 1/4
-                  Next Map: construct (ctf) | Position: 2/4
-
-                  Notes:
-                  - Reads from mapcycle.txt in SAPP folder
-                  - Case-insensitive parsing
-                  - Supports all standard game modes
+USAGE:
+                  /maplist       - Shows current and upcoming maps
+                  /whatis [num]  - Shows details for specific rotation slot
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================
 ]]
 
 api_version = "1.12.0.0"

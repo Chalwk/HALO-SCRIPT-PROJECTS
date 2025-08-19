@@ -1,16 +1,27 @@
 --[[
-=====================================================================================
+===============================================================================
 SCRIPT NAME:      list_players.lua
-DESCRIPTION:      Player information display with:
-                  - /list and /pls commands
-                  - Shows player IP addresses
-                  - Displays team assignments
-                  - Configurable output formatting
+DESCRIPTION:      Enhanced player listing with:
+                  - Detailed player information
+                  - Clean column formatting
+                  - Team/IP visibility
+
+FEATURES:
+                  - Multiple command triggers
+                  - Configurable output format
+                  - Permission controls
+                  - Real-time updates
+
+CONFIGURATION:    Adjust these settings:
+                  - command/alt_command: Trigger words
+                  - max_name_length: Name column width
+                  - permission_level: Access requirement
+                  - ffa_team_name: Label for FFA players
 
 Copyright (c) 2019-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================
 ]]
 
 -- CONFIG STARTS -------------------------------------------------------------

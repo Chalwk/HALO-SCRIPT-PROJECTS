@@ -1,27 +1,26 @@
 --[[
-=====================================================================================
+===============================================================================
 SCRIPT NAME:      client_crasher.lua
-DESCRIPTION:      Client enforcement system that:
-                  - Automatically crashes clients matching:
-                    * Banned player names
-                    * Known cheat hashes
-                    * Blacklisted IPs
-                  - On-demand crash command:
-                    * /crash [id|me|*/all]
-                  - Technical implementation:
-                    * Exploits vehicle seat iteration bug
-                    * 50-1000 iterations in 0.01s
-                    * Warthog-based crash method
+DESCRIPTION:      Anti-cheat enforcement tool that:
+                  - Crashes clients of banned players/cheaters
+                  - Works via in-game vehicle exploit
+                  - Supports automatic and manual triggering
 
-SECURITY NOTICE:  USE RESPONSIBLY
-                  - Designed for anti-cheat enforcement
-                  - Can disrupt legitimate gameplay
+WARNING:          STRICT USAGE REQUIREMENTS
+                  - For anti-cheat purposes only
+                  - May cause game instability
                   - Requires careful configuration
+
+CONFIGURATION:    Edit Crash table to:
+                  - Set command/permissions
+                  - Add banned users (IPs/hashes/names)
+                  - Configure vehicle tags
+                  - Adjust crash iterations
 
 Copyright (c) 2020-2021 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================
 ]]
 
 -- Configuration [start] -----------------------------

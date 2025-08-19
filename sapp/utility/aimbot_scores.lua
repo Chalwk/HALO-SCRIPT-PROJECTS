@@ -1,15 +1,15 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      aimbot_scores.lua
-DESCRIPTION:      Displays player accuracy statistics with customizable filters.
+DESCRIPTION:      Displays player accuracy statistics with optional filters.
+                  - Command: /botscore [target] [mode]
+                    * target: 1–16 | me | all | *
+                    * mode: 0 (basic) | 1 (detailed)
+                  - Supports individual or global player queries
+                  - Provides real-time bot/accuracy scores
+                  - Requires minimum permission level 1
 
-                  Command Syntax:
-                  /botscore [target] [mode]
-                  - target: 1-16 | me | all | *
-                  - mode: 0 (basic) | 1 (detailed)
-
-                  Credits:
-                  Original concept by mouseboyx (OpenCarnage)
+Credits:          Original concept by mouseboyx (OpenCarnage)
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

@@ -1,24 +1,27 @@
 --[[
-=====================================================================================
+===============================================================================
 SCRIPT NAME:      liberty_vehicle_spawner.lua
-DESCRIPTION:      On-demand vehicle spawning system with intelligent cleanup.
+DESCRIPTION:      On-demand vehicle spawning system with:
+                  - Chat command activation
+                  - Automatic player entry
+                  - Intelligent cleanup system
+                  - Multi-map support
 
-                  Key Features:
-                  - Keyword-triggered instant spawning
-                  - Automatic entry on creation
-                  - Configurable abandonment timeout
-                  - Occupancy-based respawn timer
-                  - Multi-vehicle support
+FEATURES:
+                  - Keyword-based spawning (e.g. "hog", "rhog")
+                  - Configurable despawn timer
+                  - Occupancy detection
+                  - Automatic position adjustment
 
-                  Usage:
-                  Type vehicle name (e.g., "warthog") to spawn and enter
-
-                  Developed for the Liberty Clan
+CONFIGURATION:    Edit map_vehicles table to:
+                  - Add vehicle keywords per map
+                  - Set vehicle tag paths
+                  - Adjust DESPAWN_DELAY_SECONDS
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================
 ]]
 
 --========================= CONFIGURATION ====================================--

@@ -1,21 +1,12 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      afk_system.lua
-DESCRIPTION:      Comprehensive AFK management with:
-                  - Intelligent activity monitoring:
-                    * Movement tracking
-                    * Camera/aim detection
-                    * Input analysis
-                  - Customizable thresholds:
-                    * AFK timeout duration
-                    * Warning intervals
-                    * Grace periods
-                  - Special modes:
-                    * Voluntary AFK status
-                    * Admin immunity
-                  - Notification system:
-                    * Progressive warnings
-                    * Custom kick messages
+DESCRIPTION:      Automated AFK management system.
+                  - Detects inactivity via movement, camera/aim, and input
+                  - Configurable AFK timeout, warnings, and grace periods
+                  - Supports voluntary AFK toggling via command
+                  - Admin immunity configurable per level
+                  - Sends progressive warnings and custom kick messages
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

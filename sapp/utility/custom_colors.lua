@@ -1,12 +1,25 @@
 --[[
-=====================================================================================
+===============================================================================
 SCRIPT NAME:      custom_colors.lua
-DESCRIPTION:      Custom team colors
+DESCRIPTION:      Customizes player colors with:
+                  - Team-based colors (Red/Yellow, Blue/Blue by default)
+                  - Random FFA colors from 18 options
+                  - Automatic color assignment on join/team switch
+
+CONFIGURATION:    Edit the colors table to:
+                  - Set team colors (red/blue values 0-17)
+                  - Customize FFA color pool (values 0-17)
+                  - Add/remove FFA color options
+
+COLOR REFERENCE:  0=white, 1=black, 2=red, 3=blue, 4=gray, 5=yellow
+                  6=green, 7=pink, 8=purple, 9=cyan, 10=cobalt
+                  11=orange, 12=teal, 13=sage, 14=brown, 15=tan
+                  16=maroon, 17=salmon
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================
 ]]
 
 -- config starts --

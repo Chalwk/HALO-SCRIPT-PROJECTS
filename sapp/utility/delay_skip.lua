@@ -1,12 +1,24 @@
 --[[
-=====================================================================================
+===============================================================================
 SCRIPT NAME:      delay_skip.lua
-DESCRIPTION:      Prevent players from skipping the map too early
+DESCRIPTION:      Prevents premature map skipping by enforcing:
+                  - Configurable minimum wait time
+                  - Clear countdown feedback
+                  - Simple chat command integration
+
+FEATURES:
+                  - Customizable delay duration
+                  - Player-friendly time reminders
+                  - Automatic game state tracking
+
+CONFIGURATION:    Adjust these settings:
+                  - skipDelay: Minimum wait time in seconds
+                  - skipDelayMessage: Custom countdown message
 
 Copyright (c) 2020-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================
 ]]
 
 -- Configuration section:

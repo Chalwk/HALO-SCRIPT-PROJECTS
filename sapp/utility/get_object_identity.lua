@@ -1,18 +1,25 @@
 --[[
-=====================================================================================
+===============================================================================
 SCRIPT NAME:      get_object_identity.lua
-DESCRIPTION:      Object inspection tool with:
-                  - /get_objects command
-                  - Displays crosshair-targeted object info:
-                    * Type (vehicle/weapon/etc)
-                    * Name (internal path)
-                    * Meta ID
-                    * XYZ coordinates
+DESCRIPTION:      Advanced object inspection tool with:
+                  - Real-time object targeting
+                  - Detailed object information display
+                  - Admin-only access control
+
+FEATURES:
+                  - Crosshair-based object targeting
+                  - Displays type, name, ID and coordinates
+                  - Console and RCON output
+                  - Toggleable inspection mode
+
+CONFIGURATION:    Adjust these settings:
+                  - COMMAND: Toggle command name
+                  - PERMISSION_LEVEL: Required admin level
 
 Copyright (c) 2016-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================
 ]]
 
 api_version = '1.12.0.0'

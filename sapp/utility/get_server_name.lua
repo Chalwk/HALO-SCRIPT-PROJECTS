@@ -1,13 +1,22 @@
 --[[
-=====================================================================================
+===============================================================================
 SCRIPT NAME:      get_server_name.lua
-DESCRIPTION:      Example script demonstrating:
-                  - Server name access functionality
+DESCRIPTION:      Retrieves and displays the server name with:
+                  - Simple API for accessing server name
+                  - Welcome message functionality
+                  - Wide string handling
+
+FEATURES:
+                  - Gets the actual server name (not map name)
+                  - Can be used for welcome messages
+                  - Lightweight implementation
+
+USAGE:            Call GetServerName() to retrieve the server name string
 
 Copyright (c) 2016-2022 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================
 ]]
 
 api_version = '1.12.0.0'

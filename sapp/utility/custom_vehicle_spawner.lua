@@ -1,25 +1,26 @@
 --[[
-=====================================================================================
+===============================================================================
 SCRIPT NAME:      custom_vehicle_spawner.lua
-DESCRIPTION:      Advanced vehicle management system featuring:
-                  - Persistent vehicle spawning:
-                    * Pre-configured spawn locations
-                    * Automatic position reset
-                  - Intelligent vehicle tracking:
-                    * Occupancy detection
-                    * Movement monitoring
-                  - Configurable parameters:
-                    * Reset delay timers (5-60 sec)
-                    * Vehicle health thresholds
-                    * Spawn protection
-                  - Maintenance features:
-                    * Destroyed vehicle respawning
-                    * Stuck vehicle recovery
+DESCRIPTION:      Manages persistent vehicle spawns with:
+                  - Automatic respawning of moved vehicles
+                  - Map-specific vehicle configurations
+                  - Occupancy detection
+
+FEATURES:
+                  - Configurable respawn timers
+                  - Movement threshold detection
+                  - Multi-map support
+                  - Gametype-specific setups
+
+CONFIGURATION:    Edit the VehicleSpawner.maps table to:
+                  - Add vehicles per map/gametype
+                  - Set spawn coordinates and rotation
+                  - Configure respawn behavior (time/radius)
 
 Copyright (c) 2022 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================
 ]]
 
 local VehicleSpawner = {

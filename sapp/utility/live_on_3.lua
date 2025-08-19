@@ -1,12 +1,25 @@
 --[[
-=====================================================================================
+===============================================================================
 SCRIPT NAME:      live_on_3.lua
-DESCRIPTION:      Countdown-triggered game reset event
+DESCRIPTION:      Competitive match restart system with:
+                  - 3-2-1 countdown sequence
+                  - Automatic map reset
+                  - Admin permission controls
+
+FEATURES:
+                  - Custom command trigger
+                  - Visual countdown feedback
+                  - Temporary death message suppression
+                  - Permission-based access
+
+CONFIGURATION:    Adjust these settings:
+                  - command: Trigger word
+                  - permission: Required admin level
 
 Copyright (c) 2022 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================
 ]]
 
 -- Configuration section

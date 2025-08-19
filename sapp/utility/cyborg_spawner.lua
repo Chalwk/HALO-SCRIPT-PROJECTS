@@ -1,14 +1,26 @@
 --[[
-=====================================================================================
+===============================================================================
 SCRIPT NAME:      cyborg_spawner.lua
-DESCRIPTION:      Novelty cyborg spawn system
+DESCRIPTION:      Spawns cyborg characters at predefined locations on maps
+                  - Automatically places cyborgs when maps load
+                  - Supports multiple official Halo maps
+                  - Simple configuration for adding new maps
+
+FEATURES:
+                  - Precisely positioned spawn points
+                  - Map-specific configurations
+                  - Lightweight implementation
+
+CONFIGURATION:    Edit the objects table to:
+                  - Add new maps with spawn coordinates
+                  - Adjust existing spawn positions
+                  - Add/remove spawn points
 
 Copyright (c) 2016-2022 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================
 ]]
-
 local objects = {
 
     ['bloodgulch'] = {

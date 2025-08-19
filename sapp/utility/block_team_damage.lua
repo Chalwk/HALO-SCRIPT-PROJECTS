@@ -1,23 +1,20 @@
 --[[
-=====================================================================================
+===============================================================================
 SCRIPT NAME:      block_team_damage.lua
-DESCRIPTION:      Team damage prevention system with:
-                  - Complete friendly fire blocking:
-                    * Weapon damage cancellation
-                    * Grenade/explosive protection
-                    * Vehicle collision prevention
-                  - Customizable settings:
-                    * Per-weapon damage modifiers
-                    * Warning system for offenders
-                    * Admin override capabilities
-                  - Real-time monitoring:
-                    * Damage attempt logging
-                    * Repeat offender tracking
+DESCRIPTION:      Prevents all team damage in non-FFA gametypes by:
+                  - Blocking weapon damage between teammates
+                  - Automatically disabling in FFA modes
+                  - Working across all weapon types
+
+FEATURES:
+                  - Zero-configuration setup
+                  - Automatic gametype detection
+                  - Lightweight performance impact
 
 Copyright (c) 2023-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================
 ]]
 
 api_version = '1.12.0.0'

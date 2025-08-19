@@ -1,21 +1,27 @@
 --[[
-=====================================================================================
+===============================================================================
 SCRIPT NAME:      kill_zones.lua
-DESCRIPTION:      Configurable danger zone system with:
-                  - Map-specific kill zones:
-                    * Custom locations and radii
-                    * Adjustable kill delay timers
-                  - Player warnings:
-                    * Countdown notifications
-                    * Custom alert messages
-                  - Team support:
-                    * FFA and team-specific zones
-                    * Custom death messages
+DESCRIPTION:      Configurable danger zone system that:
+                  - Kills players who stay too long in restricted areas
+                  - Provides warnings before killing
+                  - Supports team-specific zones
+
+FEATURES:
+                  - Map-specific zone configurations
+                  - Adjustable warning timers
+                  - Custom death messages
+                  - Team/FFA mode support
+
+CONFIGURATION:    Edit the config table to:
+                  - Add zones per map (coordinates + radius)
+                  - Set warning/kill timers
+                  - Customize messages
+                  - Define team-specific zones
 
 Copyright (c) 2024 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================
 ]]
 
 api_version = '1.12.0.0'

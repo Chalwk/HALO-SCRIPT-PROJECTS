@@ -1,23 +1,12 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      anti_camp_v1.lua
-DESCRIPTION:      Advanced camping prevention system with:
-                  - Dynamic zone monitoring:
-                    * Per-map configurable restricted areas
-                    * Radius-based position tracking
-                    * Real-time duration calculation
-                  - Progressive enforcement:
-                    * Visual warnings at 50% threshold
-                    * Automatic punishment at max duration
-                    * Cooldown-protected penalties
-                  - Customizable parameters:
-                    * Zone timers (1-60 seconds)
-                    * Kill/death punishments
-                    * Warning/punishment messages
-                  - Smart reset conditions:
-                    * On player spawn
-                    * On disconnect
-                    * After punishment
+DESCRIPTION:      Camping prevention system with:
+                  - Configurable per-map zones
+                  - Dynamic radius & duration tracking
+                  - Progressive warnings & punishment
+                  - Cooldown-protected enforcement
+                  - Automatic reset on spawn/disconnect
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

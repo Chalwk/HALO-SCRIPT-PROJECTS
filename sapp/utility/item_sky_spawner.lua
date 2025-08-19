@@ -1,14 +1,27 @@
 --[[
-=====================================================================================
+===============================================================================
 SCRIPT NAME:      item_sky_spawner.lua
-DESCRIPTION:      Random item spawning system:
-                  - Spawns weapons/vehicles
-                  - Uses pre-defined map coordinates
+DESCRIPTION:      Random item spawner that drops weapons/vehicles from the sky:
+                  - Configurable spawn locations per map
+                  - Random item selection
+                  - Automatic cleanup system
+
+FEATURES:
+                  - Randomized spawn timing
+                  - Item persistence controls
+                  - Height-adjustable spawns
+                  - Support for all weapon/vehicle types
+
+CONFIGURATION:    Adjust these settings:
+                  - min/max: Spawn time range (seconds)
+                  - height_from_ground: Drop height
+                  - items: List of spawnable objects
+                  - coordinates: Map-specific drop points
 
 Copyright (c) 2021 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================
 ]]
 
 -- config starts --

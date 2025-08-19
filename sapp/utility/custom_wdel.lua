@@ -1,21 +1,24 @@
 --[[
-=====================================================================================
+===============================================================================
 SCRIPT NAME:      custom_wdel.lua
-DESCRIPTION:      Modified weapon deletion that preserves flag/oddball items.
+DESCRIPTION:      Enhanced weapon deletion command that:
+                  - Prevents accidental deletion of objective items (flags/oddballs)
+                  - Maintains standard weapon removal functionality
+                  - Provides admin permission controls
 
-                  Key Features:
-                  - Blocks accidental objective item deletion
-                  - Maintains standard weapon removal
-                  - Seamless SAPP command override
+FEATURES:
+                  - Safe weapon-only deletion
+                  - Multiple target selection (player ID, "me", "all")
+                  - Configurable admin requirements
 
-                  Credits:
-                  Inspired by OpenCarnage discussion:
-                  https://opencarnage.net/index.php?/topic/7091-block-wdel-n-with-the-flag/
+CONFIGURATION:    Adjust these settings:
+                  - command: Custom command name
+                  - permission_required: Minimum admin level
 
 Copyright (c) 2021-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================
 ]]
 
 -- config starts --

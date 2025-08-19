@@ -1,15 +1,15 @@
 --[[
-=====================================================================================
+===============================================================================
 SCRIPT NAME:      admin_add_me.lua
-DESCRIPTION:      Quick admin access utility for testing and development:
-                  - "/admin me" command grants level 4 admin privileges
-                  - Simplifies script testing and server management
-                  - Configurable default admin level
+DESCRIPTION:      Grants admin privileges via "/admin me" command
+                  - Sets level 4 admin by default (configurable)
+                  - Only works for pre-approved players, IPs, or hashes
+                  - Blocks known pirated game copies
 
 Copyright (c) 2016-2022 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================
 ]]
 
 local MOD = {

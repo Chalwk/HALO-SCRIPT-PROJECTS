@@ -1,30 +1,25 @@
 --[[
-=====================================================================================
+===============================================================================
 SCRIPT NAME:      anti_impersonator.lua
-DESCRIPTION:      Identity verification system that:
-                  - Detects clone accounts via:
-                    * Player hash matching
-                    * IP address comparison
-                  - Takes configurable actions:
-                    * Kick offenders
-                    * Ban repeat violators
-                    * Log incidents
-                  - Protection against:
-                    * Name spoofing
-                    * Admin impersonation
-                    * Trusted member cloning
+DESCRIPTION:      Prevents player impersonation by verifying identities against
+                  a whitelist of trusted members. Detects and punishes:
+                  - Clone accounts (matching hashes/IPs)
+                  - Name spoofing attempts
+                  - Admin impersonation
 
-NOTICE:           [Important Considerations]
-                  - Shared game copies may generate identical hashes
-                  - Dynamic IPs can cause false positives
-                  - For best results:
-                    * Prioritize hash verification
-                    * Encourage static IPs for trusted members
+CONFIGURATION:    - Choose between kick or ban actions
+                  - Set ban duration (permanent/temporary)
+                  - Configure trusted member whitelist
+                  - Enable/disable logging
+
+NOTICE:           - Shared game copies may trigger false positives
+                  - Dynamic IPs may require adjustment
+                  - Hash verification is most reliable
 
 Copyright (c) 2019-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================
 ]]
 
 -- Configuration -----------------------------------------------------------------

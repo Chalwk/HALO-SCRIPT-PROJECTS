@@ -1,25 +1,21 @@
 --[[
-=====================================================================================
+===============================================================================
 SCRIPT NAME:      auto_message.lua
-DESCRIPTION:      Automated announcement system featuring:
-                  - Scheduled message broadcasting:
-                    * Configurable delay intervals (30-300 seconds)
-                    * Multi-line message support
-                  - Flexible output options:
-                    * In-game chat messages
-                    * Console/RCON output
-                  - Message customization:
-                    * Color-coded text
-                    * Timestamp prefixes
-                    * Rotating message lists
-                  - Server management:
-                    * On-demand message triggers
-                    * Priority message queuing
+DESCRIPTION:      Automated rotating message system that broadcasts:
+                  - Scheduled announcements to all players
+                  - Multi-line messages with customizable intervals
+                  - Optional console output for monitoring
+
+CONFIGURATION:    Edit the AutoMessage table to:
+                  - Set message content (supports multiple lines)
+                  - Adjust broadcast interval (in seconds)
+                  - Toggle console output
+                  - Customize server message prefix
 
 Copyright (c) 2024 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================
 ]]
 
 -- Configuration table for the Auto Message script:

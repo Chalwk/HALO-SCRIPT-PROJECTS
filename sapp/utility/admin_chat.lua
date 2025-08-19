@@ -1,15 +1,12 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      admin_chat.lua
-DESCRIPTION:      Secure admin communication system with:
-                  - Toggleable admin-only chat visibility
-                  - Custom command aliases (/ac, /adminchat)
-                  - Intelligent spam protection
-                  - Player management integration
-                  - Configurable features:
-                    * Message formatting
-                    * Permission levels
-                    * Notification sounds
+DESCRIPTION:      Admin-only chat system for secure communication.
+                  - Commands: /achat, /ac
+                  - Configurable permission level required to use
+                  - Toggle admin chat visibility per player
+                  - Built-in cooldown to prevent spam
+                  - Customizable message formatting and notification messages
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

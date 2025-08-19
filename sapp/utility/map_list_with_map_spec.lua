@@ -1,18 +1,28 @@
 --[[
-=====================================================================================
+===============================================================================
 SCRIPT NAME:      map_list_with_map_spec.lua
-DESCRIPTION:      Displays current and upcoming map rotation information from mapcycle.txt.
-
-                  Features:
-                  - Real-time map cycle tracking
+DESCRIPTION:      Enhanced map rotation tracker with:
+                  - Current/next map display
                   - Position-based map queries
-                  - Case-insensitive parsing
-                  - Configurable commands
+                  - Map specification index tracking
+                  - Cycle completion detection
+
+FEATURES:
+                  - Reads from mapcycle.txt
+                  - Two command interfaces:
+                    * /maplist - Shows current and next map
+                    * /whatis [num] - Shows details for specific position
+                  - Tracks played maps in current cycle
+
+CONFIGURATION:    Adjust these settings:
+                  - map_list_command: Main command trigger
+                  - what_is_next_command: Position query command
+                  - output: Customize message formats
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================
 ]]
 
 -- config starts --

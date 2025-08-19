@@ -1,17 +1,11 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      admin_messages.lua
-DESCRIPTION:      Customizable admin greeting system with:
-                  - Level-based join messages (humorous or serious)
-                  - Multiple output options:
-                    * General hat
-                    * RCON console
-                  - Flexible formatting:
-                    * Custom text alignment
-                    * Color coding support
-                  - Easy configuration:
-                    * Per-admin level messages
-                    * Toggleable display
+DESCRIPTION:      Configurable admin join message system.
+                  - Displays messages per admin level (1–4)
+                  - Supports chat or RCON output
+                  - Customizable formatting: alignment, color codes, server prefix
+                  - Easy to configure per level and toggle display environment
 
 Copyright (c) 2019–2021 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

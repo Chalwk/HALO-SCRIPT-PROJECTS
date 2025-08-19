@@ -1,25 +1,27 @@
 --[[
-=====================================================================================
+===============================================================================
 SCRIPT NAME:      block_duplicate_ips.lua
-DESCRIPTION:      IP-based player restriction system featuring:
-                  - Duplicate IP detection:
-                    * Real-time connection monitoring
-                    * Multiple detection methods
-                  - Configurable enforcement:
-                    * Block new connections
-                    * Kick existing duplicates
-                    * Ban repeat offenders
-                  - Exception handling:
-                    * LAN party allowances
-                    * Admin bypass options
-                  - Notification system:
-                    * Player warnings
-                    * Admin alerts
+DESCRIPTION:      Prevents multiple connections from the same IP address with:
+                  - Configurable actions (kick/ban)
+                  - IP whitelist support
+                  - Admin notifications
+
+FEATURES:
+                  - Real-time duplicate IP detection
+                  - Customizable ban durations
+                  - LAN party support via IP whitelist
+                  - Detailed logging options
+
+CONFIGURATION:    Adjust these settings:
+                  - action: "kick" or "ban"
+                  - banTime: Duration in minutes
+                  - excludedIPs: Whitelisted IPs
+                  - notification preferences
 
 Copyright (c) 2019-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================
 ]]
 
 -- API version required for the script to run:

@@ -1,23 +1,20 @@
 --[[
-=====================================================================================
+===============================================================================
 SCRIPT NAME:      chat_ids.lua
-DESCRIPTION:      Player identification system that:
-                  - Appends unique player IDs to chat messages
-                  - Supports multiple ID formats:
-                    * Slot numbers
-                    * Persistent player indices
-                  - Customizable display options:
-                    * Prefix/suffix positioning
-                    * Color coding
-                    * Visibility toggles
-                  - Integration with:
-                    * Admin chat systems
-                    * Player lookup commands
+DESCRIPTION:      Enhances chat visibility by displaying player slot numbers:
+                  - Appends player IDs to all chat messages
+                  - Works in both global and team chat
+                  - Preserves existing chat functionality
+
+CONFIGURATION:    Customize message formats in the chat table:
+                  - Global chat: [0] = "$name [$id]: $msg"
+                  - Team chat: [1] = "[$name] [$id]: $msg"
+                  - Vehicle chat: [2] = "[$name] [$id]: $msg"
 
 Copyright (c) 2014-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================
 ]]
 
 -- Define chat formats

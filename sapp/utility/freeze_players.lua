@@ -1,14 +1,31 @@
 --[[
-=====================================================================================
+===============================================================================
 SCRIPT NAME:      freeze_players.lua
 DESCRIPTION:      Player freezing system with:
-                  - /freeze [player id] command
-                  - /unfreeze [player id] command
+                  - Freeze/unfreeze commands
+                  - Weapon management options
+                  - Customizable notifications
+                  - Admin permission controls
+
+FEATURES:
+                  - Movement restriction
+                  - Weapon removal/restoration
+                  - God mode toggle
+                  - Chat restrictions
+                  - Multi-target support
+
+CONFIGURATION:    Adjust these settings:
+                  - freeze_command: Freeze command name
+                  - unfreeze_command: Unfreeze command name
+                  - permission_level: Required admin level
+                  - messages: Custom notification texts
+                  - god_mode: Toggle invulnerability
+                  - take_weapons: Toggle weapon removal
 
 Copyright (c) 2020 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================
 ]]
 
 -- Config [Starts] ----------------------------------------------------------------

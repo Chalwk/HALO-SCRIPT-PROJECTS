@@ -1,26 +1,25 @@
 --[[
-=====================================================================================
+===============================================================================
 SCRIPT NAME:      block_replace_objects.lua
-DESCRIPTION:      Advanced object management system featuring:
-                  - Dynamic object manipulation:
-                    * Block specific object spawns
-                    * Replace objects with alternatives
-                  - Map customization:
-                    * Per-map configuration
-                    * Tag-specific overrides
-                  - Runtime control:
-                    * On-the-fly adjustments
-                    * Preset configurations
-                  - Supports all object types:
-                    * Weapons
-                    * Vehicles
-                    * Equipment
-                    * Scenery
+DESCRIPTION:      Controls object spawning with:
+                  - Ability to block specific objects
+                  - Option to replace objects with alternatives
+                  - Per-gametype configuration
+
+FEATURES:
+                  - Works with all object types (weapons, vehicles, etc.)
+                  - Simple tag-based configuration
+                  - Runtime adjustments without server restart
+
+CONFIGURATION:    Edit the tags table to:
+                  - Block objects: {tag_type, "tag/path"}
+                  - Replace objects: {src_type, "src/path", dest_type, "dest/path"}
+                  - Organize by gametype
 
 Copyright (c) 2022 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================
 ]]
 
 local tags = {

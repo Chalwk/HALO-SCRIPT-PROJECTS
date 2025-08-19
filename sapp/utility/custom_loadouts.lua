@@ -1,26 +1,28 @@
 --[[
-=====================================================================================
+===============================================================================
 SCRIPT NAME:      custom_loadouts.lua
-DESCRIPTION:      Comprehensive loadout management featuring:
-                  - Custom weapon configurations:
-                    * Primary/secondary weapon sets
-                    * Grenade type selection
-                    * Ammo capacity controls
-                  - Player persistence:
-                    * Saved loadout preferences
-                    * Automatic respawn application
-                  - Administrative tools:
-                    * Loadout template creation
-                    * Player loadout overrides
-                  - UI/UX enhancements:
-                    * Death screen loadout reminders
-                    * Command-based selection menu
-                    * Visual loadout previews
+DESCRIPTION:      Custom weapon loadout system with:
+                  - Multiple pre-configured weapon sets
+                  - Automatic loadout application on spawn
+                  - Player loadout selection
+                  - Admin override capabilities
+
+FEATURES:
+                  - Weapon combinations with custom ammo
+                  - Grenade count configuration
+                  - In-game loadout selection menu
+                  - Persistent player preferences
+
+CONFIGURATION:    Edit the CFG table to:
+                  - Add/remove loadout presets
+                  - Configure weapons and ammo
+                  - Set default loadout
+                  - Customize command names
 
 Copyright (c) 2024-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================
 ]]
 
 -- CONFIG START ---------------------------------------------------------------

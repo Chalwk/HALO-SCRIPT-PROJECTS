@@ -1,13 +1,22 @@
 --[[
-=====================================================================================
+===============================================================================
 SCRIPT NAME:      game_countdown.lua
-DESCRIPTION:      Example script demonstrating:
-                  - Game time access functionality
+DESCRIPTION:      Displays remaining game time with:
+                  - Real-time countdown tracking
+                  - Formatted time display (HH:MM:SS)
+                  - Accurate game timer integration
+
+FEATURES:
+                  - Precise time calculation
+                  - Clean time formatting
+                  - Low resource usage
+
+USAGE:            Call getTimeRemaining() to get formatted time string
 
 Copyright (c) 2016-2022 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================
 ]]
 
 local timelimit_address

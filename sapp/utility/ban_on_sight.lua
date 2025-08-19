@@ -1,25 +1,26 @@
 --[[
-=====================================================================================
+===============================================================================
 SCRIPT NAME:      ban_on_sight.lua
-DESCRIPTION:      High-performance ban management system with:
-                  - Instant player banning:
-                    * By slot ID (/bos [id])
-                    * IP-based enforcement
-                  - Admin tools:
-                    * Ban list viewing (/boslist)
-                    * Permission level controls
-                  - Optimized architecture:
-                    * O(1) lookup efficiency
-                    * Sorted persistent storage
-                  - Real-time monitoring:
-                    * Connection attempts
-                    * Ban enforcement
-                    * Admin notifications
+DESCRIPTION:      Instant player banning system with:
+                  - IP-based enforcement
+                  - Persistent ban storage
+                  - Admin command controls
+
+FEATURES:
+                  - /bos [id] - Ban player immediately
+                  - /boslist - View all banned players
+                  - Pre-join ban checking
+                  - Admin permission levels
+
+CONFIGURATION:    Adjustable settings:
+                  - MIN_ADMIN_LEVEL: Required admin level
+                  - BASE_COMMAND: Primary ban command
+                  - LIST_COMMAND: Ban list command
 
 Copyright (c) 2016-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================
 ]]
 
 api_version = '1.11.0.0'

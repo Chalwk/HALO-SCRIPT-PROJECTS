@@ -1,15 +1,27 @@
 --[[
-=====================================================================================
+===============================================================================
 SCRIPT NAME:      dynamic_ping_kicker.lua
-DESCRIPTION:      Dynamically adjusts ping limits based on player count:
-                  - Issues warnings for high ping
-                  - Kicks players exceeding limits after grace period
-                  - Admin immunity by level or name
+DESCRIPTION:      Automatically enforces ping limits with:
+                  - Player count-based thresholds
+                  - Warning system with grace periods
+                  - Admin immunity options
+
+FEATURES:
+                  - Dynamic ping limits that adjust as players join/leave
+                  - Multiple warnings before kicking
+                  - Configurable grace periods
+                  - Detailed logging options
+
+CONFIGURATION:    Adjust these settings:
+                  - limits: Ping thresholds by player count
+                  - warnings: Number of warnings before kick
+                  - grace_period: Time to improve ping
+                  - admin_immunity: Admin protection settings
 
 Copyright (c) 2020-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================
 ]]
 
 api_version = '1.12.0.0'

@@ -1,12 +1,25 @@
 --[[
-=====================================================================================
+===============================================================================
 SCRIPT NAME:      disable_fall_damage.lua
-DESCRIPTION:      Simple script to disable fall damage on specific maps
+DESCRIPTION:      Disables fall damage on configured maps by enabling jetpack
+                  - Prevents player deaths from falls
+                  - Map/gametype specific configuration
+                  - Automatic activation
+
+FEATURES:
+                  - Simple configuration for any map
+                  - Gametype-specific control
+                  - Jetpack-based fall prevention
+
+CONFIGURATION:    Edit the maps table to:
+                  - Add maps where fall damage should be disabled
+                  - Specify gametypes per map
+                  - Set values to true to activate
 
 Copyright (c) 2020 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================
 ]]
 
 api_version = "1.12.0.0"

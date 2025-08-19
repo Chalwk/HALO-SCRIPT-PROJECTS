@@ -1,12 +1,24 @@
 --[[
-=====================================================================================
+===============================================================================
 SCRIPT NAME:      countdown_timer.lua
-DESCRIPTION:      Simple countdown for development and testing
+DESCRIPTION:      Displays a customizable countdown to all players with:
+                  - Configurable duration
+                  - Formatted output message
+                  - Automatic game state detection
+
+FEATURES:
+                  - Simple setup with minimal configuration
+                  - Clears previous messages for better visibility
+                  - Tracks game state (start/end)
+
+CONFIGURATION:    Adjust these variables:
+                  - delay: Countdown duration (seconds)
+                  - output_msg: Display format string
 
 Copyright (c) 2016-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================
 ]]
 
 api_version = "1.12.0.0"

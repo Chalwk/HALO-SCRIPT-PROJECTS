@@ -1,26 +1,25 @@
 --[[
-=====================================================================================
+===============================================================================
 SCRIPT NAME:      console_logo.lua
-DESCRIPTION:      Custom ASCII console branding system featuring:
-                  - Dynamic logo generation
-                  - Font compatibility:
-                    * Tested with 'KBAN' font
-                    * Supports multi-line designs
-                  - Easy configuration:
-                    * Paste ASCII art directly
-                    * Automatic centering
-                  - Display options:
-                    * Server startup display
-                    * Color customization
+DESCRIPTION:      Displays custom ASCII art in server console with:
+                  - Automatic timestamp and server name insertion
+                  - Color-coded text support
+                  - Multi-line formatting
 
-CREATION TIP:    Generate logos at:
+CONFIGURATION:    Edit the logo table to:
+                  - Add/remove ASCII art lines
+                  - Set text colors (0-255)
+                  - Use $time_stamp and $server_name variables
+                  - Adjust timestamp format
+
+CREATION TIP:     Generate ASCII art at:
                   https://patorjk.com/software/taag/
-                  (Use 'KBAN' font for best compatibility)
+                  (Use 'KBAN' font for best results)
 
 Copyright (c) 2021 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================
 ]]
 
 -- config starts --

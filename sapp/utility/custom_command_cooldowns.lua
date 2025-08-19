@@ -1,24 +1,24 @@
 --[[
-=====================================================================================
+===============================================================================
 SCRIPT NAME:      custom_command_cooldowns.lua
-DESCRIPTION:      Advanced command rate-limiting system featuring:
-                  - Per-command cooldown configuration:
-                    * Custom durations (1-300 seconds)
-                    * Granular player-specific timers
-                  - Anti-spam protection:
-                    * Multiple violation detection
-                    * Progressive enforcement
-                  - Management features:
-                    * Command whitelisting/blacklisting
-                    * Admin override capabilities
-                  - Real-time monitoring:
-                    * Cooldown status tracking
-                    * Player violation logging
+DESCRIPTION:      Prevents command spamming by enforcing:
+                  - Custom cooldown timers per command
+                  - Player-specific usage tracking
+                  - Clear cooldown feedback
+
+FEATURES:
+                  - Simple configuration for any command
+                  - Precise cooldown timing
+                  - Helpful player notifications
+
+CONFIGURATION:    Add commands to commandCooldowns table:
+                  - Format: ["/command"] = cooldown_seconds
+                  - Example: ["/heal"] = 30 (30 second cooldown)
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================
 ]]
 
 api_version = "1.12.0.0"

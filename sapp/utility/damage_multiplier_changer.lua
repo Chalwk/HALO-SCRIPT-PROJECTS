@@ -1,12 +1,26 @@
 --[[
-=====================================================================================
+===============================================================================
 SCRIPT NAME:      damage_multiplier_changer.lua
-DESCRIPTION:
+DESCRIPTION:      Customizes weapon and damage effects with:
+                  - Configurable damage multipliers
+                  - Support for all weapon types
+                  - Vehicle damage adjustments
+
+FEATURES:
+                  - Fine-tuned damage control
+                  - Melee, projectile and explosion modifiers
+                  - Vehicle weapon customization
+
+CONFIGURATION:    Edit the multipliers table to:
+                  - Adjust damage values (0-9999)
+                  - Add new weapon tags
+                  - Modify existing entries
+                  - 1 = normal damage, <1 = reduced, >1 = increased
 
 Copyright (c) 2019 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================
 ]]
 
 api_version = "1.12.0.0"
@@ -17,7 +31,6 @@ local multipliers = {
     -- [TAG NAME] = DAMAGE MULTIPLIER (0-9999) (1 = normal damage)
 
     -- WEAPONS:
-    ["weapons\\assault rifle\\melee"] = 4,
     ["weapons\\assault rifle\\melee"] = 4,
     ["weapons\\ball\\melee"] = 4,
     ["weapons\\flag\\melee"] = 4,
@@ -58,7 +71,6 @@ local multipliers = {
     ["weapons\\rocket launcher\\explosion"] = 5.00,
     ["weapons\\needler\\detonation damage"] = 2.00,
     ["weapons\\plasma rifle\\charged bolt"] = 3.00,
-    ["weapons\\plasma_cannon\\effects\\plasma_cannon_melee"] = 2.50,
     ["weapons\\plasma_cannon\\effects\\plasma_cannon_explosion"] = 2.50,
 
     -- VEHICLE COLLISION & FALL DAMAGE:

@@ -1,17 +1,15 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      anti_aimbot.lua
-DESCRIPTION:      Advanced aim-lock detection system featuring:
-                  - Multi-layered detection methodology:
-                    * Velocity-based threshold analysis
-                    * Projectile trajectory prediction
-                    * Dynamic sensitivity adjustment
-                  - Behavioral analysis:
-                    * Machine-like pattern recognition
-                    * Environmental visibility verification
-                  - Weapon-specific detection profiles
-                  - False positive mitigation system
-                  - Real-time monitoring and reporting
+DESCRIPTION:      Advanced aim-lock detection system with:
+                  - Multi-layered detection:
+                    * Angle & velocity thresholds
+                    * Projectile prediction
+                    * Dynamic threshold adjustment
+                  - Behavioral & pattern analysis
+                  - Weapon-specific scoring
+                  - Environmental awareness & false-positive mitigation
+                  - Real-time enforcement via configurable commands
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

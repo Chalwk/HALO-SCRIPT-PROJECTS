@@ -1,7 +1,13 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      anti_camp_v2.lua
-DESCRIPTION:      Advanced camping prevention anywhere on the map.
+DESCRIPTION:      Universal camping prevention system with:
+                  - Continuous global monitoring
+                  - Radius-based movement detection
+                  - Dynamic warning at 50% of max time
+                  - Automatic punishment on threshold exceed
+                  - Cooldown-protected enforcement
+                  - Automatic reset on spawn/disconnect
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

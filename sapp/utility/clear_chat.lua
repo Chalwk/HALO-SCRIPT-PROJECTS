@@ -1,21 +1,20 @@
 --[[
-=====================================================================================
+===============================================================================
 SCRIPT NAME:      clear_chat.lua
-DESCRIPTION:      Chat management utility featuring:
-                  - Instant global chat clearing (/clear)
-                  - Configurable options:
-                    * Admin-only access control
-                    * Custom clearance messages
-                    * Cooldown timers
-                  - Multi-mode operation:
-                    * Complete chat wipe
-                    * Line-by-line deletion
-                    * Targeted message removal
+DESCRIPTION:      Provides admin command to clear in-game chat:
+                  - Removes all visible chat messages
+                  - Works with SAPP's message system
+                  - Admin permission controls
+
+CONFIGURATION:    Customize in config table:
+                  - command: Clear chat trigger
+                  - permission_level: Required admin level
+                  - prefix: Server message prefix
 
 Copyright (c) 2016-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================
 ]]
 
 -- Configuration
