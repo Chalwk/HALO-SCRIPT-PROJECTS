@@ -1,6 +1,6 @@
 --[[
 =====================================================================================
-SCRIPT NAME:      timed_server_password.lua
+SCRIPT NAME:      Timed Server Password
 DESCRIPTION:      Automatically removes server password after configurable duration.
 
 FEATURES:
@@ -8,16 +8,14 @@ FEATURES:
                   - Automatic password clearing
                   - Server-wide notifications
                   - Admin command integration
-                  - Simple configuration
+                  - Event-based optimization
+                  - Permission system
 
 CONFIGURATION:
-                  duration = 300 - Password duration in seconds (5 minutes)
-                  - Edit script directly to change duration
-
-USAGE:
-                  - Password automatically removes after set duration
-                  - New passwords reset the timer
-                  - Notifies players when password is removed
+                  local CONFIG = {
+                    DURATION = 300,   - Password duration in seconds (5 minutes)
+                    ADMIN_LEVEL = 4   - Required admin level for password commands
+                  }
 
 DEVELOPED FOR:    BK Clan (@Rev)
 
@@ -27,71 +25,70 @@ LICENSE:          MIT License
 =====================================================================================
 ]]
 
--- Configuration Starts ---------------------------
-local duration = 300  -- Duration (in seconds) before the server password is removed
--- Configuration Ends -----------------------------
-
 api_version = '1.12.0.0'
 
-local currentTime, passwordRemovalTime = os.time, nil  -- Initialize time functions
+-- Configuration ---------------------------------------------------------------
+local CONFIG = {
+    DURATION = 300,  -- Password duration in seconds (5 minutes)
+    ADMIN_LEVEL = 4, -- Required admin level for password commands
+    NOTIFICATION = "Server password has been automatically removed"
+}
+-- End Configuration -----------------------------------------------------------
 
--- Start the timer to remove the server password
-local function StartTimer()
-    passwordRemovalTime = nil  -- Reset the countdown
-    if get_var(0, '$gt') ~= 'n/a' then
-        passwordRemovalTime = currentTime() + duration  -- Set the removal time
-    end
+-- Localized API functions for performance
+local get_var = get_var
+local execute_command = execute_command
+local say_all = say_all
+local cprint = cprint
+local rprint = rprint
+local os_time = os.time
+local tonumber = tonumber
+
+-- Script state
+local password_removal_time = nil
+
+-- Starts the password removal timer
+local function start_timer()
+    password_removal_time = os_time() + CONFIG.DURATION
 end
 
--- Load the script and register necessary callbacks
-function OnScriptLoad()
-    register_callback(cb['EVENT_TICK'], 'OnTick')
-    register_callback(cb['EVENT_COMMAND'], 'OnCommand')
-    register_callback(cb['EVENT_GAME_START'], 'StartTimer')
-    StartTimer()  -- Start the timer upon script load
+local function has_permission(player_id)
+    return player_id == 0 or tonumber(get_var(player_id, "$lvl")) >= CONFIG.ADMIN_LEVEL
 end
 
--- Check each tick if the password should be removed
+local function send(player_id, message)
+    if player_id == 0 then return cprint(message, 10) end
+    rprint(player_id, message)
+end
+
+function OnStart()
+    if get_var(0, "$gt") == "n/a" then return end
+    start_timer()
+end
+
 function OnTick()
-    if passwordRemovalTime and currentTime() >= passwordRemovalTime then
-        passwordRemovalTime = nil  -- Clear the countdown
-        execute_command('sv_password ""')  -- Remove the server password
-        say_all('Server password has been removed!')  -- Notify all players
+    if password_removal_time and os_time() >= password_removal_time then
+        password_removal_time = nil
+        execute_command("sv_password \"\"")
+        say_all(CONFIG.NOTIFICATION)
     end
 end
 
--- Split a string into lowercase arguments
-local function stringSplit(str)
-    local args = {}
-    for arg in str:gmatch('([^%s]+)') do
-        args[#args + 1] = arg:lower()
+function OnCommand(player_id, command)
+    local cmd = command:lower()
+    if cmd:sub(1, 11) == "sv_password" and #cmd > 12 and has_permission(player_id) then
+        start_timer()
+        send(player_id, "Server password will auto-remove in " .. CONFIG.DURATION .. " seconds")
+        return false
     end
-    return args
+    return true
 end
 
--- Check if the player has permission to execute the command
-local function hasPermission(playerId)
-    return playerId == 0 or tonumber(get_var(playerId, '$lvl')) >= 4
+function OnScriptLoad()
+    register_callback(cb['EVENT_TICK'], "OnTick")
+    register_callback(cb['EVENT_COMMAND'], "OnCommand")
+    register_callback(cb['EVENT_GAME_START'], "OnStart")
+    OnStart()
 end
 
--- Send a message to the player or to the console
-local function sendMessage(playerId, message)
-    if playerId == 0 then
-        cprint(message)  -- Send to console
-    else
-        rprint(playerId, message)  -- Send to player
-    end
-end
-
--- Handle commands from players
-function OnCommand(playerId, commandInput, _)
-    local args = stringSplit(commandInput)
-    if #args > 0 and args[1] == 'sv_password' and hasPermission(playerId) and args[2] then
-        StartTimer()  -- Start the password removal timer
-        sendMessage(playerId, 'Server password will be removed in ' .. duration .. ' seconds')
-    end
-end
-
-function OnScriptUnload()
-    -- N/A
-end
+function OnScriptUnload() end
