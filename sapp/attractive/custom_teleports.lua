@@ -2,38 +2,25 @@
 =====================================================================================
 SCRIPT NAME:      custom_teleports.lua
 DESCRIPTION:      Creates configurable instant teleport zones that transport players
-                  between locations when they enter defined activation areas.
+                  between defined locations when entering activation areas.
 
 FEATURES:
                   - Map-specific teleport configuration
-                  - Adjustable activation radius for each teleport
+                  - Adjustable activation radius
                   - Optional crouch activation requirement
-                  - Cooldown system to prevent rapid teleportation
+                  - Cooldown system to prevent abuse
                   - Vehicle usage protection
-                  - Visual feedback on teleportation
-
-CONFIGURATION:
-                  - Define teleports per map in the Teleports table
-                  - Format: {srcX, srcY, srcZ, radius, destX, destY, destZ, zOffset}
-                  - Toggle crouch activation with crouchActivated
-                  - Adjust teleport_cooldown for rate limiting
 
 USAGE:
-                  1. Add teleport entries for each supported map
-                  2. Set activation radius (smaller values = more precise activation)
-                  3. Configure zOffset for destination height adjustment
-                  4. Enable crouchActivated for crouch-only teleports
+                  1. Add teleport entries for each supported map in CFG table
+                  2. Format: {srcX, srcY, srcZ, radius, destX, destY, destZ, zOffset}
+                  3. Set CROUCH_ACTIVATED true for crouch-only activation
 
 EXAMPLE CONFIG:
                   ["bloodgulch"] = {
-                      {98.80, -156.30, 1.70, 0.5, 72.58, -126.33, 1.18, 0}, -- Red base to mid
-                      {36.87, -82.33, 1.70, 0.5, 72.58, -126.33, 1.18, 0}   -- Blue base to mid
+                      {98.80, -156.30, 1.70, 0.5, 72.58, -126.33, 1.18, 0}, -- Red to mid
+                      {36.87, -82.33, 1.70, 0.5, 72.58, -126.33, 1.18, 0}    -- Blue to mid
                   }
-
-PERFORMANCE:
-                  - Optimized distance calculations
-                  - Minimal per-tick processing
-                  - Efficient memory usage
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -46,26 +33,13 @@ LICENSE:          MIT License
 -----------------
 
 -- If true, players must crouch to activate a teleport:
-local crouchActivated = false
+local CROUCH_ACTIVATED = false
 
--- Teleport definitions by map name:
--- Format:
---   ["map_name"] = {
---       { srcX, srcY, srcZ, radius, destX, destY, destZ, zOffset },
---       ...
---   }
---
--- srcX, srcY, srcZ     = Teleport activation point coordinates (where player stands)
--- radius               = Activation radius (in world units; spherical)
--- destX, destY, destZ  = Destination point coordinates (where player appears)
--- zOffset              = Extra height offset applied at destination
---
--- Example below for "bloodgulch" with two teleporters:
-local Teleports = {
+local CFG = {
     ["bloodgulch"] = {
-        -- Teleport 1: Near red base to a point mid-map
+        -- Teleport 1: Red base health pack to rocket launcher mid-map
         { 98.80, -156.30, 1.70, 0.5, 72.58, -126.33, 1.18, 0 },
-        -- Teleport 2: Near blue base to the same mid-map point
+        -- Teleport 2: Blue base health pack to rocket launcher mid-map
         { 36.87, -82.33,  1.70, 0.5, 72.58, -126.33, 1.18, 0 }
     },
 
@@ -79,12 +53,12 @@ local Teleports = {
 api_version = "1.12.0.0"
 
 local map
+local map_cfg
 local last_teleport = {}
 local teleport_cooldown = 0
 
--- Cache global functions
+local format = string.format
 local os_time = os.time
-local string_format = string.format
 local read_float = read_float
 local read_dword = read_dword
 local read_vector3d = read_vector3d
@@ -99,18 +73,11 @@ function OnScriptLoad()
     OnStart()
 end
 
-local function PrecomputeSquaredRadii(config)
-    for i = 1, #config do
-        local r = config[i][4]
-        config[i].sq_radius = r * r
-    end
-end
-
-local function PrintTeleportStatus(numTeleports)
+local function print_teleport_status(numTeleports)
     if numTeleports > 0 then
-        cprint(string_format('[Custom Teleports] Loaded %d teleports for map %s', numTeleports, map), 12)
+        cprint(format('[Custom Teleports] Loaded %d teleports for map %s', numTeleports, map), 12)
     else
-        cprint(string_format('[Custom Teleports] No teleports configured for map %s', map), 12)
+        cprint(format('[Custom Teleports] No teleports configured for map %s', map), 12)
     end
 end
 
@@ -118,33 +85,32 @@ function OnStart()
     if get_var(0, '$gt') == 'n/a' then return end
 
     map = get_var(0, '$map')
-    local config = Teleports[map]
+    local cfg = CFG[map]
 
-    if config and #config > 0 then
-        PrecomputeSquaredRadii(config)
-        PrintTeleportStatus(#config)
+    if cfg then
+        map_cfg = cfg
+        print_teleport_status(#cfg)
         register_callback(cb['EVENT_TICK'], 'OnTick')
     else
         unregister_callback(cb['EVENT_TICK'])
-        PrintTeleportStatus(0)
+        print_teleport_status(0)
     end
 end
 
 function OnTick()
-    local config = Teleports[map]
-    if not config then return end
 
     for i = 1, 16 do
         if not player_present(i) or not player_alive(i) then goto continue end
 
         local dyn = get_dynamic_player(i)
+        if dyn == 0 then goto continue end
         if read_dword(dyn + 0x11C) == 0xFFFFFFF then goto continue end -- In vehicle check
 
         local position = dyn + 0x5C
         local x, y, z = read_vector3d(position)
 
         -- Handle crouch height adjustment
-        if crouchActivated then
+        if CROUCH_ACTIVATED then
             local crouch_state = read_float(dyn + 0x50C)
             if crouch_state ~= 1 then goto continue end
             z = z + 0.35
@@ -154,16 +120,18 @@ function OnTick()
         local last = last_teleport[i]
         if last and os_time() < last + teleport_cooldown then goto continue end
 
-        for j = 1, #config do
-            local t = config[j]
-            local dx = x - t[1]
-            local dy = y - t[2]
-            local dz = z - t[3]
-            local distSq = dx * dx + dy * dy + dz * dz
+        for j = 1, #map_cfg do
+            local t = map_cfg[j]
+            local originX = x - t[1]
+            local originY = y - t[2]
+            local originZ = z - t[3]
+            local radius = t[4]
+            local distSq = originX * originX + originY * originY + originZ * originZ
 
-            if distSq <= t.sq_radius then
-                local zOff = (crouchActivated and 0) or t[8]
-                write_vector3d(position, t[5], t[6], t[7] + zOff)
+            if distSq <= radius * radius then
+                local destinationX, destinationY, destinationZ = t[5], t[6], t[7]
+                local zOff = (CROUCH_ACTIVATED and 0) or t[8]
+                write_vector3d(position, destinationX, destinationY, destinationZ + zOff)
                 rprint(i, 'WOOSH!')
                 last_teleport[i] = os_time()
                 break
