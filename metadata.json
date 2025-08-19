@@ -894,146 +894,146 @@
     },
     "server_name_changer": {
       "title": "Server Name Changer",
-      "shortDescription": "Modify server name dynamically",
-      "description": "Allows admins to change the server name on the fly, useful for events or branding.",
+      "shortDescription": "Automated server name rotation system",
+      "description": "Cycles through a list of custom server names at configurable intervals. Supports blank names and special characters in server names.",
       "filename": "server_name_changer.lua"
     },
     "set_respawn_time": {
       "title": "Set Respawn Time",
-      "shortDescription": "Adjust player respawn delay",
-      "description": "Admins can configure respawn timers globally or per team to modify gameplay pacing.",
+      "shortDescription": "Dynamic respawn time configuration system",
+      "description": "Allows per-map and per-gametype respawn time configuration with admin override capability. Supports both global and player-specific settings with silent execution mode.",
       "filename": "set_respawn_time.lua"
     },
     "show_admin_names": {
       "title": "Show Admin Names",
-      "shortDescription": "Display all admins",
-      "description": "Lists currently connected admins in chat or via command for transparency.",
+      "shortDescription": "Admin identification utility",
+      "description": "Displays all online administrators with their permission levels via simple chat command. Helps players identify server staff quickly and easily.",
       "filename": "show_admin_names.lua"
     },
     "simple_poll_system": {
       "title": "Simple Poll System",
-      "shortDescription": "Conduct in-game polls",
-      "description": "Allows players to vote on options, with results displayed in chat.",
+      "shortDescription": "Admin-controlled in-game voting system with timed polls",
+      "description": "Allows admins to create timed polls with custom questions and options. Players can vote using /vote command, with results broadcasted when poll ends.",
       "filename": "simple_poll_system.lua"
     },
     "spawn_protection": {
       "title": "Spawn Protection",
-      "shortDescription": "Prevent spawn kills",
-      "description": "Grants temporary invincibility to players after spawning to reduce unfair deaths.",
+      "shortDescription": "Temporary invulnerability for newly spawned players",
+      "description": "Provides configurable spawn protection (default 5 seconds) with options to prevent protected players from dealing damage. Admins can customize grace period and damage settings.",
       "filename": "spawn_protection.lua"
     },
     "status_timer": {
       "title": "Status Timer",
-      "shortDescription": "Track timed statuses",
-      "description": "Displays or logs timers for statuses such as buffs, debuffs, or cooldowns.",
+      "shortDescription": "Periodic player count display in console",
+      "description": "Automatically displays current player count and server capacity in the console at regular intervals (default: every 3 seconds).",
       "filename": "status_timer.lua"
     },
     "suicide_punisher": {
       "title": "Suicide Punisher",
-      "shortDescription": "Penalize self-kills",
-      "description": "Applies penalties for players who repeatedly kill themselves to prevent exploits or griefing.",
+      "shortDescription": "Automatic punishment for excessive suicides",
+      "description": "Monitors and punishes players who suicide excessively within a time window. Configurable thresholds, grace periods, and actions (kick/ban with duration).",
       "filename": "suicide_punisher.lua"
     },
     "suspend_players": {
-      "title": "Suspend Players",
-      "shortDescription": "Temporarily suspend players",
-      "description": "Allows admins to suspend player actions, including movement, chat, and attacks, for a configurable duration.",
+      "title": "Player Suspension",
+      "shortDescription": "Admin tool to freeze players in place",
+      "description": "Allows admins to suspend players (freeze position, remove weapons, mute chat) with configurable persistence across sessions. Includes unsuspend functionality.",
       "filename": "suspend_players.lua"
     },
     "sync_admins": {
-      "title": "Sync Admins",
-      "shortDescription": "Sync admin lists across servers",
-      "description": "Ensures all servers in a network have updated admin lists and permissions.",
+      "title": "Admin Sync Utility",
+      "shortDescription": "Remote synchronization of admin/user files",
+      "description": "Synchronizes admins.txt and users.txt with a remote server, with automatic fallback to local backups when offline. Features HTTP requests, validation, and backup systems.",
       "filename": "sync_admins.lua"
     },
     "sync_your_files": {
-      "title": "Sync Your Files",
-      "shortDescription": "Synchronize local scripts with server",
-      "description": "Uploads or updates scripts on the server to match a local repository or file set.",
+      "title": "File Synchronizer",
+      "shortDescription": "Remote file synchronization with backup fallback",
+      "description": "Synchronizes specified files with a remote server, with automatic local backup fallback when offline. Supports any file type, includes validation via keyword matching, and features HTTP functionality.",
       "filename": "sync_your_files.lua"
     },
     "t_slayer_team_spawns": {
-      "title": "T-Slayer Team Spawns",
-      "shortDescription": "Configure team spawn points",
-      "description": "Sets custom spawn locations for T-Slayer or similar team-based modes.",
+      "title": "Team Slayer Spawns",
+      "shortDescription": "Enforces team-specific spawning in Team Slayer",
+      "description": "Modifies spawn system to ensure players only spawn at their team's designated locations in Team Slayer game modes. Reads map spawn points and assigns them by team.",
       "filename": "t_slayer_team_spawns.lua"
     },
     "team_chat": {
-      "title": "Team Chat",
-      "shortDescription": "Private team messaging",
-      "description": "Enables a separate chat channel for teams, invisible to opponents.",
+      "title": "Advanced Team Chat",
+      "shortDescription": "Private team communication system with invite functionality",
+      "description": "Comprehensive team chat system featuring private channels, invite system, multiple chat modes (team/global), and team management commands. Supports 1-3+ player private communications with configurable permissions.",
       "filename": "team_chat.lua"
     },
     "team_color_voting": {
       "title": "Team Color Voting",
-      "shortDescription": "Players vote on team colors",
-      "description": "Allows players to vote for team colors before match start, applied automatically.",
+      "shortDescription": "Player-voted team color selection system",
+      "description": "Allows players to vote for team color sets between games. Features 10+ predefined color combinations, vote tallying, and automatic application of winning colors. Includes HUD display of options.",
       "filename": "team_color_voting.lua"
     },
     "team_shuffler": {
-      "title": "Team Shuffler",
-      "shortDescription": "Randomize team assignments",
-      "description": "Randomly assigns players to teams to maintain fairness and variety in matches.",
+      "title": "Team Balancer",
+      "shortDescription": "Automatic and manual team balancing system",
+      "description": "Advanced team shuffler with configurable auto-shuffle timing, manual shuffle commands, minimum player requirements, and FFA mode detection. Temporarily disables death messages during shuffling for cleaner transitions.",
       "filename": "team_shuffler.lua"
     },
     "teleport_manager": {
       "title": "Teleport Manager",
-      "shortDescription": "Manage player teleportation",
-      "description": "Admins can teleport players individually, in groups, or to preset locations.",
+      "shortDescription": "Advanced teleport system with persistent warps",
+      "description": "Comprehensive teleportation system featuring map-specific warp points, location history tracking, and admin controls. Supports warp creation, deletion, listing, and includes protection against accidental overwrites.",
       "filename": "teleport_manager.lua"
     },
     "the_punisher": {
-      "title": "The Punisher",
-      "shortDescription": "Admin punishment tool",
-      "description": "Implements automatic punishments for players breaking configurable rules, including kicks, bans, and score penalties.",
+      "title": "Automated Punishment System",
+      "shortDescription": "Team betrayal and friendly fire enforcement",
+      "description": "Configurable punishment system for team betrayals and friendly fire incidents. Features progressive warnings, multiple punishment actions (kill/kick/crash), customizable thresholds, and detailed offense logging with player notifications.",
       "filename": "the_punisher.lua"
     },
     "timed_server_password": {
-      "title": "Timed Server Password",
-      "shortDescription": "Automatically removes the server password after a set duration.",
-      "description": "Enables timed server passwords that expire after a configurable duration. Features include optional player notifications, command-based resets, and admin permission enforcement. Ideal for private sessions or timed events where a temporary password is needed.",
+      "title": "Timed Password System",
+      "shortDescription": "Automatic password removal after configurable duration",
+      "description": "Automatically removes the server password after a set time period (default: 5 minutes). Useful for temporary private sessions or events. Notifies players when password is removed.",
       "filename": "timed_server_password.lua"
     },
     "vehicle_blocker_v1": {
-      "title": "Vehicle Blocker v1",
-      "shortDescription": "Restrict certain vehicles",
-      "description": "Blocks specific vehicles from spawning or being used, configurable by admin.",
+      "title": "Vehicle Blocker (v1)",
+      "shortDescription": "Map-based vehicle restriction system",
+      "description": "Controls vehicle access by map with configurable seat restrictions (driver/passenger/gunner). Features per-map settings, automatic ejection, and customizable delay before removal.",
       "filename": "vehicle_blocker_v1.lua"
     },
     "vehicle_blocker_v2": {
-      "title": "Vehicle Blocker v2",
-      "shortDescription": "Advanced vehicle restrictions",
-      "description": "Enhanced vehicle blocking with additional options, such as team-specific or temporary blocks.",
+      "title": "Vehicle Blocker (v2)",
+      "shortDescription": "Enhanced vehicle restriction system",
+      "description": "Improved version with better vehicle handling, player teleportation, and more granular control. Maintains map-specific configurations while adding smoother player transitions when blocked from vehicles.",
       "filename": "vehicle_blocker_v2.lua"
     },
     "vote_kick": {
-      "title": "Vote Kick",
-      "shortDescription": "Player-driven kicking system",
-      "description": "Allows players to initiate votes to kick disruptive players, with configurable thresholds.",
+      "title": "Vote Kick System",
+      "shortDescription": "Player-driven moderation with configurable voting thresholds",
+      "description": "Implements a democratic kick system allowing players to vote out disruptive teammates. Features include percentage-based thresholds, admin immunity, vote tracking, cooldown periods, and detailed player notifications. Supports anonymous voting and vote cancellation.",
       "filename": "vote_kick.lua"
     },
     "vpn_blocker": {
-      "title": "VPN Blocker",
-      "shortDescription": "Prevent VPN connections",
-      "description": "Blocks or warns players connecting via VPN to prevent evasion of bans or multi-accounting.",
+      "title": "VPN/Proxy Blocker",
+      "shortDescription": "Advanced IP screening using IPQualityScore API",
+      "description": "Automatically detects and blocks VPNs, proxies, and high-risk connections using real-time IP reputation analysis. Features customizable risk thresholds, detailed logging, and configurable actions (kick/ban). Integrates with IPQualityScore API for comprehensive security screening.",
       "filename": "vpn_blocker.lua"
     },
     "weapon_assigner": {
-      "title": "Weapon Assigner",
-      "shortDescription": "Assign weapons to players",
-      "description": "Automatically provides players with specific weapons on spawn or via command.",
+      "title": "Advanced Weapon Assigner",
+      "shortDescription": "Contextual weapon loadout management system",
+      "description": "Provides map-specific and game-mode-aware weapon distribution with support for multi-weapon loadouts (up to 4 per player). Features team-specific configurations (Red/Blue/FFA), weapon tag validation, and fallback configurations. Supports custom default weapons and flexible assignment rules.",
       "filename": "weapon_assigner.lua"
     },
     "welcome_messages": {
       "title": "Welcome Messages",
-      "shortDescription": "Custom welcome messages",
-      "description": "Sends personalized welcome messages to players when they join the server.",
+      "shortDescription": "Customizable greeting system for new players",
+      "description": "Displays personalized welcome messages when players join the server. Simple implementation that can be expanded with additional features like timed messages or player-specific greetings.",
       "filename": "welcome_messages.lua"
     },
     "word_buster": {
-      "title": "Word Buster",
-      "shortDescription": "Filter or remove words",
-      "description": "Advanced multi-lingual chat filter. Detects and removes offensive or banned words in chat messages, optionally replacing them.",
+      "title": "Advanced Profanity Filter",
+      "shortDescription": "Multilingual chat moderation with progressive enforcement",
+      "description": "Comprehensive profanity detection system supporting 21+ languages with leet-speak recognition. Features configurable warnings, kick/ban thresholds, admin immunity, and real-time word list management. Includes commands for dynamic filter updates and language toggling.",
       "filename": "word_buster.lua"
     }
   }
