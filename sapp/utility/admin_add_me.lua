@@ -3,7 +3,6 @@
 SCRIPT NAME:      admin_add_me.lua
 DESCRIPTION:      Quick admin access utility for testing and development:
                   - "/admin me" command grants level 4 admin privileges
-                  - Designed for SAPP (Halo PC/CE) server administration
                   - Simplifies script testing and server management
                   - Configurable default admin level
 

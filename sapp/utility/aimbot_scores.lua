@@ -4,7 +4,7 @@ SCRIPT NAME:      aimbot_scores.lua
 DESCRIPTION:      Displays player accuracy statistics with customizable filters.
 
                   Command Syntax:
-                  /aimstats [target] [mode]
+                  /botscore [target] [mode]
                   - target: 1-16 | me | all | *
                   - mode: 0 (basic) | 1 (detailed)
 

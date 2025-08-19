@@ -471,378 +471,377 @@
       "filename": "survival_slayer.lua"
     },
     "swat": {
-      "title": "SWAT",
+      "title": "Swat",
       "shortDescription": "Precision headshot-only combat",
-      "description": "Tactical shooter mode with strict rules:\n- Headshot-only kills (pistol & sniper rifle)\n- All other weapons and vehicles disabled\n- Powerups (camo/overshield) remain active\n- Configurable options:\n  * Infinite ammo/bottomless clip\n  * Score limits\n  * Weapon loadouts\n- Default 25-kill victory condition",
+      "description": "Tactical shooter mode with strict rules: Headshot-only kills (pistol & sniper rifle). All other weapons and vehicles disabled. Powerups (camo/overshield) remain active. Configurable options: Infinite ammo/bottomless clip, Score limits, Weapon loadouts. Default 25-kill victory condition.",
       "filename": "swat.lua"
     },
     "tag": {
       "title": "Tag",
       "shortDescription": "Dynamic role-swapping chase game",
-      "description": "Fast-paced tag minigame with unique mechanics:\n- One 'Tagger' chases multiple 'Runners'\n- Successful tags transfer the Tagger role\n- Scoring system:\n  * Runners earn points over time\n  * Tagger gets bonus points per tag\n- Configurable options:\n  * Auto-rotation timer\n  * Movement speed modifiers\n  * Score values\n  * Game duration settings",
+      "description": "Fast-paced tag minigame with unique mechanics: One 'Tagger' chases multiple 'Runners'. Successful tags transfer the Tagger role. Scoring system: Runners earn points over time, Tagger gets bonus points per tag. Configurable options: Auto-rotation timer, Movement speed modifiers, Score values, Game duration settings.",
       "filename": "tag.lua"
     },
     "team_defender": {
       "title": "Team Defender",
       "shortDescription": "Objective-based team protection mode",
-      "description": "Strategic flag control gameplay featuring:\n- Random flag spawn locations\n- Double team points while holding flag\n- +20 assist points per teammate kill\n- Team-based roles:\n  * Flag carrier (objective holder)\n  * Defenders (protect carrier)\n  * Attackers (reclaim objective)\n- Configurable settings:\n  * Flag respawn timer\n  * Point multipliers\n  * Spawn locations\n  * Game duration limits",
+      "description": "Strategic flag control gameplay featuring: Random flag spawn locations. Double team points while holding flag. +20 assist points per teammate kill. Team-based roles: Flag carrier (objective holder), Defenders (protect carrier), Attackers (reclaim objective). Configurable settings: Flag respawn timer, Point multipliers, Spawn locations, Game duration limits.",
       "filename": "team_defender.lua"
     }
   },
   "utility": {
     "admin_add_me": {
       "title": "Admin Add Me",
-      "shortDescription": "Quick admin addition utility",
-      "description": "Allows authorized users to automatically grant themselves admin privileges.",
+      "shortDescription": "Quick admin access utility for testing",
+      "description": "Server administration tool featuring: '/admin me' command for instant level 4 access. Simplifies script testing and server management. Configurable default admin level. Built-in pirated hash detection. IP-based admin assignment. Quick setup for development environments.",
       "filename": "admin_add_me.lua"
     },
     "admin_chat": {
       "title": "Admin Chat",
-      "shortDescription": "Custom chat channel for server admins",
-      "description": "Toggleable admin-only chat system for communication among server administrators.",
+      "shortDescription": "Secure admin communication system",
+      "description": "Private admin messaging with toggleable visibility. Features custom commands (/ac, /adminchat), spam protection, and player management. Configurable options include message formatting, permission levels, and notification sounds. Provides secure channel for server administration with cooldown controls and permission-based access.",
       "filename": "admin_chat.lua"
     },
     "admin_messages": {
       "title": "Admin Messages",
-      "shortDescription": "Broadcasts special admin-vip messages",
-      "description": "Announces a special message to all players when a VIP admin joins the server.",
+      "shortDescription": "Customizable admin greeting system",
+      "description": "Level-based join announcements with flexible display options. Features per-admin level messages (humorous or serious), multiple output channels (chat/RCON), and customizable formatting with text alignment and colors. Easy configuration for different admin tiers with toggleable visibility.",
       "filename": "admin_messages.lua"
     },
     "afk_system": {
       "title": "AFK System",
-      "shortDescription": "Advanced AFK system",
-      "description": "Monitors player activity and automatically kicks players who remain AFK beyond a configurable threshold.",
+      "shortDescription": "Comprehensive AFK detection and management",
+      "description": "Advanced AFK monitoring with movement tracking, camera detection, and input analysis. Features customizable thresholds, voluntary AFK mode, admin immunity, and progressive warnings. Includes configurable timeout durations, warning intervals, and special kick messages for inactive players.",
       "filename": "afk_system.lua"
     },
     "aimbot_scores": {
       "title": "Aimbot Scores",
-      "shortDescription": "View player accuracy and bot-score stats with simple commands.",
-      "description": "Displays accuracy and bot-score statistics for players with customizable filters.",
+      "shortDescription": "Player accuracy statistics display",
+      "description": "Displays detailed player accuracy metrics with customizable filters. Features command-based targeting (/botscore [target] [mode]) with multiple viewing options (basic/detailed). Supports individual player checks (1-16), self-checks (me), and global views (all/*). Provides real-time accuracy data with optional respawn status indicators.",
       "filename": "aimbot_scores.lua"
     },
     "anti_aimbot": {
-      "title": "Anti Aimbot",
-      "shortDescription": "Detect and prevent aimbot usage",
-      "description": "Monitors player accuracy and suspicious aiming patterns to identify and mitigate aimbot usage.",
+      "title": "Anti-Aimbot",
+      "shortDescription": "Advanced aim-lock detection system",
+      "description": "Multi-layered cheat detection with velocity analysis, trajectory prediction, and behavioral pattern recognition. Features weapon-specific detection profiles, dynamic sensitivity adjustment, and false positive mitigation. Includes real-time monitoring, environmental visibility checks, and configurable enforcement actions against aim-assist cheats.",
       "filename": "anti_aimbot.lua"
     },
     "anti_camp_v1": {
-      "title": "Anti-Camp V1",
-      "shortDescription": "Basic camping prevention",
-      "description": "Detects players camping in restricted areas and applies warnings or penalties.",
+      "title": "Anti-Camp (Zone)",
+      "shortDescription": "Restricted area camping prevention",
+      "description": "Zone-based camping detection with configurable restricted areas per map. Features progressive warnings, cooldown-protected punishments, and automatic reset conditions. Tracks player positions in predefined zones with customizable timers and radius parameters.",
       "filename": "anti_camp_v1.lua"
     },
     "anti_camp_v2": {
-      "title": "Anti-Camp V2",
-      "shortDescription": "Advanced camping prevention",
-      "description": "Enhanced camping detection with configurable zones, timers, and punishments.",
+      "title": "Anti-Camp (Global)",
+      "shortDescription": "Map-wide camping prevention",
+      "description": "Global camping detection system that monitors player movement anywhere on the map. Features adjustable camping radius, progressive warnings, and punishment cooldowns. Automatically resets on spawn or significant movement with configurable thresholds.",
       "filename": "anti_camp_v2.lua"
     },
     "anti_impersonator": {
-      "title": "Anti Impersonator",
-      "shortDescription": "Prevent players from impersonating clan/community members",
-      "description": "Detects and removes players attempting to impersonate trusted members, supporting kick/ban and logging.",
+      "title": "Anti-Impersonator",
+      "shortDescription": "Identity verification and clone detection",
+      "description": "Protects against account impersonation through hash/IP verification. Features configurable actions (kick/ban), trusted member whitelisting, and detailed logging. Detects clone accounts, name spoofing, and admin impersonation attempts with adjustable security thresholds.",
       "filename": "anti_impersonator.lua"
     },
     "auto_lead": {
       "title": "Auto Lead",
-      "shortDescription": "SAPP Auto Lead System",
-      "description": "Automatically toggles SAPP's lead mode based on specified map and game type configurations",
+      "shortDescription": "Dynamic projectile lead control",
+      "description": "Automatically configures SAPP's no-lead setting per map/gametype combination. Supports all standard Halo projectiles with map-specific presets and gametype overrides. Adjusts settings during map rotations and gametype changes without manual intervention.",
       "filename": "auto_lead.lua"
     },
     "auto_message": {
       "title": "Auto Message",
-      "shortDescription": "Scheduled message broadcaster",
-      "description": "Automatically sends configurable messages to all players at set intervals.",
+      "shortDescription": "Scheduled announcement system",
+      "description": "Automated multi-line message broadcaster with configurable intervals (30-300s). Features rotating message lists, color-coded text support, and dual output (in-game chat + console). Includes timestamp prefixes and server management controls for on-demand triggers and priority messaging.",
       "filename": "auto_message.lua"
     },
     "auto_team_balance": {
       "title": "Auto Team Balance",
-      "shortDescription": "Automatically balance teams",
-      "description": "Reassigns players to maintain even teams based on player count and skill levels.",
+      "shortDescription": "Dynamic team balancing system",
+      "description": "Intelligent player redistribution with count-based and optional skill-aware balancing. Configurable parameters include balancing frequency (30-300s), minimum player thresholds, and force balance options. Preserves gameplay by avoiding mid-game adjustments and protecting party groups, with pre/post-balance notifications.",
       "filename": "auto_team_balance.lua"
     },
     "ban_on_sight": {
       "title": "Ban On Sight",
-      "shortDescription": "Instant ban tool",
-      "description": "Allows admins to immediately ban players upon detection or suspicion of rule violations.",
+      "shortDescription": "Advanced player banning system with IP enforcement",
+      "description": "Comprehensive ban management tool featuring instant player banning by ID, IP-based enforcement, ban list viewing, and real-time connection monitoring with admin notifications.",
       "filename": "ban_on_sight.lua"
     },
     "block_duplicate_ips": {
       "title": "Block Duplicate IPs",
-      "shortDescription": "Prevent multiple connections from same IP",
-      "description": "Blocks new connections if the IP is already connected, useful to prevent multi-clienting or alt accounts.",
+      "shortDescription": "Prevents multiple connections from the same IP address",
+      "description": "Advanced IP management system that detects and blocks duplicate connections with configurable actions (kick/ban), exception handling for LAN parties, and comprehensive admin notifications.",
       "filename": "block_duplicate_ips.lua"
     },
     "block_replace_objects": {
-      "title": "Block or Replace Objects",
-      "shortDescription": "Server-side object management",
-      "description": "Blocks or replaces unwanted in-game objects to maintain map integrity or prevent exploits.",
+      "title": "Block/Replace Objects",
+      "shortDescription": "Dynamic object management system for map customization",
+      "description": "Allows server admins to block or replace specific objects (weapons, vehicles, equipment) with per-map configuration and runtime control.",
       "filename": "block_replace_objects.lua"
     },
     "block_team_damage": {
       "title": "Block Team Damage",
-      "shortDescription": "Prevent friendly fire",
-      "description": "Prevents players from damaging teammates, configurable per team or globally.",
+      "shortDescription": "Complete friendly fire prevention system",
+      "description": "Blocks all team damage including weapons, grenades and vehicle collisions with configurable settings and real-time monitoring of damage attempts.",
       "filename": "block_team_damage.lua"
     },
     "chat_ids": {
       "title": "Chat IDs",
-      "shortDescription": "Visible player IDs",
-      "description": "Shows player IDs in the chat for easier identification.",
+      "shortDescription": "Player identification system for chat messages",
+      "description": "Appends player slot numbers to chat messages with customizable formatting options for global, team and vehicle chats.",
       "filename": "chat_ids.lua"
     },
     "clear_chat": {
       "title": "Clear Chat",
-      "shortDescription": "Wipe chat history",
-      "description": "Clears the server chat for all players instantly.",
+      "shortDescription": "Instant chat clearing utility",
+      "description": "Provides admins with commands to instantly clear global chat with configurable access controls and notification options.",
       "filename": "clear_chat.lua"
     },
     "client_crasher": {
       "title": "Client Crasher",
-      "shortDescription": "A tool to crash clients",
-      "description": "This tool will crash clients to the desktop",
+      "description": "Anti-cheat enforcement tool that automatically crashes clients matching banned criteria (names, hashes, IPs) with admin crash commands.",
+      "shortDescription": "Anti-cheat client enforcement system",
       "filename": "client_crasher.lua"
     },
     "command_spy": {
       "title": "Command Spy",
-      "shortDescription": "Spy on player commands",
-      "description": "This tool will spy on player commands",
+      "shortDescription": "Admin command monitoring and logging system",
+      "description": "Tracks and logs all admin command usage in real-time with customizable notification levels, command blacklisting, and detailed logging options.",
       "filename": "command_spy.lua"
     },
     "console_logo": {
       "title": "Console Logo",
-      "shortDescription": "Display custom console logo",
-      "description": "Shows a custom ASCII logo in the server console upon startup.",
+      "shortDescription": "Custom ASCII art display for server console",
+      "description": "Displays customizable ASCII art logos in the server console with support for dynamic variables, color coding, and automatic centering.",
       "filename": "console_logo.lua"
     },
     "countdown_timer": {
       "title": "Countdown Timer",
-      "shortDescription": "Server countdown utility",
-      "description": "Displays a configurable countdown timer to players for events or map changes.",
+      "shortDescription": "Basic countdown timer for game events",
+      "description": "Simple countdown timer that displays remaining time to all players, primarily used for development and testing purposes.",
       "filename": "countdown_timer.lua"
     },
     "custom_colors": {
       "title": "Custom Colors",
-      "shortDescription": "Assign custom colors to players",
-      "description": "Allows modification of in-game colors for players or teams.",
+      "shortDescription": "Team and FFA color customization system",
+      "description": "Allows server administrators to customize team colors for both team-based and free-for-all game modes with extensive color options.",
       "filename": "custom_colors.lua"
     },
     "custom_command_cooldowns": {
-      "title": "Custom Command Cooldowns",
-      "shortDescription": "Set cooldowns for commands",
-      "description": "Configurable cooldown periods for commands to prevent spam or abuse.",
+      "title": "Command Cooldowns",
+      "shortDescription": "Advanced command rate-limiting system",
+      "description": "Implements customizable cooldown timers for specific commands with player-specific tracking, anti-spam protection, and detailed monitoring.",
       "filename": "custom_command_cooldowns.lua"
     },
     "custom_loadouts": {
       "title": "Custom Loadouts",
-      "shortDescription": "Assign preset equipment to players",
-      "description": "Players receive predefined weapon or equipment loadouts upon spawn or command execution.",
+      "shortDescription": "Advanced player loadout customization system",
+      "description": "Allows players to select and customize weapon loadouts with configurable weapons, ammo counts, and grenades that persist between respawns.",
       "filename": "custom_loadouts.lua"
     },
     "custom_vehicle_spawner": {
       "title": "Custom Vehicle Spawner",
-      "shortDescription": "Override map vehicle spawns",
-      "description": "Replaces default vehicle spawns with custom locations and configurations.",
+      "shortDescription": "Persistent vehicle management and respawn system",
+      "description": "Manages vehicle spawns with configurable locations, automatic respawning when abandoned or destroyed, and position monitoring to prevent vehicle loss.",
       "filename": "custom_vehicle_spawner.lua"
     },
     "custom_wdel": {
-      "title": "Custom Object Deleter",
-      "shortDescription": "Modified /wdel",
-      "description": "Modified weapon deletion that preserves flag/oddball items",
+      "title": "Safe Weapon Deletion",
+      "shortDescription": "Modified weapon deletion that protects objective items",
+      "description": "Enhanced version of the standard wdel command that prevents accidental deletion of flag/oddball items while maintaining normal weapon removal functionality.",
       "filename": "custom_wdel.lua"
     },
     "cyborg_spawner": {
       "title": "Cyborg Spawner",
-      "shortDescription": "Spawn multiplayer cyborgs at preset map locations.",
-      "description": "Automatically spawns novelty cyborgs at fixed coordinates on supported maps.",
+      "shortDescription": "Novelty cyborg character spawn system",
+      "description": "Spawns decorative cyborg characters at predefined locations on various maps for aesthetic purposes.",
       "filename": "cyborg_spawner.lua"
     },
     "damage_multiplier_changer": {
-      "title": "Damage Multiplier (Changer)",
-      "shortDescription": "Adjust player damage output",
-      "description": "Admins can modify the damage multiplier for all players or specific teams, useful for balancing gameplay.",
+      "title": "Damage Multiplier System",
+      "shortDescription": "Comprehensive weapon damage modifier configuration",
+      "description": "Allows granular control over damage values for all weapons, grenades, vehicles and environmental effects through customizable multipliers.",
       "filename": "damage_multiplier_changer.lua"
     },
     "delay_skip": {
-      "title": "Delay Skip",
-      "shortDescription": "Prevent players from skipping the map too early",
-      "description": "Prevents players from skipping the map too early, useful for custom game modes.",
+      "title": "Skip Delay",
+      "shortDescription": "Prevents premature map skipping",
+      "description": "Enforces a minimum wait time before players can vote to skip the current map, with configurable delay duration and player notifications.",
       "filename": "delay_skip.lua"
     },
     "disable_fall_damage": {
-      "title": "Disable Fall Damage",
-      "shortDescription": "Prevent players from taking fall damage",
-      "description": "Disables fall damage globally or for specific players, useful for custom game modes.",
+      "title": "Fall Damage Disabler",
+      "shortDescription": "Selective fall damage removal system",
+      "description": "Disables fall damage on specified maps while maintaining normal gameplay mechanics on others, with per-map configuration options.",
       "filename": "disable_fall_damage.lua"
     },
     "dynamic_ping_kicker": {
       "title": "Dynamic Ping Kicker",
-      "shortDescription": "Automatically kick high-ping players",
-      "description": "Monitors player ping and kicks players who exceed a configurable threshold, reducing lag for others.",
+      "shortDescription": "Adaptive ping management system with player count-based thresholds",
+      "description": "Automatically monitors and enforces ping limits that adjust based on server population, with warning systems, admin immunity, and detailed logging capabilities.",
       "filename": "dynamic_ping_kicker.lua"
     },
     "dynamic_score_limit": {
       "title": "Dynamic Score Limit",
-      "shortDescription": "Adjust game score limits",
-      "description": "Automatically adjusts the score limit based on player count or other factors.",
+      "shortDescription": "Automatically adjusts game score limits based on player count",
+      "description": "Intelligently modifies score requirements for all game types based on server population, with custom configurations for different game modes and team sizes.",
       "filename": "dynamic_score_limit.lua"
     },
     "freeze_players": {
-      "title": "Freeze Players",
-      "shortDescription": "Temporarily immobilize players",
-      "description": "Admins can freeze selected players or entire teams, preventing movement or actions.",
+      "title": "Player Freeze System",
+      "shortDescription": "Admin tool to temporarily immobilize players with configurable options",
+      "description": "Provides comprehensive player freezing capabilities including weapon management, movement restrictions, and customizable notifications with admin permission controls.",
       "filename": "freeze_players.lua"
     },
     "game_countdown": {
-      "title": "Game Countdown",
-      "shortDescription": "Countdown to game start",
-      "description": "Displays a configurable countdown timer to signal the start of a match or event.",
+      "title": "Game Time Tracker",
+      "shortDescription": "Displays remaining game time in HH:MM:SS format",
+      "description": "Tracks and converts in-game time limit to human-readable format, providing real-time countdown functionality for match duration.",
       "filename": "game_countdown.lua"
     },
     "get_object_identity": {
-      "title": "Get Object Identity",
-      "shortDescription": "Retrieve object IDs",
-      "description": "Displays the internal IDs and properties of objects in the game world for debugging or scripting.",
+      "title": "Object Inspector",
+      "shortDescription": "Admin tool for inspecting in-game objects",
+      "description": "Provides detailed information about targeted objects including type, internal name, meta ID, and coordinates, with admin permission controls.",
       "filename": "get_object_identity.lua"
     },
     "get_server_name": {
-      "title": "Get Server Name (Example)",
-      "shortDescription": "Fetch current server name",
-      "description": "Demonstrates retrieving the server name programmatically for logging or display purposes.",
+      "title": "Server Name Utility",
+      "description": "Retrieves and displays the server name, with example implementation for welcome messages.",
+      "shortDescription": "Accesses and utilizes server name information",
       "filename": "get_server_name.lua"
     },
     "item_sky_spawner": {
-      "title": "Item Sky Spawner",
-      "shortDescription": "Spawn items from the sky",
-      "description": "Spawns objects or items from above the map at configurable intervals or locations.",
+      "title": "Random Item Spawner",
+      "shortDescription": "Drops random weapons and vehicles from the sky at map locations",
+      "description": "Automatically spawns random weapons and vehicles at predefined map coordinates with configurable timing, height, and despawn behavior.",
       "filename": "item_sky_spawner.lua"
     },
     "kill_zones": {
       "title": "Kill Zones",
-      "shortDescription": "Define lethal map zones",
-      "description": "Creates designated areas where players instantly die or take damage, for map control or game modes.",
+      "shortDescription": "Configurable danger areas that eliminate players after delay",
+      "description": "Creates map-specific restricted zones that warn then kill players who remain too long, with team-specific rules, custom messages, and adjustable timers.",
       "filename": "kill_zones.lua"
     },
     "liberty_vehicle_spawner": {
       "title": "Liberty Vehicle Spawner",
-      "shortDescription": "Spawn vehicles instantly using chat keywords.",
-      "description": "On-demand vehicle spawner with auto-entry, cleanup timers, and multi-vehicle support.",
+      "shortDescription": "On-demand vehicle spawning system with intelligent cleanup",
+      "description": "Allows players to instantly spawn vehicles via chat commands with automatic entry, abandonment detection, and configurable despawn timers. Includes multi-vehicle support and map-specific configurations.",
       "filename": "liberty_vehicle_spawner.lua"
     },
     "list_players": {
-      "title": "List Players",
-      "shortDescription": "Display all connected players",
-      "description": "Shows a list of currently connected players with IDs, teams, and statuses.",
+      "title": "Player List Utility",
+      "shortDescription": "Displays detailed player information with configurable output format",
+      "description": "Provides admins with comprehensive player listings including IP addresses, team assignments, and connection status through simple chat commands with customizable display options.",
       "filename": "list_players.lua"
     },
     "live_on_3": {
-      "title": "Live on 3",
-      "shortDescription": "Countdown audio cue",
-      "description": "Announces a 'Live on 3' countdown to signal the start of a game or match.",
+      "title": "Live On Three",
+      "shortDescription": "Competitive match countdown system with automatic map reset",
+      "description": "Provides tournament-standard 'Live on 3' countdown functionality with map resets, customizable permissions, and temporary death message suppression for clean competitive play.",
       "filename": "live_on_3.lua"
     },
     "map_list": {
-      "title": "Map List",
-      "shortDescription": "View current and upcoming map rotation info.",
-      "description": "Displays map cycle details from mapcycle.txt, with commands for current, next, and position-specific maps.",
+      "title": "Map Rotation Manager",
+      "shortDescription": "Displays current and upcoming map rotation information",
+      "description": "Provides players with detailed map cycle information including current/next maps and modes through intuitive chat commands, with support for custom mapcycle.txt configurations.",
       "filename": "map_list.lua"
     },
-
     "map_list_with_map_spec": {
-      "title": "Map List (with Map Spec)",
-      "shortDescription": "Track map cycle with current and upcoming maps.",
-      "description": "Enhanced map rotation tracker with index control, position-based queries, and real-time progress through mapcycle.txt.",
+      "title": "Advanced Map Rotation Tracker",
+      "shortDescription": "Enhanced map cycle monitoring with position tracking and spec indexing",
+      "description": "Provides comprehensive map rotation management with real-time tracking, position queries, and special indexing capabilities for tournament and custom game configurations.",
       "filename": "map_list_with_map_spec.lua"
     },
     "map_skip_tally": {
-      "title": "Map Skip Tally",
-      "shortDescription": "Track and view skip votes per map and player.",
-      "description": "Records and persists skip votes across sessions, with player-specific counts, mode-specific tracking, JSON data persistence, and real-time tally commands.",
+      "title": "Persistent Skip Vote Tracker",
+      "shortDescription": "Tracks and persists map skip votes across game sessions with detailed statistics",
+      "description": "Advanced skip voting system that maintains vote counts between matches, with player-specific tracking, JSON data persistence, and admin query commands for competitive server management.",
       "filename": "map_skip_tally.lua"
     },
     "map_vote_system": {
-      "title": "Map Vote System",
-      "shortDescription": "Allow players to vote for next map",
-      "description": "Players vote for the next map using a menu or chat commands, with results applied automatically.",
+      "title": "Advanced Map Voting System",
+      "shortDescription": "Enhanced replacement for SAPP's default voting with expanded features and customization",
+      "description": "Comprehensive voting system supporting unlimited map options, re-voting, streak protection, and configurable timing controls with detailed player feedback and vote tracking.",
       "filename": "map_vote_system.lua"
     },
     "mapcycle_manager": {
-      "title": "Mapcycle Manager",
-      "shortDescription": "Control map rotation",
-      "description": "Manages map cycles with automatic transitions and voting overrides.",
+      "title": "Advanced Map Cycle Manager",
+      "shortDescription": "Comprehensive map rotation system with multiple cycle types and dynamic adjustments",
+      "description": "Powerful map rotation manager featuring size-based cycles, admin controls, automatic player count adjustments, and extensive configuration options for customized server experiences.",
       "filename": "mapcycle_manager.lua"
     },
     "multiclient_detector": {
       "title": "MultiClient Detector",
-      "shortDescription": "Detect players using multiple clients",
-      "description": "Identifies players connected from multiple clients to prevent cheating or exploits.",
+      "shortDescription": "Advanced multi-client detection with probability scoring",
+      "description": "Detects players using multiple clients with probability scoring (0-100%) based on port ranges, client hashes, and behavior patterns. Includes risk categorization and admin alerts.",
       "filename": "multiclient_detector.lua"
     },
     "mute_system": {
       "title": "Mute System",
-      "shortDescription": "Restrict player chat",
-      "description": "Admins can mute individual players or entire teams, blocking messages from appearing in chat.",
+      "shortDescription": "Advanced chat mute system with anti-spam protection",
+      "description": "Comprehensive mute system with manual/spam muting, command whitelisting, time-based mutes, and admin controls. Includes anti-spam with configurable thresholds and punishments.",
       "filename": "mute_system.lua"
     },
     "name_ban": {
       "title": "Name Ban",
-      "shortDescription": "Prevent players from using banned names",
-      "description": "Blocks players from using offensive or restricted names, optionally kicking or banning them.",
+      "shortDescription": "Default name protection system",
+      "description": "Detects and takes action against players using default names after configurable grace period. Supports kicking or banning with customizable messages.",
       "filename": "name_ban.lua"
     },
     "name_replacer": {
       "title": "Name Replacer",
-      "shortDescription": "Automatically replace player names",
-      "description": "Renames players in real-time based on configured rules to maintain community standards.",
+      "shortDescription": "Automatic name randomization system",
+      "description": "Replaces blacklisted/default names with random selections from a predefined list. Maintains name uniqueness and respects maximum length limits.",
       "filename": "name_replacer.lua"
     },
     "no_damage": {
       "title": "No Damage",
-      "shortDescription": "Toggle invulnerability to prevent player damage.",
-      "description": "Provides a global damage prevention system that allows players to toggle invulnerability.",
+      "shortDescription": "Player invulnerability toggle system",
+      "description": "Allows players to toggle damage immunity on/off via command. Works by manipulating game memory bits to prevent damage application.",
       "filename": "no_damage.lua"
     },
     "notify_me": {
       "title": "Notify Me",
-      "shortDescription": "Custom notifications for admins",
-      "description": "Sends notifications to admins for specific events such as player joins, map changes, or rule violations.",
+      "shortDescription": "Enhanced server event notification system",
+      "description": "Comprehensive terminal notification system with color-coded events, customizable formatting, and detailed player tracking. Includes ASCII art display and timestamp formatting.",
       "filename": "notify_me.lua"
     },
     "object_spawner": {
       "title": "Object Spawner",
-      "shortDescription": "Spawn custom objects with precise positioning and rotation.",
-      "description": "Enables precise placement of objects on maps, including weapons, vehicles, and other tags.",
+      "shortDescription": "Map-specific object placement system",
+      "description": "Spawns predefined objects at specific coordinates with rotation control. Supports multiple objects per map with persistent configurations.",
       "filename": "object_spawner.lua"
     },
     "on_teleport": {
-      "title": "OnTeleport",
-      "shortDescription": "Trigger actions on player teleport",
-      "description": "Executes configurable actions when a player teleports, useful for event handling or logging.",
+      "title": "On Teleport",
+      "shortDescription": "Player teleportation detection system",
+      "description": "Developer tool that detects player teleportation events by monitoring position changes. Useful for debugging and anti-cheat systems.",
       "filename": "on_teleport.lua"
     },
     "ping_checker": {
       "title": "Ping Checker",
-      "shortDescription": "Monitor player latency",
-      "description": "Periodically checks player ping and logs or warns high-latency connections.",
+      "shortDescription": "Player latency monitoring tool",
+      "description": "Simple ping checking utility that allows players to view their own or others' latency with customizable output formatting and permission controls.",
       "filename": "ping_checker.lua"
     },
     "play_time": {
-      "title": "Play Time",
-      "shortDescription": "Track player session duration",
-      "description": "Records and displays how long each player has been active on the server.",
+      "title": "Play Time Tracker",
+      "shortDescription": "Comprehensive player session tracking system",
+      "description": "Tracks and displays detailed playtime statistics including total hours, join counts, and session duration. Supports individual and server-wide queries with JSON data persistence.",
       "filename": "play_time.lua"
     },
     "race_assistant": {
       "title": "Race Assistant",
-      "shortDescription": "Enforces vehicle use in race gametypes with warnings and penalties.",
-      "description": "Monitors players in race gametypes to ensure they enter and stay in vehicles. Features configurable grace periods, visual countdown warnings, safe zones, multi-stage violation handling, and admin exemptions. Supports automated penalties such as kills or kicks for non-compliance.",
+      "shortDescription": "Vehicle enforcement system for race gametypes",
+      "description": "Ensures players use vehicles in race modes with configurable grace periods, warnings, and penalties. Features safe zones, admin exemptions, and multi-stage violation handling.",
       "filename": "race_assistant.lua"
     },
     "random_grenades": {
       "title": "Random Grenades",
-      "shortDescription": "Spawn grenades randomly",
-      "description": "Randomly spawns grenades on the map to increase chaos or fun in custom game modes.",
+      "shortDescription": "Dynamic grenade distribution system",
+      "description": "Randomizes grenade quantities on player spawn with configurable ranges. Supports both random generation and map-specific presets for frag and plasma grenades.",
       "filename": "random_grenades.lua"
     },
     "reg_to_play": {
@@ -852,45 +851,45 @@
       "filename": "reg_to_play.lua"
     },
     "remove_grenades": {
-      "title": "Remove Grenades (On Spawn)",
-      "shortDescription": "Automatically remove grenades",
-      "description": "Removes grenades immediately after spawn to prevent map clutter or unbalanced gameplay.",
+      "title": "Remove Grenades",
+      "shortDescription": "Gametype-specific grenade removal",
+      "description": "Disables grenade spawning for specified gametypes while maintaining pickup functionality. Ideal for SWAT and other precision-based game modes.",
       "filename": "remove_grenades.lua"
     },
     "restart_mapcycle": {
       "title": "Restart Mapcycle",
-      "shortDescription": "Reset the map rotation",
-      "description": "Resets the mapcycle to the first map, optionally applying any voting overrides.",
+      "shortDescription": "Automatic mapcycle reset system",
+      "description": "Restarts the server mapcycle after configurable delay when all players leave. Prevents empty server stagnation while maintaining current rotation.",
       "filename": "restart_mapcycle.lua"
     },
     "rules_command": {
       "title": "Rules Command",
-      "shortDescription": "Displays server rules to players via a chat command and periodic announcements.",
-      "description": "Allows players to view server rules using a configurable command. Supports timed announcements to remind players of the rules during gameplay. Features include custom server prefix, adjustable display duration, and easy rule list configuration.",
+      "shortDescription": "Server rules display system",
+      "description": "Provides players with easy access to server rules via chat command. Features configurable announcement intervals and customizable rule messages with timed display.",
       "filename": "rules_command.lua"
     },
     "score_handler": {
       "title": "Score Handler",
-      "shortDescription": "Custom scoring system",
-      "description": "Tracks, modifies, and displays player scores with configurable rules and multipliers.",
+      "shortDescription": "Advanced scoring system with custom point values",
+      "description": "Customizable scoring system that modifies points for different kill types (headshots, assassinations, etc.), game events (flag captures, betrayals), and includes special scoring for zombie modes and kill streaks.",
       "filename": "score_handler.lua"
     },
     "script_manager": {
       "title": "Script Manager",
-      "shortDescription": "Load/unload scripts dynamically",
-      "description": "Admin utility to manage active scripts, reload changes, and debug script issues in real-time.",
+      "shortDescription": "Dynamic script loader by map/gametype",
+      "description": "Automatically loads and unloads scripts based on current map and gametype. Supports custom script configurations per map/gametype combination with error handling.",
       "filename": "script_manager.lua"
     },
     "seed_score_protection": {
-      "title": "Script Manager",
-      "shortDescription": "Dynamically loads and unloads scripts based on the current map and game mode.",
-      "description": "Automatically manages Lua scripts for each map and game mode. Features include dynamic loading/unloading, error handling, and persistent tracking of active scripts. Ensures only relevant scripts run for a given map/mode combination, improving server efficiency and reducing conflicts.",
+      "title": "Seed Score Protection",
+      "shortDescription": "Prevents score loss when killing bot/seed players",
+      "description": "Protects player stats when killing seed/bot clients by preventing score deductions. Maintains kill/death ratios while allowing seed elimination. Features configurable bot names and negative score prevention.",
       "filename": "seed_score_protection.lua"
     },
     "server_logger": {
       "title": "Server Logger",
-      "shortDescription": "Log server events",
-      "description": "Records server events such as joins, leaves, kills, and commands to files for auditing or analytics.",
+      "shortDescription": "Advanced server logging system with customizable event tracking",
+      "description": "Comprehensive logging solution that records game events (joins, deaths, commands) with timestamped entries. Features configurable event types, sensitive command filtering, and detailed player tracking including pirated client detection.",
       "filename": "server_logger.lua"
     },
     "server_name_changer": {
