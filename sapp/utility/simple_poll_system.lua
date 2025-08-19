@@ -5,7 +5,7 @@ DESCRIPTION:      Allows admins to create quick polls for map votes or rule chan
 
                   Command Examples:
                   /poll "Question?" option1 option2 option3
-                  /vote [number] (e.g., /vote 1 = option1, /vote 2 = option2)
+                  /vote [number] (e.g., /vote 1 = option1, /vote 2 = options2)
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
