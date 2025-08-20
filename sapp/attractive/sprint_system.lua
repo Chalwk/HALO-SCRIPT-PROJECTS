@@ -27,6 +27,8 @@ USAGE:
 2. Release to stop or continue until exhausted
 3. Wait for stamina to recover after exhaustion
 
+LAST UPDATED:     20/8/2025
+
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
