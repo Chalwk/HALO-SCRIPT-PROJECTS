@@ -416,16 +416,15 @@ local function initialize()
     valid_vehicles_meta = {}
 
     for _, v in ipairs(valid_vehicles) do
-        local meta_id = get_tag('vehi', v[1])
+        local tag_name, seat, enabled, label, priority = v[1], v[2], v[3], v[4], v[5]
+        local meta_id = get_tag('vehi', tag_name)
         if meta_id then
-            if v[3] then -- check enabled
-                valid_vehicles_meta[meta_id] = {
-                    enabled = v[3],
-                    seats = v[2],
-                    label = v[4],
-                    priority = v[5]
-                }
-            end
+            valid_vehicles_meta[meta_id] = {
+                enabled = enabled,
+                seats = seat,
+                label = label,
+                priority = priority
+            }
         end
     end
 
@@ -543,6 +542,7 @@ function OnVehicleEnter(id, seat)
     local vehicle_obj = get_object_memory(vehicle_id)
     if vehicle_obj == 0 then return end
 
+    -- Get vehicle config | If it isn't configured allow the player to enter
     local config_entry = validate_vehicle(vehicle_obj)
     if not config_entry then goto continue end
 
