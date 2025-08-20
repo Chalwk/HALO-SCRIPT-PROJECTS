@@ -178,6 +178,12 @@ local function send(player, message, clear)
     rprint(player.id, message)
 end
 
+local function schedule_ejection(player, object, delay, reason)
+    if reason then send(player, reason) end
+    send(player, fmt(messages.ejecting_in, delay))
+    player.auto_eject = new_eject(player, object, delay)
+end
+
 local function schedule_ejection_if_disabled(player, vehicle_obj, config_entry)
     if eject_from_disabled_vehicle and not config_entry.enabled then
         schedule_ejection(
@@ -187,12 +193,6 @@ local function schedule_ejection_if_disabled(player, vehicle_obj, config_entry)
             fmt(messages.vehicle_not_enabled)
         )
     end
-end
-
-local function schedule_ejection(player, object, delay, reason)
-    if reason then send(player, reason) end
-    send(player, fmt(messages.ejecting_in, delay))
-    player.auto_eject = new_eject(player, object, delay)
 end
 
 local function has_objective(dyn_player)
