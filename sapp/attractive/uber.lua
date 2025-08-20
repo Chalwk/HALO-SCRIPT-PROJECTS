@@ -105,7 +105,13 @@ BEHAVIOR EXAMPLES:
 ]]
 
 local valid_vehicles = {
+
     -- Format: {tag_path, seat_roles, enabled, display_name, priority, insertion_order}
+
+    --================--
+    -- STOCK VEHICLES:
+    --================--
+
     { 'vehicles\\warthog\\mp_warthog', {
         [0] = 'driver',
         [1] = 'passenger',
@@ -118,37 +124,660 @@ local valid_vehicles = {
         [2] = 'gunner'
     }, true, 'Rocket Hog', 2, { 0, 2, 1 } },
 
-    { 'vehicles\\scorpion\\scorpion_mp', {
-        [0] = 'driver',
-        [1] = 'passenger',
-        [2] = 'passenger',
-        [3] = 'passenger',
-        [4] = 'passenger'
-    }, true, 'Tank', 1, { 0, 2, 1 } },
+    --================--
+    -- CUSTOM VEHICLES:
+    --================--
 
-    --======================--
-    -- CUSTOM MAPS:
-    --======================--
-
-    -- map: bc_raceway_final_mp
+    -- bc_raceway_final_mp
     { 'levels\\test\\racetrack\\custom_hogs\\mp_warthog_blue', {
         [0] = 'driver',
         [1] = 'passenger',
         [2] = 'gunner',
     }, true, 'Warthog', 1, { 0, 2, 1 } },
 
-    -- map: hypothermia_race
+    -- hypothermia_race
     { 'vehicles\\g_warthog\\g_warthog', {
         [0] = 'driver',
         [1] = 'passenger',
         [2] = 'gunner',
     }, true, 'G Hog', 1, { 0, 2, 1 } },
 
-    -- map: Mongoose_Point
+    -- Mongoose_Point
     { 'vehicles\\m257_multvp\\m257_multvp', {
         [0] = 'driver',
         [1] = 'passenger',
     }, true, 'Mongoose', 1, { 0, 1 } },
+
+    -- Bigass
+    { 'bourrin\\halo reach\\vehicles\\warthog\\h2 mp_warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'H2 Warthog (Bigass)', 1, { 0, 2, 1 } },
+
+    -- Bigass
+    { 'bourrin\\halo reach\\vehicles\\warthog\\rocket warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner'
+    }, true, 'Rocket Warthog (Bigass)', 1, { 0, 2, 1 } },
+
+    -- Halloween_Gulch_V2
+    { 'vehicles\\warthog\\hellhogv2', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'Hellhog V2 (Halloween_Gulch_V2)', 1, { 0, 2, 1 } },
+
+    -- Halloween_Gulch_V2
+    { 'vehicles\\rwarthog\\hellrwarthogv2', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner'
+    }, true, 'Hell Rocket Warthog V2 (Halloween_Gulch_V2)', 1, { 0, 2, 1 } },
+
+    -- Human_Landscape
+    { 'vehicles\\civihog\\mp_civihog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'Civilian Hog (Human_Landscape)', 1, { 0, 2, 1 } },
+
+    -- Jeep_Cliffs
+    { 'vehicles\\civihog\\mp_civihog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'Civilian Hog (Jeep_Cliffs)', 1, { 0, 2, 1 } },
+
+    -- Separated
+    { 'vehicles\\mwarthog\\mwarthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner'
+    }, true, 'Missile Warthog (Separated)', 1, { 0, 2, 1 } },
+
+    -- The-Right-of-Passage_a30
+    { 'vehicles\\bm_warthog\\bm_warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'BM Warthog (The-Right-of-Passage_a30)', 1, { 0, 2, 1 } },
+
+    -- The-Right-of-Passage_a30
+    { 'vehicles\\rwarthog\\hellrwarthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner'
+    }, true, 'Hell Rocket Warthog (The-Right-of-Passage_a30)', 1, { 0, 2, 1 } },
+
+    -- [FBI]bloodgulch
+    { 'h2\\objects\\vehicles\\warthog\\warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'H2 Warthog ([FBI]bloodgulch)', 1, { 0, 2, 1 } },
+
+    -- []h3[]christmas
+    { 'vehicles\\halo3warthog\\h3 mp_warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'H3 Warthog ([]h3[]christmas)', 1, { 0, 2, 1 } },
+
+    -- [h3style]containment
+    { 'vehicles\\cwarthog\\mp_warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'CWarthog ([h3style]containment)', 1, { 0, 2, 1 } },
+
+    -- bc_raceway_final_mp
+    { 'levels\\test\\racetrack\\custom_hogs\\mp_warthog_blue', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'Blue Warthog (bc_raceway_final_mp)', 1, { 0, 2, 1 } },
+
+    -- bc_raceway_final_mp
+    { 'levels\\test\\racetrack\\custom_hogs\\mp_warthog_green', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'Green Warthog (bc_raceway_final_mp)', 1, { 0, 2, 1 } },
+
+    -- celebration_island
+    { 'vehicles\\halo3warthog\\h3 mp_warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'H3 Warthog (celebration_island)', 1, { 0, 2, 1 } },
+
+    -- celebration_island
+    { 'halo3\\vehicles\\warthog\\rwarthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner'
+    }, true, 'H3 Rocket Hog (celebration_island)', 1, { 0, 2, 1 } },
+
+    -- beryl_rescue
+    { 'vehicles\\warthog\\art_cwarthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'Art CWarthog (beryl_rescue)', 1, { 0, 2, 1 } },
+
+    -- beryl_rescue
+    { 'vehicles\\rwarthog\\art_rwarthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner'
+    }, true, 'Art Rocket Warthog (beryl_rescue)', 1, { 0, 2, 1 } },
+
+    -- arctic_battleground
+    { 'vehicles\\mwarthog\\mwarthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner'
+    }, true, 'Missile Warthog (arctic_battleground)', 1, { 0, 2, 1 } },
+
+    -- artillery_zone
+    { 'vehicles\\mwarthog\\mwarthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner'
+    }, true, 'Missile Warthog (artillery_zone)', 1, { 0, 2, 1 } },
+
+    -- atomic
+    { 'vehicles\\doombuggy\\doombuggy', {
+        [0] = 'driver',
+        [1] = 'passenger',
+    }, true, 'Doombuggy (atomic)', 1, { 0, 1 } },
+
+    -- atomic
+    { 'vehicles\\dangermobile\\dangermobile', {
+        [0] = 'driver',
+        [1] = 'passenger',
+    }, true, 'Dangermobile (atomic)', 1, { 0, 1 } },
+
+    -- battle
+    { 'vehicles\\civihog\\civihog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'Civilian Hog (battle)', 1, { 0, 2, 1 } },
+
+    -- battlecreek_anniversary
+    { 'vehicles\\warthog\\mp_warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'Warthog (battlecreek_anniversary)', 1, { 0, 2, 1 } },
+
+    -- battleforbloodgulch
+    { 'vehicles\\mwarthog\\mwarthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner'
+    }, true, 'Missile Warthog (battleforbloodgulch)', 1, { 0, 2, 1 } },
+
+    -- bloodground_aco
+    { 'vehicles\\mwarthog\\mwarthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner'
+    }, true, 'Missile Warthog (bloodground_aco)', 1, { 0, 2, 1 } },
+
+    -- bloodgulch_base
+    { 'MAP_TAG_MISSING', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, false, 'Missing Tag (bloodgulch_base)', 0, { 0, 2, 1 } },
+
+    -- bob_omb_battlefield
+    { 'vehicles\\g_warthog\\g_warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'G Warthog (bob_omb_battlefield)', 1, { 0, 2, 1 } },
+
+    -- bumper_cars_v2
+    { 'vehicles\\civvi\\civilian warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'Civilian Warthog (bumper_cars_v2)', 1, { 0, 2, 1 } },
+
+    -- bumper_cars_v2
+    { 'vehicles\\warthog\\mp_warthogc', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'Warthog C (bumper_cars_v2)', 1, { 0, 2, 1 } },
+
+    -- camden_place
+    { 'vehicles\\fwarthog\\mp_fwarthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner'
+    }, true, 'Flame Warthog (camden_place)', 1, { 0, 2, 1 } },
+
+    -- casualty_isle__v2
+    { 'vehicles\\rwarthog\\art_rwarthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner'
+    }, true, 'Art Rocket Warthog (casualty_isle__v2)', 1, { 0, 2, 1 } },
+
+    -- cmt_cliffrun
+    { 'vehicles\\cmt_warthog\\chaingun_variant', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'CMT Chaingun Hog (cmt_cliffrun)', 1, { 0, 2, 1 } },
+
+    -- cmt_cliffrun
+    { 'vehicles\\cmt_warthog\\rocket_variant', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner'
+    }, true, 'CMT Rocket Hog (cmt_cliffrun)', 1, { 0, 2, 1 } },
+
+    -- cnr_island
+    { 'vehicles\\rancher\\rancher', {
+        [0] = 'driver',
+        [1] = 'passenger',
+    }, true, 'Rancher (cnr_island)', 1, { 0, 1 } },
+
+    -- cnr_island
+    { 'vehicles\\sultan\\sultan', {
+        [0] = 'driver',
+        [1] = 'passenger',
+    }, true, 'Sultan (cnr_island)', 2, { 0, 1 } },
+
+    -- cold_war
+    { 'vehicles\\warthog\\h2 mp_warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'H2 Warthog (cold_war)', 1, { 0, 2, 1 } },
+
+    -- cold_war
+    { 'vehicles\\mwarthog\\mwarthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner'
+    }, true, 'Missile Warthog (cold_war)', 1, { 0, 2, 1 } },
+
+    -- coldsnap
+    { 'vehicles\\coldsnap_hogs\\g_warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'G Warthog (coldsnap)', 1, { 0, 2, 1 } },
+
+    -- coldsnap
+    { 'vehicles\\coldsnap_hogs\\mp_warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'Warthog (coldsnap)', 1, { 0, 2, 1 } },
+
+    -- combat_arena
+    { 'vehicles\\gausshog\\gausshog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner'
+    }, true, 'Gauss Hog (combat_arena)', 1, { 0, 2, 1 } },
+
+    -- combat_arena
+    { 'vehicles\\g_warthog\\g_warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'G Warthog (combat_arena)', 1, { 0, 2, 1 } },
+
+    -- concealed_custom
+    { 'vehicles\\warthog_legend\\warthog_legend', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'Legend Warthog (concealed_custom)', 1, { 0, 2, 1 } },
+
+    -- concealed_custom
+    { 'vehicles\\rwarthog_legend\\rwarthog_legend', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner'
+    }, true, 'Legend Rocket Warthog (concealed_custom)', 1, { 0, 2, 1 } },
+
+    -- cursed-beavercreek
+    { 'vehicles\\c warthog\\c warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'C Warthog (cursed-beavercreek)', 1, { 0, 2, 1 } },
+
+    -- cursed-bloodgulch
+    { 'vehicles\\c warthog\\c warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'C Warthog (cursed-bloodgulch)', 1, { 0, 2, 1 } },
+
+    -- cursed-chillout
+    { 'vehicles\\c warthog\\c warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'C Warthog (cursed-chillout)', 1, { 0, 2, 1 } },
+
+    -- cursed-damnation
+    { 'vehicles\\c warthog\\c warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'C Warthog (cursed-damnation)', 1, { 0, 2, 1 } },
+
+    -- cursed-deathisland
+    { 'vehicles\\c warthog\\c warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'C Warthog (cursed-deathisland)', 1, { 0, 2, 1 } },
+
+    -- cursed-derelict
+    { 'vehicles\\c warthog\\c warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'C Warthog (cursed-derelict)', 1, { 0, 2, 1 } },
+
+    -- cursed-hangemhigh
+    { 'vehicles\\c warthog\\c warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'C Warthog (cursed-hangemhigh)', 1, { 0, 2, 1 } },
+
+    -- cursed-sidewinder
+    { 'vehicles\\c warthog\\c warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'C Warthog (cursed-sidewinder)', 1, { 0, 2, 1 } },
+
+    -- cursed-wizard
+    { 'vehicles\\c warthog\\c warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'C Warthog (cursed-wizard)', 1, { 0, 2, 1 } },
+
+    -- deathrace
+    { 'vehicles\\civihog\\mp_civihog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'Civilian Hog (deathrace)', 1, { 0, 2, 1 } },
+
+    -- delta_ruined
+    { 'vehicles\\warthog\\art_cwarthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'Art CWarthog (delta_ruined)', 1, { 0, 2, 1 } },
+
+    -- desert_storm_v2
+    { 'vehicles\\trans_hog\\trans_hog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+    }, true, 'Transport Hog (desert_storm_v2)', 1, { 0, 1 } },
+
+    -- desertdunestwo
+    { 'vehicles\\rancher\\rancher', {
+        [0] = 'driver',
+        [1] = 'passenger',
+    }, true, 'Rancher (desertdunestwo)', 1, { 0, 1 } },
+
+    -- desertdunestwo
+    { 'vehicles\\walton\\walton', {
+        [0] = 'driver',
+        [1] = 'passenger',
+    }, true, 'Walton (desertdunestwo)', 1, { 0, 1 } },
+
+    -- destiny
+    { 'vehicles\\warthog\\art_cwarthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'Art CWarthog (destiny)', 1, { 0, 2, 1 } },
+
+    -- discovery
+    { 'vehicles\\warthog\\realistic\\mp_warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'Realistic Warthog (discovery)', 1, { 0, 2, 1 } },
+
+    -- doomsday
+    { 'vehicles\\coldsnap_hogs\\g_warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'G Warthog (doomsday)', 1, { 0, 2, 1 } },
+
+    -- doomsday
+    { 'vehicles\\coldsnap_hogs\\mwarthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner'
+    }, true, 'Missile Warthog (doomsday)', 1, { 0, 2, 1 } },
+
+    -- erosion
+    { 'vehicles\\rwarthog\\art_rwarthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner'
+    }, true, 'Art Rocket Warthog (erosion)', 1, { 0, 2, 1 } },
+
+    -- esther
+    { 'vehicles\\g_warthog\\g_warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'G Warthog (esther)', 1, { 0, 2, 1 } },
+
+    -- esther
+    { 'vehicles\\mwarthog\\mwarthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner'
+    }, true, 'Missile Warthog (esther)', 1, { 0, 2, 1 } },
+
+    -- extinction
+    { 'vehicles\\g_warthog\\g_warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'G Warthog (extinction)', 1, { 0, 2, 1 } },
+
+    -- facing_worldsrx
+    { 'vehicles\\puma\\puma', {
+        [0] = 'driver',
+        [1] = 'passenger',
+    }, true, 'Puma (facing_worldsrx)', 1, { 0, 1 } },
+
+    -- first
+    { 'vehicles\\snow_civ_hog\\snow_civ_hog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'Snow Civilian Hog (first)', 1, { 0, 2, 1 } },
+
+    -- fox_island_insane
+    { 'vehicles\\ravhog\\ravhog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner'
+    }, true, 'Rav Hog (fox_island_insane)', 1, { 0, 2, 1 } },
+
+    -- frozen-path
+    { 'vehicles\\g_warthog\\g_warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'G Warthog (frozen-path)', 1, { 0, 2, 1 } },
+
+    -- gladiators_brawl
+    { 'vehicles\\warthog\\flamehog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'Flamehog (gladiators_brawl)', 1, { 0, 2, 1 } },
+
+    -- gladiators_brawl
+    { 'vehicles\\puma\\puma', {
+        [0] = 'driver',
+        [1] = 'passenger',
+    }, true, 'Puma (gladiators_brawl)', 1, { 0, 1 } },
+
+    -- glenns_castle
+    { 'vehicles\\civvi\\civvi', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'Civvi (glenns_castle)', 1, { 0, 2, 1 } },
+
+    -- glupo_aco
+    { 'vehicles\\sandking\\sandking', {
+        [0] = 'driver',
+        [1] = 'passenger',
+    }, true, 'Sandking (glupo_aco)', 1, { 0, 1 } },
+
+    -- green_canyon
+    { 'vehicles\\warthog\\mp_warthogfix', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'Fixed Warthog (green_canyon)', 1, { 0, 2, 1 } },
+
+    -- green_canyon
+    { 'vehicles\\rwarthog\\rwarthogfix', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner'
+    }, true, 'Fixed Rocket Warthog (green_canyon)', 1, { 0, 2, 1 } },
+
+    -- grove_final
+    { 'vehicles\\warthog\\art_cwarthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'Art CWarthog (grove_final)', 1, { 0, 2, 1 } },
+
+    -- hillbilly mudbog
+    { 'vehicles\\rpchog\\rpchog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner'
+    }, true, 'RPC Hog (hillbilly mudbog)', 1, { 0, 2, 1 } },
+
+    -- hogracing_day
+    { 'vehicles\\puma\\puma_xt', {
+        [0] = 'driver',
+        [1] = 'passenger',
+    }, true, 'Puma XT (hogracing_day)', 1, { 0, 1 } },
+
+    -- hogracing_night
+    { 'vehicles\\puma\\puma_xt', {
+        [0] = 'driver',
+        [1] = 'passenger',
+    }, true, 'Puma XT (hogracing_night)', 1, { 0, 1 } },
+
+    -- hornets_nest
+    { 'halo3\\vehicles\\warthog\\mp_warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'H3 Warthog (hornets_nest)', 1, { 0, 2, 1 } },
+
+    -- hornets_nest
+    { 'halo3\\vehicles\\warthog\\rwarthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner'
+    }, true, 'H3 Rocket Hog (hornets_nest)', 1, { 0, 2, 1 } },
+
+    -- hq_racetrack
+    { 'vehicles\\sporthog\\smileyhog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'Smiley Hog (hq_racetrack)', 1, { 0, 2, 1 } },
+
+    -- huh-what_3
+    { 'vehicles\\puma\\puma', {
+        [0] = 'driver',
+        [1] = 'passenger',
+    }, true, 'Puma (huh-what_3)', 1, { 0, 1 } },
+
+    -- hydrolysis
+    { 'vehicles\\newboathog\\newboathog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'New Boat Hog (hydrolysis)', 1, { 0, 2, 1 } },
+
+    -- hypo_v0.3
+    { 'vehicles\\civvi\\civvi', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'Civvi (hypo_v0.3)', 1, { 0, 2, 1 } },
+
+    -- hypo_v0.3
+    { 'vehicles\\g_warthog\\g_warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'G Warthog (hypo_v0.3)', 1, { 0, 2, 1 } },
+
+    -- hypothermia_race
+    { 'vehicles\\g_warthog\\g_warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'G Warthog (hypothermia_race)', 1, { 0, 2, 1 } },
+
+    -- hypothermia_v0.1
+    { 'vehicles\\civvi\\civvi', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'Civvi (hypothermia_v0.1)', 1, { 0, 2, 1 } },
+
+    -- hypothermia_v0.1
+    { 'vehicles\\g_warthog\\g_warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'G Warthog (hypothermia_v0.1)', 1, { 0, 2, 1 } },
+
+    -- hypothermia_v0.2
+    { 'vehicles\\civvi\\civvi', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'Civvi (hypothermia_v0.2)', 1, { 0, 2, 1 } },
+
+    -- hypothermia_v0.2
+    { 'vehicles\\g_warthog\\g_warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'G Warthog (hypothermia_v0.2)', 1, { 0, 2, 1 } },
 
     -- Add more vehicles here using the same format
     -- { 'vehicle/tag/path', { [0] = 'driver', [1] = 'passenger' }, true, 'Display Name', 1, { 0, 1 } },
