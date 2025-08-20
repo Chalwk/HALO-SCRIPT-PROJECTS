@@ -138,7 +138,6 @@ local sapp_events = {
     [cb['EVENT_TEAM_SWITCH']] = 'OnTeamSwitch'
 }
 
--- Helper local function to format messages cleanly
 local function fmt(message, ...)
     if select('#', ...) > 0 then return message:format(...) end
     return message
@@ -213,7 +212,6 @@ local function has_objective(dyn_player)
     return obj_byte == 4 or obj_byte == 0 -- Oddball (4) or Flag (0)
 end
 
--- Helper: get vehicle info if player in driver seat, else nil
 local function get_vehicle_if_driver(dyn)
     local vehicle_id_offset = 0x11C
     local seat_offset = 0x2F0
@@ -267,7 +265,6 @@ local function do_checks(player, now)
     return true
 end
 
--- Helper: check if player is valid for the current player (self)
 local function is_valid_player(player, id)
     return player_present(id) and
         player_alive(id) and
@@ -434,12 +431,6 @@ local function initialize()
     gametype_is_ctf_or_oddball = game_type == 'ctf' or game_type == 'oddball'
 end
 
--- Event Handlers
-function OnScriptLoad()
-    register_callback(cb['EVENT_GAME_START'], 'OnStart')
-    OnStart()
-end
-
 local function register_callbacks(enable)
     for event, callback in pairs(sapp_events) do
         if enable then
@@ -453,6 +444,11 @@ local function register_callbacks(enable)
         cprint('[Uber] Only runs on team-based games', 12)
         cprint('====================================', 12)
     end
+end
+
+function OnScriptLoad()
+    register_callback(cb['EVENT_GAME_START'], 'OnStart')
+    OnStart()
 end
 
 function OnStart()
@@ -553,7 +549,7 @@ function OnVehicleEnter(id, seat)
     ::continue::
 
     if seat ~= 0 and eject_without_driver then
-        local driver = read_dword(vehicle_obj + 0x324) -- check if thier vehicle has a driver
+        local driver = read_dword(vehicle_obj + 0x324) -- check if the vehicle has a driver
         if driver == 0xFFFFFFFF then
             schedule_ejection(
                 player,
