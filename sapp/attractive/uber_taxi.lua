@@ -220,19 +220,20 @@ local function get_vehicle_if_driver(dyn)
 end
 
 local function new_eject(player, object, delay)
+    local now = os_time()
     return {
         player = player,
         object = object,
-        start = os_time(),
-        finish = os_time() + delay,
+        start = now,
+        finish = now + delay,
     }
 end
 
-local function new_cooldown(player, delay)
+local function new_cooldown(player, delay, now)
     return {
         player = player,
-        start = os_time(),
-        finish = os_time() + delay
+        start = now,
+        finish = now + delay
     }
 end
 
@@ -244,7 +245,7 @@ function Uber.player_mt:send(message, clear)
     rprint(self.id, message)
 end
 
-function Uber.player_mt:do_checks()
+function Uber.player_mt:do_checks(now)
     local dyn = get_dynamic_player(self.id)
     if dyn == 0 then return false end
 
@@ -268,8 +269,8 @@ function Uber.player_mt:do_checks()
         return false
     end
 
-    if self.call_cooldown and os_time() < self.call_cooldown.finish then
-        local remaining = self.call_cooldown.finish - os_time()
+    if self.call_cooldown and now < self.call_cooldown.finish then
+        local remaining = self.call_cooldown.finish - now
         self:send(fmt(Uber.messages.cooldown_wait, math_floor(remaining)), true)
         return false
     end
@@ -349,9 +350,10 @@ function Uber.player_mt:find_seat(vehicle)
 end
 
 function Uber.player_mt:call_uber()
-    if not self:do_checks() then return end
+    local now = os_time()
+    if not self:do_checks(now) then return end
 
-    self.call_cooldown = new_cooldown(self, Uber.cooldown_period)
+    self.call_cooldown = new_cooldown(self, Uber.cooldown_period, now)
     local vehicles = self:get_available_vehicles()
 
     for _, vehicle in ipairs(vehicles) do
@@ -408,16 +410,16 @@ function Uber.player_mt:check_crouch(dyn)
     self.crouching = crouching
 end
 
-function Uber.player_mt:process_auto_eject()
-    if not self.auto_eject or os_time() < self.auto_eject.finish then return end
+function Uber.player_mt:process_auto_eject(now)
+    if not self.auto_eject or now < self.auto_eject.finish then return end
 
     exit_vehicle(self.id)
     self:send(fmt(Uber.messages.ejected))
     self.auto_eject = nil
 end
 
-function Uber.player_mt:process_cooldown()
-    if self.call_cooldown and os_time() >= self.call_cooldown.finish then
+function Uber.player_mt:process_cooldown(now)
+    if self.call_cooldown and now >= self.call_cooldown.finish then
         self.call_cooldown = nil
     end
 end
@@ -530,16 +532,18 @@ function OnQuit(id)
 end
 
 function OnTick()
-    for id, player in pairs(Uber.players) do
-        if not player_present(id) then goto continue end
+    local now = os_time()
+    for i = 1, 16 do
+        local player = Uber.players[i]
+        if not player or not player_present(i) then goto continue end
 
-        player:process_cooldown()
+        player:process_cooldown(now)
 
-        local dyn = get_dynamic_player(id)
-        if dyn == 0 or not player_alive(id) then goto continue end
+        local dyn = get_dynamic_player(i)
+        if dyn == 0 or not player_alive(i) then goto continue end
 
         player:update_vehicle_state(dyn)
-        player:process_auto_eject()
+        player:process_auto_eject(now)
         player:check_crouch(dyn)
 
         ::continue::
