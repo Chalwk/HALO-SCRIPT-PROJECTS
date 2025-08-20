@@ -110,7 +110,6 @@ local Uber = {
     valid_vehicles_meta = {},
 }
 
--- Localized frequently used variables/functions
 local base_tag_table = 0x40440000
 local tag_entry_size = 0x20
 local tag_data_offset = 0x14
@@ -120,7 +119,6 @@ local bit_index = 3
 local gametype_is_ctf_or_oddball = nil
 
 local pairs, ipairs, tonumber, select = pairs, ipairs, tonumber, select
-
 local math_floor = math.floor
 local os_time = os.time
 local sort = table.sort
@@ -181,6 +179,7 @@ local function schedule_ejection_if_disabled(player, vehicle_obj, config_entry)
     end
 end
 
+-- Helper: check if player is carrying an objective (CTF or Oddball)
 local function has_objective(dyn_player)
     local weapon_id = read_dword(dyn_player + 0x118)
     if weapon_id == 0xFFFFFFFF then return false end
@@ -219,6 +218,7 @@ local function get_vehicle_if_driver(dyn)
     return vehicle_obj, vehicle_id, config_entry
 end
 
+-- Helper: create a new timed ejection (auto_eject)
 local function new_eject(player, object, delay)
     local now = os_time()
     return {
@@ -229,6 +229,7 @@ local function new_eject(player, object, delay)
     }
 end
 
+-- Helper: create a new timed cooldown (call_cooldown)
 local function new_cooldown(player, delay, now)
     return {
         player = player,
