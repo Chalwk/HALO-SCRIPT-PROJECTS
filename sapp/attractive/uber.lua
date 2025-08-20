@@ -20,7 +20,7 @@ CONFIGURATION OPTIONS:
                  - Vehicle-specific settings
                  - Seat role definitions
 
-LAST UPDATED:     20/8/2025
+LAST UPDATED:     21/8/2025
 
 Copyright (c) 2020-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -58,41 +58,65 @@ local messages = {
     ejection_cancelled    = "Driver entered, ejection cancelled"
 }
 
--- Priority order for seat assignment when entering vehicles
--- *    When adding a custom vehicle to 'valid_vehicles', check its total seat count.
---      If the vehicle has more than 5 seats, extend the 'insertion_order' table to include all seat indices as needed.
-local insertion_order = { 0, 1, 2, 3, 4 }
-
-
 --[[
 
 ==================================
 VEHICLE CONFIGURATION
 ==================================
 
-Each entry describes a vehicle allowed for Uber calls:
+STRUCTURE:
+    {vehicle_tag, seat_roles, enabled, display_name, priority, insertion_order}
 
-    {vehicle tag path, seat roles by seat index, enabled flag, display name, priority }
+PARAMETERS:
+    vehicle_tag (string):   The tag path of the vehicle (e.g., 'vehicles\\warthog\\mp_warthog')
+    seat_roles (table):     A table mapping seat indices to their role names
+                            Example: {[0] = 'driver', [1] = 'passenger', [2] = 'gunner'}
+    enabled (boolean):      Whether this vehicle is enabled for Uber calls
+    display_name (string):  The name shown to players when entering this vehicle
+    priority (number):      Weight used when multiple vehicles are available (higher = chosen first)
+    insertion_order (table): The order in which seats should be filled for THIS VEHICLE
+                            Example: {0, 2, 1} means try driver first, then gunner, then passenger
 
-Note: The "valid_vehicles" table only defines which vehicles can trigger uber.
-      It does NOT restrict players from using vehicles that aren’t listed. For example:
+IMPORTANT NOTES:
 
-      1. If the Banshee is NOT included in the table, players can still use it freely
-         unless they enter a non-driver seat and the "eject_without_driver" flag is set to true.
-      2. If the Banshee IS listed but marked as disabled, then players will be prevented from using it.
+1. VEHICLE WHITELIST:
+   - This table defines which vehicles can be called via Uber
+   - Vehicles NOT listed here can still be used normally but won't be available for Uber calls
+   - Vehicles listed with enabled=false will prevent Uber calls and may eject players (if configured)
+
+2. SEAT ROLES:
+   - The script respects the roles defined for each vehicle
+   - Even if a seat is listed in insertion_order, only players who can occupy that role will be placed there
+   - Example: In a Warthog, seat 2 is the gunner seat - only players who can be gunners will be placed there
+
+3. INSERTION ORDER:
+   - Each vehicle can have its own insertion order priority
+   - This determines which seats get filled first when multiple seats are available
+   - Seats are tried in the order specified until a valid, empty seat is found
+
+4. PRIORITY SYSTEM:
+   - When multiple vehicles are available, higher priority vehicles are chosen first
+   - This helps ensure players get preferred vehicles (e.g., Rocket Hog over standard Warthog)
+
+BEHAVIOR EXAMPLES:
+   - If Banshee is NOT in this table: Players can use it normally but can't call Uber to it
+   - If Banshee IS listed but enabled=false: Players will be prevented from using it for Uber
+   - If a vehicle has no driver: Passengers may be ejected after a delay (if configured)
 ]]
-local valid_vehicles = {
-    { 'vehicles\\rwarthog\\rwarthog', {
-        [0] = 'driver',
-        [1] = 'passenger',
-        [2] = 'gunner'
-    }, true, 'Rocket Hog', 2 },
 
+local valid_vehicles = {
+    -- Format: {tag_path, seat_roles, enabled, display_name, priority, insertion_order}
     { 'vehicles\\warthog\\mp_warthog', {
         [0] = 'driver',
         [1] = 'passenger',
         [2] = 'gunner',
-    }, true, 'Chain Gun Hog', 2 },
+    }, true, 'Chain Gun Hog', 3, { 0, 2, 1 } },
+
+    { 'vehicles\\rwarthog\\rwarthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner'
+    }, true, 'Rocket Hog', 2, { 0, 2, 1 } },
 
     { 'vehicles\\scorpion\\scorpion_mp', {
         [0] = 'driver',
@@ -100,29 +124,30 @@ local valid_vehicles = {
         [2] = 'passenger',
         [3] = 'passenger',
         [4] = 'passenger'
-    }, true, 'Tank', 1 },
+    }, true, 'Tank', 1, { 0, 2, 1 } },
 
     -- Custom hog (bc_raceway_final_mp)
     { 'levels\\test\\racetrack\\custom_hogs\\mp_warthog_blue', {
         [0] = 'driver',
         [1] = 'passenger',
         [2] = 'gunner',
-    }, true, 'Warthog', 2 },
+    }, true, 'Warthog', 1, { 0, 2, 1 } },
 
     -- G Warthog (hypothermia_race)
     { 'vehicles\\g_warthog\\g_warthog', {
         [0] = 'driver',
         [1] = 'passenger',
         [2] = 'gunner',
-    }, true, 'G Hog', 2 },
+    }, true, 'G Hog', 1, { 0, 2, 1 } },
 
-    -- Mongoose (Mongoose_Point)
+    -- Mongoose (Mongoose_Point) - Only 2 seats
     { 'vehicles\\m257_multvp\\m257_multvp', {
         [0] = 'driver',
         [1] = 'passenger',
-    }, true, 'Mongoose', 1 },
+    }, true, 'Mongoose', 1, { 0, 1 } },
 
-    -- Add more vehicles here
+    -- Add more vehicles here using the same format
+    -- { 'vehicle/tag/path', { [0] = 'driver', [1] = 'passenger' }, true, 'Display Name', 1, { 0, 1 } },
 }
 
 -- Settings controlling Uber script behavior:
@@ -340,7 +365,9 @@ local function get_available_vehicles(player)
 end
 
 local function find_seat(player, vehicle)
-    for _, seat_id in ipairs(insertion_order) do
+    local vehicle_insertion_order = vehicle.meta.insertion_order
+
+    for _, seat_id in ipairs(vehicle_insertion_order) do
         if not vehicle.meta.seats[seat_id] then goto continue end
 
         local seat_free = true
@@ -376,7 +403,7 @@ local function call_uber(player)
             if calls_per_game > 0 then player.calls = player.calls - 1 end
 
             enter_vehicle(vehicle.id, player.id, seat_id)
-            send(player, fmt(messages.entering_vehicle, vehicle.meta.label, vehicle.meta.seats[seat_id]), true)
+            send(player, fmt(messages.entering_vehicle, vehicle.meta.display_name, vehicle.meta.seats[seat_id]), true)
 
             if calls_per_game > 0 then
                 send(player, fmt(messages.remaining_calls, player.calls), false)
@@ -452,14 +479,16 @@ local function initialize()
     valid_vehicles_meta = {}
 
     for _, v in ipairs(valid_vehicles) do
-        local tag_name, seat, enabled, label, priority = v[1], v[2], v[3], v[4], v[5]
-        local meta_id = get_tag('vehi', tag_name)
+        local vehicle_tag, seat_roles, enabled, display_name, priority, insertion_order = v[1], v[2], v[3], v[4], v[5],
+            v[6]
+        local meta_id = get_tag('vehi', vehicle_tag)
         if meta_id then
             valid_vehicles_meta[meta_id] = {
+                seats = seat_roles,
                 enabled = enabled,
-                seats = seat,
-                label = label,
-                priority = priority
+                display_name = display_name,
+                priority = priority,
+                insertion_order = insertion_order
             }
         end
     end
