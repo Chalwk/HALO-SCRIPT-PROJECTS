@@ -28,87 +28,83 @@ LICENSE:          MIT License
 =====================================================================================
 ]]
 
-local Uber = {
+---------------------------------------------------------------------------
+-- CONFIG START -----------------------------------------------------------
+---------------------------------------------------------------------------
 
-    ---------------------------------------------------------------------------
-    -- CONFIG START -----------------------------------------------------------
-    ---------------------------------------------------------------------------
-
-    phrases = {
-        -- Chat keywords players can use to call an Uber
-        ['uber'] = true,
-        ['taxi'] = true,
-        ['cab'] = true,
-        ['taxo'] = true
-    },
-
-    messages = {
-        -- Player-facing messages for various Uber script events and errors
-        must_be_alive         = "You must be alive to call an uber",
-        already_in_vehicle    = "You cannot call an uber while in a vehicle",
-        carrying_objective    = "You cannot call uber while carrying an objective",
-        no_calls_left         = "You have no more uber calls left",
-        cooldown_wait         = "Please wait %d seconds",
-        entering_vehicle      = "Entering %s as %s",
-        remaining_calls       = "Remaining calls: %d",
-        no_vehicles_available = "No available vehicles or seats",
-        driver_left           = "Driver left the vehicle",
-        ejecting_in           = "Ejecting in %d seconds...",
-        ejected               = "Ejected from vehicle",
-        vehicle_not_enabled   = "This vehicle is not enabled for uber",
-        vehicle_no_driver     = "Vehicle has no driver",
-        ejection_cancelled    = "Driver entered, ejection cancelled"
-    },
-
-    insertion_order = { 0, 1, 2, 3, 4 }, -- Priority order for seat assignment when entering vehicles
-
-    valid_vehicles = {
-        -- Each entry describes a vehicle allowed for Uber calls:
-        -- { vehicle tag path, seat roles by seat index, enabled flag, display name, priority }
-        { 'vehicles\\rwarthog\\rwarthog', {
-            [0] = 'driver',
-            [1] = 'passenger',
-            [2] = 'gunner'
-        }, true, 'Rocket Hog', 3 },
-
-        { 'vehicles\\warthog\\mp_warthog', {
-            [0] = 'driver',
-            [1] = 'passenger',
-            [2] = 'gunner',
-        }, true, 'Chain Gun Hog', 2 },
-
-        { 'vehicles\\scorpion\\scorpion_mp', {
-            [0] = 'driver',
-            [1] = 'passenger',
-            [2] = 'passenger',
-            [3] = 'passenger',
-            [4] = 'passenger'
-        }, false, 'Tank', 1 }, -- Disabled by default
-
-        -- Add more vehicle entries here
-    },
-
-    -- Settings controlling Uber script behavior:
-
-    calls_per_game = 20,                  -- Max Uber calls allowed per player per game (0 = unlimited)
-    block_objective = true,               -- Prevent Uber calls if player is carrying an objective (e.g. flag)
-    crouch_to_uber = true,                -- Enable Uber call when player crouches
-    cooldown_period = 10,                 -- Cooldown time (seconds) between Uber calls per player
-    eject_from_disabled_vehicle = true,   -- Eject players from vehicles that aren't enabled for Uber
-    eject_from_disabled_vehicle_time = 3, -- Delay before ejecting from disabled vehicle (seconds)
-    eject_without_driver = true,          -- Eject passengers if vehicle has no driver
-    eject_without_driver_time = 5,        -- Delay before ejecting without driver (seconds)
-
-    ---------------------------------------------------------------------------
-    -- CONFIG END -------------------------------------------------------------
-    ---------------------------------------------------------------------------
-
-    -- Player methods table
-    player_mt = {},
-
-    -- Vehicle cache
-    valid_vehicles_meta = {},
+-- Chat keywords players can use to call an Uber
+local phrases = {
+    ['uber'] = true,
+    ['taxi'] = true,
+    ['cab'] = true,
+    ['taxo'] = true
 }
+
+-- Player-facing messages for various Uber script events and errors
+local messages = {
+    must_be_alive         = "You must be alive to call an uber",
+    already_in_vehicle    = "You cannot call an uber while in a vehicle",
+    carrying_objective    = "You cannot call uber while carrying an objective",
+    no_calls_left         = "You have no more uber calls left",
+    cooldown_wait         = "Please wait %d seconds",
+    entering_vehicle      = "Entering %s as %s",
+    remaining_calls       = "Remaining calls: %d",
+    no_vehicles_available = "No available vehicles or seats",
+    driver_left           = "Driver left the vehicle",
+    ejecting_in           = "Ejecting in %d seconds...",
+    ejected               = "Ejected from vehicle",
+    vehicle_not_enabled   = "This vehicle is not enabled for uber",
+    vehicle_no_driver     = "Vehicle has no driver",
+    ejection_cancelled    = "Driver entered, ejection cancelled"
+}
+
+-- Priority order for seat assignment when entering vehicles
+local insertion_order = { 0, 1, 2, 3, 4 }
+
+-- Each entry describes a vehicle allowed for Uber calls:
+-- { vehicle tag path, seat roles by seat index, enabled flag, display name, priority }
+local valid_vehicles = {
+    { 'vehicles\\rwarthog\\rwarthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner'
+    }, true, 'Rocket Hog', 3 },
+
+    { 'vehicles\\warthog\\mp_warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'Chain Gun Hog', 2 },
+
+    { 'vehicles\\scorpion\\scorpion_mp', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'passenger',
+        [3] = 'passenger',
+        [4] = 'passenger'
+    }, false, 'Tank', 1 },     -- Disabled by default
+
+    -- Add more vehicle entries here
+}
+
+-- Settings controlling Uber script behavior:
+local calls_per_game = 20                  -- Max Uber calls allowed per player per game (0 = unlimited)
+local block_objective = true               -- Prevent Uber calls if player is carrying an objective (e.g. flag)
+local crouch_to_uber = true                -- Enable Uber call when player crouches
+local cooldown_period = 10                 -- Cooldown time (seconds) between Uber calls per player
+local eject_from_disabled_vehicle = true   -- Eject players from vehicles that aren't enabled for Uber
+local eject_from_disabled_vehicle_time = 3 -- Delay before ejecting from disabled vehicle (seconds)
+local eject_without_driver = true          -- Eject passengers if vehicle has no driver
+local eject_without_driver_time = 5        -- Delay before ejecting without driver (seconds)
+
+---------------------------------------------------------------------------
+-- CONFIG END -------------------------------------------------------------
+---------------------------------------------------------------------------
+
+api_version = '1.12.0.0'
+
+local players = {}
+local valid_vehicles_meta = {}
 
 local base_tag_table = 0x40440000
 local tag_entry_size = 0x20
@@ -131,33 +127,22 @@ local lookup_tag = lookup_tag
 local get_object_memory, get_dynamic_player = get_object_memory, get_dynamic_player
 local read_dword, read_word, read_byte, read_bit = read_dword, read_word, read_byte, read_bit
 
+local sapp_events = {
+    [cb['EVENT_TICK']] = 'OnTick',
+    [cb['EVENT_JOIN']] = 'OnJoin',
+    [cb['EVENT_LEAVE']] = 'OnQuit',
+    [cb['EVENT_CHAT']] = 'OnChat',
+    [cb['EVENT_VEHICLE_ENTER']] = 'OnVehicleEnter',
+    [cb['EVENT_VEHICLE_EXIT']] = 'OnVehicleExit',
+    [cb['EVENT_DIE']] = 'OnPlayerDeath',
+    [cb['EVENT_TEAM_SWITCH']] = 'OnTeamSwitch'
+}
+
 -- Helper local function to format messages cleanly
 local function fmt(message, ...)
     if select('#', ...) > 0 then return message:format(...) end
     return message
 end
-
--- Create the players table with metatable *after* Uber is fully defined
-Uber.players = setmetatable({}, {
-    __index = function(t, id)
-        local new = {
-            id = id,
-            team = get_var(id, '$team'),
-            name = get_var(id, '$name'),
-            calls = Uber.calls_per_game,
-            crouching = 0,
-            auto_eject = nil,
-            call_cooldown = nil,
-            seat = nil,
-            current_vehi_obj = nil
-        }
-        setmetatable(new, { __index = Uber.player_mt })
-        t[id] = new
-        return new
-    end
-})
-
-api_version = '1.12.0.0'
 
 local function get_tag(class, name)
     local tag = lookup_tag(class, name)
@@ -166,20 +151,51 @@ end
 
 local function validate_vehicle(object_memory)
     local meta_id = read_dword(object_memory)
-    return Uber.valid_vehicles_meta[meta_id]
+    return valid_vehicles_meta[meta_id]
+end
+
+local function new_eject(player, object, delay)
+    local now = os_time()
+    return {
+        player = player,
+        object = object,
+        start = now,
+        finish = now + delay,
+    }
+end
+
+local function new_cooldown(player, delay, now)
+    return {
+        player = player,
+        start = now,
+        finish = now + delay
+    }
+end
+
+local function send(player, message, clear)
+    if clear then
+        for _ = 1, 25 do rprint(player.id, '') end
+    end
+    rprint(player.id, message)
 end
 
 local function schedule_ejection_if_disabled(player, vehicle_obj, config_entry)
-    if Uber.eject_from_disabled_vehicle and not config_entry.enabled then
-        player:schedule_ejection(
+    if eject_from_disabled_vehicle and not config_entry.enabled then
+        schedule_ejection(
+            player,
             vehicle_obj,
-            Uber.eject_from_disabled_vehicle_time,
-            fmt(Uber.messages.vehicle_not_enabled)
+            eject_from_disabled_vehicle_time,
+            fmt(messages.vehicle_not_enabled)
         )
     end
 end
 
--- Helper: check if player is carrying an objective (CTF or Oddball)
+local function schedule_ejection(player, object, delay, reason)
+    if reason then send(player, reason) end
+    send(player, fmt(messages.ejecting_in, delay))
+    player.auto_eject = new_eject(player, object, delay)
+end
+
 local function has_objective(dyn_player)
     local weapon_id = read_dword(dyn_player + 0x118)
     if weapon_id == 0xFFFFFFFF then return false end
@@ -218,61 +234,33 @@ local function get_vehicle_if_driver(dyn)
     return vehicle_obj, vehicle_id, config_entry
 end
 
--- Helper: create a new timed ejection (auto_eject)
-local function new_eject(player, object, delay)
-    local now = os_time()
-    return {
-        player = player,
-        object = object,
-        start = now,
-        finish = now + delay,
-    }
-end
-
--- Helper: create a new timed cooldown (call_cooldown)
-local function new_cooldown(player, delay, now)
-    return {
-        player = player,
-        start = now,
-        finish = now + delay
-    }
-end
-
--- Player methods
-function Uber.player_mt:send(message, clear)
-    if clear then
-        for _ = 1, 25 do rprint(self.id, '') end
-    end
-    rprint(self.id, message)
-end
-
-function Uber.player_mt:do_checks(now)
-    local dyn = get_dynamic_player(self.id)
+local function do_checks(player, now)
+    local dyn = get_dynamic_player(player.id)
     if dyn == 0 then return false end
 
-    if not player_alive(self.id) then
-        self:send(fmt(Uber.messages.must_be_alive), true)
+    if not player_alive(player.id) then
+        send(player, fmt(messages.must_be_alive), true)
         return false
     end
 
     if read_dword(dyn + 0x11C) ~= 0xFFFFFFFF then
-        self:send(fmt(Uber.messages.already_in_vehicle), true)
+        send(player, fmt(messages.already_in_vehicle), true)
         return false
     end
 
-    if Uber.block_objective and gametype_is_ctf_or_oddball and has_objective(dyn) then
-        self:send(fmt(Uber.messages.carrying_objective), true)
+    if block_objective and gametype_is_ctf_or_oddball and has_objective(dyn) then
+        send(player, fmt(messages.carrying_objective), true)
         return false
     end
 
-    if Uber.calls_per_game > 0 and self.calls <= 0 then
-        self:send(fmt(Uber.messages.no_calls_left), true)
+    if calls_per_game > 0 and player.calls <= 0 then
+        send(player, fmt(messages.no_calls_left), true)
         return false
     end
 
-    if self.call_cooldown and now < self.call_cooldown.finish then
-        local remaining = self.call_cooldown.finish - now
-        self:send(fmt(Uber.messages.cooldown_wait, math_floor(remaining)), true)
+    if player.call_cooldown and now < player.call_cooldown.finish then
+        local remaining = player.call_cooldown.finish - now
+        send(player, fmt(messages.cooldown_wait, math_floor(remaining)), true)
         return false
     end
 
@@ -280,20 +268,19 @@ function Uber.player_mt:do_checks(now)
 end
 
 -- Helper: check if player is valid for the current player (self)
-function Uber.player_mt:is_valid_player(id)
+local function is_valid_player(player, id)
     return player_present(id) and
         player_alive(id) and
-        id ~= self.id and
-        get_var(id, '$team') == self.team
+        id ~= player.id and
+        get_var(id, '$team') == player.team
 end
 
--- Main function uses those helpers:
-function Uber.player_mt:get_available_vehicles()
+local function get_available_vehicles(player)
     local available = {}
     local count = 0
 
     for i = 1, 16 do
-        if not self:is_valid_player(i) then goto continue end
+        if not is_valid_player(player, i) then goto continue end
         local dyn = get_dynamic_player(i)
         if not dyn then goto continue end
 
@@ -317,29 +304,20 @@ function Uber.player_mt:get_available_vehicles()
     return available
 end
 
-function Uber.player_mt:find_seat(vehicle)
-    for _, seat_id in ipairs(Uber.insertion_order) do
+local function find_seat(player, vehicle)
+    for _, seat_id in ipairs(insertion_order) do
         if not vehicle.meta.seats[seat_id] then goto continue end
 
         local seat_free = true
-        for i = 1, 16 do
-            if not player_present(i) then goto next_player end
 
-            local dyn = get_dynamic_player(i)
-            if dyn == 0 or not player_alive(i) then goto next_player end
-
-            local veh_id = read_dword(dyn + 0x11C)
-            if veh_id == 0xFFFFFFFF then goto next_player end
-
-            local veh_obj = get_object_memory(veh_id)
-            if veh_obj ~= vehicle.object then goto next_player end
-
-            if read_word(dyn + 0x2F0) == seat_id then
-                seat_free = false
-                break
+        for id = 1, 16 do
+            if id ~= player.id then
+                local other = players[id]
+                if other and other.current_vehi_obj == vehicle.object and player_alive(id) and other.seat == seat_id then
+                    seat_free = false
+                    break
+                end
             end
-
-            ::next_player::
         end
 
         if seat_free then
@@ -350,104 +328,99 @@ function Uber.player_mt:find_seat(vehicle)
     end
 end
 
-function Uber.player_mt:call_uber()
+local function call_uber(player)
     local now = os_time()
-    if not self:do_checks(now) then return end
+    if not do_checks(player, now) then return end
 
-    self.call_cooldown = new_cooldown(self, Uber.cooldown_period, now)
-    local vehicles = self:get_available_vehicles()
+    player.call_cooldown = new_cooldown(player, cooldown_period, now)
+    local vehicles = get_available_vehicles(player)
 
     for _, vehicle in ipairs(vehicles) do
-        local seat_id = self:find_seat(vehicle)
+        local seat_id = find_seat(player, vehicle)
         if seat_id then
-            if Uber.calls_per_game > 0 then self.calls = self.calls - 1 end
+            if calls_per_game > 0 then player.calls = player.calls - 1 end
 
-            enter_vehicle(vehicle.id, self.id, seat_id)
-            self:send(fmt(Uber.messages.entering_vehicle, vehicle.meta.label, vehicle.meta.seats[seat_id]), true)
+            enter_vehicle(vehicle.id, player.id, seat_id)
+            send(player, fmt(messages.entering_vehicle, vehicle.meta.label, vehicle.meta.seats[seat_id]), true)
 
-            if Uber.calls_per_game > 0 then
-                self:send(fmt(Uber.messages.remaining_calls, self.calls), false)
+            if calls_per_game > 0 then
+                send(player, fmt(messages.remaining_calls, player.calls), false)
             end
 
             return
         end
     end
 
-    self:send(fmt(Uber.messages.no_vehicles_available), true)
+    send(player, fmt(messages.no_vehicles_available), true)
 end
 
-function Uber.player_mt:ejection_check()
-    if self.seat ~= 0 then return end
+local function ejection_check(player)
+    if player.seat ~= 0 then return end
 
-    local dyn = get_dynamic_player(self.id)
+    local dyn = get_dynamic_player(player.id)
     if dyn == 0 then return end
 
     local vehicle_id = read_dword(dyn + 0x11C)
     if vehicle_id == 0xFFFFFFFF then return end
 
     local vehicle_obj = get_object_memory(vehicle_id)
-    for id, player in pairs(Uber.players) do
-        if id ~= self.id and player.current_vehi_obj == vehicle_obj then
-            player:schedule_ejection(
+    for id, other_player in pairs(players) do
+        if id ~= player.id and other_player.current_vehi_obj == vehicle_obj then
+            schedule_ejection(
+                other_player,
                 vehicle_obj,
-                Uber.eject_without_driver_time,
-                fmt(Uber.messages.driver_left)
+                eject_without_driver_time,
+                fmt(messages.driver_left)
             )
         end
     end
 end
 
-function Uber.player_mt:schedule_ejection(object, delay, reason)
-    if reason then self:send(reason) end
-    self:send(fmt(Uber.messages.ejecting_in, delay))
-    self.auto_eject = new_eject(self, object, delay)
-end
-
-function Uber.player_mt:check_crouch(dyn)
-    if not Uber.crouch_to_uber then return end
+local function check_crouch(player, dyn)
+    if not crouch_to_uber then return end
 
     local crouching = read_bit(dyn + 0x208, 0)
-    if crouching == 1 and self.crouching ~= crouching then self:call_uber() end
-    self.crouching = crouching
+    if crouching == 1 and player.crouching ~= crouching then call_uber(player) end
+    player.crouching = crouching
 end
 
-function Uber.player_mt:process_auto_eject(now)
-    if not self.auto_eject or now < self.auto_eject.finish then return end
+local function process_auto_eject(player, now)
+    if not player.auto_eject or now < player.auto_eject.finish then return end
 
-    exit_vehicle(self.id)
-    self:send(fmt(Uber.messages.ejected))
-    self.auto_eject = nil
+    exit_vehicle(player.id)
+    send(player, fmt(messages.ejected))
+    player.auto_eject = nil
 end
 
-function Uber.player_mt:process_cooldown(now)
-    if self.call_cooldown and now >= self.call_cooldown.finish then
-        self.call_cooldown = nil
+local function process_cooldown(player, now)
+    if player.call_cooldown and now >= player.call_cooldown.finish then
+        player.call_cooldown = nil
     end
 end
 
-function Uber.player_mt:update_vehicle_state(dyn)
+local function update_vehicle_state(player, dyn)
     local vehicle_id = read_dword(dyn + 0x11C)
     if vehicle_id == 0xFFFFFFFF then
-        self.seat = nil
-        self.current_vehi_obj = nil
+        player.seat = nil
+        player.current_vehi_obj = nil
         return
     end
 
     local vehicle_obj = get_object_memory(vehicle_id)
     if vehicle_obj ~= 0 then
-        self.seat = read_word(dyn + 0x2F0)
-        self.current_vehi_obj = vehicle_obj
+        player.seat = read_word(dyn + 0x2F0)
+        player.current_vehi_obj = vehicle_obj
     end
 end
 
-function Uber:initialize()
-    self.valid_vehicles_meta = {}
+local function initialize()
+    valid_vehicles_meta = {}
 
-    for _, v in ipairs(self.valid_vehicles) do
+    for _, v in ipairs(valid_vehicles) do
         local meta_id = get_tag('vehi', v[1])
         if meta_id then
             if v[3] then -- check enabled
-                self.valid_vehicles_meta[meta_id] = {
+                valid_vehicles_meta[meta_id] = {
                     enabled = v[3],
                     seats = v[2],
                     label = v[4],
@@ -461,17 +434,6 @@ function Uber:initialize()
     gametype_is_ctf_or_oddball = game_type == 'ctf' or game_type == 'oddball'
 end
 
-local events = {
-    [cb['EVENT_TICK']] = 'OnTick',
-    [cb['EVENT_JOIN']] = 'OnJoin',
-    [cb['EVENT_LEAVE']] = 'OnQuit',
-    [cb['EVENT_CHAT']] = 'OnChat',
-    [cb['EVENT_VEHICLE_ENTER']] = 'OnVehicleEnter',
-    [cb['EVENT_VEHICLE_EXIT']] = 'OnVehicleExit',
-    [cb['EVENT_DIE']] = 'OnPlayerDeath',
-    [cb['EVENT_TEAM_SWITCH']] = 'OnTeamSwitch'
-}
-
 -- Event Handlers
 function OnScriptLoad()
     register_callback(cb['EVENT_GAME_START'], 'OnStart')
@@ -479,7 +441,7 @@ function OnScriptLoad()
 end
 
 local function register_callbacks(enable)
-    for event, callback in pairs(events) do
+    for event, callback in pairs(sapp_events) do
         if enable then
             register_callback(event, callback)
         else
@@ -500,7 +462,7 @@ function OnStart()
         return
     end
 
-    Uber:initialize()
+    initialize()
     for i = 1, 16 do
         if player_present(i) then
             OnJoin(i)
@@ -511,41 +473,52 @@ function OnStart()
 end
 
 function OnJoin(id)
-    Uber.players[id] = Uber.players[id]
+    players[id] = {
+        id = id,
+        team = get_var(id, '$team'),
+        name = get_var(id, '$name'),
+        calls = calls_per_game,
+        crouching = 0,
+        auto_eject = nil,
+        call_cooldown = nil,
+        seat = nil,
+        current_vehi_obj = nil
+    }
 end
 
 function OnQuit(id)
-    local player = Uber.players[id]
+    local player = players[id]
     if player then
         if player.seat == 0 and player.current_vehi_obj then
-            for other_id, other_player in pairs(Uber.players) do
+            for other_id, other_player in pairs(players) do
                 if other_id ~= id and other_player.current_vehi_obj == player.current_vehi_obj then
-                    other_player:schedule_ejection(
+                    schedule_ejection(
+                        other_player,
                         player.current_vehi_obj,
-                        Uber.eject_without_driver_time,
-                        fmt(Uber.messages.driver_left)
+                        eject_without_driver_time,
+                        fmt(messages.driver_left)
                     )
                 end
             end
         end
-        Uber.players[id] = nil
+        players[id] = nil
     end
 end
 
 function OnTick()
     local now = os_time()
     for i = 1, 16 do
-        local player = Uber.players[i]
+        local player = players[i]
         if not player or not player_present(i) then goto continue end
 
-        player:process_cooldown(now)
+        process_cooldown(player, now)
 
         local dyn = get_dynamic_player(i)
         if dyn == 0 or not player_alive(i) then goto continue end
 
-        player:update_vehicle_state(dyn)
-        player:process_auto_eject(now)
-        player:check_crouch(dyn)
+        update_vehicle_state(player, dyn)
+        process_auto_eject(player, now)
+        check_crouch(player, dyn)
 
         ::continue::
     end
@@ -553,8 +526,8 @@ end
 
 function OnChat(id, msg)
     msg = msg:lower()
-    if Uber.phrases[msg] then
-        Uber.players[id]:call_uber()
+    if phrases[msg] then
+        call_uber(players[id])
         return false
     end
 end
@@ -562,7 +535,7 @@ end
 function OnVehicleEnter(id, seat)
     seat = tonumber(seat)
 
-    local player = Uber.players[id]
+    local player = players[id]
     local dyn = get_dynamic_player(id)
     if dyn == 0 then return end
 
@@ -575,42 +548,43 @@ function OnVehicleEnter(id, seat)
     local config_entry = validate_vehicle(vehicle_obj)
     if not config_entry then goto continue end
 
-    schedule_ejection_if_disabled(player, vehicle_obj, config_entry)
+    schedule_ejection_if_disabled(player, vehicle_obj, config_entry) -- prevent using disabled vehicles
 
     ::continue::
 
-    if seat ~= 0 and Uber.eject_without_driver then
-        local driver = read_dword(vehicle_obj + 0x324)
+    if seat ~= 0 and eject_without_driver then
+        local driver = read_dword(vehicle_obj + 0x324) -- check if thier vehicle has a driver
         if driver == 0xFFFFFFFF then
-            player:schedule_ejection(
+            schedule_ejection(
+                player,
                 vehicle_obj,
-                Uber.eject_without_driver_time,
-                fmt(Uber.messages.vehicle_no_driver)
+                eject_without_driver_time,
+                fmt(messages.vehicle_no_driver)
             )
         end
     end
 
     if seat == 0 then
-        for _, p in pairs(Uber.players) do
+        for _, p in pairs(players) do
             if p.auto_eject and p.auto_eject.object == vehicle_obj then
                 p.auto_eject = nil
-                p:send(fmt(Uber.messages.ejection_cancelled))
+                send(p, fmt(messages.ejection_cancelled))
             end
         end
     end
 end
 
 function OnVehicleExit(id)
-    Uber.players[id]:ejection_check()
+    ejection_check(players[id])
 end
 
 function OnPlayerDeath(id)
-    Uber.players[id].auto_eject = nil
-    Uber.players[id]:ejection_check()
+    players[id].auto_eject = nil
+    ejection_check(players[id])
 end
 
 function OnTeamSwitch(id)
-    Uber.players[id].team = get_var(id, '$team')
+    players[id].team = get_var(id, '$team')
 end
 
 function OnScriptUnload() end
