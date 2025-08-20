@@ -49,6 +49,18 @@ local hud_update_interval = 30    -- Update HUD once every 30 ticks (~1 second a
 
 api_version = "1.12.0.0"
 
+-- Cache global functions locally for speed
+local rprint, say = rprint, say
+local execute_command = execute_command
+local player_present = player_present
+local player_alive = player_alive
+local read_bit = read_bit
+local get_dynamic_player = get_dynamic_player
+local math_floor = math.floor
+local string_rep = string.rep
+local string_format = string.format
+local math_min = math.min
+
 -- Player state tracking
 local players = {}
 local FLASHLIGHT_BIT_OFFSET = 0x208
@@ -58,54 +70,14 @@ local SPRINTING_STATE = {
     EXHAUSTED = 2
 }
 
-function OnScriptLoad()
-    register_callback(cb['EVENT_TICK'], 'OnTick')
-    register_callback(cb['EVENT_JOIN'], 'OnJoin')
-    register_callback(cb['EVENT_SPAWN'], 'OnSpawn')
-    register_callback(cb['EVENT_LEAVE'], 'OnLeave')
-    register_callback(cb['EVENT_GAME_START'], 'OnStart')
-end
-
-function OnStart()
-    players = {}
-    for i = 1, 16 do
-        if player_present(i) then OnJoin(i) end
-    end
-end
-
-function OnJoin(player)
-    players[player] = {
-        stamina = stamina_max,
-        sprint_state = SPRINTING_STATE.DISABLED,
-        last_flashlight = 0,
-        last_hud_update = 0
-    }
-end
-
-function OnLeave(player)
-    players[player] = nil
-end
-
 local function set_speed(id, multiplier)
     execute_command("s " .. id .. " " .. multiplier)
 end
 
-function OnSpawn(id)
-    if players[id] then
-        players[id].stamina = stamina_max
-        players[id].sprint_state = SPRINTING_STATE.DISABLED
-        set_speed(id, 1.0)
-    end
-end
-
--- Clear HUD by printing 25 blank lines
 local function clear_hud(id)
-    for _ = 1, 25 do
-        rprint(id, " ")
-    end
+    for _ = 1, 25 do rprint(id, " ") end
 end
 
--- Text-based HUD implementation using rprint
 local function update_hud(player_id, stamina, state)
     clear_hud(player_id) -- Clear previous messages
 
@@ -118,17 +90,54 @@ local function update_hud(player_id, stamina, state)
         status_text = "| READY |"
     end
 
-    -- Create text-based stamina bar (10 segments)
     local segments = 20
-    local filled = math.floor((stamina / stamina_max) * segments)
-    local bar = string.rep("|", filled) .. string.rep(" ", segments - filled)
+    local filled = math_floor((stamina / stamina_max) * segments)
+    local bar = string_rep("|", filled) .. string_rep(" ", segments - filled)
 
-    local message = string.format("STAMINA: %s %d%% %s", bar, math.floor(stamina), status_text)
+    local message = string_format("STAMINA: %s %d%% %s", bar, math_floor(stamina), status_text)
     rprint(player_id, message)
 end
 
 local function is_valid_player(i, player)
     return player and player_present(i) and player_alive(i)
+end
+
+function OnScriptLoad()
+    register_callback(cb['EVENT_TICK'], 'OnTick')
+    register_callback(cb['EVENT_JOIN'], 'OnJoin')
+    register_callback(cb['EVENT_SPAWN'], 'OnSpawn')
+    register_callback(cb['EVENT_LEAVE'], 'OnLeave')
+    register_callback(cb['EVENT_GAME_START'], 'OnStart')
+    OnStart()
+end
+
+function OnStart()
+    if get_var(0, '$gt') == 'n/a' then return end
+    players = {}
+    for i = 1, 16 do
+        if player_present(i) then OnJoin(i) end
+    end
+end
+
+function OnJoin(id)
+    players[id] = {
+        stamina = stamina_max,
+        sprint_state = SPRINTING_STATE.DISABLED,
+        last_flashlight = 0,
+        last_hud_update = 0
+    }
+end
+
+function OnLeave(id)
+    players[id] = nil
+end
+
+function OnSpawn(id)
+    if players[id] then
+        players[id].stamina = stamina_max
+        players[id].sprint_state = SPRINTING_STATE.DISABLED
+        set_speed(id, 1.0)
+    end
 end
 
 function OnTick()
@@ -149,9 +158,7 @@ function OnTick()
                 elseif player.sprint_state == SPRINTING_STATE.ACTIVE then
                     player.sprint_state = SPRINTING_STATE.DISABLED
                 elseif player.sprint_state == SPRINTING_STATE.EXHAUSTED then
-                    -- Show one-time HUD update while exhausted
                     update_hud(i, player.stamina, player.sprint_state)
-                    -- No persistent HUD activation here
                 end
             end
         end
@@ -177,7 +184,7 @@ function OnTick()
                 set_speed(i, 1.0)
             end
         else
-            player.stamina = math.min(stamina_max, player.stamina + regen_rate)
+            player.stamina = math_min(stamina_max, player.stamina + regen_rate)
             set_speed(i, 1.0)
         end
 
