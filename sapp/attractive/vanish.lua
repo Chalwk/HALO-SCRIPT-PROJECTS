@@ -28,7 +28,7 @@ Copyright (c) 2020-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
-]]--
+]] --
 
 api_version = '1.12.0.0'
 
@@ -90,17 +90,14 @@ end
 local function get_player_position(dyn_player)
     local crouch = read_float(dyn_player + 0x50C)
     local vehicle_id = read_dword(dyn_player + 0x11C)
+
     local x, y, z
 
     if vehicle_id == 0xFFFFFFFF then
         x, y, z = read_vector3d(dyn_player + 0x5C)
     else
         local vehicle_obj = get_object_memory(vehicle_id)
-        if vehicle_obj ~= 0 then
-            x, y, z = read_vector3d(vehicle_obj + 0x5C)
-        else
-            x, y, z = read_vector3d(dyn_player + 0x5C)
-        end
+        x, y, z = read_vector3d(vehicle_obj + 0x5C)
     end
 
     local z_offset = (crouch == 0) and 0.65 or 0.35 * crouch
@@ -117,14 +114,14 @@ local function vanish(player)
     if dyn_player == 0 then return end
 
     local x, y, z = get_player_position(dyn_player)
+    if not x then return end
 
     -- Relocate player off-map
     write_float(static_player + 0xF8, x + config.vanish_x_offset)
     write_float(static_player + 0xFC, y + config.vanish_y_offset)
     write_float(static_player + 0x100, z + config.vanish_z_offset)
 
-    -- Handle objectives/vehicles
-    if config.no_weapon_pickup or config.no_objective_pickup and has_objective(dyn_player) then
+    if config.no_weapon_pickup or (config.no_objective_pickup and has_objective(dyn_player)) then
         execute_command('wdrop ' .. id)
     end
 
@@ -188,16 +185,18 @@ function OnCommand(id, cmd)
     return true
 end
 
--- Tick handler
+local function validate_player(id)
+    return player_present(id) and player_alive(id) and players[id]
+end
+
 function OnTick()
     for i = 1, 16 do
-        if player_present(i) and player_alive(i) and players[i] and players[i].vanished then
+        if validate_player(i) and players[i].vanished then
             vanish(players[i])
         end
     end
 end
 
--- Initialization
 function OnScriptLoad()
     register_callback(cb['EVENT_DIE'], 'OnDeath')
     register_callback(cb['EVENT_TICK'], 'OnTick')
@@ -209,9 +208,8 @@ function OnScriptLoad()
 end
 
 function OnStart()
-    if get_var(0, '$gt') ~= 'n/a' then
-        for i = 1, 16 do
-            if player_present(i) then OnJoin(i) end
-        end
+    if get_var(0, '$gt') == 'n/a' then return end
+    for i = 1, 16 do
+        if player_present(i) then OnJoin(i) end
     end
 end
