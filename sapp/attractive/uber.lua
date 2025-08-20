@@ -86,7 +86,7 @@ local valid_vehicles = {
         [0] = 'driver',
         [1] = 'passenger',
         [2] = 'gunner'
-    }, true, 'Rocket Hog', 3 },
+    }, true, 'Rocket Hog', 2 },
 
     { 'vehicles\\warthog\\mp_warthog', {
         [0] = 'driver',
@@ -102,7 +102,27 @@ local valid_vehicles = {
         [4] = 'passenger'
     }, true, 'Tank', 1 },
 
-    -- Add more vehicle entries here
+    -- Custom hog (bc_raceway_final_mp)
+    { 'levels\\test\\racetrack\\custom_hogs\\mp_warthog_blue', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'Warthog', 2 },
+
+    -- G Warthog (hypothermia_race)
+    { 'vehicles\\g_warthog\\g_warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'G Hog', 2 },
+
+    -- Mongoose (Mongoose_Point)
+    { 'vehicles\\m257_multvp\\m257_multvp', {
+        [0] = 'driver',
+        [1] = 'passenger',
+    }, true, 'Mongoose', 1 },
+
+    -- Add more vehicles here
 }
 
 -- Settings controlling Uber script behavior:
