@@ -3,7 +3,7 @@
 ---
 
 > Browse and download my **SAPP** and **Phasor** Lua scripts easily on my
-> new [website](https://chalwk.github.io/website/hsp-repo/main.html)!
+> new [website](https://chalwk.github.io/hsp-repo/main.html)!
 
 ---
 
