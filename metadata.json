@@ -354,11 +354,11 @@
       "description": "Enables players to request, accept, or deny truces with opponents, preventing mutual damage while active. Features request management, configurable privilege levels, persistent truce data across maps, and comprehensive status tracking. Includes commands for managing active truces and pending requests.",
       "filename": "truce.lua"
     },
-    "uber_taxi": {
-      "title": "Uber (TAXI)",
+    "uber": {
+      "title": "Uber",
       "shortDescription": "Team vehicle summoning system",
       "description": "Allows players to summon themselves into teammates' vehicles with configurable seat priority, cooldowns, and restrictions. Supports vehicle validation, auto-ejection, crouch activation, and call limits.",
-      "filename": "uber_taxi.lua"
+      "filename": "uber.lua"
     },
     "vanish": {
       "title": "Vanish",

@@ -1,6 +1,6 @@
 --[[
 =====================================================================================
-SCRIPT NAME:      uber_taxi.lua
+SCRIPT NAME:      uber.lua
 DESCRIPTION:      Team-based vehicle transport system that allows players to join
                   teammates' vehicles via chat command or crouch action.
 
