@@ -63,8 +63,24 @@ local messages = {
 --      If the vehicle has more than 5 seats, extend the 'insertion_order' table to include all seat indices as needed.
 local insertion_order = { 0, 1, 2, 3, 4 }
 
--- Each entry describes a vehicle allowed for Uber calls:
--- { vehicle tag path, seat roles by seat index, enabled flag, display name, priority }
+
+--[[
+
+==================================
+VEHICLE CONFIGURATION
+==================================
+
+Each entry describes a vehicle allowed for Uber calls:
+
+    {vehicle tag path, seat roles by seat index, enabled flag, display name, priority }
+
+Note: The "valid_vehicles" table only defines which vehicles can trigger uber.
+      It does NOT restrict players from using vehicles that aren’t listed. For example:
+
+      1. If the Banshee is NOT included in the table, players can still use it freely
+         unless they enter a non-driver seat and the "eject_without_driver" flag is set to true.
+      2. If the Banshee IS listed but marked as disabled, then players will be prevented from using it.
+]]
 local valid_vehicles = {
     { 'vehicles\\rwarthog\\rwarthog', {
         [0] = 'driver',
@@ -84,7 +100,7 @@ local valid_vehicles = {
         [2] = 'passenger',
         [3] = 'passenger',
         [4] = 'passenger'
-    }, false, 'Tank', 1 },     -- Disabled by default
+    }, true, 'Tank', 1 },
 
     -- Add more vehicle entries here
 }
