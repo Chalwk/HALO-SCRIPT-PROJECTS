@@ -126,21 +126,25 @@ local valid_vehicles = {
         [4] = 'passenger'
     }, true, 'Tank', 1, { 0, 2, 1 } },
 
-    -- Custom hog (bc_raceway_final_mp)
+    --======================--
+    -- CUSTOM MAPS:
+    --======================--
+
+    -- map: bc_raceway_final_mp
     { 'levels\\test\\racetrack\\custom_hogs\\mp_warthog_blue', {
         [0] = 'driver',
         [1] = 'passenger',
         [2] = 'gunner',
     }, true, 'Warthog', 1, { 0, 2, 1 } },
 
-    -- G Warthog (hypothermia_race)
+    -- map: hypothermia_race
     { 'vehicles\\g_warthog\\g_warthog', {
         [0] = 'driver',
         [1] = 'passenger',
         [2] = 'gunner',
     }, true, 'G Hog', 1, { 0, 2, 1 } },
 
-    -- Mongoose (Mongoose_Point) - Only 2 seats
+    -- map: Mongoose_Point
     { 'vehicles\\m257_multvp\\m257_multvp', {
         [0] = 'driver',
         [1] = 'passenger',
