@@ -59,6 +59,8 @@ local messages = {
 }
 
 -- Priority order for seat assignment when entering vehicles
+-- *    When adding a custom vehicle to 'valid_vehicles', check its total seat count.
+--      If the vehicle has more than 5 seats, extend the 'insertion_order' table to include all seat indices.
 local insertion_order = { 0, 1, 2, 3, 4 }
 
 -- Each entry describes a vehicle allowed for Uber calls:
