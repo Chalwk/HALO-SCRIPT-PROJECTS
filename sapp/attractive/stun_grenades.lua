@@ -27,6 +27,8 @@ NOTES:
                  - Works with both PvP and PvE scenarios
                  - No special permissions required
 
+LAST UPDATED:     20/8/2025
+
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
@@ -39,9 +41,9 @@ local tags = {
     -- format:
     -- {tag name, stun time, stun percent}
     --
-    { 'weapons\\frag grenade\\explosion', 5, 0.5 },
-    { 'weapons\\plasma grenade\\explosion', 5, 0.5 },
-    { 'weapons\\plasma grenade\\attached', 10, 0.5 }
+    { 'weapons\\frag grenade\\explosion',   5,  0.5 },
+    { 'weapons\\plasma grenade\\explosion', 5,  0.5 },
+    { 'weapons\\plasma grenade\\attached',  10, 0.5 }
 }
 -- config ends --
 
@@ -60,24 +62,20 @@ function OnScriptLoad()
 end
 
 -- Return meta id of a tag address using its class and name:
-local function GetTag(Class, Name)
+local function get_tag(Class, Name)
     local tag = lookup_tag(Class, Name)
-    return (tag ~= 0 and read_dword(tag + 0xC) or 0)
+    return tag ~= 0 and read_dword(tag + 0xC) or nil
 end
 
--- Returns a table where the key of the table is the meta id and the value is
--- a table containing the stun time and stun percent for that tag.
--- Reason: So we don't have to keep making calls to GetTag() every time we want to check a tag.
-local function TagsToID()
+local function tags_to_id()
     local t = {}
 
     for i = 1, #tags do
-
         local v = tags[i]
         local name = v[1]
-        local tag = GetTag('jpt!', name)
+        local tag = get_tag('jpt!', name)
 
-        if (tag ~= 0) then
+        if tag then
             local stun_time = v[2]
             local stun_percent = v[3]
             t[tag] = { stun_time, stun_percent }
@@ -89,10 +87,9 @@ end
 
 -- Called when the game starts:
 function OnStart()
-    if (get_var(0, '$gt') ~= 'n/a') then
-        players = { }
-        stuns = TagsToID()
-    end
+    if get_var(0, '$gt') == 'n/a' then return end
+    players = {}
+    stuns = tags_to_id()
 end
 
 -- Called every tick (1/30th second)
@@ -112,24 +109,20 @@ function OnTick()
 end
 
 -- Called when a player receives damage:
-function OnDamage(Victim, Killer, MetaID)
+function OnDamage(victim, killer, meta_id)
+    victim = tonumber(victim)
+    killer = tonumber(killer)
 
-    victim = tonumber(Victim)
-    killer = tonumber(Killer)
+    if not stuns[meta_id] or killer == 0 or killer == victim then return true end
 
-    local pvp = (killer > 0 and victim ~= killer)
+    local stun_time = stuns[meta_id][1]
+    local stun_percent = stuns[meta_id][2]
 
-    if (pvp and stuns[MetaID]) then
-
-        local stun_time = stuns[MetaID][1]
-        local stun_percent = stuns[MetaID][2]
-
-        players[victim] = {
-            start = time,
-            finish = time() + stun_time,
-            stun_percent = stun_percent,
-        }
-    end
+    players[victim] = {
+        start = time,
+        finish = time() + stun_time,
+        stun_percent = stun_percent,
+    }
 end
 
 function OnScriptUnload()
