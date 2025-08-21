@@ -164,13 +164,6 @@ local valid_vehicles = {
         [2] = 'gunner',
     }, true, 'Warthog', 1, { 0, 2, 1 } },
 
-    -- hypothermia_race
-    { 'vehicles\\g_warthog\\g_warthog', {
-        [0] = 'driver',
-        [1] = 'passenger',
-        [2] = 'gunner',
-    }, true, 'G Hog', 1, { 0, 2, 1 } },
-
     -- Mongoose_Point
     { 'vehicles\\m257_multvp\\m257_multvp', {
         [0] = 'driver',
@@ -205,14 +198,15 @@ local valid_vehicles = {
         [2] = 'gunner'
     }, true, 'Hell Rocket Warthog V2', 1, { 0, 2, 1 } },
 
-    -- Human_Landscape, Jeep_Cliffs
+    -- Human_Landscape, Jeep_Cliffs, deathrace
     { 'vehicles\\civihog\\mp_civihog', {
         [0] = 'driver',
         [1] = 'passenger',
         [2] = 'gunner',
     }, true, 'Civilian Hog', 1, { 0, 2, 1 } },
 
-    -- Separated, arctic_battleground, artillery_zone, battleforbloodgulch, bloodground_aco, cold_war, doomsday, esther
+    -- separated, arctic_battleground, artillery_zone, battleforbloodgulch,
+    -- bloodground_aco, cold_war, doomsday, esther
     { 'vehicles\\mwarthog\\mwarthog', {
         [0] = 'driver',
         [1] = 'passenger',
@@ -294,14 +288,8 @@ local valid_vehicles = {
         [2] = 'gunner',
     }, true, 'Civilian Hog', 1, { 0, 2, 1 } },
 
-    -- battlecreek_anniversary
-    { 'vehicles\\warthog\\mp_warthog', {
-        [0] = 'driver',
-        [1] = 'passenger',
-        [2] = 'gunner',
-    }, true, 'Warthog', 1, { 0, 2, 1 } },
-
-    -- bob_omb_battlefield, coldsnap, combat_arena, extinction, frozen-path, hypothermia_race
+    -- bob_omb_battlefield, coldsnap, hypothermia_v0.1, hypothermia_v0.2, hypo_v0.3
+	-- combat_arena, extinction, frozen-path, hypothermia_race
     { 'vehicles\\g_warthog\\g_warthog', {
         [0] = 'driver',
         [1] = 'passenger',
@@ -343,7 +331,7 @@ local valid_vehicles = {
         [2] = 'gunner'
     }, true, 'CMT Rocket Hog', 1, { 0, 2, 1 } },
 
-    -- cnr_island
+    -- cnr_island, desertdunestwo
     { 'vehicles\\rancher\\rancher', {
         [0] = 'driver',
         [1] = 'passenger',
@@ -390,31 +378,19 @@ local valid_vehicles = {
         [2] = 'gunner'
     }, true, 'Legend Rocket Warthog', 1, { 0, 2, 1 } },
 
-    -- cursed-beavercreek, cursed-bloodgulch, cursed-chillout, cursed-damnation, cursed-deathisland, cursed-derelict, cursed-hangemhigh, cursed-sidewinder, cursed-wizard
+    -- cursed-beavercreek, cursed-bloodgulch, cursed-chillout, cursed-damnation, cursed-deathisland,
+    -- cursed-derelict, cursed-hangemhigh, cursed-sidewinder, cursed-wizard
     { 'vehicles\\c warthog\\c warthog', {
         [0] = 'driver',
         [1] = 'passenger',
         [2] = 'gunner',
     }, true, 'C Warthog', 1, { 0, 2, 1 } },
 
-    -- deathrace
-    { 'vehicles\\civihog\\mp_civihog', {
-        [0] = 'driver',
-        [1] = 'passenger',
-        [2] = 'gunner',
-    }, true, 'Civilian Hog', 1, { 0, 2, 1 } },
-
     -- desert_storm_v2
     { 'vehicles\\trans_hog\\trans_hog', {
         [0] = 'driver',
         [1] = 'passenger',
     }, true, 'Transport Hog', 1, { 0, 1 } },
-
-    -- desertdunestwo
-    { 'vehicles\\rancher\\rancher', {
-        [0] = 'driver',
-        [1] = 'passenger',
-    }, true, 'Rancher', 1, { 0, 1 } },
 
     -- desertdunestwo
     { 'vehicles\\walton\\walton', {
@@ -428,20 +404,6 @@ local valid_vehicles = {
         [1] = 'passenger',
         [2] = 'gunner',
     }, true, 'Realistic Warthog', 1, { 0, 2, 1 } },
-
-    -- doomsday
-    { 'vehicles\\coldsnap_hogs\\mwarthog', {
-        [0] = 'driver',
-        [1] = 'passenger',
-        [2] = 'gunner'
-    }, true, 'Missile Warthog', 1, { 0, 2, 1 } },
-
-    -- esther
-    { 'vehicles\\mwarthog\\mwarthog', {
-        [0] = 'driver',
-        [1] = 'passenger',
-        [2] = 'gunner'
-    }, true, 'Missile Warthog', 1, { 0, 2, 1 } },
 
     -- facing_worldsrx, gladiators_brawl, huh-what_3
     { 'vehicles\\puma\\puma', {
@@ -530,20 +492,6 @@ local valid_vehicles = {
         [1] = 'passenger',
         [2] = 'gunner',
     }, true, 'New Boat Hog', 1, { 0, 2, 1 } },
-
-    -- hypo_v0.3
-    { 'vehicles\\g_warthog\\g_warthog', {
-        [0] = 'driver',
-        [1] = 'passenger',
-        [2] = 'gunner',
-    }, true, 'G Warthog', 1, { 0, 2, 1 } },
-
-    -- hypothermia_v0.1, hypothermia_v0.2
-    { 'vehicles\\g_warthog\\g_warthog', {
-        [0] = 'driver',
-        [1] = 'passenger',
-        [2] = 'gunner',
-    }, true, 'G Warthog', 1, { 0, 2, 1 } },
 
     -- Add more vehicles here using the same format
     -- { 'vehicle/tag/path', { [0] = 'driver', [1] = 'passenger' }, true, 'Display Name', 1, { 0, 1 } },
@@ -878,14 +826,13 @@ local function initialize()
     valid_vehicles_meta = {}
 
     for _, v in ipairs(valid_vehicles) do
-        local vehicle_tag, seat_roles, enabled, display_name, priority, insertion_order = v[1], v[2], v[3], v[4], v[5],
-            v[6]
-        local meta_id = get_tag('vehi', vehicle_tag)
+        local tag, seats, enabled, label, priority, insertion_order = v[1], v[2], v[3], v[4], v[5], v[6]
+        local meta_id = get_tag('vehi', tag)
         if meta_id then
             valid_vehicles_meta[meta_id] = {
-                seats = seat_roles,
+                seats = seats,
                 enabled = enabled,
-                display_name = display_name,
+                display_name = label,
                 priority = priority,
                 insertion_order = insertion_order
             }
