@@ -37,7 +37,7 @@ a wide range of scripts here to enhance, customize, and extend your multiplayer 
 
 | **Category**                                                            | **Description**                                                           |
 |-------------------------------------------------------------------------|---------------------------------------------------------------------------|
-| [**SAPP Scripts**](./sapp)                                              | SAPP Scripts.                                                             |
+| [**SAPP Scripts**](./sapp)                                              | Attractive, Custom Games, Utilities                                       |
 | [**Phasor Scripts**](./phasor)                                          | Phasor Scripts.                                                           |
 | [**Releases**](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases) | Larger SAPP projects with advanced functionality beyond standard scripts. |
 | [**HSP Wiki**](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/wiki)     | Documentation and community knowledge base.                               |
