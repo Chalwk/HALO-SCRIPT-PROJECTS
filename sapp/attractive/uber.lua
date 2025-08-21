@@ -847,7 +847,7 @@ local function register_callbacks(team_game)
         if team_game then
             register_callback(event, callback)
         else
-            unregister_callback(event, callback)
+            unregister_callback(event)
         end
     end
 end
