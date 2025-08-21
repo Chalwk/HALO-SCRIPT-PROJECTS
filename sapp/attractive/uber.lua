@@ -299,7 +299,7 @@ local valid_vehicles = {
     }, true, 'Civilian Hog', 1, { 0, 2, 1 } },
 
     -- bob_omb_battlefield, coldsnap, hypothermia_v0.1, hypothermia_v0.2, hypo_v0.3
-	-- combat_arena, extinction, frozen-path, hypothermia_race
+    -- combat_arena, extinction, frozen-path, hypothermia_race
     { 'vehicles\\g_warthog\\g_warthog', {
         [0] = 'driver',
         [1] = 'passenger',
@@ -981,6 +981,8 @@ function OnVehicleEnter(id, seat)
 end
 
 function OnVehicleExit(id)
+    local player = players[id]
+    if player then player.auto_eject = nil end
     ejection_check(players[id])
 end
 
