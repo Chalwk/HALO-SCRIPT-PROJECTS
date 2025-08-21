@@ -128,6 +128,21 @@ local valid_vehicles = {
     -- CUSTOM VEHICLES:
     --================--
 
+    --[[------------------------------------------------------------------------------------------
+    THE FOLLOWING POPULAR CUSTOM MAPS USE THE SAME VEHICLE CONFIGURATION AS THE STOCK VEHICLES:
+    - massacre_mountain_race_v2
+    - equinox_v2
+    - dessication_pb1
+    - Camtrack-Arena-Race
+    - TLSstronghold
+    - Prime_C3_Race
+    - LostCove_Race
+    - New_Mombasa_Race_v2
+    - wpitest1_race
+    - cliffhanger
+
+    ------------------------------------------------------------------------------------------------]]
+
     -- bc_raceway_final_mp
     { 'levels\\test\\racetrack\\custom_hogs\\mp_warthog_blue', {
         [0] = 'driver',
@@ -137,6 +152,13 @@ local valid_vehicles = {
 
     -- bc_raceway_final_mp
     { 'levels\\test\\racetrack\\custom_hogs\\mp_warthog_green', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'Warthog', 1, { 0, 2, 1 } },
+
+    -- gauntlet_race
+    { 'vehicles\\rwarthog2\\rwarthog2', {
         [0] = 'driver',
         [1] = 'passenger',
         [2] = 'gunner',
