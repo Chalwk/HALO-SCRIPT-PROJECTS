@@ -243,16 +243,12 @@ end
 
 function Game:onDeath(victim, killer, meta_id)
 
-    if not self.started then
-        return
-    end
+    if not self.started then return end
 
     victim = tonumber(victim)
     killer = tonumber(killer)
 
-    if killer == 0 or killer == -1 or not killer then
-        return
-    end
+    if killer == 0 or killer == -1 or not killer then return end
 
     local victimPlayer = self.players[victim]
     local killerPlayer = self.players[killer]

@@ -301,7 +301,7 @@ function OnDeath(victim_id, killer_id)
 
     victim_id = tonumber(victim_id)
     killer_id = tonumber(killer_id)
-    if killer_id == 0 then return end -- server kill
+    if killer_id == 0 or killer_id == -1 then return end -- server/environmental kill
 
     local victim = players[victim_id]
     local killer = players[killer_id]
