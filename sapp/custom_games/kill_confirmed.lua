@@ -5,229 +5,223 @@ DESCRIPTION:      Team-based objective mode where players must collect enemy dog
                   to score points, inspired by Call of Duty's Kill Confirmed.
 
 KEY FEATURES:
-                 - Dog tag collection mechanics:
-                   * Tags spawn on player death
-                   * Team-based confirmation/denial system
-                   * Configurable despawn timer
-                 - Competitive scoring system:
-                   * Points for confirming kills
-                   * Penalties for team kills
-                   * Score limit victory condition
-                 - Comprehensive player stats tracking
-                 - Top players ranking system
+                 - Dog tag collection system for scoring
+                 - Team-based confirmation/denial mechanics
+                 - Configurable score limits and point values
+                 - Automatic dog tag despawn timer
+                 - Friendly fire prevention option
+                 - Real-time scoring and team updates
+                 - In-game statistics tracking
 
 CONFIGURATION OPTIONS:
-                 - Adjustable score limit
-                 - Customizable point values
-                 - Dog tag despawn timer
-                 - Friendly fire controls
-                 - In-game command permissions
-                 - Message templates
+                 - Adjustable score limits and point values
+                 - Customizable messages and announcements
+                 - Dog tag despawn delay settings
+                 - Friendly fire toggle
+                 - In-game command accessibility
 
-Copyright (c) 2019-2025 Jericho Crosby (Chalwk)
+LAST UPDATED:     21/8/2025
+
+Copyright (c) 2020-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
 
 -- CONFIG STARTS -------------------------------------------------------------
-local KillConfirmed = {
-    messages = {
-        confirm_own = "$name confirmed a kill on $victim",
-        confirm_ally = "$name confirmed $killer's kill on $victim",
-        deny = "$name denied $killer's kill",
-        suicide = "$name committed suicide!",
-        friendly_fire = "$name team-killed $victim!",
-        stats = "Kills: $kills | Deaths: $deaths | Confirms: $confirms | Denies: $denies",
-        top_players = "TOP PLAYERS: $list"
-    },
-
-    settings = {
-        score_limit = 65,                  -- Score needed to win
-        points_on_confirm = 2,             -- Points for confirming a kill
-        despawn_delay = 30,                -- Seconds before dog tags disappear
-        block_friendly_fire = true,         -- Prevent team damage (true/false)
-        allow_commands = true              -- Enable in-game commands
-    },
-
-    dog_tag = {
-        tag = "weapons\\ball\\ball",        -- Dog tag object path
-    },
-
-    server_prefix = "**KILL CONFIRMED**"    -- Server message prefix
+local messages = {
+    confirm_own = "$name confirmed a kill on $victim",
+    confirm_ally = "$name confirmed $killer's kill on $victim",
+    deny = "$name denied $killer's kill",
+    suicide = "$name committed suicide!",
+    friendly_fire = "$name team-killed $victim!",
+    stats = "Kills: $kills | Deaths: $deaths | Confirms: $confirms | Denies: $denies",
+    top_players = "TOP PLAYERS: $list"
 }
+
+local settings = {
+    score_limit = 65,           -- Score needed to win
+    points_on_confirm = 2,      -- Points for confirming a kill
+    despawn_delay = 30,         -- Seconds before dog tags disappear
+    block_friendly_fire = true, -- Prevent team damage (true/false)
+    allow_commands = true       -- Enable in-game commands
+}
+
+local dog_tag_path = "weapons\\ball\\ball" -- The object tag path to represent a dog tag
+
+local server_prefix = "**KILL CONFIRMED**" -- Prefix for server announcements
 
 -- CONFIG ENDS --------------------------------------------------------------
 
 -- Runtime Variables --------------------------------------------------------
-local players = {}          -- Active players table
-local dog_tags = {}         -- Active dog tags table
-local game_started = false  -- Game state flag
-local time = os.time        -- Time function reference
+local players = {}
+local dog_tags = {}
+local dog_tag_id
+local game_active = false
+local os_time = os.time
 
 api_version = "1.12.0.0"
 
--- Player Class -------------------------------------------------------------
-local Player = {}
-Player.__index = Player
+-- Localize globals ---------------------------------------------------------
+local tonumber, ipairs, table_remove = tonumber, ipairs, table.remove
+local get_var, say_all, execute_command = get_var, say_all, execute_command
+local get_dynamic_player, get_object_memory = get_dynamic_player, get_object_memory
+local read_dword, read_word, read_string = read_dword, read_word, read_string
+local read_vector3d, spawn_object, destroy_object = read_vector3d, spawn_object, destroy_object
 
-function Player.new(id)
-    local self = setmetatable({}, Player)
-    self.id = id
-    self.name = get_var(id, "$name")
-    self.team = get_var(id, "$team")
-    self.kills = 0
-    self.deaths = 0
-    self.confirms = 0
-    self.denies = 0
-    return self
+local sapp_events = {
+    [cb['EVENT_TICK']] = 'OnTick',
+    [cb['EVENT_JOIN']] = 'OnJoin',
+    [cb['EVENT_DIE']] = 'OnDeath',
+    [cb['EVENT_LEAVE']] = 'OnQuit',
+    [cb['EVENT_GAME_END']] = 'OnEnd',
+    [cb['EVENT_DAMAGE_APPLICATION']] = 'OnDamage',
+    [cb['EVENT_WEAPON_PICKUP']] = 'OnWeaponPickup'
+}
+
+-- Helper Functions --------------------------------------------------------
+local function register_callbacks(enable)
+    for event, callback in pairs(sapp_events) do
+        if enable then
+            register_callback(event, callback)
+        else
+            unregister_callback(event, callback)
+        end
+    end
 end
 
-function Player:send_message(msg)
+local function fmt(msg, vars)
+    return (msg:gsub("%$(%w+)", function(key)
+        return vars[key] or ("$" .. key)
+    end))
+end
+
+local function announce(msg, vars)
     execute_command('msg_prefix ""')
-    say(self.id, msg)
-    execute_command('msg_prefix "' .. KillConfirmed.server_prefix .. '"')
+    say_all(fmt(msg, vars))
+    execute_command('msg_prefix "' .. server_prefix .. '"')
 end
 
-function Player:announce(msg)
-    execute_command('msg_prefix ""')
-    say_all(msg)
-    execute_command('msg_prefix "' .. KillConfirmed.server_prefix .. '"')
+local function has_oddball(player_id, slot_index)
+    local dyn = get_dynamic_player(player_id)
+    if dyn == 0 then return nil end
+
+    local weapon_id = read_dword(dyn + 0x2F8 + (slot_index - 1) * 4)
+    local object_memory = get_object_memory(weapon_id)
+
+    if weapon_id == 0xFFFFFFFF or object_memory == 0 then return nil end
+    local object_path = read_string(read_dword(read_word(object_memory) * 32 + 0x40440038))
+
+    return object_path == dog_tag_path and object_memory or nil
 end
 
-function Player:get_stats()
-    return KillConfirmed.messages.stats
-        :gsub("$kills", self.kills)
-        :gsub("$deaths", self.deaths)
-        :gsub("$confirms", self.confirms)
-        :gsub("$denies", self.denies)
-end
+local function update_score(player, points)
+    local current_score = tonumber(get_var(player.id, "$score"))
+    execute_command("score " .. player.id .. " " .. (current_score + points))
 
-function Player:update_score(points)
-    local current_score = tonumber(get_var(self.id, "$score"))
-    execute_command("score " .. self.id .. " " .. (current_score + points))
-
-    -- Update team score
-    local team = self.team == "red" and 0 or 1
-    local team_score = tonumber(get_var(0, self.team == "red" and "$redscore" or "$bluescore"))
+    local team = player.team == "red" and 0 or 1
+    local team_score = tonumber(get_var(0, player.team == "red" and "$redscore" or "$bluescore"))
     execute_command("team_score " .. team .. " " .. (team_score + points))
 end
 
--- Dog Tag Class ------------------------------------------------------------
-local DogTag = {}
-DogTag.__index = DogTag
-
-function DogTag.new(killer_id, victim_id)
-    local self = setmetatable({}, DogTag)
-    self.killer_id = killer_id
-    self.victim_id = victim_id
-    self.killer_name = get_var(killer_id, "$name")
-    self.victim_name = get_var(victim_id, "$name")
-    self.killer_team = get_var(killer_id, "$team")
-    self.victim_team = get_var(victim_id, "$team")
-    self.spawn_time = time()
-    self.object = nil
-    self:spawn()
-    return self
+local function new_player(id)
+    return {
+        id = id,
+        name = get_var(id, "$name"),
+        team = get_var(id, "$team"),
+        kills = 0,
+        deaths = 0,
+        confirms = 0,
+        denies = 0
+    }
 end
 
-function DogTag:spawn()
-    local x, y, z = self:get_spawn_coordinates()
-    if x then
-        self.object = spawn_object('', '', x, y, z + 0.3, 0, KillConfirmed.dog_tag.id)
+local function destroy_dogtag(tag)
+    if tag.object_id then
+        destroy_object(tag.object_id)
     end
 end
 
-function DogTag:get_spawn_coordinates()
-    local dyn_player = get_dynamic_player(self.victim_id)
-    if dyn_player ~= 0 then
-        local vehicle_id = read_dword(dyn_player + 0x11C)
-        local vehicle = get_object_memory(vehicle_id)
-
-        if vehicle_id == 0xFFFFFFFF then
-            return read_vector3d(dyn_player + 0x5C)
-        elseif vehicle ~= 0 then
-            return read_vector3d(vehicle + 0x5C)
-        end
-    end
-    return nil
+local function should_despawn(tag)
+    return (os_time() - tag.spawn_time) >= settings.despawn_delay
 end
 
-function DogTag:should_despawn()
-    return (time() - self.spawn_time) >= KillConfirmed.settings.despawn_delay
-end
+local function get_coordinates(player_id)
+    local dyn = get_dynamic_player(player_id)
+    if dyn == 0 then return nil end
 
-function DogTag:destroy()
-    if self.object then
-        destroy_object(self.object)
-    end
-end
+    local crouch = read_float(dyn + 0x50C)
+    local vehicle_id = read_dword(dyn + 0x11C)
+    local vehicle_obj = get_object_memory(vehicle_id)
 
--- Main Functions -----------------------------------------------------------
-local function reset_game()
-    players = {}
-    dog_tags = {}
-    game_started = false
-
-    for i = 1, 16 do
-        if player_present(i) then
-            players[i] = Player.new(i)
-        end
-    end
-end
-
-local function show_top_players()
-    local sorted = {}
-    for _, player in pairs(players) do
-        table.insert(sorted, player)
+    local x, y, z
+    if vehicle_id == 0xFFFFFFFF then
+        x, y, z = read_vector3d(dyn + 0x5C)
+    elseif vehicle_obj ~= 0 then
+        x, y, z = read_vector3d(vehicle_obj + 0x5C)
     end
 
-    table.sort(sorted, function(a, b)
-        return (a.kills + a.confirms) > (b.kills + b.confirms)
-    end)
-
-    local top_list = {}
-    for i = 1, math.min(3, #sorted) do
-        table.insert(top_list, sorted[i].name .. " (" .. (sorted[i].kills + sorted[i].confirms) .. ")")
-    end
-
-    execute_command('msg_prefix ""')
-    say_all(KillConfirmed.messages.top_players:gsub("$list", table.concat(top_list, ", ")))
-    execute_command('msg_prefix "' .. KillConfirmed.server_prefix .. '"')
+    local z_offset = (crouch == 0) and 0.65 or 0.35 * crouch
+    return x, y, z + z_offset
 end
 
-local function handle_dog_tag_collection(player_id, object)
+local function spawn_dogtag(tag)
+    local x, y, z = get_coordinates(tag.victim_id)
+    if not x then return end
+    tag.object_id = spawn_object('', '', x, y, z + 0.3, 0, dog_tag_id)
+    tag.object_memory = get_object_memory(tag.object_id)
+end
+
+local function new_dogtag(killer_id, victim_id)
+    local killer = players[killer_id]
+    local victim = players[victim_id]
+
+    local tag = {
+        killer_id = killer_id,
+        victim_id = victim_id,
+        killer_name = killer.name,
+        victim_name = victim.name,
+        killer_team = killer.team,
+        victim_team = victim.team,
+        spawn_time = os_time(),
+        object_id = nil,
+        object_memory = nil
+    }
+    spawn_dogtag(tag)
+    return tag
+end
+
+local function handle_dog_tag_collection(player_id, object_memory)
     for i, tag in ipairs(dog_tags) do
-        if tag.object == object then
+        if tag.object_memory == object_memory then
             local collector = players[player_id]
             local is_confirmation = collector.team == tag.killer_team
             local is_denial = collector.team == tag.victim_team
 
             if is_confirmation then
                 collector.confirms = collector.confirms + 1
-                collector:update_score(KillConfirmed.settings.points_on_confirm)
+                update_score(collector, settings.points_on_confirm)
 
                 local msg = (player_id == tag.killer_id) and
-                    KillConfirmed.messages.confirm_own or
-                    KillConfirmed.messages.confirm_ally
+                    messages.confirm_own or
+                    messages.confirm_ally
 
-                msg = msg:gsub("$name", collector.name)
-                    :gsub("$killer", tag.killer_name)
-                    :gsub("$victim", tag.victim_name)
-
-                collector:announce(msg)
+                announce(msg, {
+                    name = collector.name,
+                    killer = tag.killer_name,
+                    victim = tag.victim_name
+                })
             elseif is_denial then
                 collector.denies = collector.denies + 1
 
-                local msg = KillConfirmed.messages.deny
-                    :gsub("$name", collector.name)
-                    :gsub("$killer", tag.killer_name)
-
-                collector:announce(msg)
+                announce(messages.deny, {
+                    name = collector.name,
+                    killer = tag.killer_name
+                })
             end
 
-            tag:destroy()
-            table.remove(dog_tags, i)
+            destroy_dogtag(tag)
+            table_remove(dog_tags, i)
             return true
         end
     end
@@ -242,154 +236,131 @@ end
 -- Event Handlers -----------------------------------------------------------
 function OnScriptLoad()
     register_callback(cb['EVENT_GAME_START'], "OnStart")
-    register_callback(cb['EVENT_GAME_END'], "OnEnd")
-    register_callback(cb['EVENT_JOIN'], "OnJoin")
-    register_callback(cb['EVENT_LEAVE'], "OnQuit")
-    register_callback(cb['EVENT_DIE'], "OnDeath")
-    register_callback(cb['EVENT_WEAPON_PICKUP'], "OnWeaponPickup")
-    register_callback(cb['EVENT_DAMAGE_APPLICATION'], "OnDamage")
-    register_callback(cb['EVENT_TICK'], "OnTick")
-    register_callback(cb['EVENT_COMMAND'], "OnCommand")
-
-    if get_var(0, "$gt") ~= "n/a" then
-        OnStart()
-    end
+    OnStart()
 end
 
 function OnStart()
-    KillConfirmed.dog_tag.id = get_tag_id("weap", KillConfirmed.dog_tag.tag)
-    execute_command("scorelimit " .. KillConfirmed.settings.score_limit)
-    reset_game()
-    game_started = true
+    if get_var(0, '$gt') == 'n/a' then return end
+
+    game_active, players, dog_tags = true, {}, {}
+
+    dog_tag_id = get_tag_id("weap", dog_tag_path)
+    if dog_tag_id == nil then
+        cprint("Dog Tag '" .. dog_tag_path .. "' not found.", 10)
+        register_callbacks(false)
+        return
+    end
+
+    for i = 1, 16 do
+        if player_present(i) then
+            players[i] = new_player(i)
+        end
+    end
+
+    register_callbacks(true)
+    execute_command("scorelimit " .. settings.score_limit)
 end
 
 function OnEnd()
-    game_started = false
+    game_active = false
     for _, tag in ipairs(dog_tags) do
-        tag:destroy()
+        destroy_dogtag(tag)
     end
     dog_tags = {}
 end
 
 function OnJoin(id)
-    players[id] = Player.new(id)
+    players[id] = new_player(id)
 end
 
 function OnQuit(id)
+    for i = #dog_tags, 1, -1 do
+        local tag = dog_tags[i]
+        if tag.killer_id == id or tag.victim_id == id then
+            destroy_dogtag(tag)
+            table_remove(dog_tags, i)
+        end
+    end
+
     players[id] = nil
 end
 
 function OnTick()
-    if not game_started then return end
+    if not game_active then return end
 
-    -- Handle dog tag despawns
     for i = #dog_tags, 1, -1 do
-        if dog_tags[i]:should_despawn() then
-            dog_tags[i]:destroy()
-            table.remove(dog_tags, i)
+        if should_despawn(dog_tags[i]) then
+            destroy_dogtag(dog_tags[i])
+            table_remove(dog_tags, i)
         end
     end
 end
 
 function OnDeath(victim_id, killer_id)
-    if not game_started then return end
+    if not game_active then return end
 
     victim_id = tonumber(victim_id)
     killer_id = tonumber(killer_id)
+    if killer_id == 0 then return end -- server kill
 
     local victim = players[victim_id]
     local killer = players[killer_id]
-    if not victim then return end
+    if not victim or not killer then return end -- the killer might have left (it's possible to get delayed killed)
 
-    -- Handle suicide
     if victim_id == killer_id then
-        victim:announce(KillConfirmed.messages.suicide:gsub("$name", victim.name))
+        announce(messages.suicide, { name = victim.name })
         victim.deaths = victim.deaths + 1
         return
     end
 
-    -- Handle team kill
-    if killer and killer.team == victim.team then
-        killer:announce(KillConfirmed.messages.friendly_fire
-            :gsub("$name", killer.name)
-            :gsub("$victim", victim.name))
-
-        killer.kills = killer.kills + 1
-        victim.deaths = victim.deaths + 1
-        killer:update_score(-1)
-        return
+    if not settings.block_friendly_fire then
+        if killer.team == victim.team then
+            announce(messages.friendly_fire, {
+                name = killer.name,
+                victim = victim.name
+            })
+            killer.kills = killer.kills + 1
+            victim.deaths = victim.deaths + 1
+            update_score(killer, -1)
+            return
+        end
     end
 
-    -- Handle enemy kill
-    if killer then
-        killer.kills = killer.kills + 1
-        victim.deaths = victim.deaths + 1
+    killer.kills = killer.kills + 1
+    victim.deaths = victim.deaths + 1
 
-        -- Create dog tag
-        table.insert(dog_tags, DogTag.new(killer_id, victim_id))
-        killer:update_score(-1) -- Temporary penalty until confirmation
-    end
+    table.insert(dog_tags, new_dogtag(killer_id, victim_id))
+    update_score(killer, -1)
 end
 
-local function get_object_path(object)
-    return read_string(read_dword(read_word(object) * 32 + 0x40440038)) or nil
+function OnWeaponPickup(player_id, slot_index, weapon_type)
+    if not game_active or tonumber(weapon_type) ~= 1 then return true end
+
+    local object_memory = has_oddball(player_id, slot_index)
+    if not object_memory then return end
+
+    handle_dog_tag_collection(player_id, object_memory)
 end
 
-function OnWeaponPickup(player_id, weapon_index, weapon_type)
-    if not game_started or tonumber(weapon_type) ~= 1 then return true end
-
-    local dyn_player = get_dynamic_player(player_id)
-    if dyn_player == 0 then return true end
-
-    local weapon = read_dword(dyn_player + 0x2F8 + (tonumber(weapon_index) - 1) * 4)
-    local object = get_object_memory(weapon)
-    if object == 0 then return true end
-
-    if get_object_path(object) == KillConfirmed.dog_tag.tag then
-        handle_dog_tag_collection(player_id, weapon)
-    end
-end
-
-function OnDamage(victim_id, killer_id, _, _, _, _)
-    if not game_started or not KillConfirmed.settings.block_friendly_fire then
-        return true
-    end
+function OnDamage(victim_id, killer_id)
+    if not game_active or not settings.block_friendly_fire then return true end
 
     victim_id = tonumber(victim_id)
     killer_id = tonumber(killer_id)
-
-    if victim_id == killer_id then return true end
+    if killer_id == 0 then return true end
 
     local victim = players[victim_id]
     local killer = players[killer_id]
+    if not victim or not killer then return true end
 
-    if victim and killer and victim.team == killer.team then
+    if victim_id ~= killer_id and victim.team == killer.team then
         return false
     end
-
-    return true
-end
-
-function OnCommand(player_id, command)
-    if player_id == 0 or not KillConfirmed.settings.allow_commands then return true end
-
-    command = command:lower()
-    local player = players[player_id]
-    if not player then return true end
-
-    if command == "stats" then
-        player:send_message(player:get_stats())
-        return false
-    elseif command == "top" then
-        show_top_players()
-        return false
-    end
-
     return true
 end
 
 function OnScriptUnload()
     for _, tag in ipairs(dog_tags) do
-        tag:destroy()
+        destroy_dogtag(tag)
     end
 end
