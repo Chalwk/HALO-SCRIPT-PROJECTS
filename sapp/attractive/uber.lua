@@ -20,7 +20,7 @@ CONFIGURATION OPTIONS:
                  - Vehicle-specific settings
                  - Seat role definitions
 
-LAST UPDATED:     21/8/2025
+LAST UPDATED:     22/8/2025
 
 Copyright (c) 2020-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
