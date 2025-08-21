@@ -842,15 +842,15 @@ local function initialize()
     gametype_is_ctf_or_oddball = game_type == 'ctf' or game_type == 'oddball'
 end
 
-local function register_callbacks(enable)
+local function register_callbacks(ffa)
     for event, callback in pairs(sapp_events) do
-        if enable then
-            register_callback(event, callback)
-        else
+        if ffa then
             unregister_callback(event, callback)
+        else
+            register_callback(event, callback)
         end
     end
-    if not enable then
+    if ffa then
         cprint('====================================', 12)
         cprint('[Uber] Only runs on team-based games', 12)
         cprint('====================================', 12)
