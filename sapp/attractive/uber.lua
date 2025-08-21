@@ -758,6 +758,7 @@ local function call_uber(player)
 end
 
 local function ejection_check(player)
+    player.auto_eject = nil
     if player.seat ~= 0 then return end
 
     local dyn = get_dynamic_player(player.id)
@@ -975,13 +976,10 @@ function OnVehicleEnter(id, seat)
 end
 
 function OnVehicleExit(id)
-    local player = players[id]
-    player.auto_eject = nil
     ejection_check(players[id])
 end
 
 function OnPlayerDeath(id)
-    players[id].auto_eject = nil
     ejection_check(players[id])
 end
 
