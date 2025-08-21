@@ -114,6 +114,8 @@ BEHAVIOR EXAMPLES:
    - If a vehicle has no driver: Passengers may be ejected after a delay (if configured)
 ]]
 
+--TODO: Vehicle priority (vehicles with less occupants to be chosen first)
+
 local valid_vehicles = {
 
     -- Format: {tag_path, seat_roles, enabled, display_name, priority, insertion_order}
