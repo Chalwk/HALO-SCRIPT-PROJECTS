@@ -982,7 +982,7 @@ end
 
 function OnVehicleExit(id)
     local player = players[id]
-    if player then player.auto_eject = nil end
+    player.auto_eject = nil
     ejection_check(players[id])
 end
 
