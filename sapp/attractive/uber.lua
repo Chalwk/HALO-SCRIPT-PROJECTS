@@ -129,7 +129,8 @@ local valid_vehicles = {
     --================--
 
     --[[------------------------------------------------------------------------------------------
-    THE FOLLOWING POPULAR CUSTOM MAPS USE THE SAME VEHICLE CONFIGURATION AS THE STOCK VEHICLES:
+    THE FOLLOWING POPULAR CUSTOM MAPS USE THE SAME VEHICLE CONFIGURATION AS THE STOCK VEHICLES,
+    SO THEY DO NOT NEED TO BE ADDED HERE.
     - massacre_mountain_race_v2
     - equinox_v2
     - dessication_pb1
@@ -140,8 +141,7 @@ local valid_vehicles = {
     - New_Mombasa_Race_v2
     - wpitest1_race
     - cliffhanger
-
-    ------------------------------------------------------------------------------------------------]]
+    --------------------------------------------------------------------------------------------]]
 
     -- bc_raceway_final_mp
     { 'levels\\test\\racetrack\\custom_hogs\\mp_warthog_blue', {
