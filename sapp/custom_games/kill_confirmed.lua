@@ -305,7 +305,12 @@ function OnDeath(victim_id, killer_id)
 
     local victim = players[victim_id]
     local killer = players[killer_id]
-    if not victim or not killer then return end -- the killer might have left (it's possible to get delayed killed)
+
+    -- Technical note:
+    --  Important to check killer is not nil, as it's possible to get a delayed kill (e.g., plasma grenade kill),
+    --  after quitting the game.
+
+    if not victim or not killer then return end
 
     if victim_id == killer_id then
         announce(messages.suicide, { name = victim.name })
