@@ -32,6 +32,16 @@ LICENSE:          MIT License
 -- CONFIG START -----------------------------------------------------------
 ---------------------------------------------------------------------------
 
+-- Settings controlling Uber script behavior:
+local calls_per_game = 20                  -- Max Uber calls allowed per player per game (0 = unlimited)
+local block_objective = true               -- Prevent Uber calls if player is carrying an objective (e.g. flag)
+local crouch_to_uber = true                -- Enable Uber call when player crouches
+local cooldown_period = 10                 -- Cooldown time (seconds) between Uber calls per player
+local eject_from_disabled_vehicle = true   -- Eject players from vehicles that aren't enabled for Uber
+local eject_from_disabled_vehicle_time = 3 -- Delay before ejecting from disabled vehicle (seconds)
+local eject_without_driver = true          -- Eject passengers if vehicle has no driver
+local eject_without_driver_time = 5        -- Delay before ejecting without driver (seconds)
+
 -- Chat keywords players can use to call an Uber
 local phrases = {
     ['uber'] = true,
@@ -496,17 +506,6 @@ local valid_vehicles = {
     -- Add more vehicles here using the same format
     -- { 'vehicle/tag/path', { [0] = 'driver', [1] = 'passenger' }, true, 'Display Name', 1, { 0, 1 } },
 }
-
--- Settings controlling Uber script behavior:
-local calls_per_game = 20                  -- Max Uber calls allowed per player per game (0 = unlimited)
-local block_objective = true               -- Prevent Uber calls if player is carrying an objective (e.g. flag)
-local crouch_to_uber = true                -- Enable Uber call when player crouches
-local cooldown_period = 10                 -- Cooldown time (seconds) between Uber calls per player
-local eject_from_disabled_vehicle = true   -- Eject players from vehicles that aren't enabled for Uber
-local eject_from_disabled_vehicle_time = 3 -- Delay before ejecting from disabled vehicle (seconds)
-local eject_without_driver = true          -- Eject passengers if vehicle has no driver
-local eject_without_driver_time = 5        -- Delay before ejecting without driver (seconds)
-
 ---------------------------------------------------------------------------
 -- CONFIG END -------------------------------------------------------------
 ---------------------------------------------------------------------------
