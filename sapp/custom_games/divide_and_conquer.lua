@@ -1,302 +1,323 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      divide_and_conquer.lua
-DESCRIPTION:      Team conversion warfare mode where kills convert enemies to allies,
+DESCRIPTION:      Team conversion warfare where kills convert enemies to allies,
                   creating dynamic team shifts and strategic gameplay.
 
 KEY FEATURES:
-                 - Team conversion mechanics:
-                   * Kills convert victims to killer's team
-                   * Real-time team composition changes
-                   * Automatic team balancing on game start
+                 - Team conversion mechanics
+                 - Real-time team composition changes
+                 - Automatic team balancing on game start
                  - Victory condition when one team is eliminated
                  - Player count-based game activation
                  - Countdown timer before match start
-                 - Team switch announcements
+                 - Enhanced team shuffling with anti-duplicate protection
+                 - Death message suppression during team changes
 
-CONFIGURATION OPTIONS:
-                 - Adjustable minimum player requirement
-                 - Customizable pre-game countdown
-                 - Admin message prefix
-                 - Team balancing controls
+LAST UPDATED:    21/8/2025
 
-Copyright (c) 2023 Jericho Crosby (Chalwk)
+Copyright (c) 2023-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
 
+-- Configuration -----------------------------------------------------------------------
+local REQUIRED_PLAYERS = 2                   -- Minimum players required to start
+local COUNTDOWN_DELAY = 5                    -- Seconds before game starts
+local SERVER_PREFIX = "**Divide & Conquer**" -- Server message prefix
+local SCORE_LIMIT = 99999                    -- Score limit (effectively disabled)
+-- End of Configuration -----------------------------------------------------------------
+
 api_version = '1.12.0.0'
 
---- Configuration settings for the game.
-local config = {
-    delay = 5,
-    required_players = 3,
-    prefix = '**SAPP**'
+local pairs, ipairs, table_insert = pairs, ipairs, table.insert
+local math_random, os_time, tonumber = math.random, os.time, tonumber
+
+local get_var, say_all = get_var, say_all
+local execute_command, player_present = execute_command, player_present
+
+local death_message_hook_enabled = false
+local death_message_address = nil
+local original_death_message_bytes = nil
+local DEATH_MESSAGE_SIGNATURE = "8B42348A8C28D500000084C9"
+
+local sapp_events = {
+    [cb['EVENT_DIE']] = 'OnDeath',
+    [cb['EVENT_JOIN']] = 'OnJoin',
+    [cb['EVENT_LEAVE']] = 'OnQuit',
+    [cb['EVENT_GAME_END']] = 'OnEnd',
+    [cb['EVENT_TEAM_SWITCH']] = 'OnTeamSwitch'
 }
 
---- Timer Class ---
-local Timer = {}
-Timer.__index = Timer
-
-function Timer:new()
-    local self = setmetatable({}, Timer)
-    self.start_time = nil
-    return self
-end
-
-function Timer:start()
-    self.start_time = os.clock()
-end
-
-function Timer:stop()
-    self.start_time = nil
-end
-
-function Timer:get()
-    return (self.start_time and os.clock() - self.start_time) or 0
-end
-
---- Player Class ---
-local Player = {}
-Player.__index = Player
-
-function Player:new(playerId)
-    local self = setmetatable({}, Player)
-    self.id = playerId
-    self.team = get_var(playerId, '$team')
-    return self
-end
-
-function Player:switchTeam(team)
-    execute_command('st ' .. self.id .. ' ' .. team)
-    self.team = team
-end
-
---- Game Class ---
-local Game = {}
-Game.__index = Game
-
-function Game:new()
-    local self = setmetatable({}, Game)
-    self.players = {}
-    self.timer = nil
-    self.started = false
-    self.winner = nil
-    self.death_message_address = sig_scan("8B42348A8C28D500000084C9") + 3
-    self.original_death_message_address = read_dword(self.death_message_address)
-    return self
-end
-
-function Game:addPlayer(playerId)
-    self.players[playerId] = Player:new(playerId)
-    self:checkStartCondition()
-end
-
-function Game:removePlayer(playerId)
-    self.players[playerId] = nil
-    self:checkStartCondition(true)
-end
-
-function Game:checkStartCondition(quit)
-    local count = tonumber(get_var(0, '$pn'))
-    count = (quit and count - 1) or count
-
-    if count >= config.required_players and not self.timer then
-        self.timer = Timer:new()
-        self.timer:start()
-    elseif self.timer and self.started then
-        self:endGame()
-    elseif self.timer and not self.started then
-        return
-    else
-        self.timer = nil
-    end
-end
-
-function Game:resetTimer()
-    if self.timer then
-        self.timer:stop()
-        self.timer = nil
-    end
-end
-
-function Game:start()
-    if get_var(0, '$gt') ~= 'n/a' then
-
-        self.players = {}
-        self.winner, self.started = nil, false
-
-        execute_command('sv_tk_ban 0')
-        execute_command('sv_friendly_fire 0')
-        execute_command('scorelimit 99999')
-
-        for playerId = 1, 16 do
-            if player_present(playerId) then
-                self:addPlayer(playerId)
-            end
-        end
-
-        self:resetTimer()
-    end
-end
-
-function Game:endGame()
-    local reds, blues = self:getTeamCounts()
-    if reds == 0 or blues == 0 then
-        self.winner = (reds == 0) and 'Blue' or 'Red'
-        execute_command('sv_map_next')
-        self:resetTimer()
-    end
-end
-
-function Game:getTeamCounts()
-    local reds, blues = 0, 0
-    for _, player in pairs(self.players) do
-        if player.team == 'red' then
-            reds = reds + 1
+local function register_callbacks(team_game)
+    for event, callback in pairs(sapp_events) do
+        if team_game then
+            register_callback(event, callback)
         else
-            blues = blues + 1
+            unregister_callback(event, callback)
         end
     end
-    return reds, blues
-end
-
-local function shuffle(t)
-    for i = #t, 2, -1 do
-        local j = math.random(i)
-        t[i], t[j] = t[j], t[i]
-    end
-    return t
-end
-
-function Game:shuffleTeams()
-    local t = {}
-    for _, player in pairs(self.players) do
-        table.insert(t, player)
-    end
-    t = shuffle(t)
-
-    for i, player in ipairs(t) do
-        local team = (i <= #t / 2) and 'red' or 'blue'
-        player:switchTeam(team)
+    if not team_game then
+        cprint('====================================================', 12)
+        cprint('Divide & Conquer: Only runs on team-based games', 12)
+        cprint('====================================================', 12)
     end
 end
 
-function Game:disableDeathMessages()
-    safe_write(true)
-    write_dword(self.death_message_address, 0x03EB01B1)
-    safe_write(false)
-end
-
-function Game:enableDeathMessages()
-    safe_write(true)
-    write_dword(self.death_message_address, self.original_death_message_address)
-    safe_write(false)
-end
-
-local function clearScreen(playerId)
-    for _ = 1, 25 do
-        rprint(playerId, ' ')
-    end
-end
-
-function Game:say(message, tick)
-
-    if tick then
-        for playerId, _ in pairs(self.players) do
-            clearScreen(playerId)
-            rprint(playerId, message)
-        end
-        return
-    end
-
-    execute_command('msg_prefix ""')
-    say_all(message)
-    execute_command('msg_prefix "' .. config.prefix .. '"')
-end
-
-function Game:onTick()
-    if not self.timer or self.started then
-        return
-    end
-
-    if self.timer:get() >= config.delay then
-        self.timer:stop()
-        self.started = true
-
-        self:disableDeathMessages()
-        execute_command('sv_map_reset')
-        self:shuffleTeams()
-        self:enableDeathMessages()
-
-        self:say('Game Start!', true)
-    else
-        self:say('Game will start in ' .. math.floor(config.delay - self.timer:get()) .. ' seconds!', true)
-    end
-end
-
-function Game:announceTeamSwitch(victimPlayer, newTeam)
-    local message = string.format("%s has been switched to the %s team!", get_var(victimPlayer.id, "$name"), newTeam)
-    self:say(message)
-end
-
-function Game:onDeath(victim, killer, meta_id)
-
-    if not self.started then return end
-
-    victim = tonumber(victim)
-    killer = tonumber(killer)
-
-    if killer == 0 or killer == -1 or not killer then return end
-
-    local victimPlayer = self.players[victim]
-    local killerPlayer = self.players[killer]
-
-    if meta_id and killerPlayer.team == victimPlayer.team then
+local function SetupDeathMessageHook()
+    local address = sig_scan(DEATH_MESSAGE_SIGNATURE)
+    if address == 0 then
+        cprint("Divide & Conquer: Death message signature not found!", 4)
         return false
     end
 
-    if killerPlayer.team == 'red' then
-        victimPlayer:switchTeam('red')
-        self:announceTeamSwitch(victimPlayer, 'red')
-    elseif killerPlayer.team == 'blue' then
-        victimPlayer:switchTeam('blue')
-        self:announceTeamSwitch(victimPlayer, 'blue')
+    death_message_address = address + 3
+    original_death_message_bytes = read_dword(death_message_address)
+
+    if not original_death_message_bytes or original_death_message_bytes == 0 then
+        cprint("Divide & Conquer: Failed to read original death message bytes!", 4)
+        death_message_address = nil
+        return false
     end
 
-    self:endGame()
+    return true
 end
 
-function Game:onTeamSwitch(id)
-    self.players[id].team = get_var(id, '$team')
+local function disableDeathMessages()
+    if death_message_hook_enabled and death_message_address then
+        safe_write(true)
+        write_dword(death_message_address, 0x03EB01B1)
+        safe_write(false)
+    end
 end
 
---- Global Game Instance ---
-local game
+local function restoreDeathMessages()
+    if death_message_hook_enabled and death_message_address and original_death_message_bytes then
+        safe_write(true)
+        write_dword(death_message_address, original_death_message_bytes)
+        safe_write(false)
+    end
+end
 
---- Callbacks ---
+-- Game State
+local game = {
+    players = {},
+    player_count = 0,
+    started = false,
+    countdown_start = 0,
+    waiting_for_players = true,
+    red_count = 0,
+    blue_count = 0
+}
+
+local function create_player(id)
+    return {
+        id = id,
+        name = get_var(id, '$name'),
+        team = get_var(id, '$team')
+    }
+end
+
+local function switch_player_team(player, new_team)
+    execute_command('st ' .. player.id .. ' ' .. new_team)
+    player.team = new_team
+end
+
+local function broadcast(msg)
+    execute_command('msg_prefix ""')
+    say_all(msg)
+    execute_command('msg_prefix "' .. SERVER_PREFIX .. '"')
+end
+
+local function update_team_counts()
+    game.red_count, game.blue_count = 0, 0
+    for _, player in pairs(game.players) do
+        if player.team == 'red' then
+            game.red_count = game.red_count + 1
+        elseif player.team == 'blue' then
+            game.blue_count = game.blue_count + 1
+        end
+    end
+end
+
+local function shuffle_teams()
+    local players = {}
+    local original_teams = {} -- Store original team for each player
+
+    for id, player in pairs(game.players) do
+        original_teams[id] = player.team
+        table_insert(players, id)
+    end
+
+    if #players < 2 then return end
+
+    -- Fisher-Yates shuffle
+    for i = #players, 2, -1 do
+        local j = math_random(i)
+        players[i], players[j] = players[j], players[i]
+    end
+
+    -- Check if new assignment is identical to original
+    local identical = true
+    for i, id in ipairs(players) do
+        local new_team = (i <= #players / 2) and "red" or "blue"
+        if new_team ~= original_teams[id] then
+            identical = false
+            break
+        end
+    end
+
+    -- Force change by swapping first/last players if identical
+    if identical then
+        players[1], players[#players] = players[#players], players[1]
+    end
+    for i, id in ipairs(players) do
+        local desired_team = (i <= #players / 2) and "red" or "blue"
+        execute_command("st " .. id .. " " .. desired_team)
+        game.players[id].team = desired_team
+    end
+
+    update_team_counts()
+end
+
+local function check_victory()
+    if game.red_count == 0 then
+        broadcast("Blue team wins!")
+        execute_command('sv_map_next')
+    elseif game.blue_count == 0 then
+        broadcast("Red team wins!")
+        execute_command('sv_map_next')
+    end
+end
+
+local function start_game()
+    if game.player_count < REQUIRED_PLAYERS then
+        game.waiting_for_players = true
+        return
+    end
+
+    game.waiting_for_players = false
+    game.countdown_start = os_time()
+    broadcast("Game starting in " .. COUNTDOWN_DELAY .. " seconds...")
+    timer(COUNTDOWN_DELAY, 'OnCountdown')
+end
+
+-- SAPP Events
 function OnScriptLoad()
+    death_message_hook_enabled = SetupDeathMessageHook()
+    register_callback(cb['EVENT_GAME_START'], 'OnStart')
 
-    game = Game:new()
+    execute_command('sv_tk_ban 0')
+    execute_command('sv_friendly_fire 0')
+    execute_command('scorelimit ' .. SCORE_LIMIT)
 
-    for event, method in pairs({
-        EVENT_DIE = 'onDeath',
-        EVENT_DAMAGE_APPLICATION = 'onDeath',
-        EVENT_TICK = 'onTick',
-        EVENT_TEAM_SWITCH = 'onTeamSwitch',
-        EVENT_JOIN = 'addPlayer',
-        EVENT_LEAVE = 'removePlayer',
-        EVENT_GAME_END = 'endGame',
-        EVENT_GAME_START = 'start'
-    }) do
-        _G[method] = function(...) return game[method](game, ...) end
-        register_callback(cb[event], method)
+    OnStart()
+end
+
+function OnStart()
+    if get_var(0, '$gt') == 'n/a' then return end
+    if get_var(0, '$ffa') == '1' then
+        register_callbacks(false)
+        return
     end
 
-    game:start()
+    game.players = {}
+    game.player_count = 0
+    game.started = false
+
+    for i = 1, 16 do
+        if player_present(i) then
+            game.players[i] = create_player(i)
+            game.player_count = game.player_count + 1
+        end
+    end
+
+    update_team_counts()
+    start_game()
+    register_callbacks(true)
+end
+
+function OnEnd()
+    game.started = false
+    game.waiting_for_players = true
+end
+
+function OnJoin(id)
+    game.players[id] = create_player(id)
+    game.player_count = game.player_count + 1
+    update_team_counts()
+
+    if game.waiting_for_players and game.player_count >= REQUIRED_PLAYERS then
+        start_game()
+    end
+end
+
+function OnQuit(id)
+    if game.players[id] then
+        game.players[id] = nil
+        game.player_count = game.player_count - 1
+        update_team_counts()
+
+        if game.player_count < REQUIRED_PLAYERS and not game.started then
+            game.started = false
+            game.waiting_for_players = true
+            broadcast("Not enough players. Game paused.")
+        end
+    end
+end
+
+function OnTeamSwitch(id)
+    if game.players[id] then
+        game.players[id].team = get_var(id, '$team')
+        update_team_counts()
+
+        if game.started then check_victory() end
+    end
+end
+
+function OnDeath(victim_id, killer_id)
+    if not game.started then return end
+    victim_id = tonumber(victim_id)
+    killer_id = tonumber(killer_id)
+
+    local victim = game.players[victim_id]
+    local killer = game.players[killer_id]
+
+    local server_environmental = killer_id == 0 or killer_id == -1
+    if server_environmental or not victim or not killer then return end
+
+    if victim.team ~= killer.team then
+        switch_player_team(victim, killer.team)
+        update_team_counts()
+        broadcast(victim.name .. " was converted to the " .. killer.team .. " team!")
+
+        check_victory()
+    end
+end
+
+function OnCountdown()
+    if game.waiting_for_players or game.started then return false end
+
+    local elapsed = os_time() - game.countdown_start
+    local remaining = COUNTDOWN_DELAY - elapsed
+
+    if remaining <= 0 then
+        broadcast("Game started! Convert enemies to your team by eliminating them!")
+
+        disableDeathMessages()
+        execute_command('sv_map_reset')
+        shuffle_teams()
+        restoreDeathMessages()
+
+        game.started = true
+    end
+
+    return true
 end
 
 function OnScriptUnload()
-    -- N/A
+    if death_message_hook_enabled then
+        restoreDeathMessages()
+    end
 end
