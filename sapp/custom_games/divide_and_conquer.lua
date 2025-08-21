@@ -20,7 +20,7 @@ CONFIGURATION OPTIONS:
                  - Admin message prefix
                  - Team balancing controls
 
-Copyright (c) 2023-2025 Jericho Crosby (Chalwk)
+Copyright (c) 2023 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

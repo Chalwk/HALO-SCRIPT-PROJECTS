@@ -39,6 +39,7 @@
         "write_bit",
         "execute_command_sequence",
         "write_vector3d",
-        "unregister_callback"
+        "unregister_callback",
+        "rand"
     ]
 }
