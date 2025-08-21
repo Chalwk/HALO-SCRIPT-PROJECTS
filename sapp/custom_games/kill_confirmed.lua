@@ -29,6 +29,13 @@ LICENSE:          MIT License
 ]]
 
 -- CONFIG STARTS -------------------------------------------------------------
+local settings = {
+    score_limit = 65,           -- Score needed to win
+    points_on_confirm = 2,      -- Points for confirming a kill
+    despawn_delay = 30,         -- Seconds before dog tags disappear
+    block_friendly_fire = true  -- Prevent team damage (true/false)
+}
+
 local messages = {
     confirm_own = "$name confirmed a kill on $victim",
     confirm_ally = "$name confirmed $killer's kill on $victim",
@@ -39,18 +46,8 @@ local messages = {
     top_players = "TOP PLAYERS: $list"
 }
 
-local settings = {
-    score_limit = 65,           -- Score needed to win
-    points_on_confirm = 2,      -- Points for confirming a kill
-    despawn_delay = 30,         -- Seconds before dog tags disappear
-    block_friendly_fire = true, -- Prevent team damage (true/false)
-    allow_commands = true       -- Enable in-game commands
-}
-
 local dog_tag_path = "weapons\\ball\\ball" -- The object tag path to represent a dog tag
-
 local server_prefix = "**KILL CONFIRMED**" -- Prefix for server announcements
-
 -- CONFIG ENDS --------------------------------------------------------------
 
 -- Runtime Variables --------------------------------------------------------
