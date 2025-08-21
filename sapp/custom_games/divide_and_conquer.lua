@@ -55,13 +55,8 @@ local function register_callbacks(team_game)
         if team_game then
             register_callback(event, callback)
         else
-            unregister_callback(event, callback)
+            unregister_callback(event)
         end
-    end
-    if not team_game then
-        cprint('====================================================', 12)
-        cprint('Divide & Conquer: Only runs on team-based games', 12)
-        cprint('====================================================', 12)
     end
 end
 
@@ -219,6 +214,9 @@ function OnStart()
     if get_var(0, '$gt') == 'n/a' then return end
     if get_var(0, '$ffa') == '1' then
         register_callbacks(false)
+        cprint('====================================================', 12)
+        cprint('Divide & Conquer: Only runs on team-based games', 12)
+        cprint('====================================================', 12)
         return
     end
 

@@ -85,7 +85,7 @@ local function register_callbacks(enable)
         if enable then
             register_callback(event, callback)
         else
-            unregister_callback(event, callback)
+            unregister_callback(event)
         end
     end
 end
