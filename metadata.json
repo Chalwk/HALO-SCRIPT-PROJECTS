@@ -1006,6 +1006,12 @@
       "description": "Improved version with better vehicle handling, player teleportation, and more granular control. Maintains map-specific configurations while adding smoother player transitions when blocked from vehicles.",
       "filename": "vehicle_blocker_v2.lua"
     },
+    "vehicle_tag_utility": {
+      "title": "Vehicle Tag Utility",
+      "shortDescription": "Records vehicle tag names to a file for server analysis",
+      "description": "This utility allows server operators to capture and record vehicle tag names while players are seated in vehicles. When a player uses the 'tag' command, the script writes the vehicle's tag path along with the current map name to a text file. This is useful for analyzing which vehicles are being used on your server, tracking custom vehicle implementations, or debugging vehicle-related issues. The data is appended to vehicle_tag_utility.txt in the sapp directory for easy access and review.",
+      "filename": "vehicle_tag_utility.lua"
+    },
     "vote_kick": {
       "title": "Vote Kick System",
       "shortDescription": "Player-driven moderation with configurable voting thresholds",
