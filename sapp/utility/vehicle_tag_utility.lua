@@ -20,7 +20,7 @@ PERMISSION:      Level 1+ required (prevents console usage)
 
 LAST UPDATED:    23/8/2025
 
-Copyright (c) 2020-2025 Jericho Crosby (Chalwk)
+Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:         MIT License
                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
