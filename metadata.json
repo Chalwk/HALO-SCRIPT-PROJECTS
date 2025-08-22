@@ -186,12 +186,6 @@
       "description": "Broadcasts custom welcome messages when special players join, with unique messages for MVPs and random generic greetings for regular players. Supports identification by IP, hash, or exact name. Fully configurable messages and prefixes.",
       "filename": "mvp_join_alerts.lua"
     },
-    "player_vanish": {
-      "title": "Player Vanish System",
-      "shortDescription": "Advanced player invisibility and teleportation system",
-      "description": "Provides comprehensive vanish functionality including invisibility, invincibility, speed boosts, and teleportation. Features persistent vanish states, vehicle hiding, radar concealment, and customizable messages. Supports both self-vanish and admin-controlled vanishing of other players.",
-      "filename": "player_vanish.lua"
-    },
     "portal_gun_type_1": {
       "title": "Portal Gun (Vehicle-Compatible)",
       "shortDescription": "Shoot-to-teleport system that works in vehicles",

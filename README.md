@@ -44,6 +44,48 @@ a wide range of scripts here to enhance, customize, and extend your multiplayer 
 
 ---
 
+## Community Favourites:
+
+Here’s everything neatly alphabetized within each category:
+
+---
+
+### Attractive:
+
+* [Custom Teleports](./sapp/attractive/custom_teleports.lua)
+* [Deployable Mines](./sapp/attractive/deployable_mines.lua)
+* [Sprint System](./sapp/attractive/sprint_system.lua)
+* [Tactical Insertion](./sapp/attractive/tactical_insertion.lua)
+* [Tea Bagging](./sapp/attractive/tea_bagging.lua)
+* [Uber](./sapp/attractive/uber.lua)
+* [Vanish](./sapp/attractive/vanish.lua)
+
+### Custom Games:
+
+* [Divide and Conquer](./sapp/custom_games/divide_and_conquer.lua)
+* [Gun Game](./sapp/custom_games/gun_game.lua)
+* [Kill Confirmed](./sapp/custom_games/kill_confirmed.lua)
+* [Sabotage](./sapp/custom_games/sabotage.lua)
+* [Tag](./sapp/custom_games/tag.lua)
+
+### Utility:
+
+* [AFK System](./sapp/utility/afk_system.lua)
+* [Anti Impersonator](./sapp/utility/anti_impersonator.lua)
+* [Custom Loadouts](./sapp/utility/custom_loadouts.lua)
+* [Delay Skip](./sapp/utility/delay_skip.lua)
+* [Dynamic Ping Kicker](./sapp/utility/dynamic_ping_kicker.lua)
+* [Dynamic Score Limit](./sapp/utility/dynamic_score_limit.lua)
+* [Liberty Vehicle Spawner](./sapp/utility/liberty_vehicle_spawner.lua)
+* [Notify Me](./sapp/utility/notify_me.lua)
+* [Race Assistant](./sapp/utility/race_assistant.lua)
+* [Server Logger](./sapp/utility/server_logger.lua)
+* [Team Shuffler](./sapp/utility/team_shuffler.lua)
+* [Weapon Assigner](./sapp/utility/weapon_assigner.lua)
+* [Word Buster](./sapp/utility/word_buster.lua)
+
+---
+
 ## 💬 Contribute & Request Features
 
 ### Submit Ideas
