@@ -16,7 +16,7 @@ LICENSE:          MIT License
 
 -- Start of configuration --------------------------------------------------------------------------
 local ANNOUNCEMENTS = {
-    { 'Multi-Line Support | Message 1, line 1','Message 2, line 2' },
+    { 'Multi-Line Support | Message 1, line 1',                 'Message 2, line 2' },
     { 'Like us on Facebook | facebook.com/page_id' },
     { 'Follow us on Twitter | twitter.com/twitter_id' },
     { 'We are recruiting. Sign up on our website | website url' },
@@ -25,9 +25,9 @@ local ANNOUNCEMENTS = {
     { 'Other information here' },
 }
 
-local INTERVAL = 300        -- Interval in seconds
-local CONSOLE = true        -- Console output
-local PREFIX = '**SAPP**'   -- Message prefix
+local INTERVAL = 300      -- Interval in seconds
+local CONSOLE = true      -- Console output
+local PREFIX = '**SAPP**' -- Message prefix
 
 -- End of configuration ----------------------------------------------------------------------------
 
@@ -57,11 +57,10 @@ end
 
 function OnStart()
     if get_var(0, '$gt') == 'n/a' then return end
-    game_active = true
-    index = 1
+    index = 1; game_active = true
     timer(1000 * INTERVAL, "BroadcastAnnouncement")
 end
 
-function OnEnd()
-    game_active = false
-end
+function OnEnd() game_active = false end
+
+function OnScriptUnload() end
