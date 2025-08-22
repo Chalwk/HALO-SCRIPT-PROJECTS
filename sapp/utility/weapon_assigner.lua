@@ -15,13 +15,13 @@ FEATURES:
                   - Error logging for invalid configurations
 
 CONFIGURATION:
-                  Config.weapon_tags = {  - Define all available weapons
+                  weapon_tags = {  - Define all available weapons
                     [1] = 'weapons\\pistol\\pistol',
                     [2] = 'weapons\\sniper rifle\\sniper rifle',
                     ...etc
                   }
 
-                  Config.maps = {        - Map-specific configurations
+                  maps = {        - Map-specific configurations
                     bloodgulch = {
                       default = {        - Default loadout
                         red = {1, 2},    - Red team weapons (by index)
@@ -52,71 +52,78 @@ LICENSE:          MIT License
 
 api_version = "1.12.0.0"
 
-local Config = {
-    weapon_tags = {
-        [1] = 'weapons\\pistol\\pistol',
-        [2] = 'weapons\\sniper rifle\\sniper rifle',
-        [3] = 'weapons\\plasma_cannon\\plasma_cannon',
-        [4] = 'weapons\\rocket launcher\\rocket launcher',
-        [5] = 'weapons\\plasma pistol\\plasma pistol',
-        [6] = 'weapons\\plasma rifle\\plasma rifle',
-        [7] = 'weapons\\assault rifle\\assault rifle',
-        [8] = 'weapons\\flamethrower\\flamethrower',
-        [9] = 'weapons\\needler\\mp_needler',
-        [10] = 'weapons\\shotgun\\shotgun',
-        [11] = 'weapons\\ball\\ball',
-        [12] = 'weapons\\gravity rifle\\gravity rifle',
+local weapon_tags = {
+    [1] = 'weapons\\pistol\\pistol',
+    [2] = 'weapons\\sniper rifle\\sniper rifle',
+    [3] = 'weapons\\plasma_cannon\\plasma_cannon',
+    [4] = 'weapons\\rocket launcher\\rocket launcher',
+    [5] = 'weapons\\plasma pistol\\plasma pistol',
+    [6] = 'weapons\\plasma rifle\\plasma rifle',
+    [7] = 'weapons\\assault rifle\\assault rifle',
+    [8] = 'weapons\\flamethrower\\flamethrower',
+    [9] = 'weapons\\needler\\mp_needler',
+    [10] = 'weapons\\shotgun\\shotgun',
+    [11] = 'weapons\\ball\\ball',
+    [12] = 'weapons\\gravity rifle\\gravity rifle',
+}
+
+local maps = {
+    bloodgulch = {
+        default = { red = { 1, 2 }, blue = { 1, 2 }, ffa = { 1, 2 } },
+        ["example_game_mode"] = { red = { 1, 2, 3 }, blue = { 4, 1, 8, 10 }, ffa = { 5, 6, 7 } }
     },
-    maps = {
-        bloodgulch = {
-            default = { red = { 1, 2 }, blue = { 1, 2 }, ffa = { 1, 2 } },
-            ["example_game_mode"] = { red = { 1, 2, 3 }, blue = { 4, 1, 8, 10 }, ffa = { 5, 6, 7 } }
-        },
-        another_map = {
-            default = { red = { 1, 2, 7 }, blue = { 1, 2, 7 }, ffa = { 1, 2, 7 } },
-            ["custom_game_mode"] = { red = { 5, 6, 3, 8 }, blue = { 5, 6, 3, 8 }, ffa = { 1, 7, 2 } }
-        }
+    another_map = {
+        default = { red = { 1, 2, 7 }, blue = { 1, 2, 7 }, ffa = { 1, 2, 7 } },
+        ["custom_game_mode"] = { red = { 5, 6, 3, 8 }, blue = { 5, 6, 3, 8 }, ffa = { 1, 7, 2 } }
     }
 }
+-- config ends
 
 local loadout
 local weapons = {}
 local map, mode, isFFA
 
-local function GetTag(class, name)
-    local Tag = lookup_tag(class, name)
-    return Tag ~= 0 and read_dword(Tag + 0xC) or nil
+local function get_tag(class, name)
+    local tag = lookup_tag(class, name)
+    return tag ~= 0 and read_dword(tag + 0xC) or nil
 end
 
 local function tagsToID()
     weapons = {}
 
-    local weaponList = Config.maps[map] and (Config.maps[map][mode] or Config.maps[map].default)
+    local weaponList = maps[map] and (maps[map][mode] or maps[map].default)
 
     if not weaponList then
-        cprint("[Weapon Assigner] -> ERROR: No configuration found for map '" .. map .. "' and mode '" .. mode .. "'.", 12)
+        cprint("[Weapon Assigner] -> ERROR: No configuration found for map '" .. map .. "' and mode '" .. mode .. "'.",
+            12)
         return false
     end
 
-    if not Config.maps[map][mode] then
-        cprint("[Weapon Assigner] -> WARNING: Game-mode '" .. mode .. "' is not configured for map '" .. map .. "'. Falling back to default weapons table.", 12)
+    if not maps[map][mode] then
+        cprint(
+            "[Weapon Assigner] -> WARNING: Game-mode '" ..
+            mode .. "' is not configured for map '" .. map .. "'. Falling back to default weapons table.", 12)
     end
 
     local temp = {}
     for team, weapon_table in pairs(weaponList) do
         temp[team] = {}
         for _, weaponIndex in ipairs(weapon_table) do
-            local tag_name = Config.weapon_tags[weaponIndex]
+            local tag_name = weapon_tags[weaponIndex]
             if not tag_name then
-                cprint("[Weapon Assigner] -> ERROR: Invalid weapon index '" .. weaponIndex .. "' for team '" .. team .. "'.", 12)
+                cprint(
+                    "[Weapon Assigner] -> ERROR: Invalid weapon index '" .. weaponIndex .. "' for team '" .. team .. "'.",
+                    12)
                 return false
             end
 
-            local meta_id = GetTag('weap', tag_name)
+            local meta_id = get_tag('weap', tag_name)
             if meta_id then
                 temp[team][meta_id] = weaponIndex
             else
-                cprint("[Weapon Assigner] -> ERROR: Weapon tag '" .. tag_name .. "' is not valid for map '" .. map .. "' and team '" .. team .. "'.", 12)
+                cprint(
+                    "[Weapon Assigner] -> ERROR: Weapon tag '" ..
+                    tag_name .. "' is not valid for map '" .. map .. "' and team '" .. team .. "'.", 12)
                 return false
             end
         end
@@ -139,9 +146,9 @@ function OnSpawn(player)
         if assigned < 4 then
             local weapon = spawn_object('', '', 0, 0, 0, 0, meta_id)
             if assigned < 2 then
-                AssignWeapon(weapon, player)
+                AssignWeapon(weapon, player)               -- assign primary/secondary immediately
             else
-                timer(250, 'AssignWeapon', weapon, player)
+                timer(250, 'AssignWeapon', weapon, player) -- tertiary/quaternary have to be delayed by min 250ms
             end
             assigned = assigned + 1
         end
@@ -149,15 +156,14 @@ function OnSpawn(player)
 end
 
 function OnStart()
-    if get_var(0, '$gt') ~= 'n/a' then
-        map = get_var(0, '$map')
-        mode = get_var(0, '$mode')
-        isFFA = (get_var(0, '$ffa') == '1')
-        if tagsToID() then
-            register_callback(cb['EVENT_SPAWN'], 'OnSpawn')
-        else
-            unregister_callback(cb['EVENT_SPAWN'])
-        end
+    if get_var(0, '$gt') == 'n/a' then return end
+    map = get_var(0, '$map')
+    mode = get_var(0, '$mode')
+    isFFA = (get_var(0, '$ffa') == '1')
+    if tagsToID() then
+        register_callback(cb['EVENT_SPAWN'], 'OnSpawn')
+    else
+        unregister_callback(cb['EVENT_SPAWN'])
     end
 end
 
