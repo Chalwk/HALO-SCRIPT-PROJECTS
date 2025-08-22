@@ -500,6 +500,34 @@ local valid_vehicles = {
         [2] = 'gunner',
     }, true, 'New Boat Hog', { 0, 2, 1 } },
 
+    -- cityscape-adrenaline
+    { 'vehicles\\g_warthog\\g_warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'Warthog', { 0, 2, 1 } },
+
+    -- cityscape-adrenaline
+    { 'vehicles\\rwarthog\\boogerhawg', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'Warthog', { 0, 2, 1 } },
+
+    -- mystic_mod
+    { 'vehicles\\puma\\puma_lt', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'Warthog', { 0, 2, 1 } },
+
+    -- mystic_mod
+    { 'vehicles\\puma\\rpuma_lt', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'Warthog', { 0, 2, 1 } },
+
     -- Add more vehicles here using the same format
     -- { 'vehicle/tag/path', { [0] = 'driver', [1] = 'passenger' }, true, 'Display Name', { 0, 1 } },
 }
@@ -1095,7 +1123,6 @@ end
 function OnCommand(id, command)
     local cmd = command:lower()
     local player = players[id]
-    print(cmd == accept_command or cmd == reject_command)
 
     if player then
         if (cmd == accept_command or cmd == reject_command) and not accept_reject then
