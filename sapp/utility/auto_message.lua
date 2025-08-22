@@ -55,7 +55,7 @@ function BroadcastAnnouncement()
     return game_active
 end
 
-function OnGameStart()
+function OnStart()
     if get_var(0, '$gt') == 'n/a' then return end
     game_active = true
     index = 1
