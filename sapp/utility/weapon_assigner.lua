@@ -1,176 +1,116 @@
---[[
-=====================================================================================
-SCRIPT NAME:      weapon_assigner.lua
-DESCRIPTION:      Advanced weapon distribution system with contextual loadout management.
-
-FEATURES:
-                  - Map-specific weapon configurations
-                  - Game-mode aware assignments (Team/FFA)
-                  - Multi-weapon loadouts (up to 4 per player)
-                  - Weapon tag validation system
-                  - Fallback configuration system
-                  - Team-specific loadouts (Red/Blue)
-                  - Free-for-all configurations
-                  - Custom default weapons
-                  - Error logging for invalid configurations
-
-CONFIGURATION:
-                  weapon_tags = {  - Define all available weapons
-                    [1] = 'weapons\\pistol\\pistol',
-                    [2] = 'weapons\\sniper rifle\\sniper rifle',
-                    ...etc
-                  }
-
-                  maps = {        - Map-specific configurations
-                    bloodgulch = {
-                      default = {        - Default loadout
-                        red = {1, 2},    - Red team weapons (by index)
-                        blue = {1, 2},   - Blue team weapons
-                        ffa = {1, 2}     - FFA weapons
-                      },
-                      ["ctf"] = {       - Game-mode specific override
-                        red = {1, 3, 7},
-                        blue = {1, 4, 8},
-                        ffa = {1, 2}     - Fallback to default if missing
-                      }
-                    }
-                  }
-
-USAGE:
-                  1. Add weapons to weapon_tags table using correct tag paths
-                  2. Configure map-specific loadouts in maps table
-                  3. Supports up to 4 weapons per player
-                  4. System automatically falls back to default if:
-                     - No game-mode specific config exists
-                     - Invalid weapon tags are detected
-
-Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
-LICENSE:          MIT License
-                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
-]]
-
-api_version = "1.12.0.0"
-
+-- Configuration start --------------------------------------------------------
 local weapon_tags = {
-    [1] = 'weapons\\pistol\\pistol',
-    [2] = 'weapons\\sniper rifle\\sniper rifle',
-    [3] = 'weapons\\plasma_cannon\\plasma_cannon',
-    [4] = 'weapons\\rocket launcher\\rocket launcher',
-    [5] = 'weapons\\plasma pistol\\plasma pistol',
-    [6] = 'weapons\\plasma rifle\\plasma rifle',
-    [7] = 'weapons\\assault rifle\\assault rifle',
-    [8] = 'weapons\\flamethrower\\flamethrower',
-    [9] = 'weapons\\needler\\mp_needler',
-    [10] = 'weapons\\shotgun\\shotgun',
-    [11] = 'weapons\\ball\\ball',
-    [12] = 'weapons\\gravity rifle\\gravity rifle',
+    pistol = 'weapons\\pistol\\pistol',
+    sniper = 'weapons\\sniper rifle\\sniper rifle',
+    plasma_cannon = 'weapons\\plasma_cannon\\plasma_cannon',
+    rocket_launcher = 'weapons\\rocket launcher\\rocket launcher',
+    plasma_pistol = 'weapons\\plasma pistol\\plasma pistol',
+    plasma_rifle = 'weapons\\plasma rifle\\plasma rifle',
+    assault_rifle = 'weapons\\assault rifle\\assault rifle',
+    flamethrower = 'weapons\\flamethrower\\flamethrower',
+    needler = 'weapons\\needler\\mp_needler',
+    shotgun = 'weapons\\shotgun\\shotgun',
+    gravity_rifle = 'weapons\\gravity rifle\\gravity rifle'
 }
 
 local maps = {
     bloodgulch = {
-        default = { red = { 1, 2 }, blue = { 1, 2 }, ffa = { 1, 2 } },
-        ["example_game_mode"] = { red = { 1, 2, 3 }, blue = { 4, 1, 8, 10 }, ffa = { 5, 6, 7 } }
-    },
-    another_map = {
-        default = { red = { 1, 2, 7 }, blue = { 1, 2, 7 }, ffa = { 1, 2, 7 } },
-        ["custom_game_mode"] = { red = { 5, 6, 3, 8 }, blue = { 5, 6, 3, 8 }, ffa = { 1, 7, 2 } }
+        default = {
+            red = { 'pistol', 'assault_rifle' },
+            blue = { 'pistol', 'assault_rifle' },
+            ffa = { 'pistol', 'shotgun' }
+        },
+        ctf = {
+            red = { 'pistol', 'sniper', 'rocket_launcher' },
+            blue = { 'pistol', 'plasma_rifle', 'flamethrower' }
+        },
+        custom_gamemode = {
+            red = { 'pistol', 'sniper', 'rocket_launcher' },
+            blue = { 'pistol', 'plasma_rifle', 'flamethrower' }
+        }
+        -- Add more game mode/types here (stock or custom)
     }
 }
--- config ends
+-- Configuration end ----------------------------------------------------------
 
-local loadout
-local weapons = {}
-local map, mode, isFFA
+api_version = '1.12.0.0'
 
-local function get_tag(class, name)
-    local tag = lookup_tag(class, name)
+local current_loadout = {}
+local map_name, game_mode, is_ffa
+
+local table_insert = table.insert
+local pairs, ipairs = pairs, ipairs
+
+local function resolve_weapon_tag(weapon_name)
+    local tag_path = weapon_tags[weapon_name]
+    if not tag_path then return nil end
+
+    local tag = lookup_tag('weap', tag_path)
     return tag ~= 0 and read_dword(tag + 0xC) or nil
 end
 
-local function tagsToID()
-    weapons = {}
+local function initialize_loadout()
+    current_loadout = {}
+    local config = maps[map_name] or {}
 
-    local weaponList = maps[map] and (maps[map][mode] or maps[map].default)
-
-    if not weaponList then
-        cprint("[Weapon Assigner] -> ERROR: No configuration found for map '" .. map .. "' and mode '" .. mode .. "'.",
-            12)
+    local mode_config = config[game_mode] or config.default
+    if not mode_config then
+        cprint("Weapon Assigner: No configuration found for map '" .. map_name .. "'", 12)
         return false
     end
 
-    if not maps[map][mode] then
-        cprint(
-            "[Weapon Assigner] -> WARNING: Game-mode '" ..
-            mode .. "' is not configured for map '" .. map .. "'. Falling back to default weapons table.", 12)
-    end
-
-    local temp = {}
-    for team, weapon_table in pairs(weaponList) do
-        temp[team] = {}
-        for _, weaponIndex in ipairs(weapon_table) do
-            local tag_name = weapon_tags[weaponIndex]
-            if not tag_name then
-                cprint(
-                    "[Weapon Assigner] -> ERROR: Invalid weapon index '" .. weaponIndex .. "' for team '" .. team .. "'.",
-                    12)
+    for team, weapons in pairs(mode_config) do
+        current_loadout[team] = {}
+        for _, weapon_name in ipairs(weapons) do
+            local tag_id = resolve_weapon_tag(weapon_name)
+            if not tag_id then
+                cprint("Weapon Assigner: Invalid weapon '" .. weapon_name .. "' for team " .. team, 12)
                 return false
             end
-
-            local meta_id = get_tag('weap', tag_name)
-            if meta_id then
-                temp[team][meta_id] = weaponIndex
-            else
-                cprint(
-                    "[Weapon Assigner] -> ERROR: Weapon tag '" ..
-                    tag_name .. "' is not valid for map '" .. map .. "' and team '" .. team .. "'.", 12)
-                return false
-            end
+            table_insert(current_loadout[team], tag_id)
         end
     end
 
-    weapons = temp
     return true
 end
 
-function AssignWeapon(weaponID, player)
-    assign_weapon(weaponID, player)
-end
-
 function OnSpawn(player)
-    local team = get_var(player, '$team')
-    loadout = weapons[isFFA and 'ffa' or team]
+    local team = is_ffa and 'ffa' or get_var(player, '$team')
+    local weapons = current_loadout[team] or current_loadout.default
+
+    if not weapons then return end
+
     execute_command("wdel " .. player)
-    local assigned = 0
-    for meta_id, _ in pairs(loadout) do
-        if assigned < 4 then
-            local weapon = spawn_object('', '', 0, 0, 0, 0, meta_id)
-            if assigned < 2 then
-                AssignWeapon(weapon, player)               -- assign primary/secondary immediately
+
+    for i, tag_id in ipairs(weapons) do
+        if i <= 4 then
+            local weapon = spawn_object('', '', 0, 0, 0, 0, tag_id)
+            if i <= 2 then
+                assign_weapon(weapon, player)
             else
-                timer(250, 'AssignWeapon', weapon, player) -- tertiary/quaternary have to be delayed by min 250ms
+                timer(250, 'assign_weapon', weapon, player)
             end
-            assigned = assigned + 1
         end
     end
 end
 
 function OnStart()
     if get_var(0, '$gt') == 'n/a' then return end
-    map = get_var(0, '$map')
-    mode = get_var(0, '$mode')
-    isFFA = (get_var(0, '$ffa') == '1')
-    if tagsToID() then
+
+    map_name, game_mode, is_ffa = get_var(0, '$map'), get_var(0, '$mode'), get_var(0, '$ffa') == '1'
+
+    if initialize_loadout() then
         register_callback(cb['EVENT_SPAWN'], 'OnSpawn')
+        cprint("Weapon Assigner: Loadout initialized for " .. map_name, 10)
     else
         unregister_callback(cb['EVENT_SPAWN'])
+        cprint("Weapon Assigner: Using default game weapons", 10)
     end
 end
 
 function OnScriptLoad()
     register_callback(cb['EVENT_GAME_START'], 'OnStart')
+    OnStart()
 end
 
-function OnScriptUnload()
-    -- N/A
-end
+function OnScriptUnload() end
