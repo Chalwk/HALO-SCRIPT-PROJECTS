@@ -28,14 +28,15 @@ LICENSE:          MIT License
 api_version = '1.12.0.0'
 
 local spawns = {}
+local insert = table.insert
 
 function OnScriptLoad()
     register_callback(cb['EVENT_GAME_START'], 'OnStart')
     OnStart()
 end
 
-local insert = table.insert
-local function LoadSpawns()
+local function load_spawns()
+    spawns = { [0] = {}, [1] = {} }
 
     local tag_array = read_dword(0x40440000)
     local scenario_tag_index = read_word(0x40440004)
@@ -50,38 +51,30 @@ local function LoadSpawns()
         local starting_location = starting_location_address + 52 * i
         local x, y, z = read_vector3d(starting_location)
         local team = read_word(starting_location + 0x10)
-        insert(spawns[team], {
-            x = x,
-            y = y,
-            z = z
-        })
+        insert(spawns[team], { x = x, y = y, z = z })
     end
 end
 
 function OnStart()
-    spawns = { [0] = {}, [1] = {} }
-    local game_type = get_var(0, '$gt')
-    local team_play = (get_var(0, '$ffa') == '0')
-    if (game_type ~= 'n/a' and game_type == 'slayer' and team_play) then
-        LoadSpawns()
-        register_callback(cb['EVENT_PRESPAWN'], 'PreSpawn')
+    local gametype = get_var(0, '$gt')
+    local ffa = get_var(0, '$ffa') == '1'
+
+    if gametype == 'n/a' or ffa then
+        unregister_callback(cb['EVENT_PRESPAWN'])
         return
     end
-    unregister_callback(cb['EVENT_PRESPAWN'])
+
+    load_spawns()
+    register_callback(cb['EVENT_PRESPAWN'], 'PreSpawn')
 end
 
-function PreSpawn(Ply)
-    local dyn = get_dynamic_player(Ply)
-    if (dyn ~= 0) then
+function PreSpawn(id)
+    local dyn = get_dynamic_player(id)
+    if (dyn == 0) then return end
 
-        local team = get_var(dyn, '$team')
-        team = ('red' and 0 or 1)
-
-        local pos = spawns[team][rand(1, #spawns[team] + 1)]
-        write_vector3d(dyn + 0x5C, pos.x, pos.y, pos.z)
-    end
+    local team = get_var(id, '$team') == 'red' and 0 or 1
+    local pos = spawns[team][rand(1, #spawns[team] + 1)]
+    write_vector3d(dyn + 0x5C, pos.x, pos.y, pos.z)
 end
 
-function OnScriptUnload()
-    -- N/A
-end
+function OnScriptUnload() end

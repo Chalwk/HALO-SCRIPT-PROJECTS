@@ -122,7 +122,6 @@ local function process_command(player_id, command)
     return false
 end
 
--- Callbacks --
 function OnScriptLoad()
 	local path = read_string(read_dword(sig_scan('68??????008D54245468') + 0x1))
     file_path = path .. "\\sapp\\" .. CONFIG.filename
@@ -177,7 +176,7 @@ function OnTick()
     local current_time = os.time()
     for player_id, data in pairs(pending_players) do
         if current_time >= data.finish then
-            execute_command("k " .. player_id .. " \"Registration timeout\"")
+            execute_command('k ' .. player_id .. '"Registration timeout"')
         end
     end
 end

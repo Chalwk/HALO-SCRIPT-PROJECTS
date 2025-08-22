@@ -360,6 +360,12 @@
       "description": "Provides comprehensive vanish mode with configurable stealth features including invisibility, camouflage, speed boosts, invincibility, radar hiding, and objective restrictions. Includes warning system for objective carriers and admin controls.",
       "filename": "vanish.lua"
     },
+    "vehicle_fuel": {
+      "title": "Vehicle Fuel System",
+      "shortDescription": "Adds realistic fuel consumption, refueling stations, and an on-screen fuel gauge for vehicles.",
+      "description": "Implements a per-vehicle fuel system with configurable maximum fuel and consumption rates. Vehicles consume fuel based on speed, can refuel at designated stations, and display a live fuel gauge to the driver. Vehicles enter a reduced 'snail mode' instead of stopping when out of fuel. Supports multiple maps with map-specific refueling stations and adjustable refuel rate and station radius.",
+      "filename": "vehicle_fuel.lua"
+    },
     "weapon_durability_jam_system": {
       "title": "Weapon Durability & Jam System",
       "shortDescription": "Realistic weapon degradation and malfunction mechanics",
