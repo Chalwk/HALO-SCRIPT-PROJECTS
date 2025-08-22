@@ -46,11 +46,9 @@ a wide range of scripts here to enhance, customize, and extend your multiplayer 
 
 ## Community Favourites:
 
-Here’s everything neatly alphabetized within each category:
-
 ---
 
-### Attractive:
+**Attractive:**
 
 * [Custom Teleports](./sapp/attractive/custom_teleports.lua)
 * [Deployable Mines](./sapp/attractive/deployable_mines.lua)
@@ -60,7 +58,7 @@ Here’s everything neatly alphabetized within each category:
 * [Uber](./sapp/attractive/uber.lua)
 * [Vanish](./sapp/attractive/vanish.lua)
 
-### Custom Games:
+**Custom Games:**
 
 * [Divide and Conquer](./sapp/custom_games/divide_and_conquer.lua)
 * [Gun Game](./sapp/custom_games/gun_game.lua)
@@ -68,7 +66,7 @@ Here’s everything neatly alphabetized within each category:
 * [Sabotage](./sapp/custom_games/sabotage.lua)
 * [Tag](./sapp/custom_games/tag.lua)
 
-### Utility:
+**Utility:**
 
 * [AFK System](./sapp/utility/afk_system.lua)
 * [Anti Impersonator](./sapp/utility/anti_impersonator.lua)
