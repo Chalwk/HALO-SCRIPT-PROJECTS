@@ -1,4 +1,23 @@
+--[[
+===============================================================================
+SCRIPT NAME:      weapon_assigner.lua
+DESCRIPTION:      Custom weapon assignment system that automatically gives players
+                  specific weapon loadouts based on map, game mode, and team.
+                  - Configurable per map and game mode
+                  - Team-specific weapon sets (Red, Blue, FFA)
+                  - Supports both stock and custom game modes
+
+LAST UPDATED:     22/08/2025
+
+Copyright (c) 2024-2025 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+===============================================================================
+]]
+
 -- Configuration start --------------------------------------------------------
+-- Weapon tag definitions: Maps friendly names to actual Halo tag paths
+-- Add new weapons here using the format: friendly_name = 'tag\\path\\to\\weapon'
 local weapon_tags = {
     pistol = 'weapons\\pistol\\pistol',
     sniper = 'weapons\\sniper rifle\\sniper rifle',
@@ -13,6 +32,20 @@ local weapon_tags = {
     gravity_rifle = 'weapons\\gravity rifle\\gravity rifle'
 }
 
+-- Map and game mode configuration:
+-- Format: ['map_name'] = {
+--     ['game_mode'] = {
+--         team_name = { 'weapon1', 'weapon2', ... },
+--         ...
+--     },
+--     ...
+-- }
+--
+-- Key points:
+-- - Use 'default' for fallback configuration when specific game mode isn't defined
+-- - Teams: 'red', 'blue', 'ffa' (for free-for-all modes)
+-- - Weapon names must match keys in the weapon_tags table above
+-- - First 2 weapons are equipped immediately, others are added to inventory
 local maps = {
     ['bloodgulch'] = {
         ['default'] = {
@@ -25,13 +58,20 @@ local maps = {
             blue = { 'pistol', 'plasma_rifle', 'flamethrower' }
         },
         ['custom_gamemode'] = {
-            red = { 'pistol', 'sniper', 'rocket_launcher' },
-            blue = { 'pistol', 'plasma_rifle', 'flamethrower' }
+            red = { 'pistol', 'pistol', 'pistol' },
+            blue = { 'pistol', 'pistol', 'pistol' }
         }
         -- Add more game mode/types here (stock or custom)
     },
 
-    -- Add more maps here
+    -- Add more maps here following the same format
+    -- ['map_name'] = {
+    --     ['game_mode'] = {
+    --         red = { 'weapon1', 'weapon2' },
+    --         blue = { 'weapon1', 'weapon2' },
+    --         ffa = { 'weapon1', 'weapon2' }
+    --     }
+    -- }
 }
 -- Configuration end ----------------------------------------------------------
 
@@ -76,21 +116,22 @@ local function initialize_loadout()
     return true
 end
 
-function OnSpawn(player)
-    local team = is_ffa and 'ffa' or get_var(player, '$team')
+function OnSpawn(id)
+    local team = is_ffa and 'ffa' or get_var(id, '$team')
     local weapons = current_loadout[team] or current_loadout.default
 
     if not weapons then return end
 
-    execute_command("wdel " .. player)
+    execute_command("wdel " .. id)
 
     for i, tag_id in ipairs(weapons) do
         if i <= 4 then
+            print(i, tag_id)
             local weapon = spawn_object('', '', 0, 0, 0, 0, tag_id)
             if i <= 2 then
-                assign_weapon(weapon, player)
+                assign_weapon(weapon, id)
             else
-                timer(250, 'assign_weapon', weapon, player)
+                timer(250, 'assign_weapon', weapon, id)
             end
         end
     end
