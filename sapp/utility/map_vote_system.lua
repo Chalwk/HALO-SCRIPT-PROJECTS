@@ -6,6 +6,7 @@ DESCRIPTION:      Advanced map voting system with the following features:
                   - Supports more than 6 map options
                   - Map repeat prevention
                   - Customizable vote timing and messaging
+                  - Multiple game modes per map
 
 FEATURES:
                   - Players vote by typing numbers in chat
@@ -27,77 +28,84 @@ LICENSE:          MIT License
 
 -- Config Start --------------------------------------------------
 local MapVoteConfig = {
-    map_skip_percentage = 60, -- Percentage required for map skip (0 to disable).
     re_vote_allowed = true,   -- Allow players to recast votes.
     max_re_votes = 1,         -- Maximum re-votes allowed per player.
     display_vote_options = 8, -- Number of maps to display for voting.
     clear_console = false,    -- Clear player's console when displaying votes.
     message_format = {
-        vote_message = "$name voted for [#$id] $map",
-        re_vote_message = "$name changed vote to [#$id] $map",
-        map_option_message = "[$id] $map",
-        vote_winner = "$map won with $votes votes",
-        no_votes_message = "No votes cast. Choosing $map...",
+        vote_message = "$name voted for [#$id] $map ($mode)",
+        re_vote_message = "$name changed vote to [#$id] $map ($mode)",
+        map_option_message = "[$id] $map ($mode)",
+        vote_winner = "$map ($mode) won with $votes votes",
+        no_votes_message = "No votes cast. Choosing $map ($mode)...",
         invalid_vote = "Invalid vote id. Please enter a number between 1 and $max",
-        too_early_vote = "Please wait $time seconds before voting...",
         vote_limit_reached = "You have reached the re-vote limit.",
     },
     timers = {
         time_to_show_votes = 7,   -- Time to show votes after game ends.
         time_to_tally_votes = 13, -- Time to tally votes after voting period ends.
-        time_to_cycle_map = 13,   -- Time to cycle map after PGCR.
         re_show_interval = 3,     -- Time interval to re-show vote options.
     },
     map_repeats_limit = 2,        -- Maximum number of times a map can be played consecutively.
+
     map_list = {
-        { "bloodgulch",     "ctf" },
-        { "deathisland",    "ctf" },
-        { "sidewinder",     "ctf" },
-        { "icefields",      "ctf" },
-        { "infinity",       "ctf" },
-        { "timberland",     "ctf" },
-        { "dangercanyon",   "ctf" },
-        { "beavercreek",    "ctf" },
-        { "boardingaction", "ctf" },
-        { "carousel",       "ctf" },
-        { "chillout",       "ctf" },
-        { "damnation",      "ctf" },
-        { "gephyrophobia",  "ctf" },
-        { "hangemhigh",     "ctf" },
-        { "longest",        "ctf" },
-        { "prisoner",       "ctf" },
-        { "putput",         "ctf" },
-        { "ratrace",        "ctf" },
-        { "wizard",         "ctf" }
-    },
+        ['bloodgulch'] = { 'ctf', 'slayer', 'koth' },
+        ['deathisland'] = { 'ctf', 'slayer' },
+        ['sidewinder'] = { 'ctf', 'slayer', 'race' },
+        ['icefields'] = { 'ctf' },
+        ['infinity'] = { 'ctf', 'slayer' },
+        ['timberland'] = { 'ctf', 'slayer' },
+        ['dangercanyon'] = { 'ctf' },
+        ['beavercreek'] = { 'ctf', 'slayer' },
+        ['boardingaction'] = { 'ctf' },
+        ['carousel'] = { 'ctf' },
+        ['chillout'] = { 'ctf', 'slayer' },
+        ['damnation'] = { 'ctf' },
+        ['gephyrophobia'] = { 'ctf' },
+        ['hangemhigh'] = { 'ctf', 'slayer' },
+        ['longest'] = { 'ctf' },
+        ['prisoner'] = { 'ctf', 'slayer' },
+        ['putput'] = { 'ctf' },
+        ['ratrace'] = { 'ctf' },
+        ['wizard'] = { 'ctf', 'slayer' }
+    }
 }
 
 -- Config End --------------------------------------------------
 
 api_version = "1.12.0.0"
 
+local server_prefix = "**SAPP** "
 local player_votes = {}
 local map_results = {}
 local vote_active = false
-local map_streak = { last_map = -1, streak_count = 0 }
+local map_streak = { last_map = nil, streak_count = 0 }
+local current_vote_options = {}
 
-local table_insert = table.insert
 local pairs, ipairs, tonumber = pairs, ipairs, tonumber
+local table_insert, math_random = table.insert, math.random
 
 local rprint = rprint
 local player_present, get_var, say_all, timer = player_present, get_var, say_all, timer
 
-local function ClearConsole(id)
+local function clear_console(id)
     for _ = 1, 25 do rprint(id, " ") end
 end
 
-local function BroadcastVoteOptions(map_options)
+local function announce(msg)
+    execute_command('msg_prefix ""')
+    say_all(msg)
+    execute_command('msg_prefix "' .. server_prefix .. '"')
+end
+
+local function BroadcastVoteOptions()
     for i = 1, 16 do
         if player_present(i) then
-            if MapVoteConfig.clear_console then ClearConsole(i) end
-            for j, map in ipairs(map_options) do
+            if MapVoteConfig.clear_console then clear_console(i) end
+            rprint(i, "Vote for the next map by typing the number:")
+            for j, option in ipairs(current_vote_options) do
                 local message = MapVoteConfig.message_format.map_option_message
-                message = message:gsub("$id", j):gsub("$map", map[1])
+                message = message:gsub("$id", j):gsub("$map", option.map):gsub("$mode", option.mode)
                 rprint(i, message)
             end
         end
@@ -106,7 +114,7 @@ end
 
 local function contains(table, element)
     for _, value in pairs(table) do
-        if value[1] == element[1] then
+        if value.map == element.map and value.mode == element.mode then
             return true
         end
     end
@@ -118,22 +126,39 @@ local function GenerateMapOptions()
     local vote_options = {}
     local count = 0
 
-    for _, map in ipairs(maps) do
-        -- Exclude maps that have exceeded the repeat limit:
-        if map_streak.last_map ~= map[1] or map_streak.streak_count < MapVoteConfig.map_repeats_limit then
-            table_insert(vote_options, map)
-            count = count + 1
+    -- Create a flat list of all map-mode combinations
+    local all_options = {}
+    for map_name, modes in pairs(maps) do
+        for _, mode in ipairs(modes) do
+            table_insert(all_options, { map = map_name, mode = mode })
+        end
+    end
+
+    -- Shuffle the options to ensure random selection each time
+    for i = #all_options, 2, -1 do
+        local j = math_random(i)
+        all_options[i], all_options[j] = all_options[j], all_options[i]
+    end
+
+    -- Select options while considering repeat limits
+    for _, option in ipairs(all_options) do
+        -- Exclude options that have exceeded the repeat limit
+        if map_streak.last_map ~= option.map or map_streak.streak_count < MapVoteConfig.map_repeats_limit then
+            if not contains(vote_options, option) then
+                table_insert(vote_options, option)
+                count = count + 1
+            end
         end
         if count >= MapVoteConfig.display_vote_options then
             break
         end
     end
 
-    -- If not enough maps were found, allow maps that were excluded due to streak:
+    -- If not enough options were found, allow options that were excluded due to streak
     if count < MapVoteConfig.display_vote_options then
-        for _, map in ipairs(maps) do
-            if not contains(vote_options, map) then
-                table_insert(vote_options, map)
+        for _, option in ipairs(all_options) do
+            if not contains(vote_options, option) then
+                table_insert(vote_options, option)
                 count = count + 1
             end
             if count >= MapVoteConfig.display_vote_options then
@@ -146,14 +171,56 @@ local function GenerateMapOptions()
 end
 
 local function ProcessPlayerVote(id, vote_id)
-    if player_votes[id] > 0 then
-        player_votes[id] = player_votes[id] - 1
-        local map_voted = MapVoteConfig.map_list[vote_id][1]
-        local vote_message = MapVoteConfig.message_format.vote_message
-        vote_message = vote_message:gsub("$name", get_var(id, "$name")):gsub("$id", vote_id):gsub("$map", map_voted)
-        say_all(vote_message)
+    if vote_id < 1 or vote_id > #current_vote_options then
+        rprint(id, MapVoteConfig.message_format.invalid_vote:gsub("$max", #current_vote_options))
+        return
+    end
 
-        -- Tally the votes:
+    local player_vote_data = player_votes[id]
+
+    -- First-time vote:
+    if not player_vote_data.vote_id then
+        player_vote_data.vote_id = vote_id
+        player_vote_data.re_votes = MapVoteConfig.max_re_votes
+
+        local voted_option = current_vote_options[vote_id]
+        local vote_message = MapVoteConfig.message_format.vote_message
+        vote_message = vote_message:gsub("$name", get_var(id, "$name"))
+            :gsub("$id", vote_id)
+            :gsub("$map", voted_option.map)
+            :gsub("$mode", voted_option.mode)
+        announce(vote_message)
+
+        -- Tally the votes
+        map_results[vote_id] = (map_results[vote_id] or 0) + 1
+        return
+    end
+
+    -- Already voted before:
+    if not MapVoteConfig.re_vote_allowed then
+        rprint(id, MapVoteConfig.message_format.vote_limit_reached)
+        return
+    end
+
+    -- Re-voting enabled:
+    if player_vote_data.re_votes > 0 then
+        -- Remove previous vote
+        if player_vote_data.vote_id then
+            map_results[player_vote_data.vote_id] = (map_results[player_vote_data.vote_id] or 1) - 1
+        end
+
+        -- Add new vote
+        player_vote_data.vote_id = vote_id
+        player_vote_data.re_votes = player_vote_data.re_votes - 1
+
+        local voted_option = current_vote_options[vote_id]
+        local vote_message = MapVoteConfig.message_format.re_vote_message
+        vote_message = vote_message:gsub("$name", get_var(id, "$name"))
+            :gsub("$id", vote_id)
+            :gsub("$map", voted_option.map)
+            :gsub("$mode", voted_option.mode)
+        announce(vote_message)
+
         map_results[vote_id] = (map_results[vote_id] or 0) + 1
     else
         rprint(id, MapVoteConfig.message_format.vote_limit_reached)
@@ -161,76 +228,106 @@ local function ProcessPlayerVote(id, vote_id)
 end
 
 function DisplayVoteOptions()
-    local map_options = GenerateMapOptions()
-    BroadcastVoteOptions(map_options)
-    timer(MapVoteConfig.timers.time_to_tally_votes * 1000, "TallyVotesAndSelectMap") -- Call to tally votes after a delay
+    current_vote_options = GenerateMapOptions()
+    map_results = {}
+
+    -- Reset all player votes
+    for i = 1, 16 do
+        if player_present(i) then
+            player_votes[i] = {
+                vote_id = nil,
+                re_votes = MapVoteConfig.max_re_votes
+            }
+        end
+    end
+
+    BroadcastVoteOptions()
+    timer(MapVoteConfig.timers.time_to_tally_votes * 1000, "TallyVotesAndSelectMap")
 end
 
 function OnPlayerVote(id, msg)
-    if vote_active then
-        local vote_id = tonumber(msg)
-        if vote_id and vote_id >= 1 and vote_id <= #MapVoteConfig.map_list then
-            ProcessPlayerVote(id, vote_id)
-        else
-            rprint(id, MapVoteConfig.message_format.invalid_vote:gsub("$max", #MapVoteConfig.map_list))
-        end
+    if not vote_active then return true end
+
+    local vote_id = tonumber(msg)
+    if vote_id and vote_id >= 1 and vote_id <= #current_vote_options then
+        ProcessPlayerVote(id, vote_id)
+        return false
     end
+
+    return true
 end
 
-function LoadMap(map, mode)
+local function load_map(map, mode)
     execute_command('map ' .. map .. ' "' .. mode .. '"')
 end
 
 function TallyVotesAndSelectMap()
-    local highest_vote = 0
-    local winning_map
+    vote_active = false
 
-    for map_id, votes in pairs(map_results) do
+    local highest_vote = 0
+    local winning_index = 1
+
+    for i, votes in pairs(map_results) do
         if votes > highest_vote then
             highest_vote = votes
-            winning_map = MapVoteConfig.map_list[map_id]
+            winning_index = i
         end
     end
 
-    -- Handle case where no votes were cast:
-    if not winning_map then
-        winning_map = MapVoteConfig.map_list[1] -- Default to first map in list
-        say_all(MapVoteConfig.message_format.no_votes_message:gsub("$map", winning_map[1]))
+    local winning_option = current_vote_options[winning_index]
+
+    -- Handle case where no votes were cast
+    if highest_vote == 0 then
+        -- Select a random option if no votes
+        winning_index = math_random(1, #current_vote_options)
+        winning_option = current_vote_options[winning_index]
+        announce(MapVoteConfig.message_format.no_votes_message
+            :gsub("$map", winning_option.map)
+            :gsub("$mode", winning_option.mode))
     else
-        say_all(MapVoteConfig.message_format.vote_winner:gsub("$map", winning_map[1]):gsub("$votes", highest_vote))
+        announce(MapVoteConfig.message_format.vote_winner
+            :gsub("$map", winning_option.map)
+            :gsub("$mode", winning_option.mode)
+            :gsub("$votes", highest_vote))
     end
 
-    -- Update map streak:
-    if map_streak.last_map == winning_map[1] then
+    -- Update map streak
+    if map_streak.last_map == winning_option.map then
         map_streak.streak_count = map_streak.streak_count + 1
     else
-        map_streak.last_map = winning_map[1]
+        map_streak.last_map = winning_option.map
         map_streak.streak_count = 1
     end
 
-    -- Cycle to the selected map:
-    timer(MapVoteConfig.timers.time_to_cycle_map * 1000, "LoadMap", winning_map[1], winning_map[2])
+    load_map(winning_option.map, winning_option.mode)
 end
 
 function OnStart()
     if get_var(0, '$gt') == 'n/a' then return end
     vote_active = false
     map_results = {}
+    current_vote_options = {}
 
     for i = 1, 16 do
         if player_present(i) then
-            player_votes[i] = MapVoteConfig.max_re_votes
+            player_votes[i] = {
+                vote_id = nil,
+                re_votes = MapVoteConfig.max_re_votes
+            }
         end
     end
 end
 
 function OnEnd()
     vote_active = true
-    timer(1000, "DisplayVoteOptions")
+    timer(MapVoteConfig.timers.time_to_show_votes * 1000, "DisplayVoteOptions")
 end
 
 function OnJoin(id)
-    player_votes[id] = MapVoteConfig.max_re_votes
+    player_votes[id] = {
+        vote_id = nil,
+        re_votes = MapVoteConfig.max_re_votes
+    }
 end
 
 function OnQuit(id)
