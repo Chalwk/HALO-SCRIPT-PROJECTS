@@ -14,22 +14,24 @@ local weapon_tags = {
 }
 
 local maps = {
-    bloodgulch = {
-        default = {
+    ['bloodgulch'] = {
+        ['default'] = {
             red = { 'pistol', 'assault_rifle' },
             blue = { 'pistol', 'assault_rifle' },
             ffa = { 'pistol', 'shotgun' }
         },
-        ctf = {
+        ['ctf'] = {
             red = { 'pistol', 'sniper', 'rocket_launcher' },
             blue = { 'pistol', 'plasma_rifle', 'flamethrower' }
         },
-        custom_gamemode = {
+        ['custom_gamemode'] = {
             red = { 'pistol', 'sniper', 'rocket_launcher' },
             blue = { 'pistol', 'plasma_rifle', 'flamethrower' }
         }
         -- Add more game mode/types here (stock or custom)
-    }
+    },
+
+    -- Add more maps here
 }
 -- Configuration end ----------------------------------------------------------
 
