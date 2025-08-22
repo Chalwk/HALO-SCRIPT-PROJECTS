@@ -71,6 +71,7 @@ a wide range of scripts here to enhance, customize, and extend your multiplayer 
 
 * [AFK System](./sapp/utility/afk_system.lua)
 * [Anti Impersonator](./sapp/utility/anti_impersonator.lua)
+* [Auto Message](./sapp/utility/auto_message.lua)
 * [Custom Loadouts](./sapp/utility/custom_loadouts.lua)
 * [Delay Skip](./sapp/utility/delay_skip.lua)
 * [Dynamic Ping Kicker](./sapp/utility/dynamic_ping_kicker.lua)
