@@ -46,7 +46,8 @@ a wide range of scripts here to enhance, customize, and extend your multiplayer 
 
 ## Community Favourites:
 
----
+<details>
+  <summary>Click to expand</summary>
 
 **Attractive:**
 
@@ -81,6 +82,8 @@ a wide range of scripts here to enhance, customize, and extend your multiplayer 
 * [Team Shuffler](./sapp/utility/team_shuffler.lua)
 * [Weapon Assigner](./sapp/utility/weapon_assigner.lua)
 * [Word Buster](./sapp/utility/word_buster.lua)
+
+</details>
 
 ---
 
