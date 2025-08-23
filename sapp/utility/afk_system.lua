@@ -329,7 +329,7 @@ end
 function OnSpawn(id)
     local player = players[id]
     if player and player.afk then
-        execute_command_sequence('god ' .. id .. '; sh ' .. id .. ' 10')
+        execute_command_sequence('god ' .. id .. '; sh ' .. id .. ' 9999999')
     end
 end
 
