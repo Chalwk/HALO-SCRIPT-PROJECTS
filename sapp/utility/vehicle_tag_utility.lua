@@ -38,11 +38,6 @@ local CONFIG = {
 
 api_version = '1.12.0.0'
 
-local read_dword, read_word, read_string = read_dword, read_word, read_string
-local get_var, get_dynamic_player, get_object_memory = get_var, get_dynamic_player, get_object_memory
-local register_callback, cb, cprint, rprint = register_callback, cb, cprint, rprint
-local string_format, io_open = string.format, io.open
-
 local file_path, current_map
 
 function OnScriptLoad()
@@ -74,7 +69,7 @@ local function read_tag(vehicle_id)
 end
 
 local function format_output(map, tag)
-    return string_format(CONFIG.OUTPUT_FORMAT, map or "unknown", tag:gsub("\\", "\\\\"))
+    return string.format(CONFIG.OUTPUT_FORMAT, map or "unknown", tag:gsub("\\", "\\\\"))
 end
 
 function OnCommand(id, cmd)
@@ -93,19 +88,19 @@ function OnCommand(id, cmd)
     end
 
     local tag_name = read_tag(vehicle_id)
-    local outupt = format_output(current_map, tag_name)
+    local output = format_output(current_map, tag_name)
 
-    local file = io_open(file_path, "a")
+    local file = io.open(file_path, "a")
     if not file then
         rprint(id, "Error: Could not write to file.")
         return false
     end
 
-    file:write(outupt .. "\n")
+    file:write(output .. "\n")
     file:close()
 
     rprint(id, "Vehicle tag successfully recorded.")
-    rprint(id, "Tag: " .. tag_name)
+    rprint(id, "Tag: " .. output)
     return false
 end
 
