@@ -105,6 +105,7 @@ function OnCommand(player_id, command)
     file_handle:close()
 
     rprint(player_id, "Vehicle tag successfully recorded.")
+    rprint(player_id, "Tag: " .. tag_name)
     return false
 end
 
