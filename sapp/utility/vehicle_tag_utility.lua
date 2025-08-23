@@ -60,12 +60,12 @@ function OnStart()
     current_map = get_var(0, '$map')
 end
 
-local function has_permission(player_id)
-    if player_id == 0 then
+local function has_permission(id)
+    if id == 0 then
         cprint("Console cannot execute this command.", 12)
         return false
     end
-    return tonumber(get_var(player_id, '$lvl')) >= CONFIG.PERMISSION_LEVEL
+    return tonumber(get_var(id, '$lvl')) >= CONFIG.PERMISSION_LEVEL
 end
 
 local function read_tag(vehicle_id)
@@ -77,35 +77,35 @@ local function format_output(map, tag)
     return string_format(CONFIG.OUTPUT_FORMAT, map or "unknown", tag:gsub("\\", "\\\\"))
 end
 
-function OnCommand(player_id, command)
-    command = command:lower()
-    if command ~= CONFIG.COMMAND then return true end
+function OnCommand(id, cmd)
+    cmd = cmd:lower()
+    if cmd ~= CONFIG.COMMAND then return true end
 
-    if not has_permission(player_id) then return false end
+    if not has_permission(id) then return false end
 
-    local dyn_player = get_dynamic_player(player_id)
+    local dyn_player = get_dynamic_player(id)
     if dyn_player == 0 then return false end
 
     local vehicle_id = read_dword(dyn_player + 0x11C)
     if vehicle_id == 0xFFFFFFFF then
-        rprint(player_id, "You must be in a vehicle to use this command.")
+        rprint(id, "You must be in a vehicle to use this command.")
         return false
     end
 
     local tag_name = read_tag(vehicle_id)
-    local formatted_output = format_output(current_map, tag_name)
+    local outupt = format_output(current_map, tag_name)
 
-    local file_handle = io_open(file_path, "a")
-    if not file_handle then
-        rprint(player_id, "Error: Could not write to file.")
+    local file = io_open(file_path, "a")
+    if not file then
+        rprint(id, "Error: Could not write to file.")
         return false
     end
 
-    file_handle:write(formatted_output .. "\n")
-    file_handle:close()
+    file:write(outupt .. "\n")
+    file:close()
 
-    rprint(player_id, "Vehicle tag successfully recorded.")
-    rprint(player_id, "Tag: " .. tag_name)
+    rprint(id, "Vehicle tag successfully recorded.")
+    rprint(id, "Tag: " .. tag_name)
     return false
 end
 
