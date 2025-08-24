@@ -102,20 +102,30 @@ local map_vehicles = {
 
 -- CONFIG ENDS
 
-local active_vehicles = {}
 api_version = "1.12.0.0"
 
-function OnScriptLoad()
-    register_callback(cb["EVENT_CHAT"], "OnChat")
-    register_callback(cb["EVENT_JOIN"], "OnPlayerJoin")
-    register_callback(cb["EVENT_GAME_END"], "OnGameEnd")
-    register_callback(cb["EVENT_GAME_START"], "OnGameStart")
-    OnGameStart()
+local os_clock = os.clock
+local active_vehicles = {}
+
+local sapp_events = {
+    [cb['EVENT_TICK']] = 'OnTick',
+    [cb['EVENT_JOIN']] = 'OnJoin',
+    [cb['EVENT_CHAT']] = 'OnChat',
+}
+
+local function register_callbacks(enable)
+    for event, callback in pairs(sapp_events) do
+        if enable then
+            register_callback(event, callback)
+        else
+            unregister_callback(event)
+        end
+    end
 end
 
-local function GetTag(class, name)
+local function getTag(class, name)
     if not class or not name then
-        error(string.format("[ERROR] Invalid parameter to GetTag: class=%s, name=%s", class, name))
+        error(string.format("[ERROR] Invalid parameter to getTag: class=%s, name=%s", class, name))
         return nil
     end
 
@@ -134,65 +144,7 @@ local function GetTag(class, name)
     return meta_id
 end
 
-function OnGameStart()
-
-    if get_var(0, "$gt") == "n/a" then return end
-
-    local map_name = get_var(0, "$map")
-    active_vehicles = {}
-
-    local map_config = map_vehicles[map_name]
-    if not map_config then
-        cprint(string.format("[WARNING] No vehicle configuration found for map: %s", map_name), 12)
-        return
-    end
-
-    local valid_vehicles = 0
-    for keyword, tag_path in pairs(map_config) do
-
-        local meta_id = GetTag("vehi", tag_path)
-        if not meta_id then
-            error(string.format("[ERROR] Failed to get meta ID for vehicle: %s (%s)", keyword, tag_path))
-            goto next
-        end
-
-        active_vehicles[meta_id] = {
-            keyword = keyword,
-            path = tag_path,
-            object = nil,
-            despawn_time = nil
-        }
-        valid_vehicles = valid_vehicles + 1
-        :: next ::
-    end
-
-    if valid_vehicles > 0 then
-        register_callback(cb["EVENT_TICK"], "OnTick")
-    else
-        cprint("[WARNING] No valid vehicles registered - tick callback disabled", 12)
-    end
-end
-
-function OnPlayerJoin(player)
-    local map_name = get_var(0, "$map")
-    local keywords = map_vehicles[map_name]
-
-    if keywords then
-        local message = "Welcome! Type the following keywords in chat to spawn vehicles:"
-
-        for keyword, _ in pairs(keywords) do
-            message = message .. " [" .. keyword .. "]"
-        end
-
-        rprint(player, message)
-    end
-end
-
-function OnGameEnd()
-    unregister_callback(cb["EVENT_TICK"])
-end
-
-local function GetPlayerVehicle(player_index)
+local function getVehicle(player_index)
     if not player_present(player_index) or not player_alive(player_index) then
         return nil
     end
@@ -206,22 +158,22 @@ local function GetPlayerVehicle(player_index)
     return get_object_memory(vehicle_id)
 end
 
-local function IsVehicleOccupied(vehicle_object)
+local function isOccupied(vehicle_object)
     if vehicle_object == 0 then  return false end
     for i = 1, 16 do
-        local current_vehicle = GetPlayerVehicle(i)
+        local current_vehicle = getVehicle(i)
         if current_vehicle == vehicle_object then return true end
     end
     return false
 end
 
-local function GetPlayerPosition(player_index)
+local function getPos(player_index)
     if not player_alive(player_index) then
         say(player_index, "You must be alive to spawn a vehicle")
         return nil
     end
 
-    if GetPlayerVehicle(player_index) then
+    if getVehicle(player_index) then
         say(player_index, "You are already in a vehicle")
         return nil
     end
@@ -247,14 +199,14 @@ function OnChat(player, message)
     for meta_id, data in pairs(active_vehicles) do
         if data.keyword == input then
 
-            local x, y, z = GetPlayerPosition(player)
+            local x, y, z = getPos(player)
             if not x then return false end
 
             local height_offset = 0.3
             local object_id = spawn_object('', '', x, y, z + height_offset, 0, meta_id)
 
             if object_id == nil or object_id == 0 then
-                error(string.format("[ERROR] Failed to spawn vehicle: %s", data.path))
+                cprint(string.format("[ERROR] Failed to spawn vehicle: %s", data.path))
                 return false
             end
 
@@ -269,14 +221,15 @@ function OnChat(player, message)
 end
 
 function OnTick()
+    local now = os_clock()
     for _, data in pairs(active_vehicles) do
         if data.object then
             local object = get_object_memory(data.object)
             if object ~= 0 then
-                if not IsVehicleOccupied(object) then
+                if not isOccupied(object) then
                     if not data.despawn_time then
-                        data.despawn_time = os.clock() + DESPAWN_DELAY_SECONDS
-                    elseif os.clock() >= data.despawn_time then
+                        data.despawn_time = now + DESPAWN_DELAY_SECONDS
+                    elseif now >= data.despawn_time then
                         destroy_object(data.object)
                         data.object = nil
                         data.despawn_time = nil
@@ -292,6 +245,62 @@ function OnTick()
     end
 end
 
-function OnScriptUnload()
-    -- N/A
+function OnStart()
+
+    if get_var(0, "$gt") == "n/a" then return end
+
+    local map_name = get_var(0, "$map")
+    active_vehicles = {}
+
+    local map_config = map_vehicles[map_name]
+    if not map_config then
+        cprint(string.format("[WARNING] No vehicle configuration found for map: %s", map_name), 12)
+        return
+    end
+
+    local valid_vehicles = 0
+    for keyword, tag_path in pairs(map_config) do
+        local meta_id = getTag("vehi", tag_path)
+        if not meta_id then
+            cprint(string.format("[ERROR] Failed to get meta ID for vehicle: %s (%s)", keyword, tag_path))
+            goto next
+        end
+
+        active_vehicles[meta_id] = {
+            keyword = keyword,
+            path = tag_path,
+            object = nil,
+            despawn_time = nil
+        }
+        valid_vehicles = valid_vehicles + 1
+        :: next ::
+    end
+
+    if valid_vehicles > 0 then
+        register_callbacks(true)
+    else
+        register_callbacks(false)
+    end
 end
+
+function OnJoin(player)
+    local map_name = get_var(0, "$map")
+    local keywords = map_vehicles[map_name]
+
+    if keywords then
+        local message = "Welcome! Type the following keywords in chat to spawn vehicles:"
+
+        for keyword, _ in pairs(keywords) do
+            message = message .. " [" .. keyword .. "]"
+        end
+
+        rprint(player, message)
+    end
+end
+
+function OnScriptLoad()
+    register_callback(cb["EVENT_GAME_START"], "OnStart")
+    OnStart()
+end
+
+function OnScriptUnload() end

@@ -79,41 +79,6 @@ local function getMapcycleDir()
     return path .. "\\sapp\\mapcycle.txt"
 end
 
-function OnScriptLoad()
-    local path = getMapcycleDir()
-    local file = io.open(path)
-    if file then
-        local i = 0
-        for entry in file:lines() do
-            local args = parseArgs(entry, ":")
-            maps[i] = { map = args[1], mode = args[2], done = false }
-            i = i + 1
-        end
-        file:close()
-
-        register_callback(cb["EVENT_GAME_END"], "OnEnd")
-        register_callback(cb["EVENT_COMMAND"], "OnCommand")
-        register_callback(cb["EVENT_GAME_START"], "OnStart")
-
-        OnStart()
-    end
-end
-
-function OnEnd()
-    if not maps[map_spec_index + 1] then
-        for _, v in pairs(maps) do
-            v.done = false
-        end
-        return
-    end
-
-    for _, t in pairs(maps) do
-        if map == t.map and mode == t.mode and not t.done then
-            t.done = true
-        end
-    end
-end
-
 local function send(id, msg)
     if id == 0 then
         cprint(msg)
@@ -170,11 +135,20 @@ local function showNextMap(id, next_map)
     send(id, formatString(txt, i, t.map, t.mode, #maps))
 end
 
-local function updateCurIndex(id, Args)
-    local cmd = Args[1]
-    local index = Args[2]
+function OnCommand(id, command)
+    local args = parseArgs(command, "%s")
+    if #args == 0 then return true end
 
-    if cmd == "map_spec" and index:match("%d+") then
+    local index = args[2]
+
+    -- map list command --
+    if args[1] == map_list_command then
+        local next_map = showCurrentMap(id)
+        if next_map and #next_map > 0 then showNextMap(id, next_map) end
+        return false
+    end
+
+    if args[1] == "map_spec" and index:match("%d+") then -- override SAPP's map_spec command
         index = tonumber(index)
         if index >= 0 and index <= #maps then
             map_spec_index = index
@@ -183,34 +157,17 @@ local function updateCurIndex(id, Args)
             send(id, "Please enter a number between 0/" .. #maps)
         end
     end
-    return false
-end
-
-function OnCommand(id, command)
-    local args = parseArgs(command, "%s")
-    if #args == 0 then return true end
-
-    -- map list command --
-    if args[1] == map_list_command and not updateCurIndex(id, args) then
-        local next_map = showCurrentMap(id)
-        if next_map and #next_map > 0 then
-            showNextMap(id, next_map)
-        end
-        return false
-    end
 
     -- what is next command --
     if args[1] == what_is_next_command then
-        if args[2] ~= nil and args[2]:match("%d+") then
-            local i = tonumber(args[2])
+        if index ~= nil and index:match("%d+") then
+            local i = tonumber(index)
             local t = maps[i]
-            if t then
-                local txt = output[3]
-                send(id, formatString(txt, i, t.map, t.mode, #maps))
-            else
-                goto continue
-            end
-            return false
+
+            if not t then goto continue end
+
+            local txt = output[3]
+            send(id, formatString(txt, i, t.map, t.mode, #maps))
         end
 
         :: continue ::
@@ -219,8 +176,28 @@ function OnCommand(id, command)
     end
 end
 
+function OnScriptLoad()
+    local path = getMapcycleDir()
+    local file = io.open(path)
+    if file then
+        local i = 0
+        for entry in file:lines() do
+            local args = parseArgs(entry, ":")
+            maps[i] = { map = args[1], mode = args[2], done = false }
+            i = i + 1
+        end
+        file:close()
+
+        register_callback(cb["EVENT_GAME_END"], "OnEnd")
+        register_callback(cb["EVENT_COMMAND"], "OnCommand")
+        register_callback(cb["EVENT_GAME_START"], "OnStart")
+
+        OnStart()
+    end
+end
+
 function OnStart()
-    if get_var(0, "$gt") == "n/a" then return end
+    if get_var(0, '$gt') == 'n/a' then return end
 
     map = get_var(0, "$map"):lower()
     mode = get_var(0, "$mode"):lower()
@@ -229,6 +206,21 @@ function OnStart()
         if map == t.map and mode == t.mode and not t.done then
             map_spec_index = i
             break
+        end
+    end
+end
+
+function OnEnd()
+    if not maps[map_spec_index + 1] then
+        for _, v in pairs(maps) do
+            v.done = false
+        end
+        return
+    end
+
+    for _, t in pairs(maps) do
+        if map == t.map and mode == t.mode and not t.done then
+            t.done = true
         end
     end
 end
