@@ -37,17 +37,17 @@ LICENSE:          MIT License
 ---------------------------------------------------------------------------
 
 -- General settings
-local CALL_RADIUS = 0                      -- Radius for calling an Uber (0 to disable)
-local CALLS_PER_GAME = 20                  -- Max Uber calls allowed per player per game (0 = unlimited)
-local COOLDOWN_PERIOD = 10                 -- Cooldown time (seconds) between Uber calls per player
-local CROUCH_TO_CALL = true                -- Enable Uber call when player crouches
+local CALL_RADIUS = 0                     -- Radius for calling an Uber (0 to disable)
+local CALLS_PER_GAME = 20                 -- Max Uber calls allowed per player per game (0 = unlimited)
+local COOLDOWN_PERIOD = 10                -- Cooldown time (seconds) between Uber calls per player
+local CROUCH_TO_CALL = true               -- Enable Uber call when player crouches
 
-local BLOCK_OBJECTIVE = true               -- Prevent Uber calls if player is carrying an objective (e.g. flag)
+local BLOCK_OBJECTIVE = true              -- Prevent Uber calls if player is carrying an objective (e.g. flag)
 
 local EJECT_FROM_DISABLE_VEHICLE = true   -- Eject players from vehicles that aren't enabled for Uber
 local EJECT_FROM_DISABLE_VEHICLE_time = 3 -- Delay before ejecting from disabled vehicle (seconds)
-local EJECT_WITHOUT_DRIVER = true          -- Eject passengers if vehicle has no driver
-local EJECT_WITHOUT_DRIVER_TIME = 5        -- Delay before ejecting without driver (seconds)
+local EJECT_WITHOUT_DRIVER = true         -- Eject passengers if vehicle has no driver
+local EJECT_WITHOUT_DRIVER_TIME = 5       -- Delay before ejecting without driver (seconds)
 
 -- Chat keywords players can use to call an Uber
 local PHRASES = {
