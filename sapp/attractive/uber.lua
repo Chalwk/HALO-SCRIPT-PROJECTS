@@ -37,20 +37,20 @@ LICENSE:          MIT License
 ---------------------------------------------------------------------------
 
 -- General settings
-local call_radius = 0                      -- Radius for calling an Uber (0 to disable)
-local calls_per_game = 20                  -- Max Uber calls allowed per player per game (0 = unlimited)
-local cooldown_period = 10                 -- Cooldown time (seconds) between Uber calls per player
-local crouch_to_uber = true                -- Enable Uber call when player crouches
+local CALL_RADIUS = 0                      -- Radius for calling an Uber (0 to disable)
+local CALLS_PER_GAME = 20                  -- Max Uber calls allowed per player per game (0 = unlimited)
+local COOLDOWN_PERIOD = 10                 -- Cooldown time (seconds) between Uber calls per player
+local CROUCH_TO_CALL = true                -- Enable Uber call when player crouches
 
-local block_objective = true               -- Prevent Uber calls if player is carrying an objective (e.g. flag)
+local BLOCK_OBJECTIVE = true               -- Prevent Uber calls if player is carrying an objective (e.g. flag)
 
-local eject_from_disabled_vehicle = true   -- Eject players from vehicles that aren't enabled for Uber
-local eject_from_disabled_vehicle_time = 3 -- Delay before ejecting from disabled vehicle (seconds)
-local eject_without_driver = true          -- Eject passengers if vehicle has no driver
-local eject_without_driver_time = 5        -- Delay before ejecting without driver (seconds)
+local EJECT_FROM_DISABLE_VEHICLE = true   -- Eject players from vehicles that aren't enabled for Uber
+local EJECT_FROM_DISABLE_VEHICLE_time = 3 -- Delay before ejecting from disabled vehicle (seconds)
+local EJECT_WITHOUT_DRIVER = true          -- Eject passengers if vehicle has no driver
+local EJECT_WITHOUT_DRIVER_TIME = 5        -- Delay before ejecting without driver (seconds)
 
 -- Chat keywords players can use to call an Uber
-local phrases = {
+local PHRASES = {
     ['uber'] = true,
     ['taxi'] = true,
     ['cab']  = true,
@@ -58,14 +58,14 @@ local phrases = {
 }
 
 -- Accept/Reject settings
-local accept_reject = false      -- Allow drivers to accept or decline incoming Uber requests
-local accept_reject_timeout = 10 -- Timeout (seconds) for responding
+local ACCEPT_REJECT = false      -- Allow drivers to accept or decline incoming Uber requests
+local ACCEPT_REJECT_TIMEOUT = 10 -- Timeout (seconds) for responding
 
-local accept_command = 'accept'  -- Command to accept an Uber request
-local reject_command = 'reject'  -- Command to reject an Uber request
+local ACCEPT_COMMAND = 'accept'  -- Command to accept an Uber request
+local REJECT_COMMAND = 'reject'  -- Command to reject an Uber request
 
 -- Player-facing messages
-local messages = {
+local MESSAGES = {
     must_be_alive = "You must be alive to call an uber",
     already_in_vehicle = "You cannot call an uber while in a vehicle",
     carrying_objective = "You cannot call uber while carrying an objective",
@@ -578,19 +578,19 @@ local function fmt(message, ...)
     return message
 end
 
-local function get_tag(class, name)
+local function getTag(class, name)
     local tag = lookup_tag(class, name)
     return tag ~= 0 and read_dword(tag + 0xC) or nil
 end
 
-local function in_range(x1, y1, z1, x2, y2, z2)
+local function inRange(x1, y1, z1, x2, y2, z2)
     local dx = x1 - x2
     local dy = y1 - y2
     local dz = z1 - z2
-    return (dx * dx + dy * dy + dz * dz) <= call_radius
+    return (dx * dx + dy * dy + dz * dz) <= CALL_RADIUS
 end
 
-local function get_position(dyn)
+local function getPos(dyn)
     local crouch = read_float(dyn + 0x50C)
     local vehicle_id = read_dword(dyn + 0x11C)
     local vehicle_obj = get_object_memory(vehicle_id)
@@ -606,12 +606,12 @@ local function get_position(dyn)
     return x, y, z + z_offset
 end
 
-local function validate_vehicle(object_memory)
+local function validateVehicle(object_memory)
     local meta_id = read_dword(object_memory)
     return valid_vehicles_meta[meta_id]
 end
 
-local function new_eject(player, object, delay)
+local function newEject(player, object, delay)
     local now = os_time()
     return {
         player = player,
@@ -621,7 +621,7 @@ local function new_eject(player, object, delay)
     }
 end
 
-local function new_cooldown(player, delay, now)
+local function newCooldown(player, delay, now)
     return {
         player = player,
         start = now,
@@ -633,24 +633,24 @@ local function send(player, message)
     rprint(player.id, message)
 end
 
-local function schedule_ejection(player, object, delay, reason)
+local function scheduleEjection(player, object, delay, reason)
     if reason then send(player, reason) end
-    send(player, fmt(messages.ejecting_in, delay))
-    player.auto_eject = new_eject(player, object, delay)
+    send(player, fmt(MESSAGES.ejecting_in, delay))
+    player.auto_eject = newEject(player, object, delay)
 end
 
-local function schedule_ejection_if_disabled(player, vehicle_obj, config_entry)
-    if eject_from_disabled_vehicle and not config_entry.enabled then
-        schedule_ejection(
+local function scheduleEjectionIfDisabled(player, vehicle_obj, config_entry)
+    if EJECT_FROM_DISABLE_VEHICLE and not config_entry.enabled then
+        scheduleEjection(
             player,
             vehicle_obj,
-            eject_from_disabled_vehicle_time,
-            fmt(messages.vehicle_not_enabled)
+            EJECT_FROM_DISABLE_VEHICLE_time,
+            fmt(MESSAGES.vehicle_not_enabled)
         )
     end
 end
 
-local function has_objective(dyn_player)
+local function hasObjective(dyn_player)
     local weapon_id = read_dword(dyn_player + 0x118)
     if weapon_id == 0xFFFFFFFF then return false end
 
@@ -667,7 +667,7 @@ local function has_objective(dyn_player)
     return obj_byte == 4 or obj_byte == 0 -- Oddball (4) or Flag (0)
 end
 
-local function get_vehicle_if_driver(dyn)
+local function getVehicleIfDriver(dyn)
     local vehicle_id_offset = 0x11C
     local seat_offset = 0x2F0
     local invalid_vehicle_id = 0xFFFFFFFF
@@ -678,7 +678,7 @@ local function get_vehicle_if_driver(dyn)
     local vehicle_obj = get_object_memory(vehicle_id)
     if vehicle_obj == 0 then return nil end
 
-    local config_entry = validate_vehicle(vehicle_obj)
+    local config_entry = validateVehicle(vehicle_obj)
     if not config_entry then return nil end
 
     local seat = read_word(dyn + seat_offset)
@@ -687,7 +687,7 @@ local function get_vehicle_if_driver(dyn)
     return vehicle_obj, vehicle_id, config_entry
 end
 
-local function count_occupants(vehicle_obj)
+local function countOccupants(vehicle_obj)
     local count = 0
     for id = 1, 16 do
         local player = players[id]
@@ -698,64 +698,64 @@ local function count_occupants(vehicle_obj)
     return count
 end
 
-local function do_checks(player, now, dyn)
+local function doChecks(player, now, dyn)
     if not player_alive(player.id) then
-        send(player, fmt(messages.must_be_alive))
+        send(player, fmt(MESSAGES.must_be_alive))
         return false
     end
 
     if read_dword(dyn + 0x11C) ~= 0xFFFFFFFF then
-        send(player, fmt(messages.already_in_vehicle))
+        send(player, fmt(MESSAGES.already_in_vehicle))
         return false
     end
 
-    if block_objective and gametype_is_ctf_or_oddball and has_objective(dyn) then
-        send(player, fmt(messages.carrying_objective))
+    if BLOCK_OBJECTIVE and gametype_is_ctf_or_oddball and hasObjective(dyn) then
+        send(player, fmt(MESSAGES.carrying_objective))
         return false
     end
 
-    if calls_per_game > 0 and player.calls <= 0 then
-        send(player, fmt(messages.no_calls_left))
+    if CALLS_PER_GAME > 0 and player.calls <= 0 then
+        send(player, fmt(MESSAGES.no_calls_left))
         return false
     end
 
     if player.call_cooldown and now < player.call_cooldown.finish then
         local remaining = player.call_cooldown.finish - now
-        send(player, fmt(messages.cooldown_wait, math_floor(remaining)))
+        send(player, fmt(MESSAGES.cooldown_wait, math_floor(remaining)))
         return false
     end
 
     return true
 end
 
-local function is_valid_player(player, id)
+local function isValidPlayer(player, id)
     return player_present(id) and
         player_alive(id) and
         id ~= player.id and
         get_var(id, '$team') == player.team
 end
 
-local function get_available_vehicles(player, caller_x, caller_y, caller_z)
+local function getAvailableVehicles(player, caller_x, caller_y, caller_z)
     local available = {}
     local count = 0
 
     for i = 1, 16 do
-        if not is_valid_player(player, i) then goto continue end
+        if not isValidPlayer(player, i) then goto continue end
         local dyn = get_dynamic_player(i)
         if not dyn then goto continue end
 
-        local vehicle_obj, vehicle_id, config_entry = get_vehicle_if_driver(dyn)
+        local vehicle_obj, vehicle_id, config_entry = getVehicleIfDriver(dyn)
         if vehicle_obj then
             local veh_x, veh_y, veh_z = read_vector3d(vehicle_obj + 0x5C)
 
-            if call_radius <= 0 or in_range(caller_x, caller_y, caller_z, veh_x, veh_y, veh_z) then
+            if CALL_RADIUS <= 0 or inRange(caller_x, caller_y, caller_z, veh_x, veh_y, veh_z) then
                 count = count + 1
                 available[count] = {
                     object = vehicle_obj,
                     id = vehicle_id,
                     meta = config_entry,
                     driver = i,
-                    occupants = count_occupants(vehicle_obj)
+                    occupants = countOccupants(vehicle_obj)
                 }
             end
         end
@@ -769,7 +769,7 @@ local function get_available_vehicles(player, caller_x, caller_y, caller_z)
     return available
 end
 
-local function find_seat(player, vehicle)
+local function findSeat(player, vehicle)
     local vehicle_insertion_order = vehicle.meta.insertion_order
 
     for _, seat_id in ipairs(vehicle_insertion_order) do
@@ -795,7 +795,7 @@ local function find_seat(player, vehicle)
     end
 end
 
-local function process_pending_request(passenger_id, vehicle, seat_id, accepted)
+local function processPendingRequest(passenger_id, vehicle, seat_id, accepted)
     local passenger = players[passenger_id]
     if not passenger or not passenger.pending_request then return end
 
@@ -803,11 +803,11 @@ local function process_pending_request(passenger_id, vehicle, seat_id, accepted)
     if driver then
         if accepted then
             enter_vehicle(vehicle.id, passenger_id, seat_id)
-            send(passenger, fmt(messages.entering_vehicle, vehicle.meta.display_name, vehicle.meta.seats[seat_id]))
+            send(passenger, fmt(MESSAGES.entering_vehicle, vehicle.meta.display_name, vehicle.meta.seats[seat_id]))
 
-            if calls_per_game > 0 then
+            if CALLS_PER_GAME > 0 then
                 passenger.calls = passenger.calls - 1
-                send(passenger, fmt(messages.remaining_calls, passenger.calls))
+                send(passenger, fmt(MESSAGES.remaining_calls, passenger.calls))
             end
         else
             send(passenger, "Your Uber request was declined by the driver.")
@@ -819,64 +819,64 @@ local function process_pending_request(passenger_id, vehicle, seat_id, accepted)
     passenger.pending_request = nil
 end
 
-local function call_uber(player, dyn)
+local function callUber(player, dyn)
     local now = os_time()
     dyn = dyn or get_dynamic_player(player.id)
 
-    if not do_checks(player, now, dyn) then return end
+    if not doChecks(player, now, dyn) then return end
 
-    local x, y, z = get_position(dyn)
+    local x, y, z = getPos(dyn)
     if not x then
         send(player, "Unable to determine your position")
         return
     end
 
-    player.call_cooldown = new_cooldown(player, cooldown_period, now)
-    local vehicles = get_available_vehicles(player, x, y, z)
+    player.call_cooldown = newCooldown(player, COOLDOWN_PERIOD, now)
+    local vehicles = getAvailableVehicles(player, x, y, z)
 
     for _, vehicle in ipairs(vehicles) do
-        local seat_id = find_seat(player, vehicle)
+        local seat_id = findSeat(player, vehicle)
         if seat_id then
-            if accept_reject then
+            if ACCEPT_REJECT then
                 local driver = players[vehicle.driver]
                 if driver then
                     send(driver,
                         player.name ..
                         " is requesting to join your vehicle. Type '" ..
-                        accept_command .. "' or '" .. reject_command .. "' to respond.")
+                        ACCEPT_COMMAND .. "' or '" .. REJECT_COMMAND .. "' to respond.")
 
                     player.pending_request = {
                         driver_id = vehicle.driver,
                         vehicle_id = vehicle.id,
                         seat_id = seat_id,
                         time_sent = now,
-                        timeout = now + accept_reject_timeout
+                        timeout = now + ACCEPT_REJECT_TIMEOUT
                     }
 
                     send(player, "Request sent to driver. Waiting for response...")
                     return
                 end
             else
-                if calls_per_game > 0 then player.calls = player.calls - 1 end
+                if CALLS_PER_GAME > 0 then player.calls = player.calls - 1 end
                 enter_vehicle(vehicle.id, player.id, seat_id)
-                send(player, fmt(messages.entering_vehicle, vehicle.meta.display_name, vehicle.meta.seats[seat_id]))
+                send(player, fmt(MESSAGES.entering_vehicle, vehicle.meta.display_name, vehicle.meta.seats[seat_id]))
 
-                if calls_per_game > 0 then
-                    send(player, fmt(messages.remaining_calls, player.calls))
+                if CALLS_PER_GAME > 0 then
+                    send(player, fmt(MESSAGES.remaining_calls, player.calls))
                 end
                 return
             end
         end
     end
 
-    if call_radius > 0 then
-        send(player, fmt("No available vehicles within %d units", call_radius))
+    if CALL_RADIUS > 0 then
+        send(player, fmt("No available vehicles within %d units", CALL_RADIUS))
     else
-        send(player, fmt(messages.no_vehicles_available))
+        send(player, fmt(MESSAGES.no_vehicles_available))
     end
 end
 
-local function ejection_check(player)
+local function ejectionCheck(player)
     player.auto_eject = nil
     if player.seat ~= 0 then return end
 
@@ -889,39 +889,39 @@ local function ejection_check(player)
     local vehicle_obj = get_object_memory(vehicle_id)
     for id, other_player in pairs(players) do
         if id ~= player.id and other_player.current_vehi_obj == vehicle_obj then
-            schedule_ejection(
+            scheduleEjection(
                 other_player,
                 vehicle_obj,
-                eject_without_driver_time,
-                fmt(messages.driver_left)
+                EJECT_WITHOUT_DRIVER_TIME,
+                fmt(MESSAGES.driver_left)
             )
         end
     end
 end
 
-local function check_crouch(player, dyn)
-    if not crouch_to_uber then return end
+local function checkCrouch(player, dyn)
+    if not CROUCH_TO_CALL then return end
 
     local crouching = read_bit(dyn + 0x208, 0)
-    if crouching == 1 and player.crouching ~= crouching then call_uber(player, dyn) end
+    if crouching == 1 and player.crouching ~= crouching then callUber(player, dyn) end
     player.crouching = crouching
 end
 
-local function process_auto_eject(player, now)
+local function processAutoEject(player, now)
     if not player.auto_eject or now < player.auto_eject.finish then return end
 
     exit_vehicle(player.id)
-    send(player, fmt(messages.ejected))
+    send(player, fmt(MESSAGES.ejected))
     player.auto_eject = nil
 end
 
-local function process_cooldown(player, now)
+local function processCooldown(player, now)
     if player.call_cooldown and now >= player.call_cooldown.finish then
         player.call_cooldown = nil
     end
 end
 
-local function update_vehicle_state(player, dyn)
+local function updateVehicleState(player, dyn)
     local vehicle_id = read_dword(dyn + 0x11C)
     if vehicle_id == 0xFFFFFFFF then
         player.seat = nil
@@ -936,7 +936,7 @@ local function update_vehicle_state(player, dyn)
     end
 end
 
-local function process_pending_requests(now)
+local function processPendingRequests(now)
     for _, player in pairs(players) do
         if player and player.pending_request then
             if now > player.pending_request.timeout then
@@ -952,7 +952,7 @@ local function initialize()
 
     for _, v in ipairs(valid_vehicles) do
         local tag, seats, enabled, label, insertion_order = v[1], v[2], v[3], v[4], v[5]
-        local meta_id = get_tag('vehi', tag)
+        local meta_id = getTag('vehi', tag)
         if meta_id then
             valid_vehicles_meta[meta_id] = {
                 seats = seats,
@@ -967,7 +967,7 @@ local function initialize()
     gametype_is_ctf_or_oddball = game_type == 'ctf' or game_type == 'oddball'
 end
 
-local function register_callbacks(team_game)
+local function registerCallbacks(team_game)
     for event, callback in pairs(sapp_events) do
         if team_game then
             register_callback(event, callback)
@@ -985,7 +985,7 @@ end
 function OnStart()
     if get_var(0, '$gt') == 'n/a' then return end
     if get_var(0, '$ffa') == '1' then
-        register_callbacks(false)
+        registerCallbacks(false)
         cprint('====================================', 12)
         cprint('[Uber] Only runs on team-based games', 12)
         cprint('====================================', 12)
@@ -999,7 +999,7 @@ function OnStart()
         end
     end
 
-    register_callbacks(true)
+    registerCallbacks(true)
 end
 
 function OnJoin(id)
@@ -1007,7 +1007,7 @@ function OnJoin(id)
         id = id,
         team = get_var(id, '$team'),
         name = get_var(id, '$name'),
-        calls = calls_per_game,
+        calls = CALLS_PER_GAME,
         crouching = 0,
         auto_eject = nil,
         call_cooldown = nil,
@@ -1023,11 +1023,11 @@ function OnQuit(id)
         if player.seat == 0 and player.current_vehi_obj then
             for other_id, other_player in pairs(players) do
                 if other_id ~= id and other_player.current_vehi_obj == player.current_vehi_obj then
-                    schedule_ejection(
+                    scheduleEjection(
                         other_player,
                         player.current_vehi_obj,
-                        eject_without_driver_time,
-                        fmt(messages.driver_left)
+                        EJECT_WITHOUT_DRIVER_TIME,
+                        fmt(MESSAGES.driver_left)
                     )
                 end
             end
@@ -1042,25 +1042,25 @@ function OnTick()
         local player = players[i]
         if not player or not player_present(i) then goto continue end
 
-        process_cooldown(player, now)
+        processCooldown(player, now)
 
         local dyn = get_dynamic_player(i)
         if dyn == 0 or not player_alive(i) then goto continue end
 
-        update_vehicle_state(player, dyn)
-        process_auto_eject(player, now)
-        check_crouch(player, dyn)
+        updateVehicleState(player, dyn)
+        processAutoEject(player, now)
+        checkCrouch(player, dyn)
 
         ::continue::
     end
 
-    process_pending_requests(now) -- Process pending requests
+    processPendingRequests(now) -- Process pending requests
 end
 
 function OnChat(id, msg)
     msg = msg:lower()
-    if phrases[msg] then
-        call_uber(players[id])
+    if PHRASES[msg] then
+        callUber(players[id])
         return false
     end
 end
@@ -1079,21 +1079,21 @@ function OnVehicleEnter(id, seat)
     if vehicle_obj == 0 then return end
 
     -- Get vehicle config | If it isn't configured allow the player to enter
-    local config_entry = validate_vehicle(vehicle_obj)
+    local config_entry = validateVehicle(vehicle_obj)
     if not config_entry then goto continue end
 
-    schedule_ejection_if_disabled(player, vehicle_obj, config_entry) -- prevent using disabled vehicles
+    scheduleEjectionIfDisabled(player, vehicle_obj, config_entry) -- prevent using disabled vehicles
 
     ::continue::
 
-    if seat ~= 0 and eject_without_driver then
+    if seat ~= 0 and EJECT_WITHOUT_DRIVER then
         local driver = read_dword(vehicle_obj + 0x324) -- check if the vehicle has a driver
         if driver == 0xFFFFFFFF then
-            schedule_ejection(
+            scheduleEjection(
                 player,
                 vehicle_obj,
-                eject_without_driver_time,
-                fmt(messages.vehicle_no_driver)
+                EJECT_WITHOUT_DRIVER_TIME,
+                fmt(MESSAGES.vehicle_no_driver)
             )
         end
     end
@@ -1102,18 +1102,18 @@ function OnVehicleEnter(id, seat)
         for _, p in pairs(players) do
             if p.auto_eject and p.auto_eject.object == vehicle_obj then
                 p.auto_eject = nil
-                send(p, fmt(messages.ejection_cancelled))
+                send(p, fmt(MESSAGES.ejection_cancelled))
             end
         end
     end
 end
 
 function OnVehicleExit(id)
-    ejection_check(players[id])
+    ejectionCheck(players[id])
 end
 
 function OnPlayerDeath(id)
-    ejection_check(players[id])
+    ejectionCheck(players[id])
 end
 
 function OnTeamSwitch(id)
@@ -1125,17 +1125,17 @@ function OnCommand(id, command)
     local player = players[id]
 
     if player then
-        if (cmd == accept_command or cmd == reject_command) and not accept_reject then
+        if (cmd == ACCEPT_COMMAND or cmd == REJECT_COMMAND) and not ACCEPT_REJECT then
             send(player, "Accept/reject system is disabled.")
             return false
         end
 
-        if cmd == accept_command then
+        if cmd == ACCEPT_COMMAND then
             -- Check if player is a driver and has pending requests
             local dyn = get_dynamic_player(id)
             if dyn == 0 then return true end
 
-            local vehicle_obj, _, config_entry = get_vehicle_if_driver(dyn)
+            local vehicle_obj, _, config_entry = getVehicleIfDriver(dyn)
             if not vehicle_obj then
                 send(player, "You must be a driver to accept Uber requests.")
                 return false
@@ -1150,7 +1150,7 @@ function OnCommand(id, command)
                         id = p.pending_request.vehicle_id,
                         meta = config_entry
                     }
-                    process_pending_request(passenger_id, vehicle, p.pending_request.seat_id, true)
+                    processPendingRequest(passenger_id, vehicle, p.pending_request.seat_id, true)
                     send(player, "Accepted " .. p.name .. "'s Uber request.")
                     break
                 end
@@ -1163,12 +1163,12 @@ function OnCommand(id, command)
             return false
         end
 
-        if cmd == reject_command then
+        if cmd == REJECT_COMMAND then
             -- Check if player is a driver and has pending requests
             local dyn = get_dynamic_player(id)
             if dyn == 0 then return true end
 
-            local vehicle_obj, _, _ = get_vehicle_if_driver(dyn)
+            local vehicle_obj, _, _ = getVehicleIfDriver(dyn)
             if not vehicle_obj then
                 send(player, "You must be a driver to reject Uber requests.")
                 return false
@@ -1179,7 +1179,7 @@ function OnCommand(id, command)
             for passenger_id, p in pairs(players) do
                 if p and p.pending_request and p.pending_request.driver_id == id then
                     found_request = true
-                    process_pending_request(passenger_id, nil, nil, false)
+                    processPendingRequest(passenger_id, nil, nil, false)
                     send(player, "Rejected " .. p.name .. "'s Uber request.")
                     break
                 end
