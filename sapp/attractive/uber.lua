@@ -40,7 +40,7 @@ LICENSE:          MIT License
 local CALL_RADIUS = 0                     -- Radius for calling an Uber (0 to disable)
 local CALLS_PER_GAME = 20                 -- Max Uber calls allowed per player per game (0 = unlimited)
 local COOLDOWN_PERIOD = 10                -- Cooldown time (seconds) between Uber calls per player
-local CROUCH_TO_CALL = true               -- Enable Uber call when player crouches
+local CROUCH_TO_CALL = false              -- Enable Uber call when player crouches
 
 local BLOCK_OBJECTIVE = true              -- Prevent Uber calls if player is carrying an objective (e.g. flag)
 
@@ -602,7 +602,7 @@ local function getPos(dyn)
         x, y, z = read_vector3d(vehicle_obj + 0x5C)
     end
 
-    local z_offset = (crouch == 0) and 0.65 or 0.35 * crouch
+    local z_offset = 0.65 - (0.3 * crouch)
     return x, y, z + z_offset
 end
 
