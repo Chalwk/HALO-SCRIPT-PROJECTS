@@ -23,7 +23,7 @@ NOTES:
                   - Only drivers see the fuel gauge.
                   - Script disables itself if no stations are configured for a map.
 
-Copyright (c) 2020-2025 Jericho Crosby (Chalwk)
+Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
