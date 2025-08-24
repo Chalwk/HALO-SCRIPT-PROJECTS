@@ -126,7 +126,7 @@ BEHAVIOR EXAMPLES:
    - If a vehicle has no driver: Passengers may be ejected after a delay (if configured)
 ]]
 
-local valid_vehicles = {
+local VEHICLE_SETTINGS = {
 
     -- Format: {tag_path, seat_roles, enabled, display_name, insertion_order}
 
@@ -538,7 +538,7 @@ local valid_vehicles = {
 api_version = '1.12.0.0'
 
 local players = {}
-local valid_vehicles_meta = {}
+local vehicle_meta = {}
 
 local base_tag_table = 0x40440000
 local tag_entry_size = 0x20
@@ -607,8 +607,7 @@ local function getPos(dyn)
 end
 
 local function validateVehicle(object_memory)
-    local meta_id = read_dword(object_memory)
-    return valid_vehicles_meta[meta_id]
+    return vehicle_meta[read_dword(object_memory)]
 end
 
 local function newEject(player, object, delay)
@@ -948,13 +947,13 @@ local function processPendingRequests(now)
 end
 
 local function initialize()
-    valid_vehicles_meta = {}
+    vehicle_meta = {}
 
-    for _, v in ipairs(valid_vehicles) do
+    for _, v in ipairs(VEHICLE_SETTINGS) do
         local tag, seats, enabled, label, insertion_order = v[1], v[2], v[3], v[4], v[5]
         local meta_id = getTag('vehi', tag)
         if meta_id then
-            valid_vehicles_meta[meta_id] = {
+            vehicle_meta[meta_id] = {
                 seats = seats,
                 enabled = enabled,
                 display_name = label,
