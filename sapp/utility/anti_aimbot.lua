@@ -169,18 +169,16 @@ end
 
 -- Get weapon name with caching
 local function get_weapon_name(player_id)
-    if weapon_cache[player_id] then
-        return weapon_cache[player_id]
-    end
+    if weapon_cache[player_id] then return weapon_cache[player_id] end
 
     local dyn = get_dynamic_player(player_id)
-    if dyn == 0 then return "DEFAULT" end
+    if dyn == 0 then return end
 
     local weapon = read_dword(dyn + 0x118)
     local object = get_object_memory(weapon)
-    if object == 0 then return "DEFAULT" end
+    if object == 0 then return end
 
-    local name = read_string(read_dword(read_word(object) * 32 + 0x40440038)) or "DEFAULT"
+    local name = read_string(read_dword(read_word(object) * 32 + 0x40440038))
     weapon_cache[player_id] = name
     return name
 end
@@ -261,6 +259,7 @@ local function check_aim_at_target(shooter_dyn, shooter_id, target_id)
 
     -- Apply weapon-specific modifier
     local weapon = get_weapon_name(shooter_id)
+    if not weapon then goto continue end
     local modifier = CONFIG.WEAPON_MODIFIERS[weapon] or CONFIG.WEAPON_MODIFIERS.DEFAULT
     threshold = threshold * modifier
 
@@ -271,6 +270,8 @@ local function check_aim_at_target(shooter_dyn, shooter_id, target_id)
             angle = angle_deg
         }
     end
+
+    ::continue::
 
     return nil
 end
@@ -399,7 +400,8 @@ local function update_dynamic_threshold(pid)
 
     -- Adjust threshold based on accuracy
     local multiplier = CONFIG.AUTO_AIM.DYNAMIC_THRESHOLD.BASE_MULTIPLIER +
-        CONFIG.AUTO_AIM.DYNAMIC_THRESHOLD.ACCURACY_WEIGHT * (avg_accuracy - 0.5) * 2 multiplier = clamp(multiplier,
+        CONFIG.AUTO_AIM.DYNAMIC_THRESHOLD.ACCURACY_WEIGHT * (avg_accuracy - 0.5) * 2
+    multiplier = clamp(multiplier,
         CONFIG.AUTO_AIM.DYNAMIC_THRESHOLD.MIN_MULTIPLIER,
         CONFIG.AUTO_AIM.DYNAMIC_THRESHOLD.MAX_MULTIPLIER)
 
