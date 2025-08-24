@@ -104,7 +104,6 @@ local objects = {}
 local players = {}
 
 function OnScriptLoad()
-
     register_callback(cb['EVENT_JOIN'], 'OnJoin')
     register_callback(cb['EVENT_TICK'], 'OnTick')
     register_callback(cb['EVENT_LEAVE'], 'OnQuit')
@@ -116,27 +115,26 @@ function OnScriptLoad()
     OnStart()
 end
 
-local function GetTag(Class, Name)
-    local Tag = lookup_tag(Class, Name)
-    return Tag ~= 0 and read_dword(Tag + 0xC) or nil
+local function getTag(class, name)
+    local tag = lookup_tag(class, name)
+    return tag ~= 0 and read_dword(tag + 0xC) or nil
 end
 
 local function TagsToID()
-
     local t = {}
     for i = 1, #tags do
         local class, name = tags[i][1], tags[i][2]
-        local meta_id = GetTag(class, name)
-        t[meta_id] = (meta_id and true) or nil
+        local meta_id = getTag(class, name)
+        if meta_id then
+            t[meta_id] = true
+        end
     end
 
     objects = t
 end
 
 function OnStart()
-
     if (get_var(0, '$gt') ~= 'n/a') then
-
         objects, players = {}, {}
         TagsToID()
 
@@ -151,9 +149,8 @@ function OnStart()
 end
 
 function OnTick()
-    for i,assign in pairs(players) do
+    for i, assign in pairs(players) do
         if (player_alive(i) and assign and needler) then
-
             players[i] = false
             execute_command('wdel ' .. i)
 
