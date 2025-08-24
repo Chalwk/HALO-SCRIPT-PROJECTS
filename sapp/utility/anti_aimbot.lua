@@ -1,20 +1,42 @@
 --[[
-=====================================================================================
+===============================================================================================================
 SCRIPT NAME:      anti_aimbot.lua
-DESCRIPTION:      Advanced aim-lock detection system with:
-                  - Multi-layered detection:
-                    * Angle & velocity thresholds
-                    * Projectile prediction
-                    * Dynamic threshold adjustment
-                  - Behavioral & pattern analysis
-                  - Weapon-specific scoring
-                  - Environmental awareness & false-positive mitigation
-                  - Real-time enforcement via configurable commands
+DESCRIPTION:      Advanced anti-cheat system designed to detect and prevent aim assistance cheating.
+
+                  This sophisticated detection system employs multiple verification layers
+                  including real-time behavioral analysis, projectile prediction, and environmental awareness.
+
+                  KEY FEATURES:
+                  - Multi-Layered Detection: Combines angle threshold monitoring, velocity analysis, and
+                    predictive trajectory calculations to identify unnatural aiming patterns
+                  - Dynamic Threshold Adjustment: Automatically adapts sensitivity based on player accuracy
+                    and movement patterns to minimize false positives
+                  - Weapon-Specific Profiling: Differentiates detection parameters for various weapons based
+                    on their inherent accuracy and gameplay characteristics
+                  - Environmental Awareness: Accounts for visibility conditions and physical obstructions
+                    to validate suspected aim locks
+                  - Pattern Recognition: Detects robotic firing patterns and consistent interval timing
+                    indicative of automated assistance
+                  - Real-Time Enforcement: Automatically executes configured moderation commands upon
+                    confirmation of cheating
+
+                  USAGE:
+                  1. Configure detection parameters in the CONFIG table according to your server's needs
+                  2. Adjust weapon-specific modifiers to match your server's gameplay balance
+                  3. Set enforcement commands (default: "k" for kick) and reason messages
+                  4. The system operates automatically once loaded - no player-side configuration needed
+                  5. Monitor server logs for detection events and adjust thresholds if needed
+
+                  RECOMMENDED SETTINGS:
+                  - Lower ANGLE_THRESHOLD_DEGREES (1.5-2.0) for competitive servers
+                  - Increase MAX_SCORE (3500-5000) for more lenient enforcement
+                  - Adjust WEAPON_MODIFIERS based on your server's weapon prevalence
+                  - Enable DYNAMIC_THRESHOLD for adaptive detection in varied gameplay situations
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================================================
 ]]
 
 -- CONFIGURATION --------------------------------------------------------------
@@ -38,8 +60,6 @@ local CONFIG = {
     },
 
     PLAYER = {
-        STANDING_EYE_HEIGHT = 0.64,  -- Eye/aim Z offset while standing
-        CROUCHING_EYE_HEIGHT = 0.35, -- Eye/aim Z offset while crouching
         TRACE_DISTANCE = 250,        -- Raycast length for hit validation
         PROJECTILE_SPEED = 30.0      -- Assumed projectile speed for trajectory prediction (m/s)
     },
@@ -118,20 +138,51 @@ local read_float, read_string, read_dword, read_word = read_float, read_string, 
 local function clamp(v, lo, hi) return (v < lo) and lo or ((v > hi) and hi or v) end
 
 -- Vector helpers -------------------------------------------------------------
-local function vector_length(x, y, z) return sqrt(x * x + y * y + z * z) end
+local function vectorLength(x, y, z) return sqrt(x * x + y * y + z * z) end
 
 local function normalize(x, y, z)
-    local len = vector_length(x, y, z)
+    local len = vectorLength(x, y, z)
     if len <= 0 then return 0, 0, 0 end
     return x / len, y / len, z / len
 end
 
-local function dot_product(ax, ay, az, bx, by, bz) return ax * bx + ay * by + az * bz end
+local function getCamera(dyn)
+    local cam_x = read_float(dyn + 0x230)
+    local cam_y = read_float(dyn + 0x234)
+    local cam_z = read_float(dyn + 0x238)
+    return cam_x, cam_y, cam_z
+end
+
+local function getPlayerPosition(dyn)
+    local crouch = read_float(dyn + 0x50C)
+    local vehicle_id = read_dword(dyn + 0x11C)
+    local vehicle_obj = get_object_memory(vehicle_id)
+
+    local x, y, z
+    if vehicle_id == 0xFFFFFFFF then
+        x, y, z = read_vector3d(dyn + 0x5C)
+    elseif vehicle_obj ~= 0 then
+        x, y, z = read_vector3d(vehicle_obj + 0x5C)
+    end
+
+    local z_off = (crouch == 0 and 0.65 or 0.35 * crouch)
+
+    return x, y, z + z_off
+end
+
+local function getVelocity(dyn)
+    local vel_x = read_float(dyn + 0x68)
+    local vel_y = read_float(dyn + 0x6C)
+    local vel_z = read_float(dyn + 0x70)
+    return vel_x, vel_y, vel_z
+end
+
+local function dotProduct(ax, ay, az, bx, by, bz) return ax * bx + ay * by + az * bz end
 
 -- Calculate angular change between frames (degrees)
-local function calculate_orientation_change(player_id, dyn_ptr)
+local function calculateOrientationChange(player_id, dyn_ptr)
     if dyn_ptr == 0 then return 0 end
-    local cx, cy, cz = read_vector3d(dyn_ptr + 0x230) -- Camera/aim vector
+    local cx, cy, cz = getCamera(dyn_ptr) -- Camera/aim vector
 
     local prev = camera_vectors[player_id]
     camera_vectors[player_id] = { cx, cy, cz }
@@ -139,23 +190,14 @@ local function calculate_orientation_change(player_id, dyn_ptr)
     if not prev then return 0 end
 
     local px, py, pz = prev[1], prev[2], prev[3]
-    local d = dot_product(px, py, pz, cx, cy, cz)
+    local d = dotProduct(px, py, pz, cx, cy, cz)
     d = clamp(d, -1, 1)
     local angle_rad = acos(d)
     return (angle_rad * 180) / pi
 end
 
--- Get player's eye (aim) position with crouch/stand offset
-local function get_player_eye_position(dyn_ptr)
-    if dyn_ptr == 0 then return nil end
-    local x, y, z = read_vector3d(dyn_ptr + 0x5C)
-    local crouch_state = read_float(dyn_ptr + 0x50C)
-    local eye_height = (crouch_state == 0) and CONFIG.PLAYER.STANDING_EYE_HEIGHT or CONFIG.PLAYER.CROUCHING_EYE_HEIGHT
-    return x, y, z + eye_height
-end
-
 -- Calculate mean and standard deviation
-local function compute_stats(t)
+local function computeStats(t)
     local sum = 0
     for i = 1, #t do sum = sum + t[i] end
     local mean = sum / #t
@@ -168,7 +210,7 @@ local function compute_stats(t)
 end
 
 -- Get weapon name with caching
-local function get_weapon_name(player_id)
+local function getWeaponName(player_id)
     if weapon_cache[player_id] then return weapon_cache[player_id] end
 
     local dyn = get_dynamic_player(player_id)
@@ -184,14 +226,13 @@ local function get_weapon_name(player_id)
 end
 
 -- Check if target is visible (not behind wall)
-local function is_visible(shooter_id, target_id)
+local function isVisible(shooter_id, target_id)
     local shooter_dyn = get_dynamic_player(shooter_id)
     local target_dyn = get_dynamic_player(target_id)
     if shooter_dyn == 0 or target_dyn == 0 then return false end
 
-    local sx, sy, sz = get_player_eye_position(shooter_dyn)
-    local tx, ty, tz = read_vector3d(target_dyn + 0x5C)
-    tz = tz + CONFIG.PLAYER.STANDING_EYE_HEIGHT
+    local sx, sy, sz = getPlayerPosition(shooter_dyn)
+    local tx, ty, tz = getPlayerPosition(target_dyn)
 
     local shooter_unit = read_dword(get_player(shooter_id) + 0x34)
     local hit, _, _, _, _ = intersect(sx, sy, sz, tx, ty, tz, shooter_unit)
@@ -199,15 +240,13 @@ local function is_visible(shooter_id, target_id)
 end
 
 -- Returns horizontal speed of a player (m/s)
-local function get_player_horizontal_speed(player_id)
-    local dyn = get_dynamic_player(player_id)
-    if dyn == 0 then return 0 end
-    local vx, vy, _ = read_vector3d(dyn + 0x278)
+local function getHorizontalSpeed(dyn)
+    local vx, vy, _ = getVelocity(dyn)
     return sqrt(vx * vx + vy * vy)
 end
 
 -- Check whether current aim vector is aligned with direction to target
-local function check_aim_at_target(shooter_dyn, shooter_id, target_id)
+local function checkAimAtTarget(shooter_dyn, shooter_id, target_id)
     if shooter_dyn == 0 then return nil end
     local target_dyn = get_dynamic_player(target_id)
     if target_dyn == 0 then return nil end
@@ -218,24 +257,23 @@ local function check_aim_at_target(shooter_dyn, shooter_id, target_id)
 
     -- Apply velocity adjustment to threshold
     if CONFIG.VELOCITY_ADJUSTED.ENABLED then
-        local speed = get_player_horizontal_speed(shooter_id)
+        local speed = getHorizontalSpeed(shooter_dyn)
         if speed > CONFIG.VELOCITY_ADJUSTED.SPEED_THRESHOLD then
             threshold = threshold * CONFIG.VELOCITY_ADJUSTED.ANGLE_MODIFIER
         end
     end
 
     -- Shooter eye position
-    local sx, sy, sz = get_player_eye_position(shooter_dyn)
+    local sx, sy, sz = getPlayerPosition(shooter_dyn)
     if not sx then return nil end
 
     -- Target position (center mass)
-    local tx, ty, tz = read_vector3d(target_dyn + 0x5C)
-    tz = tz + CONFIG.PLAYER.STANDING_EYE_HEIGHT
+    local tx, ty, tz = getPlayerPosition(target_dyn)
 
     -- Get target velocity for prediction
-    local vx, vy, vz = read_vector3d(target_dyn + 0x278)
+    local vx, vy, vz = getVelocity(target_dyn)
     local dx, dy, dz = tx - sx, ty - sy, tz - sz
-    local dist = vector_length(dx, dy, dz)
+    local dist = vectorLength(dx, dy, dz)
 
     -- Predict future position
     local time_to_target = dist / CONFIG.PLAYER.PROJECTILE_SPEED
@@ -245,21 +283,20 @@ local function check_aim_at_target(shooter_dyn, shooter_id, target_id)
 
     -- Recalculate direction with prediction
     dx, dy, dz = predicted_x - sx, predicted_y - sy, predicted_z - sz
-    dist = vector_length(dx, dy, dz)
+    dist = vectorLength(dx, dy, dz)
     if dist < 0.001 then return nil end
 
     local dir_x, dir_y, dir_z = normalize(dx, dy, dz)
-    local aim_x, aim_y, aim_z = read_vector3d(shooter_dyn + 0x230)
+    local aim_x, aim_y, aim_z = getCamera(shooter_dyn)
     aim_x, aim_y, aim_z = normalize(aim_x, aim_y, aim_z)
 
     -- Compute angle between vectors (degrees)
-    local dp = dot_product(aim_x, aim_y, aim_z, dir_x, dir_y, dir_z)
+    local dp = dotProduct(aim_x, aim_y, aim_z, dir_x, dir_y, dir_z)
     dp = clamp(dp, -1, 1)
     local angle_deg = acos(dp) * 180 / pi
 
     -- Apply weapon-specific modifier
-    local weapon = get_weapon_name(shooter_id)
-    if not weapon then goto continue end
+    local weapon = getWeaponName(shooter_id)
     local modifier = CONFIG.WEAPON_MODIFIERS[weapon] or CONFIG.WEAPON_MODIFIERS.DEFAULT
     threshold = threshold * modifier
 
@@ -271,15 +308,13 @@ local function check_aim_at_target(shooter_dyn, shooter_id, target_id)
         }
     end
 
-    ::continue::
-
     return nil
 end
 
 -- Validate whether the aim ray would hit a player object
-local function validate_raycast_hit(shooter_dyn, shooter_player_id, direction)
+local function validateRaycastHit(shooter_dyn, shooter_player_id, direction)
     if shooter_dyn == 0 then return false end
-    local sx, sy, sz = get_player_eye_position(shooter_dyn)
+    local sx, sy, sz = getPlayerPosition(shooter_dyn)
     if not sx then return false end
 
     local dir_x, dir_y, dir_z = unpack(direction)
@@ -306,20 +341,20 @@ local function validate_raycast_hit(shooter_dyn, shooter_player_id, direction)
 end
 
 -- Score evaluation for an aim event
-local function evaluate_aim_event(shooter_id, shooter_dyn, snap_angle_deg, distance, direction, target_id)
+local function evaluateAim(shooter_id, shooter_dyn, snap_angle_deg, distance, direction, target_id)
     local state = players[shooter_id]
     if not state then return false end
 
     -- Base score uses lock_count and distance
     local base_score = (state.lock_count * distance) * 0.0015
-    local hit_detected = validate_raycast_hit(shooter_dyn, shooter_id, direction)
+    local hit_detected = validateRaycastHit(shooter_dyn, shooter_id, direction)
     local final_score = base_score
-    local is_moving = get_player_horizontal_speed(shooter_id) > 0.1
+    local is_moving = getHorizontalSpeed(shooter_dyn) > 0.1
 
     -- Environmental awareness check
     local obscured = false
     if CONFIG.ENVIRONMENTAL.ENABLED then
-        obscured = not is_visible(shooter_id, target_id)
+        obscured = not isVisible(shooter_id, target_id)
         if obscured then
             final_score = final_score * CONFIG.ENVIRONMENTAL.OBSCURED_MULTIPLIER
         end
@@ -351,7 +386,7 @@ local function evaluate_aim_event(shooter_id, shooter_dyn, snap_angle_deg, dista
                 insert(intervals, state.lock_pattern[i] - state.lock_pattern[i - 1])
             end
 
-            local mean, std_dev = compute_stats(intervals)
+            local mean, std_dev = computeStats(intervals)
             if std_dev < CONFIG.PATTERN_DETECTION.MAX_STD_DEV then
                 state.aim_score = state.aim_score + CONFIG.PATTERN_DETECTION.SCORE_BOOST
             end
@@ -361,22 +396,8 @@ local function evaluate_aim_event(shooter_id, shooter_dyn, snap_angle_deg, dista
     return true
 end
 
--- Ensure per-player state exists
-local function ensure_player_state(pid)
-    if not players[pid] then
-        players[pid] = {
-            aim_score = 0,
-            lock_count = 0,
-            last_decay_time = time(),
-            lock_pattern = {},
-            dynamic_threshold = CONFIG.AUTO_AIM.ANGLE_THRESHOLD_DEGREES,
-            accuracy_history = { 0.5 } -- Start with 50% accuracy
-        }
-    end
-end
-
 -- Update dynamic threshold based on accuracy
-local function update_dynamic_threshold(pid)
+local function updateDynamicThreshold(pid)
     if not CONFIG.AUTO_AIM.DYNAMIC_THRESHOLD.ENABLED then return end
 
     local state = players[pid]
@@ -408,13 +429,16 @@ local function update_dynamic_threshold(pid)
     state.dynamic_threshold = CONFIG.AUTO_AIM.ANGLE_THRESHOLD_DEGREES * multiplier
 end
 
+local function validatePlayers(target, pid, team)
+    return target ~= pid and player_present(target) and player_alive(target) and get_var(target, "$team") ~= team
+end
+
 -- Process a single player's aim checks / decay / enforcement
-local function process_player_aim(pid)
-    ensure_player_state(pid)
+local function processPlayerAim(pid)
     local state = players[pid]
 
     -- Update dynamic threshold
-    update_dynamic_threshold(pid)
+    updateDynamicThreshold(pid)
 
     -- Time-based decay
     local now = time()
@@ -432,15 +456,15 @@ local function process_player_aim(pid)
     end
 
     local team = get_var(pid, "$team")
-    local orientation_change = calculate_orientation_change(pid, dyn)
+    local orientation_change = calculateOrientationChange(pid, dyn)
     local scoring_occurred = false
 
     -- Iterate targets and evaluate
     for target = 1, 16 do
-        if target ~= pid and player_present(target) and player_alive(target) and get_var(target, "$team") ~= team then
-            local aim_data = check_aim_at_target(dyn, pid, target)
+        if validatePlayers(target, pid, team) then
+            local aim_data = checkAimAtTarget(dyn, pid, target)
             if aim_data then
-                scoring_occurred = evaluate_aim_event(
+                scoring_occurred = evaluateAim(
                     pid,
                     dyn,
                     orientation_change,
@@ -481,14 +505,7 @@ function OnScriptUnload() end
 function OnStart()
     if get_var(0, "$gt") == "n/a" then return end
     for i = 1, 16 do
-        players[i] = {
-            aim_score = 0,
-            lock_count = 0,
-            last_decay_time = time(),
-            lock_pattern = {},
-            dynamic_threshold = CONFIG.AUTO_AIM.ANGLE_THRESHOLD_DEGREES,
-            accuracy_history = { 0.5 }
-        }
+        OnJoin(i)
         camera_vectors[i] = nil
     end
     weapon_cache = {}
@@ -503,7 +520,14 @@ function OnEnd()
 end
 
 function OnJoin(player_id)
-    ensure_player_state(player_id)
+    players[player_id] = {
+        aim_score = 0,
+        lock_count = 0,
+        last_decay_time = time(),
+        lock_pattern = {},
+        dynamic_threshold = CONFIG.AUTO_AIM.ANGLE_THRESHOLD_DEGREES,
+        accuracy_history = { 0.5 } -- Start with 50% accuracy
+    }
     camera_vectors[player_id] = nil
     weapon_cache[player_id] = nil
 end
@@ -526,7 +550,7 @@ end
 function OnTick()
     for i = 1, 16 do
         if player_present(i) and player_alive(i) then
-            process_player_aim(i)
+            processPlayerAim(i)
         end
     end
 end
