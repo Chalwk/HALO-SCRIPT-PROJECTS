@@ -55,11 +55,17 @@ print(t[i]) -- ensures 1 to #t
 
 ### Object Physics Glitch
 
-Vehicles sometimes need physics reset when teleporting them:
-
 ```lua
--- Add small Z velocity (e.g., -0.025)
--- Unset no-collision & ignore-physics bits
+--- Teleport a vehicle safely in memory
+-- Directly writing a vehicle's position with write_vector3d() can cause glitchy physics.
+-- This method reduces, but does not fully eliminate, teleport glitches.
+
+-- Step 1: Update the vehicle's position as usual (example: write_vector3d(object + 0x5C, x, y, z))
+
+-- Step 2: Apply a tiny downward z-velocity to stabilize physics
+write_float(object + 0x70, -0.025)
+
+--Unset the no-collision & ignore-physics bits:
 write_bit(object + 0x10, 0, 0)
 write_bit(object + 0x10, 5, 0)
 ```
