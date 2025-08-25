@@ -7,9 +7,9 @@
 -- CONFIG / CONSTANTS
 --------------------------------------------------------------------------------
 -- Messages and settings that rarely change during runtime
-local WELCOME_MESSAGE = "Welcome to the server!"   -- The message each player will see when joining
-local DELAY_BEFORE_WELCOME = 3                     -- Delay in seconds before showing the welcome message
-local SHOW_SERVER_INFO = true                      -- Whether to display map and mode info
+local WELCOME_MESSAGE = "Welcome to the server, %s!" -- %s will be replaced with the player's name
+local DELAY_BEFORE_WELCOME = 3                       -- Delay in seconds before showing the welcome message
+local SHOW_SERVER_INFO = true                        -- Whether to display map and mode info
 
 --------------------------------------------------------------------------------
 -- INTERNAL STATE
@@ -56,10 +56,28 @@ function OnPlayerJoin(playerIndex)
     timer(DELAY_BEFORE_WELCOME * 1000, "DelayedWelcome", playerIndex)
 end
 
+--------------------------------------------------------------------------------
+-- HELPER FUNCTIONS
+--------------------------------------------------------------------------------
+-- Format the welcome message with the player's name
+local function formatMessage(name)
+    -- string.format replaces %s in WELCOME_MESSAGE with the player's name
+    return string.format(WELCOME_MESSAGE, name)
+end
+
+--------------------------------------------------------------------------------
+-- TIMER HANDLER
+--------------------------------------------------------------------------------
 -- Called by the timer to actually send the welcome message
 function DelayedWelcome(playerIndex)
-    -- Send the main welcome message to the player
-    rprint(playerIndex, WELCOME_MESSAGE)
+    -- Get the player's name
+    local name = get_var(playerIndex, '$name')
+
+    -- Format the welcome message to include the player's name
+    local welcome_message = formatMessage(name)
+
+    -- Send the welcome message to the player
+    rprint(playerIndex, welcome_message)
 
     -- Optionally, show the server's current map and mode
     if SHOW_SERVER_INFO then
