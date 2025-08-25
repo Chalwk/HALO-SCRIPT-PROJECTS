@@ -60,8 +60,8 @@ local CONFIG = {
     },
 
     PLAYER = {
-        TRACE_DISTANCE = 250,        -- Raycast length for hit validation
-        PROJECTILE_SPEED = 30.0      -- Assumed projectile speed for trajectory prediction (m/s)
+        TRACE_DISTANCE = 250,   -- Raycast length for hit validation
+        PROJECTILE_SPEED = 30.0 -- Assumed projectile speed for trajectory prediction (m/s)
     },
 
     ENFORCEMENT = {
@@ -147,9 +147,13 @@ local function normalize(x, y, z)
 end
 
 local function getCamera(dyn)
+    if dyn == 0 then return 0, 0, 0 end
     local cam_x = read_float(dyn + 0x230)
     local cam_y = read_float(dyn + 0x234)
     local cam_z = read_float(dyn + 0x238)
+    if cam_x ~= cam_x or cam_y ~= cam_y or cam_z ~= cam_z then
+        return 0, 0, 0
+    end
     return cam_x, cam_y, cam_z
 end
 
@@ -182,16 +186,24 @@ local function dotProduct(ax, ay, az, bx, by, bz) return ax * bx + ay * by + az 
 -- Calculate angular change between frames (degrees)
 local function calculateOrientationChange(player_id, dyn_ptr)
     if dyn_ptr == 0 then return 0 end
-    local cx, cy, cz = getCamera(dyn_ptr) -- Camera/aim vector
+    local cx, cy, cz = getCamera(dyn_ptr)
+
+    -- Normalize the current camera vector
+    cx, cy, cz = normalize(cx, cy, cz)
 
     local prev = camera_vectors[player_id]
     camera_vectors[player_id] = { cx, cy, cz }
 
     if not prev then return 0 end
 
-    local px, py, pz = prev[1], prev[2], prev[3]
-    local d = dotProduct(px, py, pz, cx, cy, cz)
+    local d = dotProduct(prev[1], prev[2], prev[3], cx, cy, cz)
     d = clamp(d, -1, 1)
+
+    -- Handle floating-point precision that might cause acos domain errors
+    if math.abs(d - 1) < 1e-10 then
+        return 0
+    end
+
     local angle_rad = acos(d)
     return (angle_rad * 180) / pi
 end
