@@ -153,6 +153,13 @@ local function getCamera(dyn)
     return cam_x, cam_y, cam_z
 end
 
+local function getVelocity(dyn)
+    local vel_x = read_float(dyn + 0x68)
+    local vel_y = read_float(dyn + 0x6C)
+    local vel_z = read_float(dyn + 0x70)
+    return vel_x, vel_y, vel_z
+end
+
 local function getPlayerPosition(dyn)
     local crouch = read_float(dyn + 0x50C)
     local vehicle_id = read_dword(dyn + 0x11C)
@@ -168,13 +175,6 @@ local function getPlayerPosition(dyn)
     local z_off = (crouch == 0 and 0.65 or 0.35 * crouch)
 
     return x, y, z + z_off
-end
-
-local function getVelocity(dyn)
-    local vel_x = read_float(dyn + 0x68)
-    local vel_y = read_float(dyn + 0x6C)
-    local vel_z = read_float(dyn + 0x70)
-    return vel_x, vel_y, vel_z
 end
 
 local function dotProduct(ax, ay, az, bx, by, bz) return ax * bx + ay * by + az * bz end
