@@ -11,6 +11,10 @@ local WELCOME_MESSAGE = "Welcome to the server, %s!" -- %s will be replaced with
 local DELAY_BEFORE_WELCOME = 3                       -- Delay in seconds before showing the welcome message
 local SHOW_SERVER_INFO = true                        -- Whether to display map and mode info
 
+-- * Required for all SAPP Lua scripts.
+-- Tells SAPP the Lua API version being used on the server.
+api_version = '1.12.0.0'
+
 --------------------------------------------------------------------------------
 -- INTERNAL STATE
 --------------------------------------------------------------------------------

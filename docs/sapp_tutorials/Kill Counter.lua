@@ -12,6 +12,10 @@ local MILESTONE_MESSAGE = "%s has reached %d kills!" -- %s = player name, %d = k
 local SHOW_KILL_MESSAGE = true                       -- Whether to show a message on each kill
 local KILL_MESSAGE = "+1 kill (%d total)"            -- Message format for individual kills
 
+-- * Required for all SAPP Lua scripts.
+-- Tells SAPP the Lua API version being used on the server.
+api_version = '1.12.0.0'
+
 --------------------------------------------------------------------------------
 -- EVENT CALLBACKS
 --------------------------------------------------------------------------------
