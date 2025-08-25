@@ -18,8 +18,13 @@ It's designed as both a **tutorial** for learning and a **reference** for quick 
 
 ### Map Vote & Cycle
 
-* Do **not** use `mapvote_add` in `init.txt` – instead, add entries directly to `mapvotes.txt`.
-* Format: `map:variant:name:min:max`
+**Important:** Do **not** use `mapvote_add` in `init.txt`.
+
+- Using `mapvote_add` in `init.txt` causes SAPP to append the entry to `mapvotes.txt` every server boot, creating duplicates.
+- Instead, add map vote entries **directly** to `mapvotes.txt`.
+
+**Entry Format:** `map:variant:name:min:max`
+
 * Example:
 
   ```
