@@ -1,7 +1,7 @@
 # DISCORD CATEGORY/CHANNEL STRUCTURE:
 
 * ◉ INFO
-    * 〔📝〕about
+    * 〔❓〕faq
         * Overview of the HSP community and how to get started.
     * 〔📕〕community-rules
         * Rules to keep the server safe, fun, and organized.

@@ -1,6 +1,9 @@
-<p align="center">
-  <img src="misc/hsp-logo.png" alt="Logo" width="250">
-</p>
+<div align="center">
+  <img src="misc/hsp-logo.png" alt="JeriCraft Realm" width="250">
+
+[![Discord](https://img.shields.io/badge/Discord-Join_Our_Server-7289DA?style=for-the-badge&logo=discord)](https://discord.gg/D76H7RVPC9)
+
+</div>
 
 ---
 
