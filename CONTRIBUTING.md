@@ -1,4 +1,5 @@
 # Contributing to the Halo Script Projects (HSP)
+[![Discord](https://img.shields.io/badge/Discord-Join_Our_Server-7289DA?style=for-the-badge&logo=discord)](https://discord.gg/D76H7RVPC9)
 
 Thank you for considering contributing to **Halo Script Projects (HSP)**! Your contributions help maintain, improve,
 and expand the collection of SAPP/Phasor Lua scripts and resources for **Halo: CE** and **Halo: PC** dedicated servers.
@@ -88,10 +89,3 @@ details, see the [LICENSE](LICENSE) file.
 * **Enhance Gameplay**: Every improvement or new feature enriches the Halo multiplayer experience.
 
 ---
-
-<center>
-
-[![Discord](https://img.shields.io/discord/1071172977326403634?label=Discord\&logo=discord\&style=for-the-badge)](https://discord.gg/D76H7RVPC9)
-[![Halo Script Projects](https://img.shields.io/badge/Halo-Script%20Projects-ff0000?style=for-the-badge)](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS)
-
-</center>
