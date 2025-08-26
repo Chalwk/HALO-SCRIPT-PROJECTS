@@ -1,0 +1,37 @@
+name: Ban Appeal
+description: Submit a report to appeal a ban from the HSP Discord or Halo servers.
+title: "Ban Appeal for: <name>"
+labels: [ "Ban Appeal" ]
+assignees: Chalwk
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **📌 Describe the reason for your ban**
+        > Provide a clear and concise description of the events leading to your ban.
+        > Use headers (`#`) or lists (`-`) to organize your thoughts.
+  - type: textarea
+    id: why-should-we-unban-you
+    attributes:
+      label: 🔍 Why should we unban you?
+      description: Explain why you believe you should be reinstated on the HSP Discord or Halo servers.
+      placeholder: "Write your reason here"
+    validations:
+      required: true
+  - type: input
+    id: contact-info
+    attributes:
+      label: ✔️ Contact Information
+      description: Provide your Discord username and Halo gamertag/username for verification.
+      placeholder: "Discord: YourUsername | Halo: YourGamertag"
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        **📷 Screenshots or Logs**
+        > Include any relevant screenshots, or evidence that may support your appeal.
+        >
+        > 🙌 Thank you
+        >
+        > **We appreciate your effort in appealing your ban from the HSP community. Your input helps us maintain a fair and enjoyable environment for everyone.**
