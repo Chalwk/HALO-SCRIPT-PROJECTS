@@ -42,11 +42,11 @@ The **Divide and Conquer** mode can be played across a variety of maps. The serv
 
 ## 📡 How to Connect
 
-To play **Divide & Conquer**, follow these steps:
-
-1. Open Halo: Combat Evolved.
-2. Navigate to the Multiplayer section.
-3. Join the server by searching for the server or by using the server's IP address (**jericraft.net:2301**).
+* Open Halo: Combat Evolved.
+* Navigate to the Multiplayer section. 
+* Join by: 
+  * Searching for **Divide & Conquer**
+  * Direct IP: `jericraft.net:2301`
 
 ---
 

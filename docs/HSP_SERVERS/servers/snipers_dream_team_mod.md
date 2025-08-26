@@ -27,13 +27,11 @@ SDTM supports all **stock maps** and includes custom mechanics tailored to these
 
 ---
 
-## 📡 How to Connect
-
-To play **SDTM**, follow these steps:
-
-1. Open Halo: Combat Evolved.
-2. Navigate to the Multiplayer section.
-3. Join the server by searching for the server or by using the server's IP address (**jericraft.net:2310**).
+* Open Halo: Combat Evolved.
+* Navigate to the Multiplayer section.
+* Join by:
+    * Searching for **Snipers Dream Team Mod**
+    * Direct IP: `jericraft.net:2310`
 
 ---
 

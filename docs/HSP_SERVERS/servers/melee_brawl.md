@@ -37,13 +37,11 @@ The **Melee Brawl** mode runs on the following **stock maps** and **game modes**
 
 ---
 
-## 📡 How to Connect
-
-To play **Melee Brawl**, follow these steps:
-
-1. Open Halo: Combat Evolved.
-2. Navigate to the Multiplayer section.
-3. Join the server by searching for the server or by using the server's IP address (**jericraft.net:2306**).
+* Open Halo: Combat Evolved.
+* Navigate to the Multiplayer section.
+* Join by:
+    * Searching for **Melee Brawl**
+    * Direct IP: `jericraft.net:2306`
 
 ---
 

@@ -37,13 +37,11 @@ or defuse the bomb at the opposing team's base.
 
 ---
 
-## 📡 How to Connect
-
-To play **Sabotage**, follow these steps:
-
-1. Open Halo: Combat Evolved.
-2. Navigate to the Multiplayer section.
-3. Join the server by searching for the server or by using the server's IP address (**jericraft.net:2309**).
+* Open Halo: Combat Evolved.
+* Navigate to the Multiplayer section.
+* Join by:
+    * Searching for **One In The Chamber**
+    * Direct IP: `jericraft.net:2309`
 
 ---
 
