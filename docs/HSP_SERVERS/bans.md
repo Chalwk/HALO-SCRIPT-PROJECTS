@@ -7,9 +7,9 @@
 
 ## 📊 Ban Overview
 
-[![Active Bans](https://img.shields.io/badge/ACTIVE-8-00AA00?style=flat-square)]()
-[![Expired Bans](https://img.shields.io/badge/EXPIRED-18-AA0000?style=flat-square)]()
-[![Revoked Bans](https://img.shields.io/badge/REVOKED-1-5555FF?style=flat-square)]()
+[![Active Bans](https://img.shields.io/badge/ACTIVE-0-00AA00?style=flat-square)]()
+[![Expired Bans](https://img.shields.io/badge/EXPIRED-0-AA0000?style=flat-square)]()
+[![Revoked Bans](https://img.shields.io/badge/REVOKED-0-5555FF?style=flat-square)]()
 
 ---
 
