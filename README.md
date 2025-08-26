@@ -8,10 +8,7 @@
 
 Welcome to the **Halo Script Projects (HSP)** repository!
 
-This repo contains a personally curated collection of Lua scripts, utilities, and resources for Halo: Combat Evolved (
-PC) and Halo: Custom Edition (CE) dedicated servers, created and maintained by me. If you are a server admin or operator
-using SAPP or Phasor, you will find a wide range of scripts, guides, and insights to enhance, customize, and extend your
-multiplayer server experience.
+This repo contains a personally curated collection of Lua scripts, utilities, and resources for Halo: Combat Evolved (PC) and Halo: Custom Edition (CE) dedicated servers, created and maintained by me. If you are a server admin or operator using SAPP or Phasor, you will find a wide range of scripts, guides, and insights to enhance, customize, and extend your multiplayer server experience.
 
 ---
 
