@@ -8,7 +8,10 @@
 
 Welcome to the **Halo Script Projects (HSP)** repository!
 
-This repo contains a personally curated collection of Lua scripts, utilities, and resources for Halo: Combat Evolved (PC) and Halo: Custom Edition (CE) dedicated servers, created and maintained by me. If you are a server admin or operator using SAPP or Phasor, you will find a wide range of scripts, guides, and insights to enhance, customize, and extend your multiplayer server experience.
+This repo contains a personally curated collection of Lua scripts, utilities, and resources for Halo: Combat Evolved (
+PC) and Halo: Custom Edition (CE) dedicated servers, created and maintained by me. If you are a server admin or operator
+using SAPP or Phasor, you will find a wide range of scripts, guides, and insights to enhance, customize, and extend your
+multiplayer server experience.
 
 #### Visit the [NEW OFFICIAL HSP DISCORD SERVER](https://discord.gg/D76H7RVPC9)
 
@@ -106,9 +109,9 @@ Have an idea for a new feature or script?
 ### SAPP
 
 - **Download:** [halo.isimaginary.com](http://halo.isimaginary.com)
-  - [Backup](./misc/sapp_downloads)
+    - [Backup](./misc/sapp_downloads)
 - **Documentation:** [SAPP Documentation (PDF)](http://halo.isimaginary.com/SAPP%20Documentation%20Revision%202.5.pdf)
-  - [Backup](./docs/sapp-2.4.pdf)
+    - [Backup](./docs/sapp-2.4.pdf)
 
 ### Phasor
 
