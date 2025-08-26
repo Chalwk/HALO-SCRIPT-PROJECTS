@@ -5,6 +5,7 @@
   * 〔📕〕community-rules
   * 〔📜〕writ-of-allegiance
   * 〔🚪〕arrivals-departures
+  * 〔🚨〕ban-appeals
   * 〔👋〕introductions
 * ◉ GITHUB
     * 〔🔔〕commits
