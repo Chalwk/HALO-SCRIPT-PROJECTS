@@ -4,22 +4,15 @@
 
 ---
 
-> Browse and download my **SAPP** and **Phasor** Lua scripts easily on my
-> new [website](https://chalwk.github.io/hsp-repo/main.html)!
-> 
-> [OFFICIAL HSP DISCORD](https://discord.gg/D76H7RVPC9)
-
----
-
 # 👾 Halo Script Projects (HSP)
 
-Welcome to the **Halo Script Projects (HSP)** repository! I'm **Chalwk**, an independent game developer and open-source
-enthusiast from New Zealand. I create everything from custom game modes and server tools to libraries and
-quality-of-life enhancements.
+Welcome to the **Halo Script Projects (HSP)** repository!
 
-This repo contains a curated collection of Lua scripts, utilities, and resources for **Halo: PC (Retail)** and **Halo:
+This repo contains a curated collection of Lua scripts, utilities, and resources for **Halo: Combat Evolved (PC)** and **Halo:
 Custom Edition (CE)** dedicated servers. If you're a server admin or operator using **SAPP** or **Phasor**, you'll find
 a wide range of scripts here to enhance, customize, and extend your multiplayer server experience.
+
+#### Visit the [NEW OFFICIAL HSP DISCORD SERVER](https://discord.gg/D76H7RVPC9)
 
 ---
 
