@@ -1,3 +1,5 @@
+[![Discord](https://img.shields.io/badge/Discord-Join_Our_Server-7289DA?style=for-the-badge&logo=discord)](https://discord.gg/D76H7RVPC9)
+
 # Halo Script Projects Community Rules
 
 Welcome to the **Halo Script Projects Community Rules**! These guidelines ensure a **positive, productive, and

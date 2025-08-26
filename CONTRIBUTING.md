@@ -1,5 +1,6 @@
-# Contributing to the Halo Script Projects (HSP)
 [![Discord](https://img.shields.io/badge/Discord-Join_Our_Server-7289DA?style=for-the-badge&logo=discord)](https://discord.gg/D76H7RVPC9)
+
+# Contributing to the Halo Script Projects (HSP)
 
 Thank you for considering contributing to **Halo Script Projects (HSP)**! Your contributions help maintain, improve,
 and expand the collection of SAPP/Phasor Lua scripts and resources for **Halo: CE** and **Halo: PC** dedicated servers.

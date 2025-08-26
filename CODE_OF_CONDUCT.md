@@ -1,4 +1,6 @@
-# 📝 Contributor Covenant Code of Conduct
+[![Discord](https://img.shields.io/badge/Discord-Join_Our_Server-7289DA?style=for-the-badge&logo=discord)](https://discord.gg/D76H7RVPC9)
+
+# Contributor Covenant Code of Conduct
 
 ## My Pledge
 
