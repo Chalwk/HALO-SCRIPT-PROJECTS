@@ -13,7 +13,9 @@ PC) and Halo: Custom Edition (CE) dedicated servers, created and maintained by m
 using SAPP or Phasor, you will find a wide range of scripts, guides, and insights to enhance, customize, and extend your
 multiplayer server experience.
 
-#### Visit the [NEW OFFICIAL HSP DISCORD SERVER](https://discord.gg/D76H7RVPC9)
+---
+
+## Visit the [NEW OFFICIAL HSP DISCORD SERVER](https://discord.gg/D76H7RVPC9)
 
 ---
 
