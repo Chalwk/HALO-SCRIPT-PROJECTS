@@ -102,7 +102,9 @@ Have an idea for a new feature or script?
 ### SAPP
 
 - **Download:** [halo.isimaginary.com](http://halo.isimaginary.com)
+  - [Backup](./misc/sapp_downloads)
 - **Documentation:** [SAPP Documentation (PDF)](http://halo.isimaginary.com/SAPP%20Documentation%20Revision%202.5.pdf)
+  - [Backup](./docs/sapp-2.4.pdf)
 
 ### Phasor
 
