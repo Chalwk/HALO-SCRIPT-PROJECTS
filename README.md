@@ -8,8 +8,8 @@
 
 Welcome to the **Halo Script Projects (HSP)** repository!
 
-This repo contains a curated collection of Lua scripts, utilities, and resources for **Halo: Combat Evolved (PC)** and **Halo:
-Custom Edition (CE)** dedicated servers. If you're a server admin or operator using **SAPP** or **Phasor**, you'll find
+This repo contains a personally curated collection of Lua scripts, utilities, and resources for **Halo: Combat Evolved (PC)** and **Halo:
+Custom Edition (CE)** dedicated servers, created and maintained by me (Chalwk). If you're a server admin or operator using **SAPP** or **Phasor**, you'll find
 a wide range of scripts here to enhance, customize, and extend your multiplayer server experience.
 
 #### Visit the [NEW OFFICIAL HSP DISCORD SERVER](https://discord.gg/D76H7RVPC9)
