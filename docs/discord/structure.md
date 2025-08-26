@@ -12,17 +12,17 @@
 ## Category:
 
 * ◉ SOCIAL
-    * 〔💬〕chatter-box
-    * 〔👋〕introductions
+  * 〔💬〕chatter-box
+  * 〔👋〕introductions
 * ◉ GITHUB
-    * 〔🔔〕commits
-    * 〔🙋〕help
-    * 〔🐛〕bug-reports
+  * 〔🔔〕commits
+  * 〔🙋〕help
+  * 〔🐛〕bug-reports
 * ◉ HALO SERVERS
-    * W.I.P
+  * W.I.P
 * ◉ COMMS LINK
-    * 〔🎤〕In-Game
-    * 〔🎤〕General
+  * 〔🎤〕General
+  * 〔🎤〕In-Game
 * ◉ COUNCIL CHAMBERS (hidden to the public)
-    * 〔🔒〕watchtower
-    * 〔🎤〕Court's Echo
+  * 〔🔒〕watchtower
+  * 〔🎤〕Court's Echo
