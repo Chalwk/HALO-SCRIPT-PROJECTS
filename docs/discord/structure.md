@@ -1,4 +1,4 @@
-# Halo Script Projects (JSP) DISCORD CATEGORY/CHANNEL STRUCTURE:
+# Halo Script Projects (HSP) DISCORD CATEGORY/CHANNEL STRUCTURE:
 
 ## Not in a category:
 
