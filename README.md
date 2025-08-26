@@ -1,4 +1,5 @@
-![Logo](misc/hsp-logo.png)
+[//]: # (![Logo]&#40;misc/hsp-logo.png&#41;)
+<img src="misc/hsp-logo.png" alt="Logo" width="200">
 
 ---
 
