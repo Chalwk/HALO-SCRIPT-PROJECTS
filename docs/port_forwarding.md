@@ -1,4 +1,4 @@
-**How to Set Up Port Forwarding for Your SAPP Halo PC/CE Server**
+**How to Set Up Port Forwarding for Your SAPP/Phasor Halo PC/CE Server**
 
 *Why?*
 Port forwarding lets external players connect by opening a communication channel through your network.
@@ -42,7 +42,7 @@ You need to forward **both ports** below for the server to work correctly:
 
 | Field         | Value                                         |
 |---------------|-----------------------------------------------|
-| Service Name  | Halo SAPP Server (Server Port)                |
+| Service Name  | Halo SAPP/Phasor Server (Server Port)         |
 | Protocol      | UDP                                           |
 | External Port | *Your chosen server port (for example, 2310)* |
 | Internal Port | *Your chosen server port (for example, 2310)* |
@@ -82,7 +82,7 @@ Create **one inbound rule** that covers **both UDP ports 2302 and your server po
 5. In "Specific local ports", enter: `2302,<your server port>` (e.g., `2302,2310`) → **Next**
 6. Select **Allow the connection** → **Next**
 7. Select profiles (Domain, Private, Public) → **Next**
-8. Name it `Halo SAPP Server (Ports 2302, <your server port>)` → **Finish**
+8. Name it `Halo SAPP/Phasor Server (Ports 2302, <your server port>)` → **Finish**
 
 ---
 

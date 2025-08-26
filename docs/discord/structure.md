@@ -24,11 +24,11 @@
   * 〔🙋〕help
   * 〔📜〕changelog
   * 〔🐛〕bug-reports
-* ◉ HALO SERVERS
-  * W.I.P
 * ◉ COMMS LINK
   * 〔🎤〕General
   * 〔🎤〕In-Game
+* ◉ HALO SERVERS
+    * W.I.P
 * ◉ COUNCIL CHAMBERS (hidden to the public)
   * 〔🔒〕watchtower
   * 〔🎤〕Court's Echo
