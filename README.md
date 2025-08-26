@@ -1,4 +1,4 @@
-![Logo](misc/HSP Logo.png)
+![Logo](misc/hsp-logo.png)
 
 ---
 
