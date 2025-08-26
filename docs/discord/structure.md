@@ -18,7 +18,7 @@
   * 〔🖼️〕screenshot️s
   * 〔👋〕introductions
 * ◉ RESOURCES & GUIDES
-  * 〔📚〕documentation
+  * 〔📚〕docs
   * 〔🛠〕tools-and-utils
 * ◉ GITHUB
   * 〔🔔〕commits
