@@ -1,4 +1,4 @@
-# Halo Script Projects (HSP) DISCORD CATEGORY/CHANNEL STRUCTURE:
+# DISCORD CATEGORY/CHANNEL STRUCTURE:
 
 ## Not in a category:
 
@@ -18,12 +18,10 @@
     * 〔🔔〕commits
     * 〔🙋〕help
     * 〔🐛〕bug-reports
-* ◉ THE MEAD HALL
-    * 〔🎤〕General
-    * 〔🎤〕In-Game
 * ◉ HALO SERVERS
     * W.I.P
 * ◉ COMMS LINK
+    * 〔🎤〕In-Game
     * 〔🎤〕General
 * ◉ COUNCIL CHAMBERS (hidden to the public)
     * 〔🔒〕watchtower
