@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="misc/hsp-logo.png" alt="Logo" width="200">
+  <img src="misc/hsp-logo.png" alt="Logo" width="250">
 </p>
 
 ---
