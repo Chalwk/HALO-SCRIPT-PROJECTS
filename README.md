@@ -6,6 +6,8 @@
 
 > Browse and download my **SAPP** and **Phasor** Lua scripts easily on my
 > new [website](https://chalwk.github.io/hsp-repo/main.html)!
+> 
+> [OFFICIAL HSP DISCORD](https://discord.gg/D76H7RVPC9)
 
 ---
 
@@ -126,6 +128,7 @@ Have an idea for a new feature or script?
 
 | **Community**                                                                                      | **Discord**                                |
 |----------------------------------------------------------------------------------------------------|--------------------------------------------|
+| [OFFICIAL HSP DISCORD](https://discord.gg/D76H7RVPC9)                                              | [Join](https://discord.gg/D76H7RVPC9)      |
 | [Open Carnage](https://opencarnage.net)                                                            | [Join](https://discord.gg/2pf3Yjb)         |
 | [Chimera](https://opencarnage.net/index.php?/topic/6916-chimera-download-source-code-and-discord/) | [Join](https://discord.gg/ZwQeBE2)         |
 | [Halo Net](https://opencarnage.net)                                                                | [Join](https://discord.gg/sbSwAR8)         |
