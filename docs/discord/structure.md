@@ -22,6 +22,7 @@
 * ◉ GITHUB
   * 〔🔔〕commits
   * 〔🙋〕help
+  * 〔📜〕changelog
   * 〔🐛〕bug-reports
 * ◉ HALO SERVERS
   * W.I.P
