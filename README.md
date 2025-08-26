@@ -1,4 +1,4 @@
-![Logo](https://i.imgur.com/t0W5aJe.png)
+![Logo](misc/HSP Logo.png)
 
 ---
 
