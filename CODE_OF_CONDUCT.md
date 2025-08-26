@@ -54,7 +54,7 @@ Representation of a project may be further defined and clarified by me, the proj
 
 ## Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting me at **[jericho.crosby227@gmail.com](mailto:jericho.crosby227@gmail.com)**.
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting me on [Discord](https://discord.gg/D76H7RVPC9).
 
 Reports will be reviewed and investigated, and I will respond in a manner deemed appropriate to the circumstances. Confidentiality will be maintained regarding the reporter of an incident.
 

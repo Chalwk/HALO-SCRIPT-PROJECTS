@@ -10,9 +10,9 @@ LICENSE:          MIT License
 ]]
 
 local names = {
-    "Elijah", "Samuel", "Nathaniel", "Jericho",
+    "Elijah", "Samuel", "Nathaniel",
     "Ezekiel", "Isaiah", "Christopher", "Jordan",
-    "Benjamin", "Anthony", "Felicity", "Chalwk"
+    "Benjamin", "Anthony", "Felicity"
 }
 
 local max_rows = 5

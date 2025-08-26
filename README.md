@@ -132,7 +132,7 @@ Have an idea for a new feature or script?
 
 Enjoy these projects? Help me continue development:
 
-- [☕ Buy Me a Coffee](https://www.paypal.com/myaccount/transfer/pay)
+- ☕ Buy Me a Coffee -> Contact me on [Discord](https://discord.gg/D76H7RVPC9)
 - **Star ⭐ this repository** to show appreciation and stay updated!
 
 ---
@@ -153,6 +153,6 @@ All community interactions governed by:
 
 ## 📧 Contact
 
-**Email:** [jericho.crosby227@gmail.com](mailto:jericho.crosby227@gmail.com)
+**Discord:** Chalwk
 
 ---
