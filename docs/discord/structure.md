@@ -1,20 +1,20 @@
 # DISCORD CATEGORY/CHANNEL STRUCTURE:
 
-* ◉ SOCIAL
+* ◉ ABOUT
   * 〔📝〕about
   * 〔📕〕community-rules
   * 〔📜〕writ-of-allegiance
   * 〔🚪〕arrivals-departures
+  * 〔👋〕introductions
 * ◉ GITHUB
     * 〔🔔〕commits
     * 〔🙋〕help
-    * 〔📚〕docs
+    * 〔🛠️〕resources
     * 〔📜〕changelog
     * 〔🐛〕bug-reports
 * ◉ SOCIAL
   * 〔💬〕chatter-box
   * 〔🏆〕script-showcase
-  * 〔👋〕introductions
 * ◉ COMMS LINK
   * 〔🎤〕General
   * 〔🎤〕In-Game
