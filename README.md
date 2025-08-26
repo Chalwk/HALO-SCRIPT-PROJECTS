@@ -79,6 +79,10 @@ This repo contains a personally curated collection of Lua scripts, utilities, an
 * [Weapon Assigner](./sapp/utility/weapon_assigner.lua)
 * [Word Buster](./sapp/utility/word_buster.lua)
 
+**Releases**
+
+* [Ready-To-Go SAPP Server](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/ReadyToGo)
+
 </details>
 
 ---
