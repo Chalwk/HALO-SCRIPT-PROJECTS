@@ -13,9 +13,7 @@
     * 〔🐛〕bug-reports
 * ◉ SOCIAL
   * 〔💬〕chatter-box
-  * 〔💭〕off-topic
   * 〔🏆〕script-showcase
-  * 〔🖼️〕screenshot️s
   * 〔👋〕introductions
 * ◉ COMMS LINK
   * 〔🎤〕General
