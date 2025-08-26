@@ -11,6 +11,7 @@
     * 〔🔔〕commits
     * 〔🙋〕help
     * 〔🛠️〕resources
+    * 〔👾〕code-snippets
     * 〔📜〕changelog
     * 〔🐛〕bug-reports
 * ◉ SOCIAL
