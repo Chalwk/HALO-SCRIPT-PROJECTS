@@ -13,11 +13,14 @@
 
 * ◉ SOCIAL
   * 〔💬〕chatter-box
+  * 〔🖼️〕screenshot️s
   * 〔👋〕introductions
 * ◉ GITHUB
-  * 〔🔔〕commits
-  * 〔🙋〕help
-  * 〔🐛〕bug-reports
+  * 〔📚〕documentation
+* ◉ GITHUB
+    * 〔🔔〕commits
+      * 〔🙋〕help
+    * 〔🐛〕bug-reports
 * ◉ HALO SERVERS
   * W.I.P
 * ◉ COMMS LINK
