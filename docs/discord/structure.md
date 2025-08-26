@@ -17,8 +17,9 @@
   * 〔🏆〕script-showcase
   * 〔🖼️〕screenshot️s
   * 〔👋〕introductions
-* ◉ GITHUB
+* ◉ RESOURCES & GUIDES
   * 〔📚〕documentation
+  * 〔🛠〕tools-and-utils
 * ◉ GITHUB
   * 〔🔔〕commits
   * 〔🙋〕help
