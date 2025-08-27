@@ -11,17 +11,18 @@
         * Tracks member joins and leaves.
     * 〔👋〕introductions
         * Say hi and introduce yourself to the community.
+* ◉ KNOWLEDGE BASE
+    * 〔💡〕tips-tricks
+        * Useful tips, tricks, and technical advice for Halo servers.
+    * 〔👾〕code-snippets
+        * Handy code snippets for SAPP and Phasor scripting.
+    * 〔🛠️〕resources (forum)
+        * Guides, tutorials, and best practices for using HSP scripts.
 * ◉ GITHUB
     * 〔🔔〕commits
         * Automatic GitHub commit updates from HSP repository.
     * 〔🙋〕help
         * Ask questions and get support with Halo, SAPP, Phasor, or HSP scripts.
-    * 〔🛠️〕resources
-        * Guides, tutorials, and best practices for using HSP scripts.
-    * 〔👾〕code-snippets
-        * Handy code snippets for SAPP and Phasor scripting.
-    * 〔💡〕tips-tricks
-        * Useful tips, tricks, and technical advice for Halo servers.
     * 〔🐛〕bug-reports
         * Report bugs or issues with HSP scripts and resources.
 * ◉ SOCIAL
