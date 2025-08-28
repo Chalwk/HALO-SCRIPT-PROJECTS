@@ -2,472 +2,442 @@
 =====================================================================================
 SCRIPT NAME:      capture_the_flag.lua
 DESCRIPTION:      Adds full CTF gameplay to any Slayer (FFA/Team) game mode by
-                  spawning a single flag that players must return to designated
-                  capture points.
+                  spawning a single neutral flag that players must capture and
+                  return to designated team bases.
 
 FEATURES:
                   - Works with both FFA and Team Slayer modes
+                  - Single neutral flag gameplay (not team-specific flags)
                   - Configurable flag spawn and capture points per map
                   - Customizable scoring system with point bonuses
                   - Automatic flag respawning with warnings
                   - Team-specific messaging and announcements
-                  - Vehicle capture toggle option
+                  - Efficient object memory management
+                  - Weapon tag verification for flag detection
 
-CONFIGURATION:
-                  - Supports 20+ official Halo maps out of the box
-                  - Adjustable capture radius and respawn timers
-                  - Customizable messages for all game events
-                  - Score limit control
-                  - Server prefix customization
-
-MAP SUPPORT:
-                  Blood Gulch, Death Island, Ice Fields, Infinity, Sidewinder,
-                  Timberland, Danger Canyon, Beaver Creek, Boarding Action,
-                  Carousel, Chill Out, Damnation, Gephyrophobia, Hang 'Em High,
-                  Longest, Prisoner, Putput, Rat Race, Wizard
-
-Copyright (c) 2022 Jericho Crosby (Chalwk)
+Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
 
--- Configuration settings for the Capture the Flag script
-local CTF = {
-    respawn_delay = 15, -- Time (in seconds) until a dropped flag will respawn
-    trigger_radius = 1.1, -- Radius (in world units) a player must be to capture
-    respawn_warning = "The flag was dropped and will respawn in $S second$s", -- Warning message for flag respawn
-    message_on_respawn = "The flag has respawned", -- Message broadcast when the flag respawns
-    message_on_capture = "$name captured a flag", -- Message broadcast when someone captures the flag
-    on_pickup = {
-        [1] = "[$team team] $name has the flag!", -- Team slayer message
-        [2] = "$name has the flag!", -- FFA message
-        [3] = "Return the flag to ANY base for $bonus points.", -- Message to the flag carrier
+-- Config Start -----------------------------------------------------------
+
+local CONFIG = {
+    MSG_PREFIX = "**CTF** ",
+    RESPAWN_DELAY = 15,   -- Time (in seconds) until the flag respawns after being dropped or moved.
+    RESPAWN_WARNING = "The flag was dropped and will respawn in %s second%s",
+    CAPTURE_RADIUS = 0.5, -- Radius (in meters) for the trigger area.
+    CAPTURE_POINTS = 5,   -- Points received for capturing a flag.
+    CAPTURE_MESAGE = "%s captured a flag!",
+    PICKUP_MESSAGES = {
+        "[%s team] %s has the flag!",               -- Team message
+        "%s picked up the flag!",                   -- Global message
+        "Return the flag to ANY base for %s points" -- Message to the flag carrier
     },
-    points_on_capture = 5, -- Points received for capturing a flag
-    score_limit = nil, -- Score limit (set to nil to disable)
-    vehicle_capture = false, -- Allow flag capture while in a vehicle
-    server_prefix = "**SAPP**", -- Server message prefix
+
+    -- ========== map settings ========== --
+    -- format:
+    -- [map_name] = {spawn_point = {x, y, z}, blue_capture = {x, y, z}, red_capture = {x, y, z}}}
+
     ["bloodgulch"] = {
-        spawn_location = { 65.749, -120.409, 0.118 },
-        capture_points = {
-            { 95.687797546387, -159.44900512695, -0.10000000149012 },
-            { 40.240600585938, -79.123199462891, -0.10000000149012 }
-        }
+        spawn_point  = { 65.749, -120.409, 0.118 },
+        blue_capture = { 95.687, -159.449, -0.100 },
+        red_capture  = { 40.240, -79.123, -0.100 }
     },
     ["deathisland"] = {
-        spawn_location = { -30.282, 31.312, 16.601 },
-        capture_points = {
-            { -26.576030731201, -6.9761986732483, 9.6631727218628 },
-            { 29.843469619751, 15.971487045288, 8.2952880859375 }
-        }
+        spawn_point  = { -30.282, 31.312, 16.601 },
+        blue_capture = { -26.576, -6.976, 9.663 },
+        red_capture  = { 29.843, 15.971, 8.295 }
     },
     ["icefields"] = {
-        spawn_location = { -26.032, 32.365, 9.007 },
-        capture_points = {
-            { 24.85000038147, -22.110000610352, 2.1110000610352 },
-            { -77.860000610352, 86.550003051758, 2.1110000610352 }
-        }
+        spawn_point  = { -26.032, 32.365, 9.007 },
+        blue_capture = { 24.850, -22.110, 2.111 },
+        red_capture  = { -77.860, 86.550, 2.111 }
     },
     ["infinity"] = {
-        spawn_location = { 9.631, -64.030, 7.776 },
-        capture_points = {
-            { 0.67973816394806, -164.56719970703, 15.039022445679 },
-            { -1.8581243753433, 47.779975891113, 11.791272163391 }
-        }
+        spawn_point  = { 9.631, -64.030, 7.776 },
+        blue_capture = { 0.680, -164.567, 15.039 },
+        red_capture  = { -1.858, 47.780, 11.791 }
     },
     ["sidewinder"] = {
-        spawn_location = { 2.051, 55.220, -2.801 },
-        capture_points = {
-            { -32.038200378418, -42.066699981689, -3.7000000476837 },
-            { 30.351499557495, -46.108001708984, -3.7000000476837 }
-        }
+        spawn_point  = { 2.051, 55.220, -2.801 },
+        blue_capture = { -32.038, -42.067, -3.700 },
+        red_capture  = { 30.351, -46.108, -3.700 }
     },
     ["timberland"] = {
-        spawn_location = { 1.250, -1.487, -21.264 },
-        capture_points = {
-            { 17.322099685669, -52.365001678467, -17.751399993896 },
-            { -16.329900741577, 52.360000610352, -17.741399765015 }
-        }
+        spawn_point  = { 1.250, -1.487, -21.264 },
+        blue_capture = { 17.322, -52.365, -17.751 },
+        red_capture  = { -16.330, 52.360, -17.741 }
     },
     ["dangercanyon"] = {
-        spawn_location = { -0.477, 55.331, 0.239 },
-        capture_points = {
-            { -12.104507446289, -3.4351840019226, -2.2419033050537 },
-            { 12.007399559021, -3.4513700008392, -2.2418999671936 }
-        }
+        spawn_point  = { -0.477, 55.331, 0.239 },
+        blue_capture = { -12.105, -3.435, -2.242 },
+        red_capture  = { 12.007, -3.451, -2.242 }
     },
     ["beavercreek"] = {
-        spawn_location = { 14.015, 14.238, -0.911 },
-        capture_points = {
-            { 29.055599212646, 13.732000350952, -0.10000000149012 },
-            { -0.86037802696228, 13.764800071716, -0.0099999997764826 }
-        }
+        spawn_point  = { 14.015, 14.238, -0.911 },
+        blue_capture = { 29.056, 13.732, -0.100 },
+        red_capture  = { -0.860, 13.765, -0.010 }
     },
     ["boardingaction"] = {
-        spawn_location = { 4.374, -12.832, 7.220 },
-        capture_points = {
-            { 1.723109960556, 0.4781160056591, 0.60000002384186 },
-            { 18.204000473022, -0.53684097528458, 0.60000002384186 }
-        }
+        spawn_point  = { 4.374, -12.832, 7.220 },
+        blue_capture = { 1.723, 0.478, 0.600 },
+        red_capture  = { 18.204, -0.537, 0.600 }
     },
     ["carousel"] = {
-        spawn_location = { 0.033, 0.003, -0.856 },
-        capture_points = {
-            { 5.6063799858093, -13.548299789429, -3.2000000476837 },
-            { -5.7499198913574, 13.886699676514, -3.2000000476837 }
-        }
+        spawn_point  = { 0.033, 0.003, -0.856 },
+        blue_capture = { 5.606, -13.548, -3.200 },
+        red_capture  = { -5.750, 13.887, -3.200 }
     },
     ["chillout"] = {
-        spawn_location = { 1.392, 4.700, 3.108 },
-        capture_points = {
-            { 7.4876899719238, -4.49059009552, 2.5 },
-            { -7.5086002349854, 9.750340461731, 0.10000000149012 }
-        }
+        spawn_point  = { 1.392, 4.700, 3.108 },
+        blue_capture = { 7.488, -4.491, 2.500 },
+        red_capture  = { -7.509, 9.750, 0.100 }
     },
     ["damnation"] = {
-        spawn_location = { -2.002, -4.301, 3.399 },
-        capture_points = {
-            { 9.6933002471924, -13.340399742126, 6.8000001907349 },
-            { -12.17884349823, 14.982703208923, -0.20000000298023 }
-        }
+        spawn_point  = { -2.002, -4.301, 3.399 },
+        blue_capture = { 9.693, -13.340, 6.800 },
+        red_capture  = { -12.179, 14.983, -0.200 }
     },
     ["gephyrophobia"] = {
-        spawn_location = { 63.513, -74.088, -1.062 },
-        capture_points = {
-            { 26.884338378906, -144.71551513672, -16.049139022827 },
-            { 26.727857589722, 0.16621616482735, -16.048349380493 }
-        }
+        spawn_point  = { 63.513, -74.088, -1.062 },
+        blue_capture = { 26.884, -144.716, -16.049 },
+        red_capture  = { 26.728, 0.166, -16.048 }
     },
     ["hangemhigh"] = {
-        spawn_location = { 21.020, -4.632, -4.229 },
-        capture_points = {
-            { 13.047902107239, 9.0331249237061, -3.3619771003723 },
-            { 32.655700683594, -16.497299194336, -1.7000000476837 }
-        }
+        spawn_point  = { 21.020, -4.632, -4.229 },
+        blue_capture = { 13.048, 9.033, -3.362 },
+        red_capture  = { 32.656, -16.497, -1.700 }
     },
     ["longest"] = {
-        spawn_location = { -0.84, -14.54, 2.41 },
-        capture_points = {
-            { -12.791899681091, -21.6422996521, -0.40000000596046 },
-            { 11.034700393677, -7.5875601768494, -0.40000000596046 }
-        }
+        spawn_point  = { -0.840, -14.540, 2.410 },
+        blue_capture = { -12.792, -21.642, -0.400 },
+        red_capture  = { 11.035, -7.588, -0.400 }
     },
     ["prisoner"] = {
-        spawn_location = { 0.902, 0.088, 1.392 },
-        capture_points = {
-            { -9.3684597015381, -4.9481601715088, 5.6999998092651 },
-            { 9.3676500320435, 5.1193399429321, 5.6999998092651 }
-        }
+        spawn_point  = { 0.902, 0.088, 1.392 },
+        blue_capture = { -9.368, -4.948, 5.700 },
+        red_capture  = { 9.368, 5.119, 5.700 }
     },
     ["putput"] = {
-        spawn_location = { -2.350, -21.121, 0.902 },
-        capture_points = {
-            { -18.89049911499, -20.186100006104, 1.1000000238419 },
-            { 34.865299224854, -28.194700241089, 0.10000000149012 }
-        }
+        spawn_point  = { -2.350, -21.121, 0.902 },
+        blue_capture = { -18.890, -20.186, 1.100 },
+        red_capture  = { 34.865, -28.195, 0.100 }
     },
     ["ratrace"] = {
-        spawn_location = { 8.662, -11.159, 0.221 },
-        capture_points = {
-            { -4.2277698516846, -0.85564690828323, -0.40000000596046 },
-            { 18.613000869751, -22.652599334717, -3.4000000953674 }
-        }
+        spawn_point  = { 8.662, -11.159, 0.221 },
+        blue_capture = { -4.228, -0.856, -0.400 },
+        red_capture  = { 18.613, -22.653, -3.400 }
     },
     ["wizard"] = {
-        spawn_location = { -5.035, -5.064, -2.750 },
-        capture_points = {
-            { -9.2459697723389, 9.3335800170898, -2.5999999046326 },
-            { 9.1828498840332, -9.1805400848389, -2.5999999046326 }
-        }
+        spawn_point  = { -5.035, -5.064, -2.750 },
+        blue_capture = { -9.246, 9.334, -2.600 },
+        red_capture  = { 9.183, -9.181, -2.600 }
     }
 }
 
-api_version = "1.12.0.0"
+-- Config End -------------------------------------------------------------
 
--- Function to initialize the script
-function OnScriptLoad()
-    register_callback(cb["EVENT_GAME_START"], "OnGameStart")
-    OnGameStart()
+api_version = '1.12.0.0'
+
+local sapp_events = {
+    [cb['EVENT_DIE']] = 'OnDie',
+    [cb['EVENT_TICK']] = 'OnTick',
+    [cb['EVENT_JOIN']] = 'OnJoin',
+    [cb['EVENT_LEAVE']] = 'OnQuit',
+    [cb['EVENT_TEAM_SWITCH']] = 'OnTeamSwitch',
+}
+
+local flag, players = {}, {}
+local map_config, team_play
+
+-- Tag table addresses for weapon checking
+local base_tag_table = 0x40440000
+local tag_entry_size = 0x20
+local tag_data_offset = 0x14
+local bit_check_offset = 0x308
+local bit_index = 3
+
+local get_var = get_var
+local say_all, rprint = say_all, rprint
+local execute_command = execute_command
+local os_time, tonumber = os.time, tonumber
+local destroy_object, spawn_object = destroy_object, spawn_object
+local player_present, player_alive = player_alive, player_present
+local get_dynamic_player, get_object_memory = get_dynamic_player, get_object_memory
+
+local read_bit = read_bit
+local read_word = read_word
+local read_float = read_float
+local read_dword = read_dword
+local read_vector3d = read_vector3d
+
+-- Respawn timer helper
+local function newRespawnTimer(now)
+    return { start = now, finish = now + CONFIG.RESPAWN_DELAY, warned = false }
 end
 
--- Function to set up pre-game parameters
-function CTF:Init()
+-- Spawn flag
+local function spawnFlag()
+    local spawn_point = map_config.spawn_point
+    local x, y, z = spawn_point[1], spawn_point[2], spawn_point[3] + 0.1
 
-    local mode = get_var(0, "$gt")
-    if mode == "n/a" then
-        return
+    if flag.object then destroy_object(flag.object) end
+
+    local object = spawn_object('', '', x, y, z, 0, flag.tag_id)
+    local object_memory = get_object_memory(object)
+
+    if object_memory == 0 then
+        error("Failed to spawn flag")
+        return false
     end
 
-    self.flag = {}
-    self.game_started = false
+    flag.object = object
+    flag.object_memory = object_memory
+    flag.state = "at_spawn_point"
+    flag.carrier = nil
+end
 
-    local map = self:Proceed(mode)
-    if not map then
-        unregister_callback(cb["EVENT_GAME_END"])
-        unregister_callback(cb["EVENT_TICK"])
-        return
+-- Distance check
+local function inRange(x1, y1, z1, x2, y2, z2)
+    local dx, dy, dz = x1 - x2, y1 - y2, z1 - z2
+    return (dx * dx + dy * dy + dz * dz) <= (CONFIG.CAPTURE_RADIUS ^ 2)
+end
+
+-- Get player position
+local function getPlayerPosition(dyn_player)
+    local crouch = read_float(dyn_player + 0x50C)
+    local vehicle_id = read_dword(dyn_player + 0x11C)
+    local vehicle_obj = get_object_memory(vehicle_id)
+
+    local x, y, z
+    if vehicle_id == 0xFFFFFFFF then
+        x, y, z = read_vector3d(dyn_player + 0x5C)
+    elseif vehicle_obj ~= 0 then
+        x, y, z = read_vector3d(vehicle_obj + 0x5C)
+    else
+        return nil, nil, nil
     end
 
+    local z_off = (crouch == 0) and 0.65 or 0.35 * crouch
+    return x, y, z + z_off
+end
+
+-- Check if player has the flag
+local function hasObjective(dyn_player)
+    for i = 0, 3 do
+        local weapon_id = read_dword(dyn_player + 0x2F8 + 0x4 * i)
+        local weapon_obj = get_object_memory(weapon_id)
+        if weapon_obj ~= 0 and weapon_obj ~= 0xFFFFFFFF then
+            local tag_address = read_word(weapon_obj)
+            local tag_data_base = read_dword(base_tag_table)
+            local tag_data = read_dword(tag_data_base + tag_address * tag_entry_size + tag_data_offset)
+            if read_bit(tag_data + bit_check_offset, bit_index) == 1 then return true end
+        end
+    end
+    return false
+end
+
+-- Find flag tag
+local function findFlagTagAddress()
     local tag_address = read_dword(0x40440000)
     local tag_count = read_dword(0x4044000C)
-
     for i = 0, tag_count - 1 do
         local tag = tag_address + 0x20 * i
         if read_dword(tag) == 0x6D617467 then
             local globals_tag = read_dword(tag + 0x14)
-            self.flag.id = read_dword(read_dword(globals_tag + 0x164 + 4) + 0xC)
-
-            self.z_off = 0.2
-            self.x, self.y, self.z = unpack(self[map].spawn_location)
-            self.z = self.z + self.z_off
-            self.capture_points = self[map].capture_points
-            self:SpawnFlag()
-            execute_command("scorelimit " .. (self.score_limit or ""))
-
-            self.game_started = true
-            self.announce_pickup = false
-            self.team_play = get_var(0, "$ffa") == "0"
-
-            register_callback(cb["EVENT_TICK"], "OnTick")
-            register_callback(cb["EVENT_GAME_END"], "OnGameEnd")
-            return
+            return read_dword(read_dword(globals_tag + 0x164 + 4) + 0xC)
         end
     end
-
-    unregister_callback(cb["EVENT_GAME_END"])
-    unregister_callback(cb["EVENT_TICK"])
+    return nil
 end
 
--- Function to broadcast a custom server message
-function CTF:Broadcast(playerId, message)
-    if message ~= "" then
-        execute_command('msg_prefix ""')
-        if playerId then
-            say(playerId, message)
+-- Get team name
+local function getTeamName(player)
+    return not team_play and "" or (player.team == "red" and "Red" or "Blue")
+end
+
+-- Update score
+local function updateScore(player)
+    if team_play then
+        local team_score_var = player.team == "red" and "$redscore" or "$bluescore"
+        local current_score = tonumber(get_var(0, team_score_var))
+        local new_score = current_score + CONFIG.CAPTURE_POINTS
+        execute_command("team_score " .. (player.team == "red" and 0 or 1) .. " " .. new_score)
+    else
+        local current_score = tonumber(get_var(player.id, "$score"))
+        local new_score = current_score + CONFIG.CAPTURE_POINTS
+        execute_command("score " .. player.id .. " " .. new_score)
+    end
+end
+
+-- Register/unregister event callbacks
+local function registerCallbacks(enable)
+    for event, callback in pairs(sapp_events) do
+        if enable then
+            register_callback(event, callback)
         else
-            say_all(message)
-        end
-        execute_command('msg_prefix "' .. self.server_prefix .. '"')
-    end
-end
-
--- Function to teleport the flag back to its starting location
-function CTF:SpawnFlag(playerId)
-    self:DestroyFlag()
-    self.flag.timer = 0
-    self.flag.object = spawn_object("", "", self.x, self.y, self.z, 0, self.flag.id)
-
-    local msg = playerId and self.message_on_capture:gsub("$name", get_var(playerId, "$name")) or self.message_on_respawn
-    self:Broadcast(nil, msg)
-end
-
--- Function to check if a player is holding the flag
-function CTF:GetFlagCarrier()
-    for i = 1, 16 do
-        if player_present(i) and player_alive(i) and self:HasFlag(i) then
-            return i
-        end
-    end
-    self.announce_pickup = true
-    return false
-end
-
--- Function to calculate distance using Pythagoras theorem
-local function GetDistance(x, y, z, x2, y2, z2, r)
-    return math.sqrt((x - x2) ^ 2 + (y - y2) ^ 2 + (z - z2) ^ 2) <= r
-end
-
--- Function to get a player's map coordinates
-local function GetXYZ(playerId)
-    local dynamic_player = get_dynamic_player(playerId)
-    if dynamic_player ~= 0 then
-        local VehicleID = read_dword(dynamic_player + 0x11C)
-        local VehicleObj = get_object_memory(VehicleID)
-        local x, y, z = read_vector3d(dynamic_player + 0x5C)
-        if VehicleID == 0xFFFFFFFF then
-            return x, y, z, false
-        elseif VehicleObj ~= 0 then
-            x, y, z = read_vector3d(VehicleObj + 0x5C)
-            return x, y, z, true
-        end
-    end
-    return nil
-end
-
--- Function to get the flag object coordinates
-function CTF:GetFlagPos()
-    local flag = self.flag.object
-    if flag then
-        local object = get_object_memory(flag)
-        if object ~= 0 then
-            return read_vector3d(object + 0x5C)
-        end
-    end
-    return nil
-end
-
--- Function to handle pluralization
-local function Plural(n)
-    return n > 1 and "s" or ""
-end
-
--- Function to handle game tick events
-function CTF:GameTick()
-
-    if self.game_started then
-        local flag_carrier = self:GetFlagCarrier()
-        if not flag_carrier then
-            local fx, fy, fz = self:GetFlagPos()
-            if fx and not GetDistance(fx, fy, fz, self.x, self.y, self.z - self.z_off, self.trigger_radius) then
-                self.flag.timer = self.flag.timer + 1 / 30
-                local time = self.respawn_delay - self.flag.timer % 60
-                time = tonumber(string.format("%.2f", time))
-
-                if time == self.respawn_delay / 2 then
-                    local msg = self.respawn_warning:gsub("$S", time):gsub("$s", Plural(time))
-                    self:Broadcast(nil, msg)
-                elseif self.flag.timer >= self.respawn_delay then
-                    self:SpawnFlag()
-                end
-            end
-            return
-        end
-
-        for i = 1, 16 do
-            if player_present(i) and player_alive(i) and i == flag_carrier then
-                local px, py, pz, in_vehicle = GetXYZ(i)
-                if in_vehicle and not self.vehicle_capture then
-                    return
-                end
-
-                if px then
-                    for _, v in pairs(self.capture_points) do
-                        if GetDistance(px, py, pz, v[1], v[2], v[3] - self.z_off, self.trigger_radius) then
-                            self:SpawnFlag(i)
-                            if self.team_play then
-                                self:UpdateScore(i, true)
-                            else
-                                self:UpdateScore(i)
-                            end
-                            return
-                        end
-                    end
-                end
-            end
+            unregister_callback(event)
         end
     end
 end
 
--- Function to update the score
-function CTF:UpdateScore(playerId, TeamScore)
-    local Amount = self.points_on_capture
-
-    if TeamScore then
-        local team = get_var(playerId, "$team") == "red" and 0 or 1
-        local team_score = get_var(0, team == 0 and "$redscore" or "$bluescore")
-        execute_command("team_score " .. team .. " " .. (team_score - 1 + Amount))
+-- Get map config
+local function getConfig(game_type)
+    if game_type ~= "slayer" then
+        cprint("[Capture The Flag]: Only FFA is supported", 10)
+        return nil
     end
-
-    local score = tonumber(get_var(playerId, "$score"))
-    execute_command("score " .. playerId .. " " .. (score - 1 + Amount))
+    local current_map = get_var(0, "$map")
+    if not CONFIG[current_map] then
+        cprint("[Capture The Flag]: " .. current_map .. " not configured", 10)
+        return nil
+    end
+    return CONFIG[current_map]
 end
 
--- Function to announce flag pickup
-function CTF:AnnouncePickup(playerId)
-
-    self.flag.timer = 0
-    if not self.announce_pickup then
-        return
+-- Check if flag needs reset
+local function checkForFlagReset(playerId)
+    if flag.carrier == playerId then
+        flag.state = "dropped"
+        flag.carrier = nil
+        flag.respawn_timer = newRespawnTimer(os_time())
     end
-
-    self.announce_pickup = false
-    local msg = self.team_play and self.on_pickup[1] or self.on_pickup[2]
-
-    local team = get_var(playerId, "$team")
-    local name = get_var(playerId, "$name")
-    team = team:gsub("^%l", string.upper)
-
-    msg = msg:gsub("$team", team):gsub("$name", name)
-    self:Broadcast(nil, msg)
-
-    msg = self.on_pickup[3]:gsub("$bonus", self.points_on_capture)
-    self:Broadcast(playerId, msg)
 end
 
--- Function to check if a player is holding the flag
-function CTF:HasFlag(playerId)
-
-    -- Get the dynamic player object
-    local dynamicPlayer = get_dynamic_player(playerId)
-
-    -- If the player is not valid, return false
-    if dynamicPlayer == 0 then
-        return false
-    end
-
-    -- Loop through all weapon slots (max of 4 slots)
-    for i = 0, 3 do
-        local weaponId = read_dword(dynamicPlayer + 0x2F8 + i * 4)
-
-        -- Check if the weapon slot is valid (not empty)
-        if weaponId ~= 0xFFFFFFFF then
-            local weaponMemory = get_object_memory(weaponId)
-
-            -- Ensure the weapon memory is valid
-            if weaponMemory ~= 0 then
-                local tagAddress = read_word(weaponMemory)
-                local tagData = read_dword(read_dword(0x40440000) + tagAddress * 0x20 + 0x14)
-
-                -- Check if the item is a flag (bit 3 in the tag data)
-                if read_bit(tagData + 0x308, 3) == 1 then
-                    -- Announce that the player has picked up the flag
-                    self:AnnouncePickup(playerId)
-                    return true
-                end
-            end
-        end
-    end
-
-    -- Return false if no flag was found
-    return false
+-- Validate player
+local function validatePlayer(playerId)
+    return player_present(playerId) and player_alive(playerId) and players[playerId]
 end
 
--- Function to proceed with the game mode
-function CTF:Proceed(mode)
-    local map = get_var(0, "$map")
-    if mode ~= "slayer" then
-        cprint("Capture The Flag - [Only ffa/team slayer is supported]", 10)
-        return false
+-- Formats a string with optional arguments:
+local function formatMessage(message, ...)
+    if select('#', ...) > 0 then
+        return message:format(...)
     end
-    if not self[map] then
-        cprint("Capture The Flag - [" .. map .. " is not configured]", 10)
-        return false
-    end
-    return map
+    return message
 end
 
--- Function to destroy the flag
-function CTF:DestroyFlag()
-    destroy_object(self.flag and self.flag.object or 0)
+-- Send global message or private message
+local function sendMessage(target, message, ...)
+    local text = formatMessage(message, ...)
+
+    if target == 0 then
+        execute_command('msg_prefix ""')
+        say_all(text)
+        execute_command('msg_prefix "' .. CONFIG.MSG_PREFIX .. '"')
+    else
+        rprint(target, text)
+    end
 end
 
--- Event callback for game tick
+-- SAPP EVENTS ----------------------------
+function OnScriptLoad()
+    register_callback(cb['EVENT_GAME_START'], 'OnStart')
+    OnStart()
+end
+
+function OnStart()
+    local game_type = get_var(0, "$gt")
+    if game_type == "n/a" then return end
+
+    map_config = getConfig(game_type)
+    registerCallbacks(false)
+
+    if not map_config then return end
+
+    team_play = get_var(0, "$ffa") == "0"
+
+    for i = 1, 16 do if player_present(i) then OnJoin(i) end end
+
+    flag.tag_id = findFlagTagAddress()
+    spawnFlag()
+    registerCallbacks(true)
+end
+
+function OnJoin(playerId)
+    players[playerId] = {
+        id = playerId,
+        name = get_var(playerId, "$name"),
+        team = get_var(playerId, "$team"),
+    }
+end
+
+function OnQuit(playerId)
+    checkForFlagReset(playerId)
+    players[playerId] = nil
+end
+
+function OnDie(playerId)
+    checkForFlagReset(playerId)
+end
+
+function OnTeamSwitch(playerId)
+    players[playerId].team = get_var(playerId, "$team")
+end
+
 function OnTick()
-    CTF:GameTick()
+    local now = os_time()
+
+    -- Handle flag respawn timer
+    if flag.state == "dropped" then
+        local remaining = flag.respawn_timer.finish - now
+        local halfway = CONFIG.RESPAWN_DELAY / 2
+
+        if not flag.respawn_timer.warned and remaining <= halfway then
+            flag.respawn_timer.warned = true
+            local sec = math.floor(remaining + 0.5)
+            sendMessage(0, CONFIG.RESPAWN_WARNING, sec, (sec == 1 and "" or "s"))
+        end
+
+        if now >= flag.respawn_timer.finish then
+            spawnFlag()
+            sendMessage(0, "The flag has respawned!")
+        end
+    end
+
+    for i = 1, 16 do
+        local player = validatePlayer(i)
+        if not player then goto continue end
+        local dyn_player = get_dynamic_player(i)
+        if dyn_player == 0 then goto continue end
+
+        -- Check flag pickup
+        if hasObjective(dyn_player) then
+            if flag.state ~= "carried" then
+                flag.state = "carried"
+                flag.carrier = i
+
+                if team_play then
+                    sendMessage(0, CONFIG.PICKUP_MESSAGES[1], getTeamName(player), player.name)
+                else
+                    sendMessage(0, CONFIG.PICKUP_MESSAGES[2], player.name)
+                end
+                sendMessage(player.id, CONFIG.PICKUP_MESSAGES[3], CONFIG.CAPTURE_POINTS)
+            end
+        elseif flag.carrier == i then
+            checkForFlagReset(i)
+        end
+
+        -- Check capture points
+        if flag.carrier == i then
+            local px, py, pz = getPlayerPosition(dyn_player)
+            if not px then goto continue end
+
+            local blue_cap = map_config.blue_capture
+            local red_cap = map_config.red_capture
+
+            if inRange(px, py, pz, blue_cap[1], blue_cap[2], blue_cap[3]) or
+                inRange(px, py, pz, red_cap[1], red_cap[2], red_cap[3]) then
+                sendMessage(0, CONFIG.CAPTURE_MESAGE, player.name)
+                updateScore(player)
+                spawnFlag()
+            end
+        end
+
+        ::continue::
+    end
 end
 
--- Event callback for game start
-function OnGameStart()
-    CTF:Init()
-end
-
--- Event callback for game end
-function OnGameEnd()
-    CTF.game_started = false
-end
-
--- Event callback for script unload
-function OnScriptUnload()
-    CTF:DestroyFlag()
-end
+function OnScriptUnload() end
