@@ -6,11 +6,11 @@ DESCRIPTION:      Automatically balances teams based on player counts with:
                   - Multiple switching priority options
                   - Minimum player requirements
 
-CONFIGURATION:    Adjust these settings in the config table:
-                  - delay: Balancing frequency (seconds)
-                  - minPlayersPerTeam: Minimum players before balancing
-                  - maxTeamDifference: Allowed team size difference
-                  - switchingPriority: "smaller" or "larger" team preference
+CONFIGURATION:    Adjust these settings in the CONFIG table:
+                  - DELAY: Balancing frequency (seconds)
+                  - MIN_PLAYERS: Minimum players before balancing
+                  - MAX_DIFFERENCE: Allowed team size difference
+                  - SWITCHING_PRIORITY: "smaller" or "larger" team preference
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -18,40 +18,48 @@ LICENSE:          MIT License
 ===============================================================================
 ]]
 
+-- Config Start --------------------------------------
+local CONFIG = {
+    DELAY = 300,                   -- How often to balance teams in seconds
+    MIN_PLAYERS = 4,               -- Minimum number of players needed before balancing
+    MAX_DIFFERENCE = 8,            -- Maximum difference allowed between teams before balancing
+    SWITCHING_PRIORITY = "smaller" -- Options: "smaller" or "larger"
+}
+-- Config ends ----------------------------------------
+
 api_version = "1.12.0.0"
 
--- Configuration
-local config = {
-    delay = 5, -- How often to balance teams in seconds
-    minPlayersPerTeam = 4, -- Minimum number of players needed before balancing
-    maxTeamDifference = 8, -- Maximum difference allowed between teams before balancing
-    switchingPriority = "smaller" -- Options: "smaller" or "larger"
-}
--- End Configurations
+local player_present, get_var = player_present, get_var
 
-local lastBalanceTime = 0
+local last_balance_time
+local os_time, math_abs, tonumber = os.time, math.abs, tonumber
 
 function OnScriptLoad()
     register_callback(cb['EVENT_TICK'], "OnTick")
+    register_callback(cb['EVENT_GAME_END'], "OnEnd")
+    register_callback(cb['EVENT_GAME_START'], "OnStart")
+    OnStart()
+end
+
+function OnStart()
+    if get_var(0, '$gt') == 'n/a' then return end
+    last_balance_time = 0
+end
+
+function OnEnd() -- post game carnage report showing, reset the timer
+    last_balance_time = nil
 end
 
 local function getTeamCounts()
-    local reds, blues
-    for i = 1, 16 do
-        if player_present(i) then
-            local team = get_var(i, "$team")
-            if team == "red" then
-                reds = reds + 1
-            elseif team == "blue" then
-                blues = blues + 1
-            end
-        end
-    end
+    local reds = tonumber(get_var(0, '$reds'))
+    local blues = tonumber(get_var(0, '$blues'))
+
     return reds, blues
 end
 
 local function switchTeam(playerId, fromTeam, toTeam)
-    if get_var(playerId, "$team") == fromTeam then
+    local team = get_var(playerId, '$team')
+    if team == fromTeam then
         execute_command("st " .. playerId .. " " .. toTeam)
         return true
     end
@@ -60,14 +68,14 @@ end
 
 local function balanceTeams()
     local reds, blues = getTeamCounts()
-    local totalPlayers = reds + blues
+    local total_players = reds + blues
 
-    if totalPlayers < config.minPlayersPerTeam * 2 or math.abs(reds - blues) <= config.maxTeamDifference then
+    if total_players < CONFIG.MIN_PLAYERS * 2 or math_abs(reds - blues) <= CONFIG.MAX_DIFFERENCE then
         return
     end
 
     local fromTeam, toTeam
-    if config.switchingPriority == "smaller" then
+    if CONFIG.SWITCHING_PRIORITY == "smaller" then
         fromTeam, toTeam = reds > blues and "red" or "blue", reds > blues and "blue" or "red"
     else
         fromTeam, toTeam = reds < blues and "blue" or "red", reds < blues and "red" or "blue"
@@ -81,15 +89,16 @@ local function balanceTeams()
 end
 
 function OnTick()
-    local currentTime = os.clock()
-    if currentTime - lastBalanceTime >= config.delay then
-        lastBalanceTime = currentTime
-        if tonumber(get_var(0, "$pn")) > 0 then
+    if last_balance_time == nil then return end
+
+    local now = os_time()
+    if now - last_balance_time >= CONFIG.DELAY then
+        last_balance_time = now
+        local total_players = tonumber(get_var(0, '$pn'))
+        if total_players > 0 then
             balanceTeams()
         end
     end
 end
 
-function OnScriptUnload()
-    -- N/A
-end
+function OnScriptUnload() end
