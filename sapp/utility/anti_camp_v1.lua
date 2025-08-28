@@ -14,11 +14,7 @@ LICENSE:          MIT License
 =====================================================================================
 ]]
 
-api_version = "1.12.0.0"
-
------------------
--- CONFIG STARTS
------------------
+-- Config Start --------------------------------------------
 local COOLDOWN = 10 -- Cooldown period in seconds
 
 -- Customizable messages:
@@ -37,9 +33,9 @@ local MAPS = {
     }
     -- Add configurations for other maps using the same structure
 }
----------------
--- CONFIG ENDS
----------------
+-- Config End ----------------------------------------------
+
+api_version = "1.12.0.0"
 
 local map
 local players = {}

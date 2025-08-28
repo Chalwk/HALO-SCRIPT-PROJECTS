@@ -17,38 +17,25 @@ LICENSE:          MIT License
 =====================================================================================
 ]]
 
+-- Config Start -----------------------
+
+local COMMAND = 'botscore'
+local COMMAND_PERMISSION_LEVEL = 1
+
+-- Config Ends -----------------------
+
 api_version = '1.12.0.0'
 
-local command = 'botscore'
 local players = {}
 
--- Registering callbacks
-function OnScriptLoad()
-    register_callback(cb['EVENT_TICK'], 'OnTick')
-    register_callback(cb['EVENT_JOIN'], 'OnJoin')
-    register_callback(cb['EVENT_LEAVE'], 'OnQuit')
-    register_callback(cb['EVENT_COMMAND'], 'OnCommand')
-    register_callback(cb['EVENT_GAME_START'], 'OnStart')
-    OnStart()
+local function clearConsole(playerId)
+    for _ = 1, 25 do rprint(playerId, ' ') end
 end
 
--- Initialize players on game start
-function OnStart()
-    if get_var(0, '$gt') ~= 'n/a' then
-        players = {}
-        for playerId = 1, 16 do
-            if player_present(playerId) then
-                OnJoin(playerId)
-            end
-        end
-    end
-end
-
--- Handle player ticks
 function OnTick()
     for playerId, data in pairs(players) do
         if #data.suspects > 0 then
-            data:clear(playerId)
+            clearConsole(playerId)
             for _, suspect in ipairs(data.suspects) do
                 rprint(playerId, string.format("%s: %s", suspect.name, suspect:score()))
             end
@@ -56,26 +43,18 @@ function OnTick()
     end
 end
 
--- Split a string into a table of arguments
-local function stringSplit(str)
-    local args = {}
-    for arg in str:gmatch('%S+') do
-        args[#args + 1] = arg:lower()
+local function parseArgs(input)
+    local result = {}
+    for substring in input:gmatch("([^%s]+)") do
+        result[#result + 1] = substring
     end
-    return args
+    return result
 end
 
--- Check player permission
 local function hasPermission(id)
-    local lvl = tonumber(get_var(id, '$lvl'))
-    if lvl >= 1 then
-        return true
-    end
-    rprint(id, 'Insufficient Permission')
-    return true
+    return tonumber(get_var(id, '$lvl')) >= COMMAND_PERMISSION_LEVEL
 end
 
--- Get target players based on command arguments
 local function getPlayers(playerId, args)
     local targets = {}
     local suspect = args[2]
@@ -91,7 +70,7 @@ local function getPlayers(playerId, args)
             end
         end
     else
-        rprint(playerId, string.format("Invalid Player ID. Usage: /%s [1-16/me/all/*] [0/1]", command))
+        rprint(playerId, string.format("Invalid Player ID. Usage: /%s [1-16/me/all/*] [0/1]", COMMAND))
     end
     return targets
 end
@@ -112,41 +91,59 @@ local function addSuspect(playerId, suspect)
     })
 end
 
--- Handle commands from players
-function OnCommand(playerId, cmd)
-    local args = stringSplit(cmd)
+function OnScriptLoad()
+    register_callback(cb['EVENT_TICK'], 'OnTick')
+    register_callback(cb['EVENT_JOIN'], 'OnJoin')
+    register_callback(cb['EVENT_LEAVE'], 'OnQuit')
+    register_callback(cb['EVENT_COMMAND'], 'OnCommand')
+    register_callback(cb['EVENT_GAME_START'], 'OnStart')
+    OnStart()
+end
 
-    if args[1] == command and hasPermission(playerId) then
-        local showScores = getShowScores(args[3])
-
-        if not showScores then
-            rprint(playerId, 'Hiding bot scores')
-            players[playerId].suspects = {}
-            return false
-        end
-
-        for _, pl in ipairs(getPlayers(playerId, args)) do
-            addSuspect(playerId, pl)
+function OnStart()
+    if get_var(0, '$gt') == 'n/a' then return end
+    players = {}
+    for i = 1, 16 do
+        if player_present(i) then
+            OnJoin(i)
         end
     end
 end
 
--- Handle player joining
 function OnJoin(playerId)
-    players[playerId] = {
-        suspects = {},
-        clear = function(i)
-            for _ = 1, 25 do rprint(i, ' ') end
-        end
-    }
+    players[playerId] = { suspects = {} }
 end
 
--- Handle player quitting
 function OnQuit(playerId)
     players[playerId] = nil
 end
 
--- Handle script unloading
-function OnScriptUnload()
-    -- No specific actions needed on unload
+function OnCommand(playerId, command)
+    local args = parseArgs(command)
+    if #args == 0 then return true end
+
+    if args[1] == COMMAND then
+        if playerId == 0 then
+            cprint("Cannot execute this command from the console")
+            return false
+        elseif hasPermission(playerId) then
+            local showScores = getShowScores(args[3])
+
+            if not showScores then
+                rprint(playerId, 'Hiding bot scores')
+                players[playerId].suspects = {}
+                return false
+            end
+
+            local suspects = getPlayers(playerId, args)
+
+            for _, pl in ipairs(suspects) do
+                addSuspect(playerId, pl)
+            end
+        else
+            rprint(playerId, 'Insufficient Permission')
+        end
+    end
 end
+
+function OnScriptUnload() end

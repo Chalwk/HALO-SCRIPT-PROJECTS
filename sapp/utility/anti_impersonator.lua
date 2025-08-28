@@ -1,20 +1,23 @@
 --[[
 ===============================================================================
 SCRIPT NAME:      anti_impersonator.lua
-DESCRIPTION:      Prevents player impersonation by verifying identities against
-                  a whitelist of trusted members. Detects and punishes:
-                  - Clone accounts (matching hashes/IPs)
-                  - Name spoofing attempts
-                  - Admin impersonation
+DESCRIPTION:      Prevents players from impersonating trusted community members.
+                  Verifies joining players against a whitelist of approved names
+                  and their corresponding IPs and/or hashes.
 
-CONFIGURATION:    - Choose between kick or ban actions
-                  - Set ban duration (permanent/temporary)
-                  - Configure trusted member whitelist
-                  - Enable/disable logging
+FEATURES:         - Detects and punishes impersonators trying to use whitelisted names
+                  - Supports multiple enforcement types (kick, ipban, hashban)
+                  - Configurable ban duration (temporary or permanent)
+                  - Customizable punishment reason for logging and commands
+                  - Flexible whitelist: each member can have multiple IPs/hashes
+
+CONFIGURATION:    - Select punishment type (kick | ipban | hashban)
+                  - Set ban duration (0 = permanent, >0 = minutes)
+                  - Define punishment reason for logs and commands
+                  - Maintain trusted member list with valid IPs and/or hashes
 
 NOTICE:           - Shared game copies may trigger false positives
-                  - Dynamic IPs may require adjustment
-                  - Hash verification is most reliable
+                  - Dynamic IPs may require regular updates to the whitelist
 
 Copyright (c) 2019-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -22,104 +25,109 @@ LICENSE:          MIT License
 ===============================================================================
 ]]
 
--- Configuration -----------------------------------------------------------------
-api_version = "1.12.0.0"
+-- Config Start ---------------------------------------------------------------
+local CONFIG = {
 
-local config = {
-    -- Action to take when an impersonator is detected ('kick' or 'ban'):
-    action = 'kick',  -- Default action against impersonators.
+    -- Type of punishment to apply ('kick', 'ipban', 'hashban'):
+    BAN_TYPE = 'kick',
 
     -- Ban duration in minutes (0 for permanent ban):
-    ban_duration = 10,  -- Default ban duration.
+    BAN_DURATION = 10,
 
-    -- Reason for punishment:
-    punishment_reason = 'Impersonating',  -- Reason shown when a player is kicked or banned.
+    -- Reason for punishment (used in command execution):
+    PUNISHMENT_REASON = 'Impersonating',
 
-    -- Community members list with corresponding IPs or hashes (at least one required):
-    members = {
-        -- Example structure for a community member
-        ['ExampleGamerTag'] = {
-            '127.0.0.1',  -- IP address of the member (optional)
-            'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',  -- Player hash of the member (optional)
-        },
-
-        -- Additional members can be added in the same format:
-        ['someone'] = {
-            'ip1',  -- IP address (optional)
-            'hash1', -- Player hash (optional)
-            'hash2', -- Additional hashes (optional)
+    --[[
+    MEMBERS WHITELIST:
+    ---------------------------------------------------------------------------
+    This is the trusted community members list.
+    Format:
+        ['ExactPlayerName'] = {
+            'IP_Address_1',
+            'IP_Address_2',
+            'Hash_1',
+            'Hash_2',
+            ...
         }
-    },
 
-    -- Enable logging of impersonator actions (true/false):
-    log = true,  -- Set to true to log impersonator actions.
+    Rules:
+    - The table key must be the EXACT player name (case-sensitive).
+    - Each entry (value) is a list of that member's allowed identifiers.
+    - Allowed identifiers are:
+        * IPv4 address (e.g. "127.0.0.1")
+        * Hash string (32 characters, e.g. "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+    - At least ONE valid IP or hash must be listed for a member.
+    - A player is considered LEGIT if:
+        * Their name matches a whitelisted member, AND
+        * Their IP OR hash is found in that member's list.
+    - Otherwise, they are treated as an IMPERSONATOR and punished.
 
-    -- Log file path for impersonator actions:
-    log_file_path = "anti_impersonator_log.txt"  -- Path to the log file.
+    Notes:
+    - Members may have multiple IPs/hashes (e.g., home + laptop, or dynamic IP).
+    - Keep this list updated as trusted members' IPs/hashes change.
+    - If someone shares their game copy, it may trigger false positives.
+    ---------------------------------------------------------------------------
+    ]]
+    MEMBERS = {
+        ['Chalwk'] = {
+            '127.0.0.1',                        -- example IP
+            'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', -- example hash
+        },
+        ['someone'] = {
+            'ip1',   -- replace with real IP
+            'hash1', -- replace with real hash
+            'hash2',
+        }
+    }
 }
--- End of configuration ------------------------------------------------------------
+-- End Config ----------------------------------------------------------------
 
-local function getDate()
-    return os.date("%d-%m-%Y %H:%M:%S")
-end
+api_version = "1.12.0.0"
 
-local function perform_action(playerId, name, hash, ip, action, reason, ban_duration)
-
-    local log_message = string.format(
-            "Player ID: %d | Name: %s | Hash: %s | IP: %s | Action: %s | Reason: %s",
-            playerId, name, hash, ip, action, reason
-    )
-
-    -- Log to file if enabled
-    if config.log then
-        local log_file, err = io.open(config.sapp_path, "a")
-        if log_file then
-            log_file:write(string.format("%s - %s\n", getDate(), log_message))
-            log_file:close()
-        else
-            error("Error opening log file: " .. err)
-        end
+local function enforcePenalty(playerId, name, ban_type, reason, ban_duration)
+    -- Build command:
+    local command
+    if ban_type == "kick" then
+        command = string.format('k %d "%s"', playerId, reason)
+    elseif ban_type == "ipban" then
+        command = string.format('ipban %d %d "%s"', playerId, ban_duration, reason)
+    elseif ban_type == "hashban" then
+        command = string.format('b %d %d "%s"', playerId, ban_duration, reason)
     end
+    execute_command(command)
 
-    -- Perform the kick or ban action
-    if action == 'kick' then
-        execute_command('k ' .. playerId .. ' "' .. reason .. '"')
-        cprint(log_message, 12)
-    elseif action == 'ban' then
-        execute_command('b ' .. playerId .. ' ' .. ban_duration .. ' "' .. reason .. '"')
-        cprint(string.format("%s - Ban duration: %d minutes", log_message, ban_duration), 12)
+    -- Console logs:
+    if ban_type == "kick" then
+        cprint(string.format("[Anti-Impersonator] %s was kicked.", name), 12)
     else
-        cprint("Invalid action specified: " .. action, 12)
+        cprint(string.format("[Anti-Impersonator] %s was banned for %s minute(s).", name, ban_duration), 12)
     end
 end
 
-local function is_impersonator(name, hash, ip)
-    local member_data = config.members[name]
+local function isImpersonator(name, hash, ip)
+    local member_data = CONFIG.MEMBERS[name]
     if member_data then
         for _, value in ipairs(member_data) do
             if value == hash or value == ip then
-                return false -- Not an impersonator
+                return false -- Legit member
             end
         end
         return true -- Impersonator detected
     end
-    return false -- Name not found in members list
+    return false    -- Name not in whitelist
 end
 
 function OnJoin(playerId)
     local name = get_var(playerId, '$name')
     local hash = get_var(playerId, '$hash')
     local ip = get_var(playerId, '$ip'):match('%d+%.%d+%.%d+%.%d+')
-    if is_impersonator(name, hash, ip) then
-        perform_action(playerId, name, hash, ip, config.action, config.punishment_reason, config.ban_duration)
+    if isImpersonator(name, hash, ip) then
+        enforcePenalty(playerId, name, CONFIG.BAN_TYPE, CONFIG.PUNISHMENT_REASON, CONFIG.BAN_DURATION)
     end
 end
 
 function OnScriptLoad()
-    config.sapp_path = read_string(read_dword(sig_scan('68??????008D54245468') + 0x1)) .. '\\sapp\\' .. config.log_file_path
-    register_callback(cb['EVENT_JOIN'], 'OnJoin')
+    register_callback(cb['EVENT_PREJOIN'], 'OnJoin')
 end
 
-function OnScriptUnload()
-    -- N/A
-end
+function OnScriptUnload() end

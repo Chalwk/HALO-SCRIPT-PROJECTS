@@ -15,23 +15,19 @@ LICENSE:          MIT License
 =====================================================================================
 ]]
 
-api_version = "1.12.0.0"
-
------------------
--- CONFIG STARTS
------------------
-local COOLDOWN = 10          -- Cooldown period in seconds
-local MAX_CAMP_TIME = 120    -- Maximum allowed camping time (in seconds)
-local CAMP_RADIUS = 1.0      -- Radius (world units) within which movement is considered camping
+-- Config Start ---------------------------------------------------
+local COOLDOWN = 10       -- Cooldown period in seconds
+local MAX_CAMP_TIME = 120 -- Maximum allowed camping time (in seconds)
+local CAMP_RADIUS = 1.0   -- Radius (world units) within which movement is considered camping
 
 -- Customizable messages:
 local MESSAGES = {
-    WARNING = "WARNING: Move or be killed in %ds!",     -- Player warning message
-    PUNISH = "No camping allowed!",                     -- Punishment message
+    WARNING = "WARNING: Move or be killed in %ds!", -- Player warning message
+    PUNISH = "No camping allowed!",                 -- Punishment message
 }
----------------
--- CONFIG ENDS
----------------
+-- Config End -------------------------------------------------
+
+api_version = "1.12.0.0"
 
 local players = {}
 local floor = math.floor
@@ -46,7 +42,7 @@ end
 
 local function getDistance(x1, y1, z1, x2, y2, z2)
     local dx, dy, dz = x1 - x2, y1 - y2, z1 - z2
-    return math.sqrt(dx*dx + dy*dy + dz*dz)
+    return math.sqrt(dx * dx + dy * dy + dz * dz)
 end
 
 local function punishPlayer(player)
@@ -90,7 +86,6 @@ function OnTick()
         if player_present(i) and player_alive(i) then
             local dyn = get_dynamic_player(i)
             if dyn ~= 0 and not inVehicle(dyn) then
-
                 local x, y, z = getXYZ(dyn)
                 local data = players[i]
 
@@ -107,13 +102,13 @@ function OnTick()
                 else
                     -- Calculate distance from last recorded position
                     local dist = getDistance(x, y, z, data.last_x, data.last_y, data.last_z)
-                    
+
                     if dist <= CAMP_RADIUS and not in_cooldown then
                         -- Player hasn't moved enough
                         local elapsed = current_time - data.start_time
 
                         -- Warn at 50% of max time
-                        if not data.warned and elapsed >= MAX_CAMP_TIME/2 then
+                        if not data.warned and elapsed >= MAX_CAMP_TIME / 2 then
                             local time_left = MAX_CAMP_TIME - elapsed
                             rprint(i, string.format(MESSAGES.WARNING, floor(time_left)))
                             data.warned = true
