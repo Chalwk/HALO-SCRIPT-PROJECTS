@@ -952,12 +952,6 @@
       "description": "Synchronizes specified files with a remote server, with automatic local backup fallback when offline. Supports any file type, includes validation via keyword matching, and features HTTP functionality.",
       "filename": "sync_your_files.lua"
     },
-    "tag_kicker": {
-      "title": "Tag Kicker",
-      "shortDescription": "Automatically kicks players using your clan tag without permission.",
-      "description": " Players using your defined clan PREFIX who are not on the WHITELIST will be automatically kicked with a customizable message.",
-      "filename": "tag_kicker.lua"
-    },
     "t_slayer_team_spawns": {
       "title": "Team Slayer Spawns",
       "shortDescription": "Enforces team-specific spawning in Team Slayer",
