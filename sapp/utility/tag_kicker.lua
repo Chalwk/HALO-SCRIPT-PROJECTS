@@ -2,7 +2,7 @@
 ===============================================================================
 SCRIPT NAME:      tag_kicker.lua
 DESCRIPTION:      Simple clan tag anti-impersonator.
-                  - Kicks any player using "LIB-" in their name if not whitelisted.
+                  - Kicks any player using your clans tag (prefix) in their name if not whitelisted.
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -13,17 +13,21 @@ LICENSE:          MIT License
 -- Config --------------------------------------------------------------
 local CONFIG = {
 
-    PREFIX = "LIB-",
+    -- The prefix to detect in player names.
+    -- Any player whose name starts with this string and is NOT whitelisted will be kicked.
+    PREFIX = "CLAN-",
 
     -- Whitelisted members (exact names, case-sensitive)
+    -- Players in this list are allowed to use the PREFIX without being kicked.
     WHITELIST = {
-        "LIB-Chalwk",
-        "LIB-Alpha",
-        "LIB-Beta"
+        "CLAN-TestAdmin",   -- Example
+        "CLAN-Fictional1",  -- Example
+        "CLAN-DemoUser"     -- Example
     },
 
     -- Kick reason
-    KICK_REASON = "Unauthorized use of LIB- tag"
+    -- The message that will appear in-game when a player is kicked.
+    KICK_REASON = "Unauthorized use of Clan Tag"
 }
 -- Config ends ----------------------------------------------
 
@@ -38,7 +42,7 @@ end
 
 function OnJoin(playerId)
     local name = get_var(playerId, '$name')
-    if name:sub(1, 4) == CONFIG.PREFIX and not isWhitelisted(name) then
+    if name:sub(1, #CONFIG.PREFIX) == CONFIG.PREFIX and not isWhitelisted(name) then
         execute_command(string.format('k %d "%s"', playerId, CONFIG.KICK_REASON))
         cprint(string.format("[Tag Kicker] Player %s kicked for unauthorized tag use.", name), 12)
     end
