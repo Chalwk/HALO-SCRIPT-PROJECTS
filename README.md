@@ -60,6 +60,7 @@ If you are a server administrator or operator using SAPP or Phasor, you will fin
 <summary>Click to expand</summary>
 
 ### Attractive
+- [Capture The Flag](./sapp/attractive/capture_the_flag.lua)
 - [Custom Teleports](./sapp/attractive/custom_teleports.lua)
 - [Deployable Mines](./sapp/attractive/deployable_mines.lua)
 - [Sprint System](./sapp/attractive/sprint_system.lua)
