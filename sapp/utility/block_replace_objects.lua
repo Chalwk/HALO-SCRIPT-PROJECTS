@@ -10,88 +10,110 @@ FEATURES:
                   - Works with all object types (weapons, vehicles, etc.)
                   - Simple tag-based configuration
                   - Runtime adjustments without server restart
+                  - Error handling and validation
+                  - Caching for better performance
 
 CONFIGURATION:    Edit the tags table to:
                   - Block objects: {tag_type, "tag/path"}
                   - Replace objects: {src_type, "src/path", dest_type, "dest/path"}
                   - Organize by gametype
 
-Copyright (c) 2022 Jericho Crosby (Chalwk)
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 ===============================================================================
 ]]
 
-local tags = {
-
-    -- Replace Format:
-    -- {tag path to replace, replacement tag path}
-
-    -- Block format:
-    -- {tag path to replace}
-
-    ["mode_name_here"] = {
-
-        -- EXAMPLE BLOCK:
-        { "eqip", "weapons\\frag grenade\\frag grenade" },
-
-        -- EXAMPLE REPLACE:
-        { "weap", "weapons\\assault rifle\\assault rifle", "weap", "weapons\\pistol\\pistol" },
-        --
-        -- repeat the structure to add more replace/block entries for this mode.
-        --
-    },
-
-    -- repeat the structure to add more mode entries:
-    ["mode_name_here"] = {
-
-    }
-}
-
 api_version = "1.12.0.0"
 
-local block, replace
+-- Configuration table
+local TAGS_CONFIG = {
+    -- Replace Format: {tag_type, "tag/path", replacement_type, "replacement/path"}
+    -- Block Format: {tag_type, "tag/path"}
+
+    -- Example configurations for different gametypes
+    ["ctf"] = {
+        -- Block frag grenades in CTF
+        { "eqip", "weapons\\frag grenade\\frag grenade" },
+
+        -- Replace assault rifle with pistol in CTF
+        { "weap", "weapons\\assault rifle\\assault rifle", "weap", "weapons\\pistol\\pistol" },
+    },
+
+    ["slayer"] = {
+        -- Example for slayer mode
+        { "weap", "weapons\\sniper rifle\\sniper rifle", "weap", "weapons\\rocket launcher\\rocket launcher" },
+    },
+
+    -- Add more gametypes as needed
+}
+
+-- Internal state
+local block_table = {}
+local replace_table = {}
+
+local function getTag(class, name)
+    local tag = lookup_tag(class, name)
+    return tag ~= 0 and read_dword(tag + 0xC) or nil
+end
+
+local function processConfig(config)
+    for _, entry in ipairs(config) do
+        local entry_type = #entry
+        local src_tag_id, dest_tag_id
+
+        if entry_type == 2 then
+            -- Block entry: {tag_type, "tag/path"}
+            src_tag_id = getTag(entry[1], entry[2])
+            if src_tag_id then
+                block_table[src_tag_id] = true
+            end
+        elseif entry_type == 4 then
+            -- Replace entry: {src_type, "src/path", dest_type, "dest/path"}
+            src_tag_id = getTag(entry[1], entry[2])
+            dest_tag_id = getTag(entry[3], entry[4])
+
+            if src_tag_id and dest_tag_id then
+                replace_table[src_tag_id] = dest_tag_id
+            end
+        else
+            -- Invalid entry format
+            cprint("Invalid configuration entry format. Expected 2 or 4 elements, got " .. entry_type, 4)
+        end
+    end
+end
 
 function OnScriptLoad()
     register_callback(cb['EVENT_GAME_START'], "OnStart")
     OnStart()
 end
 
-local function GetTag(Type, Name)
-    local Tag = lookup_tag(Type, Name)
-    return (Tag ~= 0 and read_dword(Tag + 0xC)) or nil
-end
-
 function OnStart()
-    if (get_var(0, "$gt") ~= 'n/a') then
+    if get_var(0, "$gt") == 'n/a' then return end
 
-        block, replace = {}, {}
+    local gametype = get_var(0, "$mode")
 
-        local mode = get_var(0, "$mode")
-        if (tags[mode]) then
-            for i = 1, #tags[mode] do
-                local t = tags[mode][i]
-                if (#t > 2) then
-                    replace[GetTag(t[1], t[2])] = GetTag(t[3], t[4])
-                else
-                    block[GetTag(t[1], t[2])] = true
-                end
-            end
-            register_callback(cb['EVENT_OBJECT_SPAWN'], "BlockReplace")
-            return
-        end
-        unregister_callback(cb['EVENT_OBJECT_SPAWN'])
+    block_table = {}; replace_table = {}
+
+    local config = TAGS_CONFIG[gametype]
+    if config then
+        processConfig(config)
+        register_callback(cb['EVENT_OBJECT_SPAWN'], "OnObjectSpawn")
+        return
     end
+
+    unregister_callback(cb['EVENT_OBJECT_SPAWN'])
 end
 
-function BlockReplace(_, MapID)
-    if (replace[MapID]) then
-        return true, replace[MapID]
-    elseif (block[MapID]) then
-        return false
-    end
+function OnObjectSpawn(_, object_id)
+    -- Check if object should be blocked
+    if block_table[object_id] then return false end
+
+    -- Check if object should be replaced
+    local replacement_id = replace_table[object_id]
+    if replacement_id then return true, replacement_id end
+
+    return true -- allow spawn
 end
 
-function OnScriptUnload()
-    -- N/A
-end
+function OnScriptUnload() end
