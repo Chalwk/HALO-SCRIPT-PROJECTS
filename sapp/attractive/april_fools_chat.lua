@@ -2,15 +2,13 @@
 =====================================================================================
 SCRIPT NAME:      april_fools_chat.lua
 DESCRIPTION:      Randomly modifies player chat messages to appear as if they were
-                  sent by other players when trigger words are detected.
+                  sent by other players.
 
 FEATURES:
-                  - Configurable trigger words that activate the effect
-                  - Permission level restriction (default: level 1+)
-                  - Preserves chat commands and server messages
-                  - Temporary effect that can be toggled via trigger words
+                  - Random chance per chat message to alter
+                  - Preserves chat commands
 
-Copyright (c) 2020-2024 Jericho Crosby
+Copyright (c) 2020-2025 Jericho Crosby
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
@@ -20,70 +18,42 @@ api_version = "1.12.0.0"
 
 -- Config [starts]--------------------------------
 local SERVER_PREFIX = "**SAPP** "
-local TRIGGER_WORDS = { "that", "que" }
-local REQUIRED_PERMISSION_LEVEL = 1
+local RANDOM_CHANCE = 0.2  -- 20% chance to alter chat
 -- Config [ends]----------------------------------
 
-local is_chat_modified = false
-
-function string.split(inputString)
-    local words = {}
-    for word in inputString:gmatch('([^%s]+)') do
-        words[#words + 1] = word
-    end
-    return words
-end
-
 local function isChatCommand(message)
-    local firstChar = message:sub(1, 1)
-    return firstChar == "/" or firstChar == "\\"
+    local first_char = message:sub(1, 1)
+    return first_char == "/" or first_char == "\\"
 end
 
 local function getRandomPlayer(excludedPlayerId)
-    local availablePlayers = {}
-    for playerId = 1, 16 do
-        if player_present(playerId) and playerId ~= excludedPlayerId then
-            availablePlayers[#availablePlayers + 1] = playerId
+    local available = {}
+    for i = 1, 16 do
+        if player_present(i) and i ~= excludedPlayerId then
+            available[#available + 1] = i
         end
     end
-    return (#availablePlayers > 0) and availablePlayers[rand(1, #availablePlayers + 1)] or nil
-end
-
-local function hasPermissionToModifyChat(playerLevel)
-    local hasPermission = playerLevel and playerLevel >= REQUIRED_PERMISSION_LEVEL
-    is_chat_modified = hasPermission and not is_chat_modified
-    return is_chat_modified
+    return (#available > 0) and available[rand(1, #available + 1)] or nil
 end
 
 local function alterChatMessage(originalPlayerId, message)
-    local randomPlayerId = getRandomPlayer(originalPlayerId)
-    if randomPlayerId then
-        local randomPlayerName = get_var(randomPlayerId, "$name")
+    local random_player = getRandomPlayer(originalPlayerId)
+    if random_player then
+        local name = get_var(random_player, "$name")
         execute_command('msg_prefix ""')
-        say_all(randomPlayerName .. ": " .. message)
+        say_all(name .. ": " .. message)
         execute_command('msg_prefix "' .. SERVER_PREFIX .. '"')
         return false
     end
     return true
 end
 
-function OnChat(playerId, message, messageType)
+function OnChat(playerId, message)
+    if isChatCommand(message) then return true end
 
-    if messageType == 6 or isChatCommand(message) then
-        return true
-    end
-
-    local playerLevel = tonumber(get_var(playerId, "$lvl"))
-    local wordsInMessage = string.split(message)
-
-    for _, word in ipairs(wordsInMessage) do
-        for _, triggerWord in ipairs(TRIGGER_WORDS) do
-            if word == triggerWord then
-                if hasPermissionToModifyChat(playerLevel) then
-                    return alterChatMessage(playerId, message)
-                end
-            end
-        end
+    local chance = rand(1, 101 + 1) / 100 -- gives 0.01–1.00
+    if chance <= RANDOM_CHANCE then
+        return alterChatMessage(playerId, message)
     end
 
     return true
@@ -91,19 +61,6 @@ end
 
 function OnScriptLoad()
     register_callback(cb["EVENT_CHAT"], "OnChat")
-    register_callback(cb["EVENT_GAME_START"], "OnGameStart")
-
-    if get_var(0, "$gt") ~= nil then
-        is_chat_modified = false
-    end
 end
 
-function OnGameStart()
-    if get_var(0, "$gt") ~= nil then
-        is_chat_modified = false
-    end
-end
-
-function OnScriptUnload()
-    -- N/A
-end
+function OnScriptUnload() end
