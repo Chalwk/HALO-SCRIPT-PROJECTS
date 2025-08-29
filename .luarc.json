@@ -6,6 +6,7 @@
         "read_dword",
         "sig_scan",
         "get_var",
+        "halo_type",
         "player_present",
         "read_word",
         "player_alive",
@@ -40,6 +41,7 @@
         "execute_command_sequence",
         "write_vector3d",
         "unregister_callback",
-        "rand"
+        "rand",
+        "halo_type"
     ]
 }
