@@ -18,9 +18,7 @@ Evolved (PC) dedicated server using the SAPP mod. This method uses the native Wi
 
 ### ⚠️ Important Notes Before You Begin
 
-- **Cost & Plan Type:** You can use the more affordable **Shared CPU** plans. The *
-  *$10/mo (1 vCPU, 2GB RAM)** plan is recommended for optimal performance, while the **$5/mo (1 vCPU, 1GB RAM)** plan is
-  the absolute minimum and may struggle under heavy load.
+- **Cost & Plan Type:** You can use the more affordable **Shared CPU** plans. The **$10/mo (1 vCPU, 2GB RAM)** plan is recommended for optimal performance, while the **$5/mo (1 vCPU, 1GB RAM)** plan is the absolute minimum and may struggle under heavy load.
 - **OS Selection:** For a game server, a GUI is essential. Select **`Windows 2022 Standard x64`**.
 - **Ports:** You must open the standard Halo ports (**UDP 2302-2303**) **AND** your custom server port (defined in
   `RUN.bat`) in the firewall.
