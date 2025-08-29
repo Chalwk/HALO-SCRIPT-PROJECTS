@@ -1,3 +1,5 @@
+# ⚠️ As of 29-08-2025, this guide made not work anymore due to Vultr's recent changes to their subscription plans.
+
 # VPS Setup Instructions
 
 This is a step-by-step tutorial that covers the installation of an Ubuntu VPS with Wine and a VNC server for remote connection. The hosting company used in this tutorial is [Vultr](https://www.vultr.com/).
