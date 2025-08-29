@@ -1,6 +1,6 @@
 **Last Updated: 29 Aug 2025**
 
-# Windows VPS Setup for Halo PC / Halo CE (SAPP Servers)
+# Windows VPS Setup for Halo CE / Halo PC (SAPP Servers)
 
 This guide provides instructions for setting up a **Windows-based** VPS on Vultr to host a Halo Custom Edition or Combat
 Evolved (PC) dedicated server using the SAPP mod. This method uses the native Windows environment for simplicity.
@@ -9,21 +9,19 @@ Evolved (PC) dedicated server using the SAPP mod. This method uses the native Wi
 
 ## Prerequisite Applications
 
-| Application                                                                                                                                     | Description                                                         |
-|:------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------|
-| [Remote Desktop Connection (mstsc)](https://support.microsoft.com/en-us/windows/how-to-use-remote-desktop-5fe128d5-8fb1-7a23-3b8a-41e636865e8c) | Built into Windows for connecting to your server's desktop.         |
-| [FileZilla Client](https://filezilla-project.org/)                                                                                              | A familiar FTP/SFTP client for transferring server files .          |
-| [HPC/CE Server Template](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/ReadyToGo)                                                 | Pre-configured SAPP server files for Windows.                       |
-| [7-Zip](https://www.7-zip.org/) (Optional)                                                                                                      | For extracting files if your Windows version lacks a built-in tool. |
+| Application                                                                                                                                     | Description                                                 |
+|:------------------------------------------------------------------------------------------------------------------------------------------------|:------------------------------------------------------------|
+| [Remote Desktop Connection (mstsc)](https://support.microsoft.com/en-us/windows/how-to-use-remote-desktop-5fe128d5-8fb1-7a23-3b8a-41e636865e8c) | Built into Windows for connecting to your server's desktop. |
+| [FileZilla Client](https://filezilla-project.org/)                                                                                              | A familiar FTP/SFTP client for transferring server files.   |
+| [HPC/CE Server Template](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/ReadyToGo)                                                 | Pre-configured SAPP server files for Windows.               |
+| [7-Zip](https://www.7-zip.org/) (Optional)                                                                                                      | For extracting files if needed.                             |
 
 ### ⚠️ Important Notes Before You Begin
 
-- **Cost & Plan Type:** Windows Server licenses are included but increase the cost. You must select a **Cloud GPU** plan
-  type, as Windows is not available on Shared CPU plans. The cheapest viable option is typically the **$36/mo** plan (2
-  vCPU, 4GB RAM) .
-- **OS Selection:** For a game server, a GUI is essential. **The recommended choice is `Windows 2022 Standard x64`** (
-  the non-"Core" version). It is the current Long-Term Servicing Channel (LTSC) version, offering the best balance of
-  long-term stability and support.
+- **Cost & Plan Type:** You can use the more affordable **Shared CPU** plans. The *
+  *$10/mo (1 vCPU, 2GB RAM)** plan is recommended for optimal performance, while the **$5/mo (1 vCPU, 1GB RAM)** plan is
+  the absolute minimum and may struggle under heavy load.
+- **OS Selection:** For a game server, a GUI is essential. Select **`Windows 2022 Standard x64`**.
 - **Ports:** You must open the standard Halo ports (**UDP 2302-2303**) **AND** your custom server port (defined in
   `RUN.bat`) in the firewall.
 
@@ -35,19 +33,18 @@ Evolved (PC) dedicated server using the SAPP mod. This method uses the native Wi
 
 1. Download
    the [HPC.Server.zip or HCE.Server.zip](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/ReadyToGo) file.
-2. Extract the ZIP file on your local computer using your preferred tool (Windows built-in extractor or 7-Zip). You will
-   have a folder named `HPC Server` or `HCE Server`.
+2. Extract the ZIP file on your local computer. You will have a folder named `HPC Server` or `HCE Server`.
 
 ### 2. Deploying a New Windows VPS on Vultr
 
 1. Navigate to the [Vultr Deploy](https://my.vultr.com/deploy/) page.
-2. For **Server Type**, select **Cloud GPU**.
+2. For **Server Type**, select **Shared CPU** (the most cost-effective option).
 3. Choose a server location closest to you and your players.
-4. Select a plan.
+4. Select a plan. The **$10/mo (1 vCPU, 2GB RAM)** plan is recommended.
 5. **Click the "Configure" button** on the bottom-right of the page.
-6. On the operating system selection page, **Select `Windows 2022 Standard x64`** from the list. (Avoid "Core" versions
-   as they have no graphical interface).
-7. Click **Deploy Now**. Wait for the status to show "Running". This can take 10-15 minutes.
+6. On the configuration page, under **Server Image**, select the **Server Application** tab.
+7. **Select `Windows 2022 Standard x64`** from the list.
+8. Click **Deploy Now**. Wait for the status to show "Running". This can take 10-15 minutes.
 
 ### 3. Retrieve Your Administrator Password
 
@@ -66,7 +63,7 @@ Evolved (PC) dedicated server using the SAPP mod. This method uses the native Wi
 6. Enter the **Administrator password** you retrieved and click "OK".
 7. You are now connected to your Windows Server desktop.
 
-### 5. Initial Windows Setup & Security
+### 5. Initial Windows Setup
 
 Upon first login, you will be greeted with a server manager dashboard.
 
@@ -75,14 +72,6 @@ Upon first login, you will be greeted with a server manager dashboard.
 2. **Disable IE Enhanced Security:** This feature blocks downloads.
     - In the **Server Manager** dashboard, click on **Local Server**.
     - Find **IE Enhanced Security Configuration** and click "On". Set it to "Off" for administrators. Click OK.
-3. **Set a Static Page File (Highly Recommended):** The default plan has limited disk space. A dynamic page file can
-   fill it up.
-    - Press `Win + R`, type `sysdm.cpl`, and press Enter.
-    - Go to the **Advanced** tab > **Performance Settings** > **Advanced** tab > **Change...**.
-    - **Uncheck** "Automatically manage paging file size for all drives".
-    - Select the `C:` drive.
-    - Select **Custom size** and set both **Initial size** and **Maximum size** to `2048` MB.
-    - Click **Set**, then **OK**. Restart the server when prompted.
 
 ### 6. Configure Your Halo Server Port
 
@@ -90,7 +79,7 @@ Upon first login, you will be greeted with a server manager dashboard.
 
 1. **On your local PC**, before uploading, open the `HPC Server` or `HCE Server` folder.
 2. Find the `RUN.bat` file and open it with Notepad.
-3. Locate the line that says `set port=2301` (or similar). The default port is typically **2301**.
+3. Locate the line that says `set port=2301` (the default port).
 4. Change the number to your desired custom port (e.g., `set port=2402`). **Make a note of this port number.**
 5. Save the file.
 
@@ -104,13 +93,12 @@ Upon first login, you will be greeted with a server manager dashboard.
     - **Port:** `22`
 3. Click **Quickconnect**. Accept the server's host key if prompted.
 4. On the right (Remote site), navigate to `C:\Users\Administrator\Desktop`.
-5. On the left (Local site), navigate to your extracted `HPC Server` or `HCE Server` folder.
-6. **Drag the entire folder** from the left pane to the right pane to upload it to the VPS desktop. This will take
-   several minutes.
+5. On the left (Local site), navigate to your extracted server folder.
+6. **Drag the entire folder** from the left pane to the right pane to upload it to the VPS desktop.
 
 ### 8. Configure the Windows Firewall
 
-You must open **both** the standard game ports **and your server's custom port** from the `RUN.bat` file.
+You must open **both** the standard game ports **and your server's custom port**.
 
 1. **On the VPS**, press `Win + R`, type `wf.msc`, and press Enter to open **Windows Defender Firewall with Advanced
    Security**.
@@ -136,12 +124,10 @@ use [NSSM (the Non-Sucking Service Manager)](https://nssm.cc/).
 
 1. Download NSSM on the VPS and unzip it.
 2. Open a Command Prompt as Administrator.
-3. Navigate to the NSSM folder (e.g., `cd C:\Users\Administrator\Downloads\nssm\win64`).
+3. Navigate to the NSSM folder.
 4. Install the service (adjust paths to your server's `haloded.exe`):
    ```cmd
    nssm install "Halo Server" "C:\Users\Administrator\Desktop\HPC Server\haloded.exe"
    nssm set "Halo Server" AppDirectory "C:\Users\Administrator\Desktop\HPC Server"
    ```
-5. Start the service from the Windows "Services" application (`services.msc`) or with `nssm start "Halo Server"`.
-
----
+5. Start the service from the Windows "Services" application (`services.msc`).
