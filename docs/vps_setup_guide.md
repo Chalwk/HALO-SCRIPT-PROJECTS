@@ -1,117 +1,255 @@
-# ⚠️ As of 29-08-2025, this guide made not work anymore due to Vultr's recent changes to their subscription plans.
+**Last Updated: 29 Aug 2025**
 
-# VPS Setup Instructions
+# VPS Setup Instructions for Halo CE / Halo PC
 
-This is a step-by-step tutorial that covers the installation of an Ubuntu VPS with Wine and a VNC server for remote connection. The hosting company used in this tutorial is [Vultr](https://www.vultr.com/).
-
-## Quality of Life Advice
-Copy & paste commands into the SSH Terminal by highlighting the command/text block in this guide, pressing **CTRL-C** to copy, and then right-clicking into the SSH Terminal. This method will save time, so you don't have to write out each command letter by letter.
+This is a step-by-step tutorial for installing an Ubuntu VPS with Wine and a secured VNC server to host a Halo Custom
+Edition or Combat Evolved (PC) dedicated server.
 
 ---
 
 ## Prerequisite Applications
-| Application                                                                                     | Description                                                     |
-|-------------------------------------------------------------------------------------------------|-----------------------------------------------------------------|
-| [BitVise SSH Client](https://www.bitvise.com/ssh-client-download)                               | For remote access to the terminal and to upload files via SFTP. |
-| [TightVNC (client)](https://www.tightvnc.com/download.php)                                      | For remote desktop connections.                                 |
-| [HPC/CE Server Template](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/ReadyToGo) | These are compatible with Linux.                                |
 
-### Technical Note on [Vultr](https://www.vultr.com/) Subscription Plans
-You pay for whatever you need. However, you need at least 150 MiB RAM *per server* to cover peak times. Multiply that by the number of servers you need to estimate your costs. Note that each plan allocates a defined amount of storage space, which may need to be increased depending on how many maps you intend to upload.
+| Application                                                                                     | Description                                                  |
+|:------------------------------------------------------------------------------------------------|:-------------------------------------------------------------|
+| [BitVise SSH Client](https://www.bitvise.com/ssh-client-download)                               | For secure remote terminal access and file uploads via SFTP. |
+| [TightVNC Viewer](https://www.tightvnc.com/download.php)                                        | For remote desktop connections to the VPS GUI.               |
+| [HPC/CE Server Template](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/ReadyToGo) | Pre-configured server files compatible with Linux/Wine.      |
+| [7-Zip](https://www.7-zip.org/) or WinRAR                                                       | To extract the downloaded server template.                   |
+
+### ⚠️ Important Notes Before You Begin
+
+- **Security First:** This guide prioritizes security by creating a non-root user, using a firewall, and locking down
+  remote access. Please follow these steps carefully.
+- **Cost:** Vultr charges hourly up to a monthly cap. A server with 1 vCPU and 1GB RAM (the $6/mo plan) is sufficient
+  for most needs. You can destroy the VPS at any time to stop charges.
+- **Your Home IP:** Some steps require your home public IP address. Google "what is my ip" to find it. Note that this
+  may change if your internet provider does not assign a static IP.
 
 ---
 
 ## Steps
 
-### 1). Download the Server Template
-Download the [SAPP server template](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/ReadyToGo) of your choice. Note: You will need a file decompression tool like [WinRAR](https://www.win-rar.com/start.html?&L=0) or [7-zip](https://www.7-zip.org/download.html) to extract the [HPC.Server.zip](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/download/ReadyToGo/HPC.Server.zip) or [HCE.Server.zip](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/download/ReadyToGo/HCE.Server.zip).
+### 1. Download and Prepare the Server Template
 
-### 2). Install Prerequisite Applications
-Download and install [BitVise SSH Client](https://www.bitvise.com/ssh-client-download) and [TightVNC (client)](https://www.tightvnc.com/download.php) on your PC.
+1. Download
+   the [HPC.Server.zip or HCE.Server.zip](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/ReadyToGo) file.
+2. Extract the ZIP file on your local computer using 7-Zip or WinRAR. You should have a folder named `HPC Server` or
+   `HCE Server`. Keep this handy for later.
 
-### 3). Deploying a New VPS on Vultr
-- Navigate to the [Deploy](https://my.vultr.com/deploy/) page on Vultr.
-- Select **Cloud Compute**.
-- Choose your server location.
-- Under **Server Type**, select **Ubuntu 21.10 x64**.
-- Choose your monthly subscription plan.
-- Select any Additional Features you require (optional).
-- Label your VPS instance and click **Deploy Now**.
+### 2. Deploying a New VPS on Vultr
 
-### 4). Open BitVise SSH Client
-- Fill in the host & username (get from the VPS control panel overview page).
-- In the **Initial method** drop-down box, select **password**.
-- Paste your password in the password field (get from the VPS control panel overview page).
-- Make sure *Store encrypted password in profile* is ticked.
-- Click **Save profile as** and save.
-- Click **Login**. You will be prompted to accept and save a host key. Click **Accept and Save**.
-- Click the **New Terminal Console** button.
+1. Navigate to the [Vultr Deploy](https://my.vultr.com/deploy/) page.
+2. Select **Cloud Compute**.
+3. Choose a server location closest to you and your players.
+4. Under **Server Type**, select **Ubuntu 22.04 LTS x64**.
+5. Select a plan (e.g., **$6/mo** for 1 vCPU, 1GB RAM).
+6. (**Recommended**) Under **SSH Keys**, add your public SSH key for more secure authentication. If you don't know how,
+   you can use the password method shown later.
+7. Give your server a hostname label (e.g., `halo-server`).
+8. Click **Deploy Now**. Wait a few minutes for it to install.
 
-### 5). Enter Commands into the SSH Terminal (in order)
-| Command                                                                               | Description                            |
-|---------------------------------------------------------------------------------------|----------------------------------------|
-| `sudo dpkg --add-architecture i386`                                                   | Add multiarch support.                 |
-| `wget -nc https://dl.winehq.org/wine-builds/winehq.key`                               | Add the WineHQ Ubuntu repository.      |
-| `sudo -H gpg -o /etc/apt/trusted.gpg.d/winehq.key.gpg --dearmor winehq.key`           | Get and install the repository key.    |
-| `sudo add-apt-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ impish main'` | Add the repository.                    |
-| `sudo apt update`                                                                     | Update the package database.           |
-| `sudo apt install --install-recommends winehq-stable`                                 | Install Wine.                          |
-| `wine --version`                                                                      | Verify the installation has succeeded. |
+### 3. Initial Connection & User Setup via BitVise
 
-### 6). Installing TightVNC Server
-| Command                                          | Description                                                                                                                                           |
-|--------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `apt install xfce4 xfce4-goodies tightvncserver` | Install the graphical environment and TightVNC Server.                                                                                                |
-| `vncserver`                                      | Start the TightVNC Server for the first time and create a password. If you need to restrict remote desktop control, select a read-only password.      |
-| `vncserver -kill :1`                             | Stop your TightVNC session to adjust other settings.                                                                                                  |
-| `nano ~/.vnc/xstartup`                           | Open the TightVNC config file. Add the following line to the end: `startxfce4`.<br><br>**To save and exit nano, press CTRL-S (save), CTRL-X (exit).** |
+1. From your Vultr control panel, note the server's **IP Address**, **Password** (if you didn't use an SSH key), and
+   username (`root`).
+2. Open BitVise SSH Client.
+3. Enter the IP address under **Host**.
+4. For **Username**, enter `root`.
+5. For **Authentication**, select `password` and paste the server's password.
+6. Click **Login**. Accept the host key.
+7. Once connected, click the **New Terminal Console** button.
 
-### 7). Set Up Autorun for VNC Server
-| Command                                      | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-|----------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `nano /etc/systemd/system/vncserver.service` | Create a new unit in systemd. Insert the following config: <br> <br>[Unit]<br>Description=TightVNC server<br>After=syslog.target network.target<br><br>[Service]<br>Type=forking<br>User=root<br>PAMName=login<br>PIDFile=/root/.vnc/%H:1.pid<br>ExecStartPre=-/usr/bin/vncserver -kill :1 > /dev/null 2>&1<br>ExecStart=/usr/bin/vncserver -geometry 1920x1080<br>ExecStop=/usr/bin/vncserver -kill :1<br><br>[Install]<br>WantedBy=multi-user.target<br><br>**To save and exit nano, press CTRL-S (save), CTRL-X (exit).** |
-| `systemctl daemon-reload`                    | Reload systemd.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| `systemctl enable --now vncserver`           | Enable autorun of the TightVNC server and start it.                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+**We will now create a new user instead of running everything as root:**
 
-### 8). Set Up UFW (Firewall)
-Enable the firewall so that only certain ports are accessible from the outside world.
-| Command | Description |
-| ------- | ----------- |
-| `sudo ufw allow 2302:2303/udp` | Allow UDP connections for Halo on ports 2302, 2303. |
-| `sudo ufw allow 2310:2312/udp` | Allow UDP connections for server ports (or any port range you desire). |
-| `ufw allow 5901/tcp` | Allow connections to port 5901 if you don't have a static IP. |
-| `ufw allow from 0.0.0.0 to any port 5901` | Optionally allow your specific IP Address and reject all others. Replace `0.0.0.0` with your own IPv4 address. |
-| `ufw default deny incoming` | Deny other inbound connections if you did the previous step. |
-| `sudo ufw enable` | Enable the UFW. |
+```bash
+# Create a new user named 'haloadmin' (you can change this)
+adduser haloadmin
+# Follow the prompts to set a strong password for this user.
 
-### 9). Change SSH Port (Optional but Recommended)
-Make a note of the new SSH port you create, as you'll need it for future connections to BitVise.
-| Command | Description |
-| ------- | ----------- |
-| `nano /etc/ssh/sshd_config` | Change the default SSH port for added security. Locate the line `#Port 22` and uncomment it. Change the value to an appropriate port number (e.g., `Port 22000`). **To save and exit nano, press CTRL-S (save), CTRL-X (exit).** |
-| `systemctl restart sshd` | Restart the SSH server. |
-| `apt install net-tools` | Install net-tools. |
-| `netstat -tulpn | grep ssh` | Verify that the SSH daemon listens on the new port. |
-| `sudo ufw allow 22000/tcp` | Add a rule to allow the new SSH port. You will need to specify the port in the BitVise port field for future SSH connections. |
+# Add the new user to the 'sudo' group to grant administrative privileges
+usermod -aG sudo haloadmin
 
-### 10). Enable fail2ban (Optional but Recommended)
-**Fail2ban** will monitor incoming traffic and automatically block suspicious IPs.
-| Command | Description |
-| ------- | ----------- |
-| `apt install fail2ban -y` | Install Fail2Ban. |
-| `systemctl enable fail2ban` | Ensure the Fail2Ban service starts automatically when the VPS is restarted. |
+# Switch to the new user's environment
+su - haloadmin
+```
 
-### 11). Uploading Server Files
-- Open BitVise and log in.
-- Click the **New SFTP Window** button.
-- Navigate to */root/Desktop*.
-- Transfer the server folder that you extracted (HPC Server or HCE Server).
+*Your terminal prompt should now show `haloadmin@your-server-name` instead of `root@your-server-name`.*
 
-### 12). Launching Your Server(s)
-- Navigate to the server folder you uploaded (e.g., `cd ~/Desktop/HPC Server/Wine Launch Files`)
-- Double-click on `run.desktop` to launch your server. Upon the first launch, you may be prompted to install some mono software in order to launch the server. Follow the on-screen prompts to do this.
+### 4. Install Wine
 
-## Remote Connecting with Tight VNC Client
-- Open TightVNC Viewer and enter your VPS IP followed by the port you set during TightVNC Server setup, e.g., `127.0.0.1:5901`.
-- Click Connect and enter the password you set during TightVNC Server setup.
-- You should now see your Ubuntu desktop.
+Run these commands in the SSH terminal to install Wine. These are correct for Ubuntu 22.04 LTS.
+
+```bash
+# Enable 32-bit architecture
+sudo dpkg --add-architecture i386
+
+# Create the keyring directory and download the WineHQ key
+sudo mkdir -pm755 /etc/apt/keyrings
+sudo wget -O /etc/apt/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key
+
+# Add the WineHQ repository for Ubuntu 22.04 LTS (Jammy)
+sudo wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/ubuntu/dists/jammy/winehq-jammy.sources
+
+# Update the package list
+sudo apt update
+
+# Install Wine
+sudo apt install --install-recommends winehq-stable -y
+
+# Verify the installation (it will likely prompt to install Mono, just close the window for now)
+wine --version
+```
+
+### 5. Install and Configure TightVNC & XFCE
+
+Install the desktop environment and VNC server.
+
+```bash
+# Install the required packages
+sudo apt install xfce4 xfce4-goodies tightvncserver -y
+
+# Start the VNC server for the first time to create its config files
+vncserver
+# You will be prompted to create a VNC password (max 8 characters).
+# Then, you can choose to create a view-only password (select 'n' for no).
+
+# Now, stop the VNC server instance
+vncserver -kill :1
+```
+
+Back up the existing configuration file and then modify it to start XFCE.
+
+```bash
+# Backup the original xstartup file
+mv ~/.vnc/xstartup ~/.vnc/xstartup.bak
+
+# Create a new xstartup file and open it for editing
+nano ~/.vnc/xstartup
+```
+
+**Paste the following exact lines into the nano editor:**
+
+```bash
+#!/bin/bash
+xrdb $HOME/.Xresources
+startxfce4 &
+```
+
+**To save and exit nano:** Press `CTRL+O`, then `ENTER`, then `CTRL+X`.
+
+Make the script executable:
+
+```bash
+chmod +x ~/.vnc/xstartup
+```
+
+### 6. Create a Systemd Service for VNC (Auto-start on boot)
+
+Create a service file to manage VNC.
+
+```bash
+sudo nano /etc/systemd/system/vncserver@.service
+```
+
+**Paste the following configuration into the file. This is a standard, reliable template.**
+
+```ini
+[Unit]
+Description = TightVNC Remote Desktop Service
+After = syslog.target network.target
+
+[Service]
+Type = forking
+User = haloadmin
+Group = haloadmin
+WorkingDirectory = /home/haloadmin
+PIDFile = /home/haloadmin/.vnc/%H:%i.pid
+ExecStartPre = -/usr/bin/vncserver -kill :%i > /dev/null 2>&1
+ExecStart = /usr/bin/vncserver -depth 24 -geometry 1280x720 -localhost :%i
+ExecStop = /usr/bin/vncserver -kill :%i
+
+[Install]
+WantedBy = multi-user.target
+```
+
+**Save and exit nano (`CTRL+O`, `ENTER`, `CTRL+X`).**
+
+Reload systemd and enable the service:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable vncserver@1.service
+sudo systemctl start vncserver@1.service
+```
+
+### 7. Configure the Firewall (UFW)
+
+Configure the firewall to only allow essential ports. **Replace `YOUR_HOME_IP` with your actual public IP address.**
+
+```bash
+# Enable SSH connections
+sudo ufw allow OpenSSH
+
+# Allow Halo game connections (UDP)
+sudo ufw allow 2302:2303/udp
+
+# Allow Halo server list (heartbeat) ports if needed (UDP)
+sudo ufw allow 2310:2312/udp
+
+# CRITICAL: Allow VNC ONLY from your home IP address for security.
+sudo ufw allow from YOUR_HOME_IP to any port 5901
+
+# Enable the firewall and deny all other incoming traffic by default
+sudo ufw enable
+# Type 'y' and press ENTER to confirm.
+```
+
+### 8. (Optional but Recommended) Harden SSH Security
+
+```bash
+# Change the default SSH port to reduce bot noise
+sudo nano /etc/ssh/sshd_config
+```
+
+Find the line `#Port 22`, uncomment it, and change it to a number between 1024 and 65535 (e.g., `Port 22992`).
+**Save and exit nano.**
+
+```bash
+# Install and enable fail2ban to block brute force attacks
+sudo apt install fail2ban -y
+sudo systemctl enable fail2ban
+
+# Allow the new SSH port in the firewall
+sudo ufw allow 22992/tcp
+
+# IMPORTANT: Restart the SSH service for changes to take effect.
+# Do NOT close your BitVise window yet! Open a NEW BitVise session
+# and test connecting to the NEW PORT before closing this one.
+sudo systemctl restart sshd
+```
+
+**⚠️ Warning:** After this, you must specify the new port (e.g., `22992`) in the Port field in BitVise for all future
+connections.
+
+### 9. Upload Server Files via BitVise SFTP
+
+1. In your existing BitVise session, click the **New SFTP Window** button.
+2. In the SFTP window, navigate to the `/home/haloadmin/` directory.
+3. On your local computer, locate the extracted `HPC Server` or `HCE Server` folder.
+4. Drag and drop the entire server folder from your local machine into the `/home/haloadmin/` directory on the VPS. This
+   will take a few minutes.
+
+### 10. Final Setup via VNC Desktop
+
+1. Open **TightVNC Viewer** on your PC.
+2. Connect to `your.vps.ip.address:5901`.
+3. Enter the VNC password you created earlier.
+4. You should now see the XFCE desktop environment.
+5. Use the file manager to navigate to the server folder you uploaded (e.g., `HPC Server`).
+6. Inside, find the `Wine Launch Files` folder and double-click the `run.desktop` file.
+7. The first time you run it, Wine will prompt you to install Mono. **Click "Install"** and allow it to complete. The
+   server console window should open once finished.
+8. You can now configure your server by editing the `server.cfg` file in the main server directory.
+
+Your server should now be running and accessible to players. You can manage it via the VNC desktop. The VNC service will
+automatically restart if your VPS reboots.
