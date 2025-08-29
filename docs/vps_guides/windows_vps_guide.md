@@ -42,9 +42,8 @@ Evolved (PC) dedicated server using the SAPP mod. This method uses the native Wi
 3. Choose a server location closest to you and your players.
 4. Select a plan. The **$10/mo (1 vCPU, 2GB RAM)** plan is recommended.
 5. **Click the "Configure" button** on the bottom-right of the page.
-6. On the configuration page, under **Server Image**, select the **Server Application** tab.
-7. **Select `Windows 2022 Standard x64`** from the list.
-8. Click **Deploy Now**. Wait for the status to show "Running". This can take 10-15 minutes.
+6. On the next configuration page, select `Windows 2022 Standard x64` from the list.
+7. Click **Deploy Now**. Wait for the status to show "Running". This can take 10-15 minutes.
 
 ### 3. Retrieve Your Administrator Password
 
