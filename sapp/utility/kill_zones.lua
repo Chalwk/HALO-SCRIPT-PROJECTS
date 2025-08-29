@@ -29,7 +29,7 @@ local CONFIG = {
     -- MESSAGES:
     WARNING_MESSAGE = "Warning: Forbidden zone [%]!",
     KILL_MESSAGE = "%s was killed (in forbidden zone: %s)",
-    PREFIX = "SERVER",
+    PREFIX = "**SAPP**",
 
     -- KILL ZONE SETTINGS:
     -- team                 = Player Team: 'red', 'blue', 'FFA'
