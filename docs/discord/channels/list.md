@@ -1,21 +1,19 @@
-This chanel is your go-to resource for information on the official HSP **Halo: PC** servers. Each file contains full details on server mechanics, maps, game modes, and setup.
-
 **General Info:**
 
 * [About HSP Servers](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/docs/HSP_SERVERS/about.md) - Overview of all servers, setup, and resources.
+* The HSP Servers are currently hosted on **Halo: Custom Edition**.
+
+**Server IP:** `jericraft.net`
+**Ports:** `2301-2308`
 
 **Individual Servers:**
+* [HSP-Divide & Conquer](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/docs/HSP_SERVERS/servers/divide_and_conquer.md) - `2301` → #divide-and-conquer
+* [HSP-Gun Game](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/docs/HSP_SERVERS/servers/gun_game.md) - `2302` → #gun-game
+* [HSP-Kill Confirmed](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/docs/HSP_SERVERS/servers/kill_confirmed.md) - `2303` → #kill-confirmed
+* [HSP-Melee Attack](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/docs/HSP_SERVERS/servers/melee_attack.md) - `2304` → #melee-attack
+* [HSP-One in the Chamber](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/docs/HSP_SERVERS/servers/one_in_the_chamber.md) - `2305` → #one-in-the-chamber
+* [HSP-Rooster CTF](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/docs/HSP_SERVERS/servers/rooster_ctf.md) - `2306` → #rooster-ctf
+* [HSP-Snipers Dream Team](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/docs/HSP_SERVERS/servers/snipers_dream_team.md) - `2307` → #snipers-dream-team
+* [HSP-Tag](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/docs/HSP_SERVERS/servers/tag.md) - `2308` → #tag
 
-* [Divide & Conquer](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/docs/HSP_SERVERS/servers/divide_and_conquer.md)
-* [Gun Game](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/docs/HSP_SERVERS/servers/gun_game.md)
-* [Hunter/Prey](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/docs/HSP_SERVERS/servers/hunter_prey.md)
-* [Kill Confirmed](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/docs/HSP_SERVERS/servers/kill_confirmed.md)
-* [Market](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/docs/HSP_SERVERS/servers/market.md)
-* [Melee Brawl](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/docs/HSP_SERVERS/servers/melee_brawl.md)
-* [One in the Chamber](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/docs/HSP_SERVERS/servers/one_in_the_chamber.md)
-* [Rooster CTF](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/docs/HSP_SERVERS/servers/rooster_ctf.md)
-* [Sabotage](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/docs/HSP_SERVERS/servers/sabotage.md)
-* [Snipers Dream Team Mod](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/docs/HSP_SERVERS/servers/snipers_dream_team_mod.md)
-* [Tag](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/docs/HSP_SERVERS/servers/tag.md)
-* [Team Defender](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/docs/HSP_SERVERS/servers/team_defender.md)
-* [Zombies](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/docs/HSP_SERVERS/servers/zombies.md)
+Get the @HSP Servers role in #〔📜〕writ-of-allegiance to see real-time Halo server updates for the official HSP Halo servers.
