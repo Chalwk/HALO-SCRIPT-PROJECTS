@@ -4,7 +4,7 @@ The HSP **Halo: Custom Edition** servers provide a diverse range of exciting and
 players, foster competition, and provide endless fun. Whether you're a fan of strategic team-based gameplay, intense
 free-for-all action, or something in between, we have something for everyone.
 
-Here’s a quick overview of the current HSP **Halo: Custom Edition** servers:
+Here's a quick overview of the current HSP **Halo: Custom Edition** servers:
 
 | Game Mode                                               | Description                                                                                                                                                  | Server                 |
 |---------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------|
@@ -17,7 +17,7 @@ Here’s a quick overview of the current HSP **Halo: Custom Edition** servers:
 | **[Snipers Dream Team](servers/snipers_dream_team.md)** | A highly modded snipers game mode with unique features and gameplay mechanics.                                                                               | **jericraft.net:2307** |
 | **[Tag](servers/tag.md)**                               | A fast-paced and exciting variation of tag, where players must catch (melee) and eliminate each other in a thrilling chase.                                  | **jericraft.net:2308** |
 
-Each server offers a unique and custom experience, crafted to deliver the best possible gameplay. Whether you’re looking
+Each server offers a unique and custom experience, crafted to deliver the best possible gameplay. Whether you're looking
 to compete in a classic mode or try something completely new, HSP Halo servers are ready for you. Dive into the
 action and join us on any of the following servers today!
 

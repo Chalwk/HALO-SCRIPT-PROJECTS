@@ -38,5 +38,5 @@ The **One In The Chamber** mode runs Slayer on all Stock Maps.
 - **Master the Pistol**: You only have one bullet. Take your time to aim and make each shot count!
 - **Adapt to Melee**: If you miss your shot, be ready to quickly switch to melee combat, get in close and use your fists.
 - **Timing is Key**: Knowing when to take your shot or when to go for a melee kill is crucial to staying alive.
-- **Stay Calm**: With only one bullet, you can’t afford to panic. Keep your composure and you’ll be rewarded with more
+- **Stay Calm**: With only one bullet, you can't afford to panic. Keep your composure and you'll be rewarded with more
   ammo!

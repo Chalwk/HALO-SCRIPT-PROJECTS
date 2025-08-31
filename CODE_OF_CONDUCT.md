@@ -38,7 +38,7 @@ Examples of unacceptable behavior include:
 * Publishing others' private information (e.g., a physical or electronic address) without explicit permission
 * Other conduct that could reasonably be considered inappropriate in a professional setting
 
-## Maintainer’s Responsibilities
+## Maintainer's Responsibilities
 
 As the sole maintainer of this project, I am responsible for clarifying the standards of acceptable behavior and will take appropriate and fair corrective action in response to any instances of unacceptable behavior.
 

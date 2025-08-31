@@ -8,7 +8,7 @@
 - **Score Limit:** First team to **65** points wins.
 - **Points on Confirm:** **2 points** per dog tag collected.
 - **Despawn Time:** Dog tags despawn after **30 seconds**, but the time can be configured.
-- **Friendly Fire Blocked:** Friendly fire is disabled, so teammates can’t steal each other's dog tags.
+- **Friendly Fire Blocked:** Friendly fire is disabled, so teammates can't steal each other's dog tags.
 - **Suicide Penalty:** No points are deducted for suicides.
 - **Team Slayer:** This script is designed to run on *Team Slayer*.
 
@@ -47,5 +47,5 @@
 
 ---
 
-Ready to collect dog tags and prove your team’s superiority in **Kill Confirmed**? Get in the game and show off your skills!
+Ready to collect dog tags and prove your team's superiority in **Kill Confirmed**? Get in the game and show off your skills!
 

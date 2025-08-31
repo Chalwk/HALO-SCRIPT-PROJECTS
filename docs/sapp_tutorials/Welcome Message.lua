@@ -46,7 +46,7 @@ function OnScriptUnload() end
 --------------------------------------------------------------------------------
 -- Called whenever a new game starts
 function OnGameStart()
-    -- If the game hasn’t actually started yet, exit the function early
+    -- If the game hasn't actually started yet, exit the function early
     if get_var(0, '$gt') == 'n/a' then return end
 
     -- Update our internal state variables with the current map and mode

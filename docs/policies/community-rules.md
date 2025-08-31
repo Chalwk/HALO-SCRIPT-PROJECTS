@@ -30,10 +30,10 @@ free/shared VPNs. If you believe a ban was accidental (e.g., shared IP), contact
 | **No Harassment or Trolling**               | Respect all members. Do not troll, harass, or intimidate anyone on Discord, GitHub, or HSP Halo Servers. |
 | **No Impersonation**                        | Do not impersonate staff, community members, or HSP/related brands.                                      |
 | **No Scamming or Deception**                | Be honest in collaborations, trades, or Halo server/admin interactions.                                  |
-| **No Sharing Private Data**                 | Keep personal information (your own or others’) confidential.                                            |
+| **No Sharing Private Data**                 | Keep personal information (your own or others') confidential.                                            |
 | **No Controversial Topics**                 | Avoid discussions of politics, religion, or personal drama in public channels.                           |
 | **No Spam or Advertising**                  | Avoid excessive messages, irrelevant links, self-promotion, or unsolicited invites.                      |
-| **Respect Staff Instructions**              | Follow moderators’ directions on Discord, GitHub, or servers.                                            |
+| **Respect Staff Instructions**              | Follow moderators' directions on Discord, GitHub, or servers.                                            |
 | **No Bypassing Security or Filters**        | Do not circumvent moderation, anti-cheat, or bot filters.                                                |
 | **Respect Project & Server Boundaries**     | Do not alter scripts, repos, or servers without permission.                                              |
 | **No Malicious Code or Links**              | Sharing malware, trojans, or unsafe scripts is strictly prohibited.                                      |
@@ -98,8 +98,8 @@ Violations across **Discord, GitHub, or HSP Halo Servers** may escalate conseque
 
 **HSP Discord and GitHub are extensions of our HSP Halo Servers.** Treat them professionally, responsibly, and
 respectfully.
-Follow **common sense**, Discord’s [Terms of Service](https://discord.com/terms), and
-GitHub’s [Community Guidelines](https://docs.github.com/en/site-policy/github-community-guidelines).
+Follow **common sense**, Discord's [Terms of Service](https://discord.com/terms), and
+GitHub's [Community Guidelines](https://docs.github.com/en/site-policy/github-community-guidelines).
 
 Thank you for helping **Halo Script Projects** remain a collaborative, safe, and productive environment!
 
