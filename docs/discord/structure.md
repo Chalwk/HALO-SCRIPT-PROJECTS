@@ -57,5 +57,7 @@
 * ◉ COUNCIL CHAMBERS (hidden to the public - admin channels)
     * 〔🔒〕watchtower
         * Admin logs, moderation notes, and server oversight.
+    * 〔🔒〕halo_cmd_log
+        * Halo Server command logs (real-time)
     * 〔🎤〕Court's Echo
         * Private staff voice channel for discussions and planning.
