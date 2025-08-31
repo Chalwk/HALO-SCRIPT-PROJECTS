@@ -34,11 +34,19 @@
     * 〔🏆〕script-showcase
         * Highlight scripts you've written or customized from HSP.
 
-* ◉ HALO SERVERS
+* ◉ HSP SERVERS
     * 〔🔔〕updates
         * Announcements and updates for HSP servers.
     * 〔📚〕list
         * Details about official HSP Halo PC servers.
+    *  divide-and-conquer _(only users with @HSP SERVERS can see this)_
+    *  gun-game _(only users with @HSP SERVERS can see this)_
+    *  kill-confirmed _(only users with @HSP SERVERS can see this)_
+    *  melee-attack _(only users with @HSP SERVERS can see this)_
+    *  one-in-the-chamber _(only users with @HSP SERVERS can see this)_
+    *  rooster-ctf _(only users with @HSP SERVERS can see this)_
+    *  snipers-dream-team _(only users with @HSP SERVERS can see this)_
+    *  tag _(only users with @HSP SERVERS can see this)_
 
 * ◉ COMMS
     * 〔🎤〕General
