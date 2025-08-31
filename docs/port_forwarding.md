@@ -5,7 +5,7 @@ Port forwarding is essential to allow players outside your local network to conn
 
 ---
 
-### Step 1: Find Your Server’s Local IP Address
+### Step 1: Find Your Server's Local IP Address
 
 This step is identical regardless of your server's operating system. You need the local (LAN) IP address of the machine running the Halo server.
 
@@ -21,7 +21,7 @@ This step is identical regardless of your server's operating system. You need th
 
 ---
 
-### Step 2: Log Into Your Router’s Admin Page
+### Step 2: Log Into Your Router's Admin Page
 
 This step is performed from any web browser on a device connected to your network and is OS-agnostic.
 
