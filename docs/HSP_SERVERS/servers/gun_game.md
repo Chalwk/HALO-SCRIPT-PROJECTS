@@ -1,4 +1,4 @@
-# Gun Game - Game Mode
+# Gun Game
 
 ## 📝 Overview
 
@@ -65,7 +65,7 @@
 
 ## 📡 How to Connect
 
-* Open Halo: Combat Evolved.
+* Open Halo: Custom Edition.
 * Navigate to the Multiplayer section.
 * Join by:
     * Searching for **Gun Game**

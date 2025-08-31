@@ -1,8 +1,8 @@
-# Snipers Dream Team Mod (SDTM)
+# Snipers Dream Team
 
 ## 📝 Overview
 
-**Snipers Dream Team Mod (SDTM)** is a throwback to the good old days, originally created by Skelito circa 2006-2009. This version recreates the core elements of the classic mod, with explosive snipers, unique game mechanics, and powerful weapons. It's designed for Capture the Flag (CTF) game types but can be used on any mode.
+**Snipers Dream Team (SDTM)** is a throwback to the good old days, originally created by Skelito circa 2006-2009. This version recreates the core elements of the classic mod, with explosive snipers, unique game mechanics, and powerful weapons. It's designed for Capture the Flag (CTF) game types but can be used on any mode.
 
 Originally, SDTM was a series of modded maps with custom skins, visual enhancements, and custom portals. This modern version allows players to enjoy the gameplay without needing the original modded maps or skins, keeping the classic thrill intact.
 
@@ -27,11 +27,11 @@ SDTM supports all **stock maps** and includes custom mechanics tailored to these
 
 ---
 
-* Open Halo: Combat Evolved.
+* Open Halo: Custom Edition.
 * Navigate to the Multiplayer section.
 * Join by:
     * Searching for **Snipers Dream Team Mod**
-    * Direct IP: `jericraft.net:2310`
+    * Direct IP: `jericraft.net:2307`
 
 ---
 
@@ -39,8 +39,8 @@ SDTM supports all **stock maps** and includes custom mechanics tailored to these
 
 - **Use the Teleports:** Find and use the custom hidden teleports on each map to get the drop on your opponents.
 - **Master the Explosive Snipers:** With explosive bullets and splash damage, aim wisely to maximize destruction!
-- **Vehicle Buffs:** The rocket hog's upgraded power can give you the boost you need—literally. Use it for some epic hogatapult moments!
-- **Grenades for Distance:** Toss grenades with extreme distance—perfect for clearing out enemies or setting traps.
+- **Vehicle Buffs:** The rocket hog's upgraded power can give you the boost you need, literally. Use it for some epic hogatapult moments!
+- **Grenades for Distance:** Toss grenades with extreme distance, perfect for clearing out enemies or setting traps.
 - **Have Fun with Teabags:** Get in on the action with the custom teabag feature for a laugh!
 
 ---

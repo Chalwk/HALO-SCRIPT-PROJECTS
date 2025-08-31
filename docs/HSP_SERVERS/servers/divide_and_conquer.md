@@ -1,4 +1,4 @@
-# Divide and Conquer - Game Mode
+# Divide and Conquer
 
 ## 📝 Overview
 
@@ -42,7 +42,7 @@ The **Divide and Conquer** mode can be played across a variety of maps. The serv
 
 ## 📡 How to Connect
 
-* Open Halo: Combat Evolved.
+* Open Halo: Custom Edition.
 * Navigate to the Multiplayer section. 
 * Join by: 
   * Searching for **Divide & Conquer**

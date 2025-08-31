@@ -1,4 +1,4 @@
-# One In The Chamber - Game Mode
+# One In The Chamber
 
 ## 📝 Overview
 
@@ -14,7 +14,7 @@ for the kill**.
 - **Melee Combat on Miss**: If you miss, you must resort to melee combat until you get another kill.
 - **Ammo Per Kill**: Successfully eliminating an enemy rewards you with a bullet for your pistol.
 - **No Grenades, No Vehicles**: Grenades and vehicles are completely disabled in this mode.
-- **Tactical Play**: It's all about **precision** and **timing**—you need to know when to shoot and when to close in for
+- **Tactical Play**: It's all about **precision** and **timing**, you need to know when to shoot and when to close in for
   a melee kill.
 
 ---
@@ -25,18 +25,18 @@ The **One In The Chamber** mode runs Slayer on all Stock Maps.
 
 ---
 
-* Open Halo: Combat Evolved.
+* Open Halo: Custom Edition.
 * Navigate to the Multiplayer section.
 * Join by:
     * Searching for **One In The Chamber**
-    * Direct IP: `jericraft.net:2307`
+    * Direct IP: `jericraft.net:2305`
 
 ---
 
 ## 💡 Tips for Success
 
 - **Master the Pistol**: You only have one bullet. Take your time to aim and make each shot count!
-- **Adapt to Melee**: If you miss your shot, be ready to quickly switch to melee combat—get in close and use your fists.
+- **Adapt to Melee**: If you miss your shot, be ready to quickly switch to melee combat, get in close and use your fists.
 - **Timing is Key**: Knowing when to take your shot or when to go for a melee kill is crucial to staying alive.
 - **Stay Calm**: With only one bullet, you can’t afford to panic. Keep your composure and you’ll be rewarded with more
   ammo!

@@ -1,4 +1,4 @@
-# Tag - Game Mode
+# Tag
 
 ## 📝 Overview
 
@@ -39,18 +39,18 @@ A game starts when a player is whacked to become "it" (the tagger). The tagger's
 
 ---
 
-* Open Halo: Combat Evolved.
+* Open Halo: Custom Edition.
 * Navigate to the Multiplayer section.
 * Join by:
     * Searching for **Tag**
-    * Direct IP: `jericraft.net:2311`
+    * Direct IP: `jericraft.net:2308`
 
 ---
 
 ## 💡 Tips for Success
 
 - **As a Runner:** Use the plasma rifle to slow down the tagger and gain time to accumulate points. Stay mobile and try to avoid getting caught!
-- **As a Tagger:** Take advantage of your speed boost to chase down and tag runners. Timing your attacks is key—tag them before the turn time runs out!
+- **As a Tagger:** Take advantage of your speed boost to chase down and tag runners. Timing your attacks is key, tag them before the turn time runs out!
 - **Map Knowledge:** On medium and small maps, the layout can make a huge difference. Learn the best hiding spots and chokepoints to outwit your opponents.
 
 ---
