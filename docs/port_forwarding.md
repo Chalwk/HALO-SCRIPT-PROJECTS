@@ -71,7 +71,7 @@ You need to forward **both ports** below for the server to work correctly. Creat
 >
 > **If you play Halo on the same PC as your server**, you must avoid a port conflict. To do this:
 > 1.  Launch Halo Custom Edition.
-> 2.  Go to **Settings → Network Setup**.
+> 2.  Go to **Settings -> Network Setup**.
 > 3.  Set your **Client Port** to `0`. This lets Halo choose a random, unused port.
       > This ensures your game client and server aren't both trying to use the same port number.
 
