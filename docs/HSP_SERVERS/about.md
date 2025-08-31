@@ -1,26 +1,21 @@
 # HSP Halo Servers Overview
 
-The HSP **Halo: Combat Evolved** servers provide a diverse range of exciting and unique game modes designed to challenge
+The HSP **Halo: Custom Edition** servers provide a diverse range of exciting and unique game modes designed to challenge
 players, foster competition, and provide endless fun. Whether you're a fan of strategic team-based gameplay, intense
 free-for-all action, or something in between, we have something for everyone.
 
-Here’s a quick overview of the current HSP **Halo: Combat Evolved** servers:
+Here’s a quick overview of the current HSP **Halo: Custom Edition** servers:
 
 | Game Mode                                               | Description                                                                                                                                                  | Server                 |
 |---------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------|
 | **[Divide & Conquer](servers/divide_and_conquer.md)**   | A dynamic game mode where each team works to recruit opponents after eliminating them, with the game ending when one team is fully converted.                | **jericraft.net:2301** |
 | **[Gun Game](servers/gun_game.md)**                     | Start with basic weapons and upgrade after each kill, aiming to reach the top weapon and claim victory.                                                      | **jericraft.net:2302** |
-| **[Hunter Prey](servers/hunter_prey.md)**               | A survival-based game mode where players fight to control the flag at the center of the map. The player who holds the flag the longest wins.                 | **jericraft.net:2303** |
-| **[Kill Confirmed](servers/kill_confirmed.md)**         | Score points by eliminating enemies and collecting their dog tags (skulls), ensuring kills count towards your team's score.                                  | **jericraft.net:2304** |
-| **[Market](servers/market.md)**                         | A unique server with an in-game economy, allowing players to buy weapons and gear to take down their opponents.                                              | **jericraft.net:2305** |
-| **[Melee Brawl](servers/melee_attack.md)**               | A mode focused entirely on close combat, where players only use melee attacks to fight their enemies.                                                        | **jericraft.net:2306** |
-| **[One In The Chamber](servers/one_in_the_chamber.md)** | Players only have one bullet per life, and must use their wits to outsmart and eliminate opponents without wasting ammo.                                     | **jericraft.net:2307** |
-| **[Rooster CTF](servers/rooster_ctf.md)**               | A CTF mode for Slayer (FFA/Team), where players fight to capture a single flag and return it to either the Red or Blue Base to score.                        | **jericraft.net:2308** |
-| **[Sabotage](servers/sabotage.md)**                     | Players must work to plant explosives and sabotage the opposing team’s objectives while defending their own.                                                 | **jericraft.net:2309** |
-| **[Snipers Dream Team Mod](snipers_dream_team_mod.md)** | A highly modded snipers game mode with unique features and gameplay mechanics.                                                                               | **jericraft.net:2310** |
-| **[Tag](servers/Tag.md)**                               | A fast-paced and exciting variation of tag, where players must catch (melee) and eliminate each other in a thrilling chase.                                  | **jericraft.net:2311** |
-| **[Team Defender](servers/team_defender.md)**           | One player holds the flag while their team defends them. Keep the flag for double points. The flag respawns every 15 seconds if dropped, requiring teamwork. | **jericraft.net:2312** |
-| **[Zombies](servers/zombies.md)**                       | A unique twist on the classic zombies mode, where Humans (Red Team) must survive while Zombies (Blue Team) aim to infect and convert them.                   | **jericraft.net:2313** |
+| **[Kill Confirmed](servers/kill_confirmed.md)**         | Score points by eliminating enemies and collecting their dog tags (skulls), ensuring kills count towards your team's score.                                  | **jericraft.net:2303** |
+| **[Melee Attack](servers/melee_attack.md)**             | A mode focused entirely on close combat, where players only use melee attacks to fight their enemies.                                                        | **jericraft.net:2304** |
+| **[One In The Chamber](servers/one_in_the_chamber.md)** | Players only have one bullet per life, and must use their wits to outsmart and eliminate opponents without wasting ammo.                                     | **jericraft.net:2305** |
+| **[Rooster CTF](servers/rooster_ctf.md)**               | A CTF mode for Slayer (FFA/Team), where players fight to capture a single flag and return it to either the Red or Blue Base to score.                        | **jericraft.net:2306** |
+| **[Snipers Dream Team](servers/snipers_dream_team.md)** | A highly modded snipers game mode with unique features and gameplay mechanics.                                                                               | **jericraft.net:2307** |
+| **[Tag](servers/tag.md)**                               | A fast-paced and exciting variation of tag, where players must catch (melee) and eliminate each other in a thrilling chase.                                  | **jericraft.net:2308** |
 
 Each server offers a unique and custom experience, crafted to deliver the best possible gameplay. Whether you’re looking
 to compete in a classic mode or try something completely new, HSP Halo servers are ready for you. Dive into the
@@ -33,7 +28,7 @@ gaming!
 
 # Halo Server Scripts
 
-All **HSP** servers for **Halo: Combat Evolved** are equipped with several custom scripts designed to improve
+All **HSP** servers for **Halo: Custom Edition** are equipped with several custom scripts designed to improve
 gameplay, ensure fair play, and enhance the overall server experience. Below is a list of the scripts running on all of
 our servers:
 
