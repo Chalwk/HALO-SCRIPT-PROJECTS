@@ -12,6 +12,7 @@ To provide a central hub for server administrators and operators (using **SAPP**
 * :tools: **Get Support:** Report bugs and receive troubleshooting assistance
 * :video_game: **Share Knowledge:** Exchange tips, game modes, and server configs with other admins
 * :handshake: **Network:** Connect with a community of dedicated Halo server operators
+* :performing_arts: **Roles:** See #〔📜〕writ-of-allegiance for self-assignable roles.
 
 **Official HSP Servers**
 Join the dedicated **Halo game servers** to see scripts in action and play with the community.
