@@ -67,7 +67,7 @@ You need to forward **both ports** below for the server to work correctly. Creat
 | **Internal IP**   | `Your server's local IP (from Step 1)` |
 
 > **⚠️ Important Note on Ports:**
-> The server port can be **any 4-digit number** (e.g., 2305, 2310, 2400), but it **must match** the port set in your `server.txt` or SAPP/Phasor configuration.
+> The server port can be **any 4-digit number** (e.g., 2305, 2310, 2400), but it **must match** your servers port in the SAPP/Phasor configuration.
 >
 > **If you play Halo on the same PC as your server**, you must avoid a port conflict. To do this:
 > 1.  Launch Halo Custom Edition.
