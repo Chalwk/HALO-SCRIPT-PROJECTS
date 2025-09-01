@@ -13,7 +13,6 @@ LICENSE:          MIT License
 =====================================================================================
 ]]
 
-
 -- Config Start ---------------------------------------------------------------
 local CLAN_TAG = 'LIB-'
 local OFFICIAL_MEMBERS = {              -- table of authorised members
