@@ -958,6 +958,12 @@
       "description": "Modifies spawn system to ensure players only spawn at their team's designated locations in Team Slayer game modes. Reads map spawn points and assigns them by team.",
       "filename": "t_slayer_team_spawns.lua"
     },
+    "tag_enforcer": {
+      "title": "Tag Enforcer",
+      "shortDescription": "Blocks unauthorized players from using the clan tag.",
+      "description": "This script enforces the use of a specific clan tag by verifying players against a whitelist of approved members. If a player attempts to join with the clan tag but their IP or hash is not recognized, they are automatically kicked before joining. This prevents impersonation and ensures only official members can represent the clan.",
+      "filename": "tag_enforcer.lua"
+    },
     "team_chat": {
       "title": "Team Chat",
       "shortDescription": "Private team communication system with invite functionality",
