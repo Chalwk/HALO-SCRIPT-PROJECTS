@@ -5,134 +5,157 @@ DESCRIPTION:      Manages persistent vehicle spawns with:
                   - Automatic respawning of moved vehicles
                   - Map-specific vehicle configurations
                   - Occupancy detection
-
-FEATURES:
                   - Configurable respawn timers
                   - Movement threshold detection
                   - Multi-map support
                   - Gametype-specific setups
 
-CONFIGURATION:    Edit the VehicleSpawner.maps table to:
-                  - Add vehicles per map/gametype
-                  - Set spawn coordinates and rotation
-                  - Configure respawn behavior (time/radius)
-
-Copyright (c) 2022 Jericho Crosby (Chalwk)
+Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 ===============================================================================
 ]]
 
-local VehicleSpawner = {
-    vehicles = {},
-    maps = {
-        ['bloodgulch'] = {
-            ['Race'] = {
-                { 'vehi', 'vehicles\\warthog\\mp_warthog', 66.580, -120.474, 0.064, 6.588, 30, 1 },
-                { 'vehi', 'vehicles\\banshee\\banshee_mp', 78.099, -131.189, -0.035, 0.300, 30, 1 },
-            },
-        },
-        -- Add other maps and game modes here...
-    }
-}
-
 api_version = '1.12.0.0'
 
-function OnScriptLoad()
-    register_callback(cb['EVENT_GAME_START'], 'OnStart')
-    register_callback(cb['EVENT_GAME_END'], 'OnEnd')
-    OnStart()
+-- Config start ----------------------------------------
+local VEHICLES = {
+    bloodgulch = {
+        ['Race'] = {
+            { 'vehi', 'vehicles\\warthog\\mp_warthog', 66.580, -120.474, 0.064, 6.588, 30, 1 },
+            { 'vehi', 'vehicles\\banshee\\banshee_mp', 78.099, -131.189, -0.035, 0.300, 30, 1 },
+            -- Add more vehicles here...
+        }
+    }
+    -- Add more maps here...
+}
+-- Config end ------------------------------------------
+
+local os_time = os.time
+local table_insert = table.insert
+local vehicles = {} -- Active vehicle instances
+local Vehicle = {}  -- Vehicle metatable
+
+local get_object_memory, destroy_object, spawn_object, lookup_tag, read_dword =
+    get_object_memory, destroy_object, spawn_object, lookup_tag, read_dword
+
+local player_present, player_alive, get_dynamic_player, read_vector3d = player_present, player_alive, get_dynamic_player,
+    read_vector3d
+
+function Vehicle:new(data)
+    setmetatable(data, self)
+    self.__index = self
+    return data
 end
 
-function OnScriptUnload()
-    -- N/A
-end
-
-function OnStart()
-    if get_var(0, '$gt') ~= 'n/a' then
-        VehicleSpawner:Initialize()
+function Vehicle:spawn()
+    if self.object then
+        destroy_object(self.object)
     end
+    self.object = spawn_object('', '', self.x, self.y, self.z, self.yaw, self.meta_id)
 end
 
-function OnEnd()
-    unregister_callback(cb['EVENT_TICK'])
+local function getTag(class, name)
+    local tag = lookup_tag(class, name)
+    return tag ~= 0 and read_dword(tag + 0xC) or nil
 end
 
-local function IsOccupied(obj)
+local function isOccupied(vehicleObj)
     for i = 1, 16 do
-        local dyn = get_dynamic_player(i)
-        if player_present(i) and player_alive(i) and dyn ~= 0 then
-            local vehicle = read_dword(dyn + 0x11C)
-            local object = get_object_memory(vehicle)
-            if object ~= 0 and vehicle ~= 0xFFFFFFFF and object == obj then
-                return true
+        if player_present(i) and player_alive(i) then
+            local dyn = get_dynamic_player(i)
+            if dyn ~= 0 then
+                local v_id = read_dword(dyn + 0x11C)
+                if v_id ~= 0xFFFFFFFF then
+                    local v_obj = get_object_memory(v_id)
+                    if v_obj ~= 0 and v_obj == vehicleObj then
+                        return true
+                    end
+                end
             end
         end
     end
     return false
 end
 
-local function CalculateDistance(x1, y1, z1, x2, y2, z2)
-    return math.sqrt((x1 - x2) ^ 2 + (y1 - y2) ^ 2 + (z1 - z2) ^ 2)
+local function hasMoved(v, obj)
+    local cx, cy, cz = read_vector3d(obj + 0x5C)
+    local dx, dy, dz = v.x - cx, v.y - cy, v.z - cz
+    local dist2 = dx * dx + dy * dy + dz * dz
+    return dist2 > (v.respawn_radius * v.respawn_radius)
 end
 
 function CheckVehicles()
-    for _, v in pairs(VehicleSpawner.vehicles) do
-        local object = get_object_memory(v.object)
-        if object ~= 0 and not IsOccupied(object) then
-            local x, y, z = read_vector3d(object + 0x5C)
-            local distance = CalculateDistance(v.x, v.y, v.z, x, y, z)
-            if distance > v.respawn_radius then
-                if not v.delay then
-                    v.delay = os.clock() + v.respawn_time
-                elseif os.clock() >= v.delay then
-                    v.delay = nil
-                    v:Spawn()
-                end
-            else
+    local now = os_time()
+    for _, v in pairs(vehicles) do
+        local obj = get_object_memory(v.object)
+        if obj == 0 then
+            v:spawn()
+            goto continue
+        end
+        if isOccupied(obj) then
+            v.delay = nil
+            goto continue
+        end
+
+        if hasMoved(v, obj) then
+            v.delay = v.delay or (now + v.respawn_time)
+            if now >= v.delay then
+                v:spawn()
                 v.delay = nil
             end
+        else
+            v.delay = nil
         end
+
+        ::continue::
     end
 end
 
-local function GetTag(Class, Name)
-    local tag = lookup_tag(Class, Name)
-    return (tag ~= 0 and read_dword(tag + 0xC)) or nil
-end
+local function initVehicles()
+    vehicles   = {}
 
-function VehicleSpawner:Initialize()
-    self.vehicles = {}
-
-    local map = get_var(0, '$map')
+    local map  = get_var(0, '$map')
     local mode = get_var(0, '$mode')
+    local cfg  = VEHICLES[map] and VEHICLES[map][mode]
 
-    if self.maps[map] and self.maps[map][mode] then
-        for _, v in ipairs(self.maps[map][mode]) do
-            local class, name, x, y, z, rotation, respawn_time, respawn_radius = unpack(v)
-            local tag = GetTag(class, name)
-            if tag then
-                table.insert(self.vehicles, self:NewVehicle({
-                    x = x, y = y, z = z, rotation = rotation,
-                    meta_id = tag, respawn_time = respawn_time, respawn_radius = respawn_radius
-                }))
-            end
+    if not cfg then return end
+
+    for _, entry in ipairs(cfg) do
+        local class, tag, x, y, z, yaw, respawn_time, radius = unpack(entry)
+        local meta_id = getTag(class, tag)
+        if meta_id then
+            local v = Vehicle:new({
+                x = x,
+                y = y,
+                z = z,
+                yaw = yaw,
+                meta_id = meta_id,
+                respawn_time = respawn_time,
+                respawn_radius = radius
+            })
+            v:spawn()
+            table_insert(vehicles, v)
         end
-        register_callback(cb['EVENT_TICK'], 'CheckVehicles')
+    end
+
+    register_callback(cb['EVENT_TICK'], 'CheckVehicles')
+end
+
+function OnScriptLoad()
+    register_callback(cb['EVENT_GAME_START'], 'OnGameStart')
+    register_callback(cb['EVENT_GAME_END'], 'OnGameEnd')
+    OnGameStart()
+end
+
+function OnGameStart()
+    if get_var(0, '$gt') ~= 'n/a' then
+        initVehicles()
     end
 end
 
-function VehicleSpawner:NewVehicle(o)
-    o = o or {}
-    setmetatable(o, self)
-    self.__index = self
-    o:Spawn()
-    return o
+function OnGameEnd()
+    unregister_callback(cb['EVENT_TICK'])
 end
 
-function VehicleSpawner:Spawn()
-    if self.object then
-        destroy_object(self.object)
-    end
-    self.object = spawn_object('', '', self.x, self.y, self.z, self.rotation, self.meta_id)
-end
+function OnScriptUnload() end
