@@ -294,12 +294,6 @@
       "description": "Modifies all grenade types to temporarily slow victims on explosion. Features different duration effects for frag, plasma, and stuck plasma grenades.",
       "filename": "stun_grenades.lua"
     },
-    "super_bloodgulch": {
-      "title": "Super Bloodgulch",
-      "shortDescription": "Enhanced weapons and vehicles",
-      "description": "Overhauls weapon and vehicle stats for an intense gameplay experience. Modifies damage, projectile speed, explosion radius, and other properties for most weapons and vehicles in the game.",
-      "filename": "super_bloodgulch.lua"
-    },
     "super_jump": {
       "title": "Super Jump",
       "shortDescription": "Enhanced jumping with cooldown",
@@ -464,6 +458,13 @@
       "description": "Intense close-quarters and long-range combat featuring:\n- Exclusive shotgun and sniper rifle gameplay\n- All other weapons and vehicles disabled\n- Equipment (grenades/powerups) remains active\n- Configurable weapon settings:\n  * Infinite ammo toggle\n  * Bottomless clip option\n  * Damage modifiers\n- Automatic weapon assignment on spawn",
       "filename": "shotty_snipes.lua"
     },
+    "snipers_dream_team": {
+      "title": "Snipers Dream Team",
+      "shortDescription": "Comprehensive weapon and vehicle overhaul mod for Halo, enhancing projectile physics, damage, and explosion effects.",
+      "description": "This Lua script modifies core gameplay by overhauling 20+ weapons and vehicle armaments. It includes enhancements to projectile physics, custom explosion effects, weapon-specific modifications (AR, Pistol, Sniper, etc.), vehicle weapon upgrades (Warthog, Scorpion, Banshee), and grenade behavior tweaks. Technical implementation relies on direct memory modification of game tags and supports most game modes without external dependencies. Includes global gameplay tweaks while preserving overall balance, but it is not recommended for competitive play.",
+      "filename": "snipers_dream_team.lua"
+    },
+
     "survival_slayer": {
       "title": "Survival Slayer",
       "shortDescription": "Time-based survival with kill rewards",
