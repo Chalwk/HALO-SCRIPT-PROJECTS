@@ -995,6 +995,12 @@
       "description": "Configurable punishment system for team betrayals and friendly fire incidents. Features progressive warnings, multiple punishment actions (kill/kick/crash), customizable thresholds, and detailed offense logging with player notifications.",
       "filename": "the_punisher.lua"
     },
+    "timed_authentication": {
+      "title": "Timed Authentication",
+      "shortDescription": "Requires players with the clan tag to authenticate within a time limit.",
+      "description": "When a player joins with the clan tag (e.g. LIB-) in their name, they are prompted to type a secret phrase in chat within a configurable number of seconds. If they succeed, they may stay; if they fail or ignore the prompt, they are automatically kicked. This provides a lightweight form of access control for clan tags.",
+      "filename": "timed_authentication.lua"
+    },
     "timed_server_password": {
       "title": "Timed Password System",
       "shortDescription": "Automatic password removal after configurable duration",
