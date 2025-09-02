@@ -20,7 +20,7 @@ LICENSE:          MIT License
 
 -- Configuration starts here -----------------------------------------------------------------------
 local CONFIG = {
-    LOG_FILE = 'Server Log.txt',
+    LOG_FILE = 'server_log.txt',
     DATE_FORMAT = '!%a, %d %b %Y %H:%M:%S',
     EVENTS = {
         ['OnScriptLoad'] = {

@@ -92,7 +92,7 @@ This directive causes SAPP to:
 1.  Load its instance-specific configuration from `%path%\sapp\` (e.g., `mapcycle.txt`).
 2.  Inherently and simultaneously pull global, shared data from the `../sapp` folder relative to the executable's location for files like `admins.txt`.
 
-This is not a fallback mechanism; it is a deliberate, fixed feature of SAPP that your structure leverages optimally. This clear separation is what makes your architecture not just clever, but **robust and professional**.
+This is not a fallback mechanism; it is a deliberate, fixed feature of SAPP that your structure leverages optimally. This clear separation is what makes the architecture not just clever, but **robust and professional**.
 
 **Configuration Simplicity:** With this environment variable approach, configuring a new server batch file requires changing only two values:
 1. The config directory name in the `path` variable
