@@ -41,12 +41,19 @@ LICENSE:          MIT License
 
 api_version = '1.12.0.0'
 
-local shell_explosion
+local shell_explosion, rocket_explosion
 local shell_explosion_jpt = { 'jpt!', 'vehicles\\scorpion\\shell explosion' }
+local rocket_explosion_jpt = { 'jpt!', 'weapons\\rocket launcher\\explosion' }
 
 local function getTagID(class, name)
     local tag = lookup_tag(class, name)
     return tag ~= 0 and read_dword(tag + 0xC) or nil
+end
+
+local function inVehicle(playerId)
+    local dyn_player = get_dynamic_player(playerId)
+    if dyn_player == 0 then return false end
+    return read_dword(dyn_player + 0x11C) ~= 0xFFFFFFFF
 end
 
 local function swap(address, toTag, toClass, tagAddress, tagCount)
@@ -589,14 +596,18 @@ end
 function OnStart()
     if get_var(0, '$gt') == 'n/a' then return end
     shell_explosion = getTagID(shell_explosion_jpt[1], shell_explosion_jpt[2])
-    if shell_explosion then
+    rocket_explosion = getTagID(rocket_explosion_jpt[1], rocket_explosion_jpt[2])
+    if shell_explosion and rocket_explosion then
         modifyTags()
     end
 end
 
 function OnDamage(playerIndex, causer, metaId)
-    if tonumber(playerIndex) == tonumber(causer) and metaId == shell_explosion then
-        return false
+    playerIndex = tonumber(playerIndex)
+    causer = tonumber(causer)
+
+    if playerIndex == causer and (metaId == shell_explosion or (metaId == rocket_explosion and inVehicle(causer))) then
+        return false  -- block this damage
     end
 end
 
