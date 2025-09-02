@@ -41,7 +41,8 @@ LICENSE:          MIT License
 
 api_version = '1.12.0.0'
 
-local shell_explosion = { 'jpt!', 'vehicles\\scorpion\\shell explosion' }
+local shell_explosion
+local shell_explosion_jpt = { 'jpt!', 'vehicles\\scorpion\\shell explosion' }
 
 local function getTagID(class, name)
     local tag = lookup_tag(class, name)
@@ -71,8 +72,16 @@ local function modifyTags()
             class = 2003132784,
             name = 'weapons\\pistol\\pistol',
             offsets = {
-                [0x308] = 32, [0x3e0] = 1082130432, [0x71c] = 34340864, [0x720] = 1573114,
-                [0x730] = 24, [0x7a8] = 1103626240, [0x7ac] = 1103626240, [0x7c4] = 0, [0x820] = 841731191, [0x824] = 869711765
+                [0x308] = 32,
+                [0x3e0] = 1082130432,
+                [0x71c] = 34340864,
+                [0x720] = 1573114,
+                [0x730] = 24,
+                [0x7a8] = 1103626240,
+                [0x7ac] = 1103626240,
+                [0x7c4] = 0,
+                [0x820] = 841731191,
+                [0x824] = 869711765
             }
         },
         {
@@ -89,8 +98,12 @@ local function modifyTags()
             class = 1785754657,
             name = 'weapons\\pistol\\bullet',
             offsets = {
-                [0x1d0] = 1133903872, [0x1d4] = 1133903872, [0x1d8] = 1133903872,
-                [0x1e4] = 1065353216, [0x1ec] = 1041865114, [0x1f4] = 1073741824
+                [0x1d0] = 1133903872,
+                [0x1d4] = 1133903872,
+                [0x1d8] = 1133903872,
+                [0x1e4] = 1065353216,
+                [0x1ec] = 1041865114,
+                [0x1f4] = 1073741824
             }
         },
         {
@@ -110,8 +123,12 @@ local function modifyTags()
             class = 1785754657,
             name = 'vehicles\\scorpion\\shell explosion',
             offsets = {
-                [0x0] = 1073741824, [0x4] = 1081081856, [0xcc] = 1061158912, [0xd4] = 1011562294,
-                [0x1d0] = 1131413504, [0x1f4] = 1092091904
+                [0x0] = 1073741824,
+                [0x4] = 1081081856,
+                [0xcc] = 1061158912,
+                [0xd4] = 1011562294,
+                [0x1d0] = 1131413504,
+                [0x1f4] = 1092091904
             }
         },
         {
@@ -138,8 +155,12 @@ local function modifyTags()
             class = 2003132784,
             name = 'vehicles\\rwarthog\\rwarthog_gun',
             offsets = {
-                [0x64c] = 655294464, [0x650] = 1320719, [0x660] = 20,
-                [0x6c0] = 993039, [0x6d0] = 15, [0x794] = 131072
+                [0x64c] = 655294464,
+                [0x650] = 1320719,
+                [0x660] = 20,
+                [0x6c0] = 993039,
+                [0x6d0] = 15,
+                [0x794] = 131072
             }
         },
         {
@@ -151,8 +172,14 @@ local function modifyTags()
             class = 1785754657,
             name = 'weapons\\rocket launcher\\explosion',
             offsets = {
-                [0x0] = 1077936128, [0x4] = 1080033280, [0xcc] = 1061158912, [0xd4] = 1011562294,
-                [0x1d0] = 1120403456, [0x1d4] = 1137180672, [0x1d8] = 1137180672, [0x1f4] = 1094713344
+                [0x0] = 1077936128,
+                [0x4] = 1080033280,
+                [0xcc] = 1061158912,
+                [0xd4] = 1011562294,
+                [0x1d0] = 1120403456,
+                [0x1d4] = 1137180672,
+                [0x1d8] = 1137180672,
+                [0x1f4] = 1094713344
             }
         },
         {
@@ -183,8 +210,12 @@ local function modifyTags()
             class = 1785754657,
             name = 'vehicles\\banshee\\banshee bolt',
             offsets = {
-                [0x0] = 1082130432, [0x4] = 1084227584, [0x1d0] = 1125515264,
-                [0x1d4] = 1125515264, [0x1d8] = 1125515264, [0x1f4] = 1069547520
+                [0x0] = 1082130432,
+                [0x4] = 1084227584,
+                [0x1d0] = 1125515264,
+                [0x1d4] = 1125515264,
+                [0x1d8] = 1125515264,
+                [0x1f4] = 1069547520
             }
         },
         {
@@ -206,8 +237,10 @@ local function modifyTags()
             class = 1785754657,
             name = 'weapons\\shotgun\\pellet',
             offsets = {
-                [0x1d0] = 1137213440, [0x1d4] = 1140490240,
-                [0x1d8] = 1142308864, [0x1f4] = 1077936128
+                [0x1d0] = 1137213440,
+                [0x1d4] = 1140490240,
+                [0x1d8] = 1142308864,
+                [0x1f4] = 1077936128
             }
         },
         {
@@ -224,8 +257,14 @@ local function modifyTags()
             class = 1785754657,
             name = 'weapons\\frag grenade\\explosion',
             offsets = {
-                [0x0] = 1073741824, [0x4] = 1083703296, [0xcc] = 1061158912, [0xd4] = 1011562294,
-                [0x1d0] = 1131413504, [0x1d4] = 1135575040, [0x1d8] = 1135575040, [0x1f4] = 1092091904
+                [0x0] = 1073741824,
+                [0x4] = 1083703296,
+                [0xcc] = 1061158912,
+                [0xd4] = 1011562294,
+                [0x1d0] = 1131413504,
+                [0x1d4] = 1135575040,
+                [0x1d8] = 1135575040,
+                [0x1f4] = 1092091904
             }
         },
         {
@@ -257,8 +296,11 @@ local function modifyTags()
             class = 1785754657,
             name = 'weapons\\sniper rifle\\melee',
             offsets = {
-                [0xcc] = 1061158912, [0xd4] = 1011562294,
-                [0x1d0] = 1148846080, [0x1d4] = 1148846080, [0x1d8] = 1148846080
+                [0xcc] = 1061158912,
+                [0xd4] = 1011562294,
+                [0x1d0] = 1148846080,
+                [0x1d4] = 1148846080,
+                [0x1d8] = 1148846080
             }
         },
         {
@@ -273,7 +315,8 @@ local function modifyTags()
                 write_dword(tag_data + 0x1e8, 1114636288)
                 write_dword(tag_data + 0x1f0, 2)
                 write_dword(tag_data + 0x208, 1078308640)
-                swap(tag_data + 0x210, 'sound\\sfx\\impulse\\impacts\\scorpion_projectile', 1936614433, tag_address, tag_count)
+                swap(tag_data + 0x210, 'sound\\sfx\\impulse\\impacts\\scorpion_projectile', 1936614433, tag_address,
+                    tag_count)
                 write_dword(tag_data + 0x228, 0)
                 write_dword(tag_data + 0x230, 4294967295)
                 write_dword(tag_data + 0x244, 1081053164)
@@ -306,22 +349,26 @@ local function modifyTags()
                 write_dword(tag_data + 0x5bc, 0)
                 write_dword(tag_data + 0x5c4, 4294967295)
                 write_dword(tag_data + 0x620, 1078309614)
-                swap(tag_data + 0x628, 'weapons\\rocket launcher\\effects\\impact metal', 1701209701, tag_address, tag_count)
+                swap(tag_data + 0x628, 'weapons\\rocket launcher\\effects\\impact metal', 1701209701, tag_address,
+                    tag_count)
                 write_dword(tag_data + 0x654, 65536)
                 write_dword(tag_data + 0x65c, 0)
                 write_dword(tag_data + 0x664, 4294967295)
                 write_dword(tag_data + 0x6c0, 1078309614)
-                swap(tag_data + 0x6c8, 'weapons\\rocket launcher\\effects\\impact metal', 1701209701, tag_address, tag_count)
+                swap(tag_data + 0x6c8, 'weapons\\rocket launcher\\effects\\impact metal', 1701209701, tag_address,
+                    tag_count)
                 write_dword(tag_data + 0x6f4, 65536)
                 write_dword(tag_data + 0x6fc, 0)
                 write_dword(tag_data + 0x704, 4294967295)
                 write_dword(tag_data + 0x760, 1078309614)
-                swap(tag_data + 0x768, 'weapons\\rocket launcher\\effects\\impact metal', 1701209701, tag_address, tag_count)
+                swap(tag_data + 0x768, 'weapons\\rocket launcher\\effects\\impact metal', 1701209701, tag_address,
+                    tag_count)
                 write_dword(tag_data + 0x794, 65536)
                 write_dword(tag_data + 0x79c, 0)
                 write_dword(tag_data + 0x7a4, 4294967295)
                 write_dword(tag_data + 0x800, 1078309614)
-                swap(tag_data + 0x808, 'weapons\\rocket launcher\\effects\\impact metal', 1701209701, tag_address, tag_count)
+                swap(tag_data + 0x808, 'weapons\\rocket launcher\\effects\\impact metal', 1701209701, tag_address,
+                    tag_count)
                 write_dword(tag_data + 0x834, 65536)
                 write_dword(tag_data + 0x83c, 0)
                 write_dword(tag_data + 0x844, 4294967295)
@@ -385,12 +432,14 @@ local function modifyTags()
                 write_dword(tag_data + 0x141c, 0)
                 write_dword(tag_data + 0x1424, 4294967295)
                 write_dword(tag_data + 0x1480, 1078309694)
-                swap(tag_data + 0x1488, 'weapons\\rocket launcher\\effects\\impact water', 1701209701, tag_address, tag_count)
+                swap(tag_data + 0x1488, 'weapons\\rocket launcher\\effects\\impact water', 1701209701, tag_address,
+                    tag_count)
                 write_dword(tag_data + 0x14b4, 65536)
                 write_dword(tag_data + 0x14bc, 0)
                 write_dword(tag_data + 0x14c4, 4294967295)
                 write_dword(tag_data + 0x1520, 1078309777)
-                swap(tag_data + 0x1528, 'weapons\\frag grenade\\effects\\impact water pen', 1701209701, tag_address, tag_count)
+                swap(tag_data + 0x1528, 'weapons\\frag grenade\\effects\\impact water pen', 1701209701, tag_address,
+                    tag_count)
                 write_dword(tag_data + 0x1554, 65536)
                 write_dword(tag_data + 0x155c, 0)
                 write_dword(tag_data + 0x1564, 4294967295)
@@ -408,8 +457,11 @@ local function modifyTags()
             class = 1785754657,
             name = 'weapons\\plasma grenade\\explosion',
             offsets = {
-                [0x4] = 1086324736, [0x1d0] = 1140457472,
-                [0x1d4] = 1140457472, [0x1d8] = 1140457472, [0x1f4] = 1094713344
+                [0x4] = 1086324736,
+                [0x1d0] = 1140457472,
+                [0x1d4] = 1140457472,
+                [0x1d8] = 1140457472,
+                [0x1f4] = 1094713344
             }
         },
         {
@@ -429,48 +481,64 @@ local function modifyTags()
             class = 1785754657,
             name = 'weapons\\plasma_cannon\\effects\\plasma_cannon_explosion',
             offsets = {
-                [0x1d0] = 1142308864, [0x1d4] = 1142308864,
-                [0x1d8] = 1142308864, [0x1f4] = 1083179008
+                [0x1d0] = 1142308864,
+                [0x1d4] = 1142308864,
+                [0x1d8] = 1142308864,
+                [0x1f4] = 1083179008
             }
         },
         {
             class = 1785754657,
             name = 'weapons\\plasma_cannon\\impact damage',
             offsets = {
-                [0x1d0] = 1142308864, [0x1d4] = 1142308864,
-                [0x1d8] = 1142308864, [0x1f4] = 1083179008
+                [0x1d0] = 1142308864,
+                [0x1d4] = 1142308864,
+                [0x1d8] = 1142308864,
+                [0x1f4] = 1083179008
             }
         },
         {
             class = 1785754657,
             name = 'weapons\\plasma rifle\\charged bolt',
             offsets = {
-                [0x0] = 1084227584, [0x4] = 1090519040, [0xcc] = 1065353216, [0xd4] = 1017370378,
-                [0x1d0] = 1140457472, [0x1d4] = 1140457472, [0x1d8] = 1140457472, [0x1f4] = 1097859072
+                [0x0] = 1084227584,
+                [0x4] = 1090519040,
+                [0xcc] = 1065353216,
+                [0xd4] = 1017370378,
+                [0x1d0] = 1140457472,
+                [0x1d4] = 1140457472,
+                [0x1d8] = 1140457472,
+                [0x1f4] = 1097859072
             }
         },
         {
             class = 1886547818,
             name = 'weapons\\frag grenade\\frag grenade',
             offsets = {
-                [0x1bc] = 1050253722, [0x1c0] = 1050253722,
-                [0x1cc] = 1057803469, [0x1ec] = 1065353216
+                [0x1bc] = 1050253722,
+                [0x1c0] = 1050253722,
+                [0x1cc] = 1057803469,
+                [0x1ec] = 1065353216
             }
         },
         {
             class = 1886547818,
             name = 'weapons\\plasma grenade\\plasma grenade',
             offsets = {
-                [0x1bc] = 1065353216, [0x1c0] = 1065353216,
-                [0x1cc] = 1056964608, [0x1ec] = 1077936128
+                [0x1bc] = 1065353216,
+                [0x1c0] = 1065353216,
+                [0x1cc] = 1056964608,
+                [0x1ec] = 1077936128
             }
         },
         {
             class = 1785754657,
             name = 'weapons\\plasma grenade\\attached',
             offsets = {
-                [0x1d0] = 1137180672, [0x1d4] = 1137180672,
-                [0x1d8] = 1137180672, [0x1f4] = 1092616192
+                [0x1d0] = 1137180672,
+                [0x1d4] = 1137180672,
+                [0x1d8] = 1137180672,
+                [0x1f4] = 1092616192
             }
         },
         {
@@ -515,14 +583,14 @@ end
 function OnScriptLoad()
     register_callback(cb['EVENT_GAME_START'], 'OnStart')
     register_callback(cb['EVENT_DAMAGE_APPLICATION'], "OnDamage")
+    OnStart()
 end
 
 function OnStart()
-    if get_var(0, '$gt') ~= 'n/a' then
-        shell_explosion = getTagID(shell_explosion[1], shell_explosion[2])
-        if shell_explosion then
-            modifyTags()
-        end
+    if get_var(0, '$gt') == 'n/a' then return end
+    shell_explosion = getTagID(shell_explosion_jpt[1], shell_explosion_jpt[2])
+    if shell_explosion then
+        modifyTags()
     end
 end
 
