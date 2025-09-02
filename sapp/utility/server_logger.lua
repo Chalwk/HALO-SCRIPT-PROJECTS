@@ -23,18 +23,6 @@ local CONFIG = {
     LOG_FILE = 'server_log.txt',
     DATE_FORMAT = '!%a, %d %b %Y %H:%M:%S',
     EVENTS = {
-        ['OnScriptLoad'] = {
-            enabled = true,
-            log = '[SCRIPT LOAD] Advanced Logger was loaded'
-        },
-        ['OnScriptReload'] = {
-            enabled = true,
-            log = '[SCRIPT RELOAD] Advanced Logger was re-loaded'
-        },
-        ['OnScriptUnload'] = {
-            enabled = true,
-            log = '[SCRIPT UNLOAD] Advanced Logger was unloaded'
-        },
         ['OnStart'] = {
             enabled = true,
             log = 'A new game has started on [$map] - [$mode]'
@@ -277,7 +265,7 @@ local function getTotalPlayers(quit)
     return quit and total - 1 or total
 end
 
-function OnStart(notify_flag)
+function OnStart(notifyFlag)
     current_gametype = get_var(0, "$gt")
     if current_gametype == 'n/a' then return end
 
@@ -289,7 +277,7 @@ function OnStart(notify_flag)
     falling = getTag('jpt!', 'globals\\falling')
     distance = getTag('jpt!', 'globals\\distance')
 
-    if not notify_flag then
+    if not notifyFlag or notifyFlag == 0 then
         logEvent('OnStart', {
             ['$map'] = current_map,
             ['$mode'] = current_mode
@@ -298,7 +286,7 @@ function OnStart(notify_flag)
 
     for i = 1, 16 do
         if player_present(i) then
-            OnJoin(i, notify_flag)
+            OnJoin(i, notifyFlag)
         end
     end
 end
@@ -307,7 +295,7 @@ function OnEnd()
     logEvent('OnEnd', {})
 end
 
-function OnJoin(id, notify_flag)
+function OnJoin(id, notifyFlag)
     local name = get_var(id, '$name')
     local hash = get_var(id, '$hash')
     local pirated = CONFIG.KNOWN_PIRATED_HASHES[hash] and 'YES' or 'NO'
@@ -326,7 +314,7 @@ function OnJoin(id, notify_flag)
         lap_time = os_time()
     }
 
-    if not notify_flag then
+    if not notifyFlag or notifyFlag == 0 then
         logEvent('OnJoin', {
             ['$name'] = name,
             ['$id'] = tostring(id),
@@ -519,14 +507,7 @@ function OnScriptLoad()
     register_callback(cb['EVENT_DAMAGE_APPLICATION'], 'OnDeath')
     register_callback(cb['EVENT_SCORE'], 'OnScore')
 
-    if get_var(0, '$gt') ~= 'n/a' then
-        logEvent('OnScriptReload', {})
-        OnStart(true)
-    else
-        logEvent('OnScriptLoad', {})
-    end
+    OnStart(1) -- in case script is loaded mid-game
 end
 
-function OnScriptUnload()
-    logEvent('OnScriptUnload', {})
-end
+function OnScriptUnload() end
