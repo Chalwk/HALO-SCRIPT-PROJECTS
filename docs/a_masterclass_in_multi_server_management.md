@@ -1,6 +1,6 @@
 # HSP Halo Servers: A Masterclass in Multi-Server Management
 
-This document outlines the sophisticated server architecture powering our 16 Halo SAPP servers (8 Halo Custom Edition and 8 Halo PC). The design leverages SAPP's built-in capabilities to create a system that is efficient, consistent, and incredibly easy to maintain.
+This document outlines the sophisticated server architecture powering all 16 official HSP Halo SAPP servers (8 Halo Custom Edition and 8 Halo PC). The design leverages SAPP's built-in capabilities to create a system that is efficient, consistent, and incredibly easy to maintain.
 
 ## The Problem: Managing 16 Servers the Naive Way
 
@@ -17,7 +17,7 @@ This leads to a nightmare of redundancy:
 
 ## The Solution: Exploiting SAPP's Dual Folder Design
 
-Our structure solves these problems by masterfully utilizing SAPP's intended separation between global and instance-specific configurations through a clever, hierarchical folder layout.
+The structure solves these problems by masterfully utilizing SAPP's intended separation between global and instance-specific configurations through a clever, hierarchical folder layout.
 
 ### Directory Structure Overview
 
