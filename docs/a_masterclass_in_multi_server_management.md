@@ -12,7 +12,7 @@ A typical approach would be to have 16 completely separate folders, each with it
 *   Save data
 
 This leads to a nightmare of redundancy:
-*   **Wasted Disk Space:** ~16 copies of the same 500MB+ map files and executables.
+*   **Wasted Disk Space:** 16 copies of the same ~500MB+ map files and executables.
 *   **Administrative Hell:** Adding an admin or banning a player requires manually doing the same action across 16 different servers. Inconsistency is inevitable.
 
 ## The Solution: Exploiting SAPP's Dual Folder Design
@@ -58,8 +58,9 @@ C:\SERVERS\
 The system's brilliance is in its explicit use of two dedicated `sapp` directories, each with a distinct purpose:
 
 *   **Global Shared Configs (`/root/sapp/`):** This directory contains the administrative core that governs the entire server cluster. Files placed here are enforced across all servers sharing the same root (e.g., all 8 CE servers).
-    *   `admins.txt`, `users.txt`, `ipbans.txt` → **Unified "Smart Ban" System**
+    *   `admins.txt`, `users.txt`, `ipbans.txt` → **Unified "Smart Ban / Admin" System**
     *   `areas.txt`, `locations.txt` → **Shared World Definitions**
+    * If you ban a player on one server, they will be banned on all servers. Similarly, if you add an admin on one server, they will be added on all servers.
 
 *   **Instance-Specific Configs (`/root/cg/<server_name>/sapp/`):** This directory defines the unique personality of each individual server. Settings here affect only that specific game mode.
     *   `commands.txt`, `events.txt` → **Custom Commands & Hooks**
@@ -68,7 +69,7 @@ The system's brilliance is in its explicit use of two dedicated `sapp` directori
 
 ### Portable Configuration with Environment Variables
 
-To enhance portability and simplify configuration, we use system environment variables to define the root server paths. This means the batch files don't need hardcoded paths, making the entire setup easily movable.
+To enhance portability and simplify configuration, I use system environment variables to define the root server paths. This means the batch files don't need hardcoded paths, making the entire setup easily movable.
 
 **Environment Variables Setup:**
 - `HSP_CE_ROOT = C:\SERVERS\CE` (points to Custom Edition root)
