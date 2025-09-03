@@ -186,14 +186,14 @@ cd /d %root%
    @ECHO OFF
    cd /d "%~dp0"
 
-   wt cmd /k "%~dp0divide_and_conquer.bat" `
-      ; new-tab cmd /k "%~dp0gun_game.bat" `
-      ; new-tab cmd /k "%~dp0kill_confirmed.bat" `
-      ; new-tab cmd /k "%~dp0melee_attack.bat" `
-      ; new-tab cmd /k "%~dp0one_in_the_chamber.bat" `
-      ; new-tab cmd /k "%~dp0rooster_ctf.bat" `
-      ; new-tab cmd /k "%~dp0snipers_dream_team.bat" `
-      ; new-tab cmd /k "%~dp0tag.bat"
+   wt.exe cmd /k "%~dp0divide_and_conquer.bat" ^
+    ; new-tab cmd /k "%~dp0gun_game.bat" ^
+    ; new-tab cmd /k "%~dp0kill_confirmed.bat" ^
+    ; new-tab cmd /k "%~dp0melee_attack.bat" ^
+    ; new-tab cmd /k "%~dp0one_in_the_chamber.bat" ^
+    ; new-tab cmd /k "%~dp0rooster_ctf.bat" ^
+    ; new-tab cmd /k "%~dp0snipers_dream_team.bat" ^
+    ; new-tab cmd /k "%~dp0tag.bat"
    ```
 
    **How It Works:**
