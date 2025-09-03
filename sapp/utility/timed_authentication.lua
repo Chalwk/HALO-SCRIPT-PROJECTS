@@ -22,7 +22,7 @@ LICENSE:          MIT License
 
 -- Config Start ---------------------------------------------------------------
 local CLAN_TAG = 'LIB-'
-local AUTH_TIME = 2                         -- seconds allowed to authenticate
+local AUTH_TIME = 20                        -- seconds allowed to authenticate
 local SECRET_PHRASE = "!your_secret_phrase" -- phrase a player must type
 -- Config End -----------------------------------------------------------------
 
