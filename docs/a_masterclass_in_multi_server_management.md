@@ -205,7 +205,7 @@ cd /d %root%
    **Usage:**
 
     1. Save the script as `launch_all_ce.bat` inside `server_launchers\ce\`
-    2. Double-click it to launch all 8 CE servers in separate tabs
+    2. Double-click it to launch all of your servers in separate tabs
     3. Make a similar script for PC servers by swapping in their `.bat` filenames
 
 4. **Server Configuration:**
