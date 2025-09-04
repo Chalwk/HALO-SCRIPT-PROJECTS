@@ -8,13 +8,13 @@ KEY FEATURES:
                  - Team conversion mechanics (humans to zombies)
                  - Zombies use melee weapons only
                  - Configurable attributes for both teams
-                 - Victory condition when all humans are eliminated
+                 - Victory condition: when all humans are eliminated
                  - Player count-based game activation
-                 - Countdown timer before match start
+                 - Countdown timer before the match starts
                  - Enhanced team shuffling with anti-duplicate protection
                  - Death message suppression during team changes
                  - Alpha Zombie and Standard Zombie types
-                 - Last Man Standing bonus for final human
+                 - Last Man Standing bonus for the final human
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -57,7 +57,7 @@ local CONFIG = {
             DAMAGE_MULTIPLIER = 1,
             CAMO = false,
             GRENADES = { frags = 2, plasmas = 2 },
-            CAN_USE_VEHICLES = true
+            CAN_USE_VEHICLES = false
         },
         ['last_man_standing'] = {
             SPEED = 1.15,
@@ -95,7 +95,8 @@ local sapp_events = {
     [cb['EVENT_GAME_END']] = 'OnEnd',
     [cb['EVENT_TEAM_SWITCH']] = 'OnTeamSwitch',
     [cb['EVENT_WEAPON_DROP']] = 'OnWeaponDrop',
-    [cb['EVENT_DAMAGE_APPLICATION']] = 'OnDamage'
+    [cb['EVENT_DAMAGE_APPLICATION']] = 'OnDamage',
+    [cb['EVENT_VEHICLE_ENTER']] = 'OnVehicleEnter'
 }
 
 local function registerCallbacks(team_game)
@@ -216,13 +217,6 @@ local function destroyDrone(victim)
     if victim.drone then
         destroy_object(victim.drone)
         victim.drone = nil
-    end
-end
-
-local function blockVehicleEntry(player_id, dyn_player, can_use_vehicles)
-    if can_use_vehicles then return end
-    if read_dword(dyn_player + 0x11C) ~= 0xFFFFFFFF then
-        exit_vehicle(player_id)
     end
 end
 
@@ -406,7 +400,7 @@ function OnStart()
 
     execute_command('scorelimit 9999')
 
-    falling = getTag('jpt!', 'globals\\falling')
+    falling = getTag('jpt!', 'globals\\falling') -- these will only work on maps with these meta tags
     distance = getTag('jpt!', 'globals\\distance')
 
     for i = 1, 16 do
@@ -527,9 +521,6 @@ function OnTick()
                 end
             end
 
-            -- Prevent players from using vehicles
-            blockVehicleEntry(i, dyn_player, attributes.CAN_USE_VEHICLES)
-
             -- Handle weapon assignment for zombies
             if player.team == 'blue' and player.assign then
                 player.assign = false
@@ -584,6 +575,20 @@ function OnSpawn(id)
 
     local player_type = getPlayerType(player)
     applyPlayerAttributes(player, player_type)
+end
+
+function OnVehicleEnter(id)
+    if not game.started then return end
+
+    local player = game.players[id]
+    if not player then return end
+
+    local player_type = getPlayerType(player)
+    local attributes = CONFIG.ATTRIBUTES[player_type]
+    local can_use_vehicles = attributes.CAN_USE_VEHICLES
+
+    if can_use_vehicles then return end
+    timer(3000, "exit_vehicle", id)
 end
 
 function OnCountdown()
