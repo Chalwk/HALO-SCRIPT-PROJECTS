@@ -8,11 +8,12 @@
 
 - **Human's Objective:** Stay alive until the end of the round.
 - **Zombie's Objective:** Infect as many Humans as possible by killing them.
-- **Last Man Standing:** The last remaining human becomes the "Last Man Standing," with unique abilities and increased
-  difficulty.
+- **Last Man Standing:** The last remaining human becomes the "Last Man Standing," with unique abilities and increased difficulty.
 - **Fully Configurable Traits:** Customize player traits like speed, health, respawn time, and more.
-- ~~**Zombies Can Be Cured:** Zombies can be turned back into humans after 3 consecutive kills (configurable).~~
+- **Zombie Cure System:** Zombies can be turned back into humans after getting 3 consecutive kills.
 - **Alpha Zombies:** Specially designated players with unique traits at the beginning of the round.
+- **Fall Damage Protection:** Players are protected from fall damage.
+- **Enhanced Team Shuffling:** Improved team assignment with anti-duplicate protection.
 
 ---
 
@@ -73,33 +74,33 @@ The Zombie game mode is designed to run Team Slayer on the following stock maps:
 
 | Trait             | Value                      |
 |-------------------|----------------------------|
-| Speed             | 1.5x                       |
-| Health            | 2x normal health (200%)    |
-| Respawn Time      | 1.5 seconds                |
-| Grenades          | 2x plasmas                 |
+| Speed             | 1.25x                      |
+| Health            | 1.75x normal health (175%) |
+| Respawn Time      | 2.0 seconds                |
+| Grenades          | 1x plasma                  |
 | Weapon            | Skull (oddball)            |
-| Damage Multiplier | 10x normal damage          |
+| Damage Multiplier | 3x normal damage           |
 | Abilities         | Camouflage while crouching |
 
 ### **Standard Zombies:**
 
 | Trait             | Value                   |
 |-------------------|-------------------------|
-| Speed             | 1.4x                    |
-| Health            | 1x normal health (100%) |
-| Respawn Time      | 1.2 seconds             |
+| Speed             | 1.15x                   |
+| Health            | 1.25x normal health (125%) |
+| Respawn Time      | 1.5 seconds             |
 | Grenades          | 0                       |
 | Weapon            | Skull (oddball)         |
-| Damage Multiplier | 10x normal damage       |
+| Damage Multiplier | 2x normal damage        |
 | Abilities         | None                    |
 
 ### **Humans:**
 
 | Trait             | Value                   |
 |-------------------|-------------------------|
-| Speed             | 1.2x                    |
-| Health            | 1x normal health (100%) |
-| Respawn Time      | 3 seconds               |
+| Speed             | 1.0x                    |
+| Health            | 1.0x normal health (100%) |
+| Respawn Time      | 5 seconds               |
 | Grenades          | 2x frags, 2x plasmas    |
 | Damage Multiplier | 1x normal damage        |
 | Abilities         | Can use vehicles        |
@@ -108,13 +109,13 @@ The Zombie game mode is designed to run Team Slayer on the following stock maps:
 
 | Trait             | Value                                                                |
 |-------------------|----------------------------------------------------------------------|
-| Speed             | 1.5x                                                                 |
-| Health            | 1x normal health (100%)                                              |
-| Respawn Time      | 1 second                                                             |
-| Grenades          | 4x frags, 4x plasmas                                                 |
+| Speed             | 1.15x                                                                |
+| Health            | 1.25x normal health (125%)                                           |
+| Respawn Time      | 3 seconds                                                            |
+| Grenades          | 3x frags, 3x plasmas                                                 |
 | Weapon(s)         | Map default (no custom assignments)                                  |
-| Damage Multiplier | 2x normal damage                                                     |
-| Abilities         | Can use vehicles and regenerates health by 0.0005 units per 30 ticks |
+| Damage Multiplier | 1.5x normal damage                                                   |
+| Abilities         | Can use vehicles and regenerates health by 0.001 units per tick      |
 
 ---
 
@@ -130,6 +131,7 @@ The Zombie game mode is designed to run Team Slayer on the following stock maps:
 
 - **Stay Alive:** Humans must stick together to survive as long as possible.
 - **Alpha Zombies:** They are a higher threat! Be strategic when dealing with them.
-- **Last Man Standing:** If you find yourself in this position, be ready for a difficult challenge. Use your abilities
-  to your advantage!
-- ~~**Zombies Can Be Cured:** As a zombie, getting 3 kills will let you become human again.~~
+- **Last Man Standing:** If you find yourself in this position, be ready for a difficult challenge. Use your abilities to your advantage!
+- **Zombies Can Be Cured:** As a zombie, getting 3 consecutive kills will let you become human again.
+- **Fall Protection:** Take advantage of the fall damage protection to make riskier moves.
+- **Team Composition:** Pay attention to team numbers - when only one human remains, they become Last Man Standing with enhanced abilities.
