@@ -495,7 +495,6 @@
       "description": "Zombies Advanced is a fast-paced survival script where humans fight zombies. Zombies convert humans by killing them, with Alpha and Standard zombie types, enhanced team shuffling, Last Man Standing bonuses, configurable attributes, camouflage abilities, and vehicle restrictions. Victory is achieved when all humans are eliminated.",
       "filename": "zombies_advanced.lua"
     },
-
     "zombies_standard": {
       "title": "Zombies Standard",
       "shortDescription": "Classic team-based zombie survival mode with simple human vs zombie gameplay.",
