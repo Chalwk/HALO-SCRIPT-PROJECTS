@@ -1,6 +1,6 @@
 --[[
 =====================================================================================
-SCRIPT NAME:      zombies.lua
+SCRIPT NAME:      zombies_advanced.lua
 DESCRIPTION:      Zombie survival mode where humans fight against zombies.
                   Zombies convert humans by killing them.
 
