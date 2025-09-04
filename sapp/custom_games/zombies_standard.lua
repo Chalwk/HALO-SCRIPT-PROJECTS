@@ -32,6 +32,7 @@ local CONFIG = {
     REQUIRED_PLAYERS = 2,          -- Minimum players required to start
     COUNTDOWN_DELAY = 5,           -- Seconds before game starts
     SERVER_PREFIX = "**ZOMBIES**", -- Server message prefix
+    SCORE_LIMIT = 99999,           -- Score limit (effectively disabled)
     BLOCK_FALL_DAMAGE = true,      -- Block fall damage
 
     ATTRIBUTES = {
@@ -293,7 +294,7 @@ function OnStart()
     game.started = false
     game.oddball = getOddbalID()
 
-    execute_command('scorelimit 9999')
+    execute_command('scorelimit ' .. CONFIG.SCORE_LIMIT)
 
     if CONFIG.BLOCK_FALL_DAMAGE then
         falling = getTag('jpt!', 'globals\\falling')
@@ -345,6 +346,7 @@ function OnQuit(id)
 end
 
 function OnTeamSwitch(id)
+    if not game.started then return end
     if game.players[id] then
         game.players[id].team = get_var(id, '$team')
         updateTeamCounts()
@@ -409,6 +411,7 @@ function OnTick()
 end
 
 function OnWeaponDrop(id)
+    if not game.started then return end
     local player = game.players[id]
     if player then
         if player.drone then
@@ -433,6 +436,8 @@ local function getDamageMultiplier(player)
 end
 
 function OnDamage(victimId, killerId, metaId, damage)
+    if not game.started then return true end
+
     local killer = tonumber(killerId)
     local victim = tonumber(victimId)
 
