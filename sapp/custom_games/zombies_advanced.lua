@@ -29,52 +29,54 @@ LICENSE:          MIT License
 =====================================================================================
 ]]
 
+-- todo: zombify on suicide?
+
 -- Configuration -----------------------------------------------------------------------
 local CONFIG = {
     REQUIRED_PLAYERS = 2,          -- Minimum players required to start
     COUNTDOWN_DELAY = 5,           -- Seconds before game starts
-    CURE_THRESHOLD = 3,             -- Number of consecutive kills needed for zombies to become human (0 to disable)
+    CURE_THRESHOLD = 3,            -- Number of consecutive kills needed for zombies to become human (0 to disable)
     SERVER_PREFIX = "**ZOMBIES**", -- Server message prefix
     BLOCK_FALL_DAMAGE = true,      -- Block fall damage
 
 
     ATTRIBUTES = {
         ['alpha_zombies'] = {
-            SPEED = 15,   -- 1.5x normal speed
-            HEALTH = 2.0, -- 200% health
-            RESPAWN_TIME = 1.5,
-            DAMAGE_MULTIPLIER = 10,
-            CAMO = true,
-            GRENADES = { frags = 0, plasmas = 2 },
+            SPEED = 1.25,                      -- Slightly faster than humans but not overly so
+            HEALTH = 1.75,                     -- Tough but not invincible (175% health)
+            RESPAWN_TIME = 2.0,                -- Moderate respawn delay
+            DAMAGE_MULTIPLIER = 3,             -- Strong melee damage (3x normal)
+            CAMO = true,                       -- Can camouflage when crouching
+            GRENADES = { frags = 0, plasmas = 1 }, -- Limited plasma grenades
             CAN_USE_VEHICLES = false
         },
         ['standard_zombies'] = {
-            SPEED = 14,   -- 1.4x normal speed
-            HEALTH = 1.0, -- 100% health
-            RESPAWN_TIME = 1.2,
-            DAMAGE_MULTIPLIER = 10,
+            SPEED = 1.15,      -- Slightly faster than humans
+            HEALTH = 1.25,     -- More durable than humans (125% health)
+            RESPAWN_TIME = 1.5, -- Quick respawn
+            DAMAGE_MULTIPLIER = 2, -- Enhanced melee damage (2x normal)
             CAMO = false,
             GRENADES = { frags = 0, plasmas = 0 },
             CAN_USE_VEHICLES = false
         },
         ['humans'] = {
-            SPEED = 12,   -- 1.2x normal speed
-            HEALTH = 1.0, -- 100% health
-            RESPAWN_TIME = 3,
-            DAMAGE_MULTIPLIER = 1,
+            SPEED = 1.0,                       -- Normal speed
+            HEALTH = 1.0,                      -- Standard health
+            RESPAWN_TIME = 5,                  -- Longer respawn penalty
+            DAMAGE_MULTIPLIER = 1,             -- Normal damage
             CAMO = false,
-            GRENADES = { frags = 2, plasmas = 2 },
+            GRENADES = { frags = 2, plasmas = 2 }, -- Adequate grenade supply
             CAN_USE_VEHICLES = true
         },
         ['last_man_standing'] = {
-            SPEED = 15,   -- 1.5x normal speed
-            HEALTH = 1.0, -- 100% health
-            RESPAWN_TIME = 1,
-            DAMAGE_MULTIPLIER = 2,
+            SPEED = 1.15,                      -- Slight speed boost
+            HEALTH = 1.25,                     -- Moderate health increase
+            RESPAWN_TIME = 3,                  -- Reduced respawn time
+            DAMAGE_MULTIPLIER = 1.5,           -- Damage boost
             CAMO = false,
-            GRENADES = { frags = 4, plasmas = 4 },
+            GRENADES = { frags = 3, plasmas = 3 }, -- Extra grenades
             CAN_USE_VEHICLES = true,
-            HEALTH_REGEN = 0.0005 -- Health regeneration per tick
+            HEALTH_REGEN = 0.001               -- Slow health regeneration
         }
     }
 }
@@ -93,7 +95,6 @@ local death_message_address = nil
 local original_death_message_bytes = nil
 local DEATH_MESSAGE_SIGNATURE = "8B42348A8C28D500000084C9"
 local falling, distance
-local last_man_id = nil
 
 local sapp_events = {
     [cb['EVENT_TICK']] = 'OnTick',
@@ -179,6 +180,7 @@ local game = {
     player_count = 0,
     started = false,
     countdown_start = 0,
+    last_man_id = nil,
     waiting_for_players = true,
     red_count = 0,
     blue_count = 0,
@@ -384,6 +386,7 @@ function OnStart()
 
     game.players = {}
     game.player_count = 0
+    game.last_man_id = nil
     game.started = false
     game.oddball = getOddbalID()
 
@@ -416,7 +419,10 @@ function OnJoin(id)
     game.player_count = game.player_count + 1
     updateTeamCounts()
 
-    if game.waiting_for_players and game.player_count >= CONFIG.REQUIRED_PLAYERS then
+    if game.started then
+        switchPlayerTeam(game.players[id], "blue", "standard_zombies")
+        updateTeamCounts()
+    elseif game.waiting_for_players and game.player_count >= CONFIG.REQUIRED_PLAYERS then
         startGame()
     end
 end
@@ -506,9 +512,7 @@ function OnTick()
             if attributes.CAMO then
                 local crouching = read_float(dyn_player + 0x50C) == 1
                 if crouching then
-                    execute_command('camo ' .. id .. ' 1')
-                else
-                    execute_command('camo ' .. id .. ' 0')
+                    execute_command('camo ' .. id .. ' 1') -- sets camo for 1s
                 end
             end
 
@@ -595,7 +599,7 @@ end
 function RegenHealth()
     if not game.started then return false end
 
-    local last_man = game.players[last_man_id]
+    local last_man = game.players[game.last_man_id]
     if not last_man then return false end
 
     local id = last_man.id

@@ -32,20 +32,19 @@ local CONFIG = {
     REQUIRED_PLAYERS = 2,          -- Minimum players required to start
     COUNTDOWN_DELAY = 5,           -- Seconds before game starts
     SERVER_PREFIX = "**ZOMBIES**", -- Server message prefix
-    SCORE_LIMIT = 99999,           -- Score limit (effectively disabled)
     BLOCK_FALL_DAMAGE = true,      -- Block fall damage
 
     ATTRIBUTES = {
         ['humans'] = {
-            SPEED = 10,
-            RESPAWN_TIME = 1,
+            SPEED = 1,
+            RESPAWN_TIME = 5,
             DAMAGE_MULTIPLIER = 1,
             CAMO = false
         },
         ['zombies'] = {
-            SPEED = 2,
-            RESPAWN_TIME = 1,
-            DAMAGE_MULTIPLIER = 1,
+            SPEED = 1.15,
+            RESPAWN_TIME = 1.5,
+            DAMAGE_MULTIPLIER = 2,
             CAMO = true
         }
     }
@@ -307,7 +306,7 @@ function OnStart()
     game.started = false
     game.oddball = getOddbalID()
 
-    execute_command('scorelimit ' .. CONFIG.SCORE_LIMIT)
+    execute_command('scorelimit 9999')
 
     if CONFIG.BLOCK_FALL_DAMAGE then
         falling = getTag('jpt!', 'globals\\falling')
@@ -336,7 +335,10 @@ function OnJoin(id)
     game.player_count = game.player_count + 1
     updateTeamCounts()
 
-    if game.waiting_for_players and game.player_count >= CONFIG.REQUIRED_PLAYERS then
+    if game.started then
+        switchPlayerTeam(game.players[id], "blue")
+        updateTeamCounts()
+    elseif game.waiting_for_players and game.player_count >= CONFIG.REQUIRED_PLAYERS then
         startGame()
     end
 end
