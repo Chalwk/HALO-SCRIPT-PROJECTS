@@ -73,8 +73,12 @@ If you are a server administrator or operator using SAPP or Phasor, you will fin
 - [Divide and Conquer](./sapp/custom_games/divide_and_conquer.lua)
 - [Gun Game](./sapp/custom_games/gun_game.lua)
 - [Kill Confirmed](./sapp/custom_games/kill_confirmed.lua)
-- [Sabotage](./sapp/custom_games/sabotage.lua)
+- [Melee Attack](./sapp/custom_games/melee_attack.lua)
+- [One In The Chamber](./sapp/custom_games/one_in_the_chamber.lua)
+- [Snipers Dream Team](./sapp/custom_games/snipers_dream_team.lua)
 - [Tag](./sapp/custom_games/tag.lua)
+- [Zombies Standard](./sapp/custom_games/zombies_standard.lua)
+- [Zombies Advanced](./sapp/custom_games/zombies_advanced.lua) 
 
 ### Utility
 - [AFK System](./sapp/utility/afk_system.lua)
