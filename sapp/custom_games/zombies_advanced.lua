@@ -33,8 +33,10 @@ LICENSE:          MIT License
 local CONFIG = {
     REQUIRED_PLAYERS = 2,          -- Minimum players required to start
     COUNTDOWN_DELAY = 5,           -- Seconds before game starts
+    CURE_THRESHOLD = 3,             -- Number of consecutive kills needed for zombies to become human (0 to disable)
     SERVER_PREFIX = "**ZOMBIES**", -- Server message prefix
     BLOCK_FALL_DAMAGE = true,      -- Block fall damage
+
 
     ATTRIBUTES = {
         ['alpha_zombies'] = {
@@ -105,7 +107,7 @@ local sapp_events = {
     [cb['EVENT_DAMAGE_APPLICATION']] = 'OnDamage'
 }
 
-local function register_callbacks(team_game)
+local function registerCallbacks(team_game)
     for event, callback in pairs(sapp_events) do
         if team_game then
             register_callback(event, callback)
@@ -183,7 +185,7 @@ local game = {
     oddball = nil
 }
 
-local function create_player(id)
+local function createPlayer(id)
     return {
         id = id,
         name = get_var(id, '$name'),
@@ -192,10 +194,11 @@ local function create_player(id)
         drone = nil,
         assign = false,
         is_last_man_standing = false,
+        consecutive_kills = 0 -- Track consecutive kills for cure mechanic
     }
 end
 
-local function apply_player_attributes(player, player_type)
+local function applyPlayerAttributes(player, player_type)
     local attributes = CONFIG.ATTRIBUTES[player_type]
 
     -- Set speed
@@ -230,14 +233,15 @@ local function switchPlayerTeam(player, new_team, zombie_type)
 
     if new_team == 'blue' then
         player.zombie_type = zombie_type or 'standard_zombies'
-        apply_player_attributes(player, player.zombie_type)
+        applyPlayerAttributes(player, player.zombie_type)
         player.assign = true
+        player.consecutive_kills = 0 -- Reset consecutive kills when becoming a zombie
     else
         player.zombie_type = nil
         if game.red_count == 1 and game.started then
-            apply_player_attributes(player, 'last_man_standing')
+            applyPlayerAttributes(player, 'last_man_standing')
         else
-            apply_player_attributes(player, 'humans')
+            applyPlayerAttributes(player, 'humans')
         end
         if player.drone then
             destroy_object(player.drone)
@@ -268,13 +272,28 @@ local function checkLastManStanding()
     if game.red_count == 1 and game.started then
         for _, player in pairs(game.players) do
             if player.team == 'red' then
-                apply_player_attributes(player, 'last_man_standing')
+                applyPlayerAttributes(player, 'last_man_standing')
                 broadcast(player.name .. " is the Last Man Standing!")
                 timer(30, 'RegenHealth')
                 break
             end
         end
     end
+end
+
+local function checkZombieCure(killer)
+    if CONFIG.CURE_THRESHOLD <= 0 then return false end
+
+    killer.consecutive_kills = killer.consecutive_kills + 1
+
+    if killer.consecutive_kills >= CONFIG.CURE_THRESHOLD then
+        switchPlayerTeam(killer, 'red')
+        killer.consecutive_kills = 0
+        broadcast(killer.name .. " has been cured and is now human!")
+        return true
+    end
+
+    return false
 end
 
 local function shuffleTeams()
@@ -334,6 +353,14 @@ local function setRespawnTime(id, player_type)
     end
 end
 
+local function isFallDamage(metaId)
+    return (metaId == falling or metaId == distance)
+end
+
+local function isFriendlyFire(killer, victim)
+    return killer.id ~= victim.id and killer.team == victim.team
+end
+
 -- SAPP Events
 function OnScriptLoad()
     death_message_hook_enabled = SetupDeathMessageHook()
@@ -348,7 +375,7 @@ end
 function OnStart()
     if get_var(0, '$gt') == 'n/a' then return end
     if get_var(0, '$ffa') == '1' then
-        register_callbacks(false)
+        registerCallbacks(false)
         cprint('====================================================', 12)
         cprint('Zombies: Only runs on team-based games', 12)
         cprint('====================================================', 12)
@@ -369,14 +396,14 @@ function OnStart()
 
     for i = 1, 16 do
         if player_present(i) then
-            game.players[i] = create_player(i)
+            game.players[i] = createPlayer(i)
             game.player_count = game.player_count + 1
         end
     end
 
     updateTeamCounts()
     startGame()
-    register_callbacks(true)
+    registerCallbacks(true)
 end
 
 function OnEnd()
@@ -385,7 +412,7 @@ function OnEnd()
 end
 
 function OnJoin(id)
-    game.players[id] = create_player(id)
+    game.players[id] = createPlayer(id)
     game.player_count = game.player_count + 1
     updateTeamCounts()
 
@@ -439,11 +466,19 @@ function OnDeath(victimId, killerId)
         return
     end
 
+    -- Reset consecutive kills if victim was a zombie
+    if victim.team == 'blue' then
+        victim.consecutive_kills = 0
+    end
+
     if victim.team == 'red' and killer.team == 'blue' then
-        switchPlayerTeam(victim, 'blue', 'standard_zombies')
-        updateTeamCounts()
-        checkLastManStanding()
-        broadcast(victim.name .. " was infected and became a zombie!")
+        -- Check if killer zombie should be cured
+        if not checkZombieCure(killer) then
+            switchPlayerTeam(victim, 'blue', 'standard_zombies')
+            updateTeamCounts()
+            checkLastManStanding()
+            broadcast(victim.name .. " was infected and became a zombie!")
+        end
     else
         local player_type = victim.zombie_type or (victim.team == 'red' and 'humans') or 'standard_zombies'
         setRespawnTime(victimId, player_type)
@@ -505,14 +540,6 @@ function OnWeaponDrop(id)
     end
 end
 
-local function isFallDamage(metaId)
-    return (metaId == falling or metaId == distance)
-end
-
-local function isFriendlyFire(killer, victim)
-    return killer.id ~= victim.id and killer.team == victim.team
-end
-
 function OnDamage(victimId, killerId, metaId, damage)
     if not game.started then return true end
     local killer = tonumber(killerId)
@@ -541,7 +568,7 @@ function OnSpawn(id)
     if not player then return end
 
     local player_type = getPlayerType(player)
-    apply_player_attributes(player, player_type)
+    applyPlayerAttributes(player, player_type)
 end
 
 function OnCountdown()

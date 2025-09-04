@@ -78,7 +78,7 @@ local sapp_events = {
     [cb['EVENT_DAMAGE_APPLICATION']] = 'OnDamage'
 }
 
-local function register_callbacks(team_game)
+local function registerCallbacks(team_game)
     for event, callback in pairs(sapp_events) do
         if team_game then
             register_callback(event, callback)
@@ -156,7 +156,7 @@ local game = {
     oddball = nil
 }
 
-local function create_player(id)
+local function createPlayer(id)
     return {
         id = id,
         name = get_var(id, '$name'),
@@ -268,6 +268,19 @@ local function setRespawnTime(id, team)
     end
 end
 
+local function isFallDamage(metaId)
+    return (metaId == falling or metaId == distance)
+end
+
+local function isFriendlyFire(killer, victim)
+    return killer.id ~= victim.id and killer.team == victim.team
+end
+
+local function getDamageMultiplier(player)
+    local team = player.team == 'blue' and 'zombies' or 'humans'
+    return true, CONFIG.ATTRIBUTES[team].DAMAGE_MULTIPLIER
+end
+
 -- SAPP Events
 function OnScriptLoad()
     death_message_hook_enabled = SetupDeathMessageHook()
@@ -282,7 +295,7 @@ end
 function OnStart()
     if get_var(0, '$gt') == 'n/a' then return end
     if get_var(0, '$ffa') == '1' then
-        register_callbacks(false)
+        registerCallbacks(false)
         cprint('====================================================', 12)
         cprint('Zombies: Only runs on team-based games', 12)
         cprint('====================================================', 12)
@@ -303,14 +316,14 @@ function OnStart()
 
     for i = 1, 16 do
         if player_present(i) then
-            game.players[i] = create_player(i)
+            game.players[i] = createPlayer(i)
             game.player_count = game.player_count + 1
         end
     end
 
     updateTeamCounts()
     startGame()
-    register_callbacks(true)
+    registerCallbacks(true)
 end
 
 function OnEnd()
@@ -319,7 +332,7 @@ function OnEnd()
 end
 
 function OnJoin(id)
-    game.players[id] = create_player(id)
+    game.players[id] = createPlayer(id)
     game.player_count = game.player_count + 1
     updateTeamCounts()
 
@@ -420,19 +433,6 @@ function OnWeaponDrop(id)
             player.assign = true
         end
     end
-end
-
-local function isFallDamage(metaId)
-    return (metaId == falling or metaId == distance)
-end
-
-local function isFriendlyFire(killer, victim)
-    return killer.id ~= victim.id and killer.team == victim.team
-end
-
-local function getDamageMultiplier(player)
-    local team = player.team == 'blue' and 'zombies' or 'humans'
-    return true, CONFIG.ATTRIBUTES[team].DAMAGE_MULTIPLIER
 end
 
 function OnDamage(victimId, killerId, metaId, damage)
