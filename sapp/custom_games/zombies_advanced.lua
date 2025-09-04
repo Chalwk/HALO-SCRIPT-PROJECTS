@@ -183,34 +183,40 @@ local function createPlayer(id)
         name = get_var(id, '$name'),
         team = get_var(id, '$team'),
         zombie_type = nil, -- 'alpha_zombies' or 'standard_zombies'
-        drone = nil,
+        drone = nil,       -- tracking oddball object
         assign = false,
         is_last_man_standing = false,
         consecutive_kills = 0, -- Track consecutive kills for cure mechanic
-        meta_id = nil,
+        meta_id = nil,         -- meta id of last known damage (for fall damage)
     }
 end
 
 local function applyPlayerAttributes(player, player_type)
     local attributes = CONFIG.ATTRIBUTES[player_type]
 
-    -- Set speed
-    execute_command("s " .. player.id .. " " .. attributes.SPEED)
+    local frags = attributes.GRENADES.frags
+    local plasmas = attributes.GRENADES.plasmas
 
-    -- Set health
-    if player_alive(player.id) then
-        local dyn = get_dynamic_player(player.id)
-        if dyn ~= 0 then
-            write_float(dyn + 0xE0, attributes.HEALTH)
-        end
+    -- Set health, speed & grenades
+    local dyn = get_dynamic_player(player.id)
+    if player_alive(player.id) and dyn ~= 0 then
+        write_float(dyn + 0xE0, attributes.HEALTH)
+
+        execute_command('nades ' .. player.id .. ' ' .. frags .. ' 1')
+        execute_command('nades ' .. player.id .. ' ' .. plasmas .. ' 2')
+
+        execute_command("s " .. player.id .. " " .. attributes.SPEED)
     end
-
-    -- Set grenades
-    execute_command('nades ' .. player.id .. ' ' .. attributes.GRENADES.frags .. ' 1')
-    execute_command('nades ' .. player.id .. ' ' .. attributes.GRENADES.plasmas .. ' 2')
 
     -- Update last man standing status
     player.is_last_man_standing = (player_type == 'last_man_standing')
+end
+
+local function destroyDrone(victim)
+    if victim.drone then
+        destroy_object(victim.drone)
+        victim.drone = nil
+    end
 end
 
 local function blockVehicleEntry(player_id, dyn_player, can_use_vehicles)
@@ -377,7 +383,7 @@ function OnScriptLoad()
     register_callback(cb['EVENT_GAME_START'], 'OnStart')
 
     execute_command('sv_tk_ban 0')
-    execute_command('sv_friendly_fire ')
+    execute_command('sv_friendly_fire 1') -- 1 = 0ff, 2 = shields, 3 = on
 
     OnStart()
 end
@@ -400,10 +406,8 @@ function OnStart()
 
     execute_command('scorelimit 9999')
 
-    if CONFIG.BLOCK_FALL_DAMAGE then
-        falling = getTag('jpt!', 'globals\\falling')
-        distance = getTag('jpt!', 'globals\\distance')
-    end
+    falling = getTag('jpt!', 'globals\\falling')
+    distance = getTag('jpt!', 'globals\\distance')
 
     for i = 1, 16 do
         if player_present(i) then
@@ -489,7 +493,7 @@ function OnDeath(victimId, killerId)
             checkLastManStanding()
             broadcast(victim.name .. " was infected and became a zombie!")
         end
-        return
+        goto next
     end
 
     -- Handle suicide / fall damage case
@@ -499,6 +503,8 @@ function OnDeath(victimId, killerId)
         checkLastManStanding()
     end
 
+    ::next::
+    destroyDrone(victim)
     setRespawnTime(victim)
 end
 
@@ -606,7 +612,6 @@ function RegenHealth()
 
     local last_man = game.players[game.last_man_id]
     if not last_man then return false end
-
     local id = last_man.id
 
     local dyn_player = get_dynamic_player(id)

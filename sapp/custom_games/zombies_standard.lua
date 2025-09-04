@@ -156,10 +156,17 @@ local function createPlayer(id)
         id = id,
         name = get_var(id, '$name'),
         team = get_var(id, '$team'),
-        drone = nil,
+        drone = nil,   -- tracking oddball object
         assign = false,
-        meta_id = nil
+        meta_id = nil, -- meta id of last known damage (for fall damage)
     }
+end
+
+local function destroyDrone(victim)
+    if victim.drone then
+        destroy_object(victim.drone)
+        victim.drone = nil
+    end
 end
 
 local function blockVehicleEntry(player_id, dyn_player, can_use_vehicles)
@@ -298,7 +305,7 @@ function OnScriptLoad()
     register_callback(cb['EVENT_GAME_START'], 'OnStart')
 
     execute_command('sv_tk_ban 0')
-    execute_command('sv_friendly_fire ')
+    execute_command('sv_friendly_fire 1') -- 1 = 0ff, 2 = shields, 3 = on
 
     OnStart()
 end
@@ -320,10 +327,8 @@ function OnStart()
 
     execute_command('scorelimit 9999')
 
-    if CONFIG.BLOCK_FALL_DAMAGE then
-        falling = getTag('jpt!', 'globals\\falling')
-        distance = getTag('jpt!', 'globals\\distance')
-    end
+    falling = getTag('jpt!', 'globals\\falling')
+    distance = getTag('jpt!', 'globals\\distance')
 
     for i = 1, 16 do
         if player_present(i) then
@@ -398,7 +403,7 @@ function OnDeath(victimId, killerId)
         switchPlayerTeam(victim, 'blue')
         updateTeamCounts()
         broadcast(victim.name .. " was infected and became a zombie!")
-        return
+        goto next
     end
 
     -- Handle suicide / fall damage case
@@ -407,6 +412,8 @@ function OnDeath(victimId, killerId)
         updateTeamCounts()
     end
 
+    ::next::
+    destroyDrone(victim)
     setRespawnTime(victim)
 end
 
