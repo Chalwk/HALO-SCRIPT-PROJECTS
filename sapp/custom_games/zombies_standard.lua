@@ -8,18 +8,11 @@ KEY FEATURES:
                  - Team conversion mechanics (humans to zombies)
                  - Zombies use melee weapons only
                  - Configurable attributes for both teams
-                 - Real-time team composition changes
                  - Victory condition when all humans are eliminated
                  - Player count-based game activation
                  - Countdown timer before match start
                  - Enhanced team shuffling with anti-duplicate protection
                  - Death message suppression during team changes
-
-CONFIGURATION OPTIONS:
-                 - Adjustable speed boosts for both teams
-                 - Customizable respawn times
-                 - Camouflage abilities
-                 - Minimum players required
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -32,20 +25,23 @@ local CONFIG = {
     REQUIRED_PLAYERS = 2,          -- Minimum players required to start
     COUNTDOWN_DELAY = 5,           -- Seconds before game starts
     SERVER_PREFIX = "**ZOMBIES**", -- Server message prefix
-    BLOCK_FALL_DAMAGE = true,      -- Block fall damage
+    ZOMBIFY_ON_SUICIDE = true,     -- Convert humans to zombies when they die by suicide causes
+    ZOMBIFY_ON_FALL_DAMAGE = true, -- Convert humans to zombies when they die by fall damage
 
     ATTRIBUTES = {
         ['humans'] = {
-            SPEED = 1,
-            RESPAWN_TIME = 5,
-            DAMAGE_MULTIPLIER = 1,
-            CAMO = false
+            SPEED = 1.0,             -- Movement speed
+            RESPAWN_TIME = 5,        -- Respawn time
+            DAMAGE_MULTIPLIER = 1,   -- Damage multiplier
+            CAMO = false,            -- Camouflage when crouching
+            CAN_USE_VEHICLES = false -- Use vehicles
         },
         ['zombies'] = {
             SPEED = 1.15,
             RESPAWN_TIME = 1.5,
             DAMAGE_MULTIPLIER = 2,
-            CAMO = true
+            CAMO = true,
+            CAN_USE_VEHICLES = false
         }
     }
 }
@@ -161,8 +157,16 @@ local function createPlayer(id)
         name = get_var(id, '$name'),
         team = get_var(id, '$team'),
         drone = nil,
-        assign = false
+        assign = false,
+        meta_id = nil
     }
+end
+
+local function blockVehicleEntry(player_id, dyn_player, can_use_vehicles)
+    if can_use_vehicles then return end
+    if read_dword(dyn_player + 0x11C) ~= 0xFFFFFFFF then
+        exit_vehicle(player_id)
+    end
 end
 
 local function switchPlayerTeam(player, new_team)
@@ -263,16 +267,24 @@ local function setRespawnTime(id, team)
     local respawn_time = getRespawnTime(team)
     local player = get_player(id)
     if player ~= 0 then
-        write_dword(player + 0x2C, respawn_time)
+        write_dword(player + 0x2C, respawn_time * 33)
     end
 end
 
 local function isFallDamage(metaId)
-    return (metaId == falling or metaId == distance)
+    return (metaId == falling or metaId == distance) and CONFIG.ZOMBIFY_ON_FALL_DAMAGE
+end
+
+local function isSuicide(killerId, victimId)
+    return (killerId == victimId) and CONFIG.ZOMBIFY_ON_SUICIDE
 end
 
 local function isFriendlyFire(killer, victim)
     return killer.id ~= victim.id and killer.team == victim.team
+end
+
+local function zombieVsHuman(victim, killer)
+    return killer and killer.id ~= victim.id and victim.team == 'red' and killer.team == 'blue'
 end
 
 local function getDamageMultiplier(player)
@@ -375,50 +387,56 @@ function OnDeath(victimId, killerId)
     victimId = tonumber(victimId)
     killerId = tonumber(killerId)
 
-    local victim = game.players[victimId]
     local killer = game.players[killerId]
+    local victim = game.players[victimId]
 
-    local server_environmental = killerId == 0 or killerId == -1
-    if server_environmental or not victim or not killer then
-        setRespawnTime(victimId, victim.team)
-        return
-    end
+    local zombie_vs_human = zombieVsHuman(victim, killer)
+    local fall_damage = isFallDamage(victim.meta_id)
+    local suicide = isSuicide(killerId, victimId)
 
-    if victim.team == 'red' and killer.team == 'blue' then
+    if zombie_vs_human then
         switchPlayerTeam(victim, 'blue')
         updateTeamCounts()
         broadcast(victim.name .. " was infected and became a zombie!")
-
-        --checkVictory()
-    else
-        setRespawnTime(victimId, victim.team)
+        return
     end
+
+    -- Handle suicide / fall damage case
+    if (suicide or fall_damage) and victim.team == 'red' then
+        switchPlayerTeam(victim, 'blue')
+        updateTeamCounts()
+    end
+
+    setRespawnTime(victim)
 end
 
 function OnTick()
     if not game.started then return end
 
-    for id, player in pairs(game.players) do
-        if player and player_alive(id) then
+    for i, player in pairs(game.players) do
+        if player and player_alive(i) then
             local attributes = CONFIG.ATTRIBUTES[player.team == 'red' and 'humans' or 'zombies']
 
-            local dyn = get_dynamic_player(id)
-            if dyn == 0 then goto next end
+            local dyn_player = get_dynamic_player(i)
+            if dyn_player == 0 then goto next end
 
             -- Handle camouflage
             if attributes.CAMO then
-                local crouching = read_float(dyn + 0x50C) == 1
+                local crouching = read_float(dyn_player + 0x50C) == 1
                 if crouching then
-                    execute_command('camo ' .. id .. ' 1')
+                    execute_command('camo ' .. i .. ' 1')
                 end
             end
+
+            -- Prevent players from using vehicles
+            blockVehicleEntry(i, dyn_player, attributes.CAN_USE_VEHICLES)
 
             -- Handle weapon assignment for zombies
             if player.team == 'blue' and player.assign then
                 player.assign = false
-                execute_command('wdel ' .. id)
+                execute_command('wdel ' .. i)
                 player.drone = spawn_object('', '', 0, 0, 0, 0, game.oddball)
-                assign_weapon(player.drone, id)
+                assign_weapon(player.drone, i)
             end
             ::next::
         end
@@ -438,19 +456,17 @@ function OnWeaponDrop(id)
 end
 
 function OnDamage(victimId, killerId, metaId, damage)
-    if not game.started then return true end
-
+    if not game.started then return true, damage end
     local killer = tonumber(killerId)
     local victim = tonumber(victimId)
 
-    if CONFIG.BLOCK_FALL_DAMAGE and isFallDamage(metaId) then return false end
+    local victim_data = game.players[victim]
+    game.players[victim].meta_id = metaId
 
     local killer_data = game.players[killer]
     if not killer_data then return true end
 
-    local victim_data = game.players[victim]
     local friendly_fire = isFriendlyFire(killer_data, victim_data)
-
     if friendly_fire then return false end
 
     return true, damage * getDamageMultiplier(killer_data)
@@ -461,6 +477,7 @@ function OnSpawn(id)
 
     local player = game.players[id]
     if not player then return end
+    player.meta_id = nil
 
     local team = player.team
     local attributes = CONFIG.ATTRIBUTES[team == 'red' and 'humans' or 'zombies']

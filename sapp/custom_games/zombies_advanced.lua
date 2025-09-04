@@ -8,7 +8,6 @@ KEY FEATURES:
                  - Team conversion mechanics (humans to zombies)
                  - Zombies use melee weapons only
                  - Configurable attributes for both teams
-                 - Real-time team composition changes
                  - Victory condition when all humans are eliminated
                  - Player count-based game activation
                  - Countdown timer before match start
@@ -17,19 +16,11 @@ KEY FEATURES:
                  - Alpha Zombie and Standard Zombie types
                  - Last Man Standing bonus for final human
 
-CONFIGURATION OPTIONS:
-                 - Adjustable speed boosts for both teams
-                 - Customizable respawn times
-                 - Camouflage abilities
-                 - Minimum players required
-
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
-
--- todo: zombify on suicide?
 
 -- Configuration -----------------------------------------------------------------------
 local CONFIG = {
@@ -37,46 +28,45 @@ local CONFIG = {
     COUNTDOWN_DELAY = 5,           -- Seconds before game starts
     CURE_THRESHOLD = 3,            -- Number of consecutive kills needed for zombies to become human (0 to disable)
     SERVER_PREFIX = "**ZOMBIES**", -- Server message prefix
-    BLOCK_FALL_DAMAGE = true,      -- Block fall damage
-
+    ZOMBIFY_ON_SUICIDE = true,     -- Convert humans to zombies when they die by suicide causes
+    ZOMBIFY_ON_FALL_DAMAGE = true, -- Convert humans to zombies when they die by fall damage
 
     ATTRIBUTES = {
         ['alpha_zombies'] = {
-            SPEED = 1.25,                      -- Slightly faster than humans but not overly so
-            HEALTH = 1.75,                     -- Tough but not invincible (175% health)
-            RESPAWN_TIME = 2.0,                -- Moderate respawn delay
-            DAMAGE_MULTIPLIER = 3,             -- Strong melee damage (3x normal)
-            CAMO = true,                       -- Can camouflage when crouching
-            GRENADES = { frags = 0, plasmas = 1 }, -- Limited plasma grenades
-            CAN_USE_VEHICLES = false
+            SPEED = 1.25,                          -- Movement speed
+            HEALTH = 1.75,                         -- Health
+            RESPAWN_TIME = 2.0,                    -- Respawn time
+            DAMAGE_MULTIPLIER = 3,                 -- Damage multiplier
+            CAMO = true,                           -- Camouflage when crouching
+            GRENADES = { frags = 0, plasmas = 1 }, -- Grenades
+            CAN_USE_VEHICLES = false               -- Use vehicles
         },
         ['standard_zombies'] = {
-            SPEED = 1.15,      -- Slightly faster than humans
-            HEALTH = 1.25,     -- More durable than humans (125% health)
-            RESPAWN_TIME = 1.5, -- Quick respawn
-            DAMAGE_MULTIPLIER = 2, -- Enhanced melee damage (2x normal)
+            SPEED = 1.15,
+            HEALTH = 1.25,
+            RESPAWN_TIME = 1.5,
+            DAMAGE_MULTIPLIER = 2,
             CAMO = false,
             GRENADES = { frags = 0, plasmas = 0 },
             CAN_USE_VEHICLES = false
         },
         ['humans'] = {
-            SPEED = 1.0,                       -- Normal speed
-            HEALTH = 1.0,                      -- Standard health
-            RESPAWN_TIME = 5,                  -- Longer respawn penalty
-            DAMAGE_MULTIPLIER = 1,             -- Normal damage
+            SPEED = 1.0,
+            HEALTH = 1.0,
+            RESPAWN_TIME = 5,
+            DAMAGE_MULTIPLIER = 1,
             CAMO = false,
-            GRENADES = { frags = 2, plasmas = 2 }, -- Adequate grenade supply
+            GRENADES = { frags = 2, plasmas = 2 },
             CAN_USE_VEHICLES = true
         },
         ['last_man_standing'] = {
-            SPEED = 1.15,                      -- Slight speed boost
-            HEALTH = 1.25,                     -- Moderate health increase
-            RESPAWN_TIME = 3,                  -- Reduced respawn time
-            DAMAGE_MULTIPLIER = 1.5,           -- Damage boost
+            SPEED = 1.15,
+            HEALTH = 1.25,
+            DAMAGE_MULTIPLIER = 1.5,
             CAMO = false,
-            GRENADES = { frags = 3, plasmas = 3 }, -- Extra grenades
+            GRENADES = { frags = 3, plasmas = 3 },
             CAN_USE_VEHICLES = true,
-            HEALTH_REGEN = 0.001               -- Slow health regeneration
+            HEALTH_REGEN = 0.001 -- Health regeneration (% per tick)
         }
     }
 }
@@ -196,7 +186,8 @@ local function createPlayer(id)
         drone = nil,
         assign = false,
         is_last_man_standing = false,
-        consecutive_kills = 0 -- Track consecutive kills for cure mechanic
+        consecutive_kills = 0, -- Track consecutive kills for cure mechanic
+        meta_id = nil,
     }
 end
 
@@ -344,23 +335,40 @@ local function startGame()
 end
 
 local function getRespawnTime(player_type)
+    if player_type == 'last_man_standing' then return 0 end
     return CONFIG.ATTRIBUTES[player_type].RESPAWN_TIME * 33
 end
 
-local function setRespawnTime(id, player_type)
+local function setRespawnTime(player)
+    local player_type = player.zombie_type or (player.team == 'red' and 'humans') or 'standard_zombies'
     local respawn_time = getRespawnTime(player_type)
-    local player = get_player(id)
-    if player ~= 0 then
-        write_dword(player + 0x2C, respawn_time)
+    local static_player = get_player(player.id)
+
+    if static_player ~= 0 then
+        write_dword(static_player + 0x2C, respawn_time)
     end
 end
 
 local function isFallDamage(metaId)
-    return (metaId == falling or metaId == distance)
+    return (metaId == falling or metaId == distance) and CONFIG.ZOMBIFY_ON_FALL_DAMAGE
+end
+
+local function isSuicide(killerId, victimId)
+    return (killerId == victimId) and CONFIG.ZOMBIFY_ON_SUICIDE
 end
 
 local function isFriendlyFire(killer, victim)
     return killer.id ~= victim.id and killer.team == victim.team
+end
+
+local function zombieVsHuman(victim, killer)
+    return killer and killer.id ~= victim.id and victim.team == 'red' and killer.team == 'blue'
+end
+
+local function getPlayerType(player)
+    return player.zombie_type or
+        (player.team == 'red' and (player.is_last_man_standing and 'last_man_standing' or 'humans')) or
+        'standard_zombies'
 end
 
 -- SAPP Events
@@ -462,22 +470,18 @@ function OnDeath(victimId, killerId)
     victimId = tonumber(victimId)
     killerId = tonumber(killerId)
 
-    local victim = game.players[victimId]
     local killer = game.players[killerId]
+    local victim = game.players[victimId]
 
-    local server_environmental = killerId == 0 or killerId == -1
-    if server_environmental or not victim or not killer then
-        local player_type = victim.zombie_type or (victim.team == 'red' and 'humans') or 'standard_zombies'
-        setRespawnTime(victimId, player_type)
-        return
-    end
+    local zombie_vs_human = zombieVsHuman(victim, killer)
+    local fall_damage = isFallDamage(victim.meta_id)
+    local suicide = isSuicide(killerId, victimId)
 
-    -- Reset consecutive kills if victim was a zombie
-    if victim.team == 'blue' then
+    if victim.team == 'blue' then -- curing
         victim.consecutive_kills = 0
     end
 
-    if victim.team == 'red' and killer.team == 'blue' then
+    if zombie_vs_human then
         -- Check if killer zombie should be cured
         if not checkZombieCure(killer) then
             switchPlayerTeam(victim, 'blue', 'standard_zombies')
@@ -485,46 +489,47 @@ function OnDeath(victimId, killerId)
             checkLastManStanding()
             broadcast(victim.name .. " was infected and became a zombie!")
         end
-    else
-        local player_type = victim.zombie_type or (victim.team == 'red' and 'humans') or 'standard_zombies'
-        setRespawnTime(victimId, player_type)
+        return
     end
-end
 
-local function getPlayerType(player)
-    return player.zombie_type or
-        (player.team == 'red' and (player.is_last_man_standing and 'last_man_standing' or 'humans')) or
-        'standard_zombies'
+    -- Handle suicide / fall damage case
+    if (suicide or fall_damage) and victim.team == 'red' then
+        switchPlayerTeam(victim, 'blue', 'standard_zombies')
+        updateTeamCounts()
+        checkLastManStanding()
+    end
+
+    setRespawnTime(victim)
 end
 
 function OnTick()
     if not game.started then return end
 
-    for id, player in pairs(game.players) do
-        if player and player_alive(id) then
-            local dyn_player = get_dynamic_player(id)
+    for i, player in pairs(game.players) do
+        if player and player_alive(i) then
+            local dyn_player = get_dynamic_player(i)
             if dyn_player == 0 then goto next end
 
             local player_type = getPlayerType(player)
             local attributes = CONFIG.ATTRIBUTES[player_type]
 
-            -- Handle camouflage for alpha zombies
+            -- Handle camouflage
             if attributes.CAMO then
                 local crouching = read_float(dyn_player + 0x50C) == 1
                 if crouching then
-                    execute_command('camo ' .. id .. ' 1') -- sets camo for 1s
+                    execute_command('camo ' .. i .. ' 1')
                 end
             end
 
             -- Prevent players from using vehicles
-            blockVehicleEntry(id, dyn_player, attributes.CAN_USE_VEHICLES)
+            blockVehicleEntry(i, dyn_player, attributes.CAN_USE_VEHICLES)
 
             -- Handle weapon assignment for zombies
             if player.team == 'blue' and player.assign then
                 player.assign = false
-                execute_command('wdel ' .. id)
+                execute_command('wdel ' .. i)
                 player.drone = spawn_object('', '', 0, 0, 0, 0, game.oddball)
-                assign_weapon(player.drone, id)
+                assign_weapon(player.drone, i)
             end
             ::next::
         end
@@ -532,7 +537,7 @@ function OnTick()
 end
 
 function OnWeaponDrop(id)
-    if not game.started then return true end
+    if not game.started then return end
 
     local player = game.players[id]
     if player then
@@ -545,18 +550,17 @@ function OnWeaponDrop(id)
 end
 
 function OnDamage(victimId, killerId, metaId, damage)
-    if not game.started then return true end
+    if not game.started then return true, damage end
     local killer = tonumber(killerId)
     local victim = tonumber(victimId)
 
-    if CONFIG.BLOCK_FALL_DAMAGE and isFallDamage(metaId) then return false end
+    local victim_data = game.players[victim]
+    game.players[victim].meta_id = metaId
 
     local killer_data = game.players[killer]
     if not killer_data then return true end
 
-    local victim_data = game.players[victim]
     local friendly_fire = isFriendlyFire(killer_data, victim_data)
-
     if friendly_fire then return false end
 
     local killer_type = getPlayerType(killer_data)
@@ -570,6 +574,7 @@ function OnSpawn(id)
 
     local player = game.players[id]
     if not player then return end
+    player.meta_id = nil
 
     local player_type = getPlayerType(player)
     applyPlayerAttributes(player, player_type)
