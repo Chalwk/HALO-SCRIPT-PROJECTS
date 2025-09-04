@@ -4,7 +4,7 @@
 * The HSP Servers are currently hosted on **Halo: Custom Edition**.
 
 **Server IP:** `jericraft.net`
-**Ports:** `2301-2308`
+**Ports:** `2301-2309`
 
 **Individual Servers:**
 * [HSP-Divide & Conquer](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/docs/HSP_SERVERS/servers/divide_and_conquer.md) - `2301` → #divide-and-conquer
@@ -15,5 +15,6 @@
 * [HSP-Rooster CTF](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/docs/HSP_SERVERS/servers/rooster_ctf.md) - `2306` → #rooster-ctf
 * [HSP-Snipers Dream Team](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/docs/HSP_SERVERS/servers/snipers_dream_team.md) - `2307` → #snipers-dream-team
 * [HSP-Tag](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/docs/HSP_SERVERS/servers/tag.md) - `2308` → #tag
+* [HSP-Zombies](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/docs/HSP_SERVERS/servers/zombies.md) - `2309` → #zombies
 
 Get the @HSP Servers role in #〔📜〕writ-of-allegiance to see real-time Halo server updates for the official HSP Halo servers.

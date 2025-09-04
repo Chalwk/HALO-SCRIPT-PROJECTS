@@ -68,7 +68,7 @@
 * Open Halo: Custom Edition.
 * Navigate to the Multiplayer section.
 * Join by:
-    * Searching for **Gun Game**
+    * Searching for **HSP-Gun Game**
     * Direct IP: `jericraft.net:2302`
 
 ---

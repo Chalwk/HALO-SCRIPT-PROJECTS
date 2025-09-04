@@ -22,7 +22,7 @@ spawn in the middle of the map. Players need to return the flag to either the **
 * Open Halo: Custom Edition.
 * Navigate to the Multiplayer section.
 * Join by:
-    * Searching for **Rooster CTF**
+    * Searching for **HSP-Rooster CTF**
     * Direct IP: `jericraft.net:2306`
 
 ---

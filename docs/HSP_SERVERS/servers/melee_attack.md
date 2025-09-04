@@ -40,7 +40,7 @@ The **Melee Attack** mode runs on the following **stock maps** and **game modes*
 * Open Halo: Custom Edition.
 * Navigate to the Multiplayer section.
 * Join by:
-    * Searching for **Melee Attack**
+    * Searching for **HSP-Melee Attack**
     * Direct IP: `jericraft.net:2304`
 
 ---

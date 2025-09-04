@@ -33,7 +33,7 @@
 * Open Halo: Custom Edition.
 * Navigate to the Multiplayer section.
 * Join by:
-    * Searching for **Kill Confirmed**
+    * Searching for **HSP-Kill Confirmed**
     * Direct IP: `jericraft.net:2303`
 
 ---

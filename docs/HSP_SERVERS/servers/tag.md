@@ -42,7 +42,7 @@ A game starts when a player is whacked to become "it" (the tagger). The tagger's
 * Open Halo: Custom Edition.
 * Navigate to the Multiplayer section.
 * Join by:
-    * Searching for **Tag**
+    * Searching for **HSP-Tag**
     * Direct IP: `jericraft.net:2308`
 
 ---

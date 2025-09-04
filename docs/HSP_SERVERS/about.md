@@ -16,6 +16,7 @@ Here's a quick overview of the current HSP **Halo: Custom Edition** servers:
 | **[Rooster CTF](servers/rooster_ctf.md)**               | A CTF mode for Slayer (FFA/Team), where players fight to capture a single flag and return it to either the Red or Blue Base to score.                        | **jericraft.net:2306** |
 | **[Snipers Dream Team](servers/snipers_dream_team.md)** | A highly modded snipers game mode with unique features and gameplay mechanics.                                                                               | **jericraft.net:2307** |
 | **[Tag](servers/tag.md)**                               | A fast-paced and exciting variation of tag, where players must catch (melee) and eliminate each other in a thrilling chase.                                  | **jericraft.net:2308** |
+| **[Zombies](servers/zombies.md)**                       | A highly modded zombies game mode with unique features and gameplay mechanics.                                                                               | **jericraft.net:2309** |
 
 Each server offers a unique and custom experience, crafted to deliver the best possible gameplay. Whether you're looking
 to compete in a classic mode or try something completely new, HSP Halo servers are ready for you. Dive into the

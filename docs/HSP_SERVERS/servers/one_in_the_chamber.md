@@ -28,7 +28,7 @@ The **One In The Chamber** mode runs Slayer on all Stock Maps.
 * Open Halo: Custom Edition.
 * Navigate to the Multiplayer section.
 * Join by:
-    * Searching for **One In The Chamber**
+    * Searching for **HSP-One In The Chamber**
     * Direct IP: `jericraft.net:2305`
 
 ---
