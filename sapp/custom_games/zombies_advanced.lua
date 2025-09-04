@@ -413,6 +413,8 @@ function OnQuit(id)
 end
 
 function OnTeamSwitch(id)
+    if not game.started then return true end
+
     if game.players[id] then
         game.players[id].team = get_var(id, '$team')
         updateTeamCounts()
@@ -491,6 +493,8 @@ function OnTick()
 end
 
 function OnWeaponDrop(id)
+    if not game.started then return true end
+
     local player = game.players[id]
     if player then
         if player.drone then
@@ -510,6 +514,7 @@ local function isFriendlyFire(killer, victim)
 end
 
 function OnDamage(victimId, killerId, metaId, damage)
+    if not game.started then return true end
     local killer = tonumber(killerId)
     local victim = tonumber(victimId)
 
