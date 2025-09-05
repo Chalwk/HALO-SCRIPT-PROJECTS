@@ -26,6 +26,8 @@ CONFIGURATION:
     - ZOMBIFY_ON_SUICIDE:         Convert humans to zombies on suicide (default: true)
     - ZOMBIFY_ON_FALL_DAMAGE:     Convert humans to zombies on fall damage (default: true)
     - LAST_MAN_NAV:               Enable navigation waypoints for Last Man Standing (default: true)
+    - END_ON_NO_PLAYERS:          End the game when no players are present (default: true)
+    - SHOW_ZOMBIE_TYPE_MESSAGES:  Show messages when a player converts to a zombie (default: false)
     - ATTRIBUTES_COMMAND_ENABLED: Enable "/attributes" command (default: true)
     - ATTRIBUTES_COMMAND:         Command to show player attributes (default: "attributes")
     - ZOMBIE_COUNT:               Dynamic alpha zombie count based on player population
@@ -63,6 +65,7 @@ local CONFIG = {
     ZOMBIFY_ON_FALL_DAMAGE = true,
     LAST_MAN_NAV = true,
     END_ON_NO_PLAYERS = true,
+    SHOW_ZOMBIE_TYPE_MESSAGES = false,
     ATTRIBUTES_COMMAND_ENABLED = true,
     ATTRIBUTES_COMMAND = "attributes",
     ZOMBIE_COUNT = {
@@ -318,8 +321,12 @@ local function switchPlayerTeam(player, new_team, zombie_type)
         applyPlayerAttributes(player, player.zombie_type)
         player.assign = true
         player.consecutive_kills = 0
-        if player.zombie_type == 'alpha_zombies' then
-            send(player.id, "You are an Alpha Zombie! (Stronger/faster than normal zombies)")
+        if CONFIG.SHOW_ZOMBIE_TYPE_MESSAGES then
+            if player.zombie_type == 'alpha_zombies' then
+                send(player.id, "You are an Alpha Zombie! (Stronger/faster than normal zombies)")
+            elseif player.zombie_type == 'standard_zombies' then
+                send(player.id, "You are a Standard Zombie!")
+            end
         end
     else
         player.zombie_type = nil

@@ -22,6 +22,7 @@ CONFIGURATION:
     - SERVER_PREFIX:                    Server message prefix (default: "**ZOMBIES**")
     - ZOMBIFY_ON_SUICIDE:               Convert humans to zombies on suicide (default: true)
     - ZOMBIFY_ON_FALL_DAMAGE:           Convert humans to zombies on fall damage (default: true)
+    - END_ON_NO_PLAYERS:                End the game when no players are present (default: true)
     - ZOMBIE_COUNT:                     Dynamic zombie count based on player population
                                         Format: {min players, max players, zombie count}
                                         Example: {1, 4, 1} = 1 zombie for 1-4 players
