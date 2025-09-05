@@ -43,6 +43,7 @@ local CONFIG = {
     SERVER_PREFIX = "**ZOMBIES**",
     ZOMBIFY_ON_SUICIDE = true,
     ZOMBIFY_ON_FALL_DAMAGE = true,
+    END_ON_NO_PLAYERS = true,
     ATTRIBUTES = {
         ['humans'] = {
             SPEED = 1.0,
@@ -288,7 +289,25 @@ local function checkVictory()
     if game.red_count == 0 then
         broadcast("Zombies have overrun the humans!")
         execute_command('sv_map_next')
+    elseif CONFIG.END_ON_NO_PLAYERS and game.blue_count == 0 then
+        broadcast("Zombies have retreated. Humans win!")
+        execute_command('sv_map_next')
     end
+end
+
+local function checkEmptyTeams()
+    if CONFIG.END_ON_NO_PLAYERS and game.started then
+        if game.red_count == 0 then
+            broadcast("Zombies have overrun the humans!")
+            execute_command('sv_map_next')
+            return true
+        elseif game.blue_count == 0 then
+            broadcast("Humans have eliminated all zombies!")
+            execute_command('sv_map_next')
+            return true
+        end
+    end
+    return false
 end
 
 local function startGame()
@@ -408,6 +427,8 @@ function OnQuit(id)
         game.player_count = game.player_count - 1
         updateTeamCounts()
 
+        if checkEmptyTeams() then return end
+
         if game.player_count < CONFIG.REQUIRED_PLAYERS and not game.started then
             game.started = false
             game.waiting_for_players = true
@@ -424,6 +445,9 @@ function OnTeamSwitch(id)
         player.team = get_var(id, '$team')
         player.switched = true
         updateTeamCounts()
+
+        if checkEmptyTeams() then return end
+
         checkVictory()
     end
 end
@@ -445,6 +469,9 @@ function OnDeath(victimId, killerId)
     elseif zombie_vs_human then
         switchPlayerTeam(victim, TEAM_BLUE)
         updateTeamCounts()
+
+        if checkEmptyTeams() then return end
+
         broadcast(victim.name .. " was infected by " .. killer.name .. "!")
     elseif human_vs_zombie then
         broadcast(victim.name .. " was killed by " .. killer.name .. "!")
@@ -452,6 +479,8 @@ function OnDeath(victimId, killerId)
         if victim.team == TEAM_RED then
             switchPlayerTeam(victim, TEAM_BLUE)
             updateTeamCounts()
+
+            if checkEmptyTeams() then return end
         end
         broadcast(victim.name .. " died!")
     end

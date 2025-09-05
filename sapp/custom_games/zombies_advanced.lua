@@ -56,6 +56,7 @@ local CONFIG = {
     ZOMBIFY_ON_SUICIDE = true,
     ZOMBIFY_ON_FALL_DAMAGE = true,
     LAST_MAN_NAV = true,
+    END_ON_NO_PLAYERS = true,
     ATTRIBUTES_COMMAND_ENABLED = true,
     ATTRIBUTES_COMMAND = "attributes",
     ATTRIBUTES = {
@@ -390,7 +391,25 @@ local function checkVictory()
     if game.red_count == 0 then
         broadcast(nil, "Zombies have overrun the humans!")
         execute_command('sv_map_next')
+    elseif CONFIG.END_ON_NO_PLAYERS and game.blue_count == 0 then
+        broadcast(nil, "Zombies have retreated. Humans win!")
+        execute_command('sv_map_next')
     end
+end
+
+local function checkEmptyTeams()
+    if CONFIG.END_ON_NO_PLAYERS and game.started then
+        if game.red_count == 0 then
+            broadcast(nil, "Zombies have overrun the humans!")
+            execute_command('sv_map_next')
+            return true
+        elseif game.blue_count == 0 then
+            broadcast(nil, "Humans have eliminated all zombies!")
+            execute_command('sv_map_next')
+            return true
+        end
+    end
+    return false
 end
 
 local function startGame()
@@ -545,6 +564,8 @@ function OnQuit(id)
         updateTeamCounts()
         checkLastManStanding()
 
+        if checkEmptyTeams() then return end
+
         if game.player_count < CONFIG.REQUIRED_PLAYERS and not game.started then
             game.started = false
             game.waiting_for_players = true
@@ -562,6 +583,9 @@ function OnTeamSwitch(id)
         player.switched = true
         updateTeamCounts()
         checkLastManStanding()
+
+        if checkEmptyTeams() then return end
+
         checkVictory()
     end
 end
@@ -585,6 +609,9 @@ function OnDeath(victimId, killerId)
     elseif zombie_vs_human then
         switchPlayerTeam(victim, TEAM_BLUE, 'standard_zombies')
         updateTeamCounts()
+
+        if checkEmptyTeams() then return end
+
         broadcast(nil, victim.name .. " was infected by " .. killer.name .. "!")
 
         local wasCured = checkZombieCure(killer)
@@ -595,6 +622,8 @@ function OnDeath(victimId, killerId)
         if victim.team == TEAM_RED then -- only switch if human
             switchPlayerTeam(victim, TEAM_BLUE, 'standard_zombies')
             updateTeamCounts()
+
+            if checkEmptyTeams() then return end
         end
         broadcast(nil, victim.name .. " died!")
     end
