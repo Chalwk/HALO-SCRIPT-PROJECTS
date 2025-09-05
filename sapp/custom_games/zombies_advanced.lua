@@ -24,12 +24,14 @@ LICENSE:          MIT License
 
 -- Configuration -----------------------------------------------------------------------
 local CONFIG = {
-    REQUIRED_PLAYERS = 2,              -- Minimum players required to start
-    COUNTDOWN_DELAY = 5,               -- Seconds before game starts
-    CURE_THRESHOLD = 6,                -- Number of consecutive kills needed for zombies to become human (0 to disable)
-    SERVER_PREFIX = "**ZOMBIES**",     -- Server message prefix
-    ZOMBIFY_ON_SUICIDE = true,         -- Convert humans to zombies when they die by suicide causes
-    ZOMBIFY_ON_FALL_DAMAGE = true,     -- Convert humans to zombies when they die by fall damage
+    REQUIRED_PLAYERS = 2,          -- Minimum players required to start
+    COUNTDOWN_DELAY = 5,           -- Seconds before game starts
+    CURE_THRESHOLD = 6,            -- Number of consecutive kills needed for zombies to become human (0 to disable)
+    SERVER_PREFIX = "**ZOMBIES**", -- Server message prefix
+    ZOMBIFY_ON_SUICIDE = true,     -- Convert humans to zombies when they die by suicide causes
+    ZOMBIFY_ON_FALL_DAMAGE = true, -- Convert humans to zombies when they die by fall damage
+    LAST_MAN_NAV = true,           -- Enable Last Man Standing nav marker.
+    --                                Gametype must have "kill in order" enabled and objective indicators set to "nav points" for nav markers to work.
 
     ATTRIBUTES_COMMAND_ENABLED = true, -- Enable /attributes command
     ATTRIBUTES_COMMAND = "attributes", -- Command to use
@@ -590,6 +592,24 @@ function OnDeath(victimId, killerId)
     victim.switched = nil
 end
 
+local function isNotLastMan(playerId, lastManId)
+    return playerId ~= lastManId and lastManId ~= nil and player_alive(lastManId)
+end
+
+local function setNav(playerId)
+    if not CONFIG.LAST_MAN_NAV then return end
+
+    local player = get_player(playerId)
+    if player == 0 then return end
+
+    local last_man_id = game.last_man_id
+    if isNotLastMan(playerId, last_man_id) then
+        write_word(player + 0x88, to_real_index(last_man_id))
+    else
+        write_word(player + 0x88, to_real_index(playerId))
+    end
+end
+
 function OnTick()
     if not game.started then return end
 
@@ -616,6 +636,9 @@ function OnTick()
                 player.drone = spawn_object('', '', 0, 0, 0, 0, game.oddball)
                 assign_weapon(player.drone, i)
             end
+
+            setNav(i)
+
             ::next::
         end
     end
