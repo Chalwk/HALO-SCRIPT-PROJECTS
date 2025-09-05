@@ -34,14 +34,12 @@ local CONFIG = {
             RESPAWN_TIME = 5,        -- Respawn time
             DAMAGE_MULTIPLIER = 1,   -- Damage multiplier
             CAMO = false,            -- Camouflage when crouching
-            CAN_USE_VEHICLES = false -- Use vehicles
         },
         ['zombies'] = {
             SPEED = 1.15,
             RESPAWN_TIME = 1.5,
             DAMAGE_MULTIPLIER = 2,
-            CAMO = true,
-            CAN_USE_VEHICLES = false
+            CAMO = true
         }
     }
 }
@@ -51,6 +49,7 @@ api_version = '1.12.0.0'
 
 local pairs, ipairs, table_insert = pairs, ipairs, table.insert
 local math_random, os_time, tonumber = math.random, os.time, tonumber
+local string_format = string.format
 
 local get_var, say_all = get_var, say_all
 local execute_command, player_present = execute_command, player_present
@@ -70,8 +69,7 @@ local sapp_events = {
     [cb['EVENT_GAME_END']] = 'OnEnd',
     [cb['EVENT_TEAM_SWITCH']] = 'OnTeamSwitch',
     [cb['EVENT_WEAPON_DROP']] = 'OnWeaponDrop',
-    [cb['EVENT_DAMAGE_APPLICATION']] = 'OnDamage',
-    [cb['EVENT_VEHICLE_ENTER']] = 'OnVehicleEnter'
+    [cb['EVENT_DAMAGE_APPLICATION']] = 'OnDamage'
 }
 
 local function registerCallbacks(team_game)
@@ -80,6 +78,41 @@ local function registerCallbacks(team_game)
             register_callback(event, callback)
         else
             unregister_callback(event)
+        end
+    end
+end
+
+local function scanMapObjects()
+    local base_tag_table = 0x40440000
+    local tag_array = read_dword(base_tag_table)
+    local tag_count = read_dword(base_tag_table + 0xC)
+
+    local objects = { vehicles = {}, weapons = {}, equipment = {} }
+
+    for i = 0, tag_count - 1 do
+        local tag   = tag_array + 0x20 * i
+        local class = read_dword(tag)
+        local name  = read_string(read_dword(tag + 0x10))
+        --local id    = read_dword(tag + 0xC) -- meta ID
+
+        if class == 0x76656869 then         -- "vehi" (disable for all teams)
+            table.insert(objects.vehicles, { tag = name, team = 0 })
+        elseif class == 0x77656170 then     -- "weap" (disable for blue team only)
+            table.insert(objects.weapons, { tag = name, team = 2 })
+        elseif class == 1701931376 then     -- "eqip" (disable for blue team only)
+            table.insert(objects.equipment, { tag = name, team = 2 })
+        end
+    end
+
+    return objects
+end
+
+local function manageMapObjects(state)
+    local command = state and "enable_object" or "disable_object"
+    local objects = scanMapObjects()
+    for _, category in pairs(objects) do
+        for _, obj in ipairs(category) do
+            execute_command(string_format('%s "%s" %d', command, obj.tag, obj.team))
         end
     end
 end
@@ -340,6 +373,7 @@ function OnStart()
     updateTeamCounts()
     startGame()
     registerCallbacks(true)
+    manageMapObjects(false)
 end
 
 function OnEnd()
@@ -511,20 +545,6 @@ function OnSpawn(id)
     end
 end
 
-function OnVehicleEnter(id)
-    if not game.started then return end
-
-    local player = game.players[id]
-    if not player then return end
-    local team = player.team
-
-    local attributes = CONFIG.ATTRIBUTES[team == 'red' and 'humans' or 'zombies']
-    local can_use_vehicles = attributes.CAN_USE_VEHICLES
-
-    if can_use_vehicles then return end
-    timer(3000, "exit_vehicle", id)
-end
-
 function OnCountdown()
     if game.waiting_for_players or game.started then return false end
 
@@ -546,4 +566,5 @@ end
 
 function OnScriptUnload()
     if death_message_hook_enabled then restoreDeathMessages() end
+    manageMapObjects(true)
 end
