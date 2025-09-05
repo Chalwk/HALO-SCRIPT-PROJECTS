@@ -80,16 +80,14 @@ local CONFIG = {
             HEALTH = 1.75,
             RESPAWN_TIME = 2.0,
             DAMAGE_MULTIPLIER = 3,
-            CAMO = true,
-            GRENADES = { frags = 0, plasmas = 1 }
+            CAMO = true
         },
         ['standard_zombies'] = {
             SPEED = 1.15,
             HEALTH = 1.25,
             RESPAWN_TIME = 1.5,
             DAMAGE_MULTIPLIER = 2,
-            CAMO = false,
-            GRENADES = { frags = 0, plasmas = 0 }
+            CAMO = false
         },
         ['humans'] = {
             SPEED = 1.0,
@@ -286,8 +284,10 @@ local function applyPlayerAttributes(player, player_type)
 
     if player_alive(player.id) and dyn_player ~= 0 then
         write_float(dyn_player + 0xE0, attributes.HEALTH)
-        execute_command('nades ' .. player.id .. ' ' .. attributes.GRENADES.frags .. ' 1')
-        execute_command('nades ' .. player.id .. ' ' .. attributes.GRENADES.plasmas .. ' 2')
+        if attributes.GRENADES then
+            execute_command('nades ' .. player.id .. ' ' .. attributes.GRENADES.frags .. ' 1')
+            execute_command('nades ' .. player.id .. ' ' .. attributes.GRENADES.plasmas .. ' 2')
+        end
         execute_command("s " .. player.id .. " " .. attributes.SPEED)
     end
 
