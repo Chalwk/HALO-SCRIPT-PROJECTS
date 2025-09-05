@@ -160,6 +160,7 @@ local function createPlayer(id)
         drone = nil,   -- tracking oddball object
         assign = false,
         meta_id = nil, -- meta id of last known damage (for fall damage)
+        switched = nil
     }
 end
 
@@ -171,6 +172,7 @@ local function destroyDrone(victim)
 end
 
 local function switchPlayerTeam(player, new_team)
+    player.switched = true
     execute_command('st ' .. player.id .. ' ' .. new_team)
     player.team = new_team
 
@@ -288,6 +290,10 @@ local function zombieVsHuman(victim, killer)
     return killer and killer.id ~= victim.id and victim.team == 'red' and killer.team == 'blue'
 end
 
+local function humanVsZombie(victim, killer)
+    return killer and killer.id ~= victim.id and victim.team == 'blue' and killer.team == 'red'
+end
+
 local function getDamageMultiplier(player)
     local team = player.team == 'blue' and 'zombies' or 'humans'
     return true, CONFIG.ATTRIBUTES[team].DAMAGE_MULTIPLIER
@@ -321,7 +327,7 @@ function OnStart()
 
     execute_command('scorelimit 9999')
 
-    falling = getTag('jpt!', 'globals\\falling') -- these will only work on maps with these meta tags
+    falling = getTag('jpt!', 'globals\\falling')
     distance = getTag('jpt!', 'globals\\distance')
 
     for i = 1, 16 do
@@ -339,6 +345,7 @@ end
 function OnEnd()
     game.started = false
     game.waiting_for_players = true
+    restoreDeathMessages()
 end
 
 function OnJoin(id)
@@ -372,12 +379,15 @@ function OnQuit(id)
 end
 
 function OnTeamSwitch(id)
-    if not game.started then return end
-    if game.players[id] then
-        game.players[id].team = get_var(id, '$team')
-        updateTeamCounts()
+    if not game.started then return true end
 
-        if game.started then checkVictory() end
+    local player = game.players[id]
+    if player then
+        player.team = get_var(id, '$team')
+        player.switched = true
+
+        updateTeamCounts()
+        checkVictory()
     end
 end
 
@@ -390,25 +400,40 @@ function OnDeath(victimId, killerId)
     local victim = game.players[victimId]
 
     local zombie_vs_human = zombieVsHuman(victim, killer)
+    local human_vs_zombie = humanVsZombie(victim, killer)
+
     local fall_damage = isFallDamage(victim.meta_id)
     local suicide = isSuicide(killerId, victimId)
+
+    if killerId == 0 or (killerId == -1 and not victim.switched) or killerId == nil then
+        broadcast(victim.name .. " died!")
+        goto next
+    end
 
     if zombie_vs_human then
         switchPlayerTeam(victim, 'blue')
         updateTeamCounts()
-        broadcast(victim.name .. " was infected and became a zombie!")
+        broadcast(victim.name .. " was infected by " .. killer.name .. "!")
+        goto next
+    elseif human_vs_zombie then
+        broadcast(victim.name .. " was killed by " .. killer.name .. "!")
         goto next
     end
 
     -- Handle suicide / fall damage case
-    if (suicide or fall_damage) and victim.team == 'red' then
-        switchPlayerTeam(victim, 'blue')
-        updateTeamCounts()
+    if (suicide or fall_damage) then
+        if victim.team == 'red' then
+            switchPlayerTeam(victim, 'blue')
+            updateTeamCounts()
+        end
+        broadcast(victim.name .. " died!")
     end
 
     ::next::
     destroyDrone(victim)
     setRespawnTime(victim)
+
+    victim.switched = nil
 end
 
 function OnTick()
@@ -482,6 +507,10 @@ function OnSpawn(id)
 
     -- Apply speed
     execute_command("s " .. id .. " " .. attributes.SPEED)
+
+    if player.team == 'blue' then
+        player.assign = true
+    end
 end
 
 function OnVehicleEnter(id)
@@ -510,7 +539,6 @@ function OnCountdown()
         disableDeathMessages()
         execute_command('sv_map_reset')
         shuffleTeams()
-        restoreDeathMessages()
 
         game.started = true
     end
