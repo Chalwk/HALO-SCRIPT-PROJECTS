@@ -545,7 +545,5 @@ function OnCountdown()
 end
 
 function OnScriptUnload()
-    if death_message_hook_enabled then
-        restoreDeathMessages()
-    end
+    if death_message_hook_enabled then restoreDeathMessages() end
 end
