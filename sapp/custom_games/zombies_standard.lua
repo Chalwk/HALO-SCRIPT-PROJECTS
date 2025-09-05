@@ -201,7 +201,7 @@ local function restoreDeathMessages()
     end
 end
 
-local function getOddbalID()
+local function findOddballTagID()
     local tag_array = read_dword(base_tag_table)
     local tag_count = read_dword(base_tag_table + 0xC)
     for i = 0, tag_count - 1 do
@@ -410,7 +410,7 @@ function OnStart()
     game.players = {}
     game.player_count = 0
     game.started = false
-    game.oddball = getOddbalID()
+    game.oddball = findOddballTagID()
 
     execute_command('scorelimit 9999')
     falling = getTag('jpt!', 'globals\\falling')
