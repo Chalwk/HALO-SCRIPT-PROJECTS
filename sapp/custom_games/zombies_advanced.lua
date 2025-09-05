@@ -567,9 +567,7 @@ function OnDeath(victimId, killerId)
         local wasCured = checkZombieCure(killer)
 
         -- If killer was cured, we need to check victory conditions
-        if wasCured then
-            checkVictory()
-        end
+        if wasCured then checkVictory() end
         goto next
     elseif human_vs_zombie then
         broadcast(nil, victim.name .. " was killed by " .. killer.name .. "!")
@@ -624,9 +622,7 @@ function OnTick()
             -- Handle camouflage
             if attributes.CAMO then
                 local crouching = read_float(dyn_player + 0x50C) == 1
-                if crouching then
-                    execute_command('camo ' .. i .. ' 1')
-                end
+                if crouching then execute_command('camo ' .. i .. ' 1') end
             end
 
             -- Handle weapon assignment for zombies
@@ -692,7 +688,7 @@ function OnSpawn(id)
     end
 end
 
-function OnCommand(id, command, environment, is_script)
+function OnCommand(id, command)
     if not game.started then return true end
 
     if CONFIG.ATTRIBUTES_COMMAND_ENABLED and command == CONFIG.ATTRIBUTES_COMMAND then
@@ -756,7 +752,5 @@ function RegenHealth()
 end
 
 function OnScriptUnload()
-    if death_message_hook_enabled then
-        restoreDeathMessages()
-    end
+    if death_message_hook_enabled then restoreDeathMessages() end
 end
