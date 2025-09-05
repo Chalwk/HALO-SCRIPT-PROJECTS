@@ -555,9 +555,7 @@ function OnDeath(victimId, killerId)
     if killerId == 0 or (killerId == -1 and not victim.switched) or killerId == nil then
         broadcast(nil, victim.name .. " died!")
         goto next
-    end
-
-    if zombie_vs_human then
+    elseif zombie_vs_human then
         -- First, infect the victim (always)
         switchPlayerTeam(victim, 'blue', 'standard_zombies')
         updateTeamCounts()
