@@ -24,12 +24,15 @@ LICENSE:          MIT License
 
 -- Configuration -----------------------------------------------------------------------
 local CONFIG = {
-    REQUIRED_PLAYERS = 2,          -- Minimum players required to start
-    COUNTDOWN_DELAY = 5,           -- Seconds before game starts
-    CURE_THRESHOLD = 3,            -- Number of consecutive kills needed for zombies to become human (0 to disable)
-    SERVER_PREFIX = "**ZOMBIES**", -- Server message prefix
-    ZOMBIFY_ON_SUICIDE = true,     -- Convert humans to zombies when they die by suicide causes
-    ZOMBIFY_ON_FALL_DAMAGE = true, -- Convert humans to zombies when they die by fall damage
+    REQUIRED_PLAYERS = 2,              -- Minimum players required to start
+    COUNTDOWN_DELAY = 5,               -- Seconds before game starts
+    CURE_THRESHOLD = 6,                -- Number of consecutive kills needed for zombies to become human (0 to disable)
+    SERVER_PREFIX = "**ZOMBIES**",     -- Server message prefix
+    ZOMBIFY_ON_SUICIDE = true,         -- Convert humans to zombies when they die by suicide causes
+    ZOMBIFY_ON_FALL_DAMAGE = true,     -- Convert humans to zombies when they die by fall damage
+
+    ATTRIBUTES_COMMAND_ENABLED = true, -- Enable /attributes command
+    ATTRIBUTES_COMMAND = "attributes", -- Command to use
 
     ATTRIBUTES = {
         ['alpha_zombies'] = {
@@ -65,7 +68,7 @@ local CONFIG = {
             DAMAGE_MULTIPLIER = 1.5,
             CAMO = false,
             GRENADES = { frags = 3, plasmas = 3 },
-            CAN_USE_VEHICLES = true,
+            CAN_USE_VEHICLES = false,
             HEALTH_REGEN = 0.001 -- Health regeneration (% per tick)
         }
     }
@@ -93,6 +96,7 @@ local sapp_events = {
     [cb['EVENT_LEAVE']] = 'OnQuit',
     [cb['EVENT_SPAWN']] = 'OnSpawn',
     [cb['EVENT_GAME_END']] = 'OnEnd',
+    [cb['EVENT_COMMAND']] = 'OnCommand',
     [cb['EVENT_TEAM_SWITCH']] = 'OnTeamSwitch',
     [cb['EVENT_WEAPON_DROP']] = 'OnWeaponDrop',
     [cb['EVENT_DAMAGE_APPLICATION']] = 'OnDamage',
@@ -221,6 +225,17 @@ local function destroyDrone(victim)
     end
 end
 
+local function broadcast(id, msg)
+    if not id then
+        execute_command('msg_prefix ""')
+        say_all(msg)
+        execute_command('msg_prefix "' .. CONFIG.SERVER_PREFIX .. '"')
+        return
+    end
+
+    rprint(id, msg)
+end
+
 local function switchPlayerTeam(player, new_team, zombie_type)
     player.switched = true
     execute_command('st ' .. player.id .. ' ' .. new_team)
@@ -231,6 +246,9 @@ local function switchPlayerTeam(player, new_team, zombie_type)
         applyPlayerAttributes(player, player.zombie_type)
         player.assign = true
         player.consecutive_kills = 0 -- Reset consecutive kills when becoming a zombie
+        if player.zombie_type == 'alpha_zombies' then
+            broadcast(player.id, "You are an Alpha Zombie! You are stronger and faster than standard zombies.")
+        end
     else
         player.zombie_type = nil
         if game.red_count == 1 and game.started then
@@ -244,12 +262,6 @@ local function switchPlayerTeam(player, new_team, zombie_type)
         end
         execute_command('wdel ' .. player.id)
     end
-end
-
-local function broadcast(msg)
-    execute_command('msg_prefix ""')
-    say_all(msg)
-    execute_command('msg_prefix "' .. CONFIG.SERVER_PREFIX .. '"')
 end
 
 local function updateTeamCounts()
@@ -269,7 +281,7 @@ local function checkLastManStanding()
             if player.team == 'red' then
                 game.last_man_id = player.id
                 applyPlayerAttributes(player, 'last_man_standing')
-                broadcast(player.name .. " is the Last Man Standing!")
+                broadcast(nil, player.name .. " is the Last Man Standing!")
                 timer(30, 'RegenHealth')
                 break
             end
@@ -285,7 +297,22 @@ local function checkZombieCure(killer)
     if killer.consecutive_kills >= CONFIG.CURE_THRESHOLD then
         switchPlayerTeam(killer, 'red')
         killer.consecutive_kills = 0
-        broadcast(killer.name .. " has been cured and is now human!")
+
+        -- Update team counts after conversion
+        updateTeamCounts()
+
+        -- Check if we need to remove last man standing status
+        if game.red_count > 1 and game.last_man_id then
+            local last_man = game.players[game.last_man_id]
+            if last_man then
+                applyPlayerAttributes(last_man, 'humans')
+                last_man.is_last_man_standing = false
+                broadcast(nil, last_man.name .. " is no longer the Last Man Standing!")
+                game.last_man_id = nil
+            end
+        end
+
+        broadcast(nil, killer.name .. " has been cured and is now human!")
         return true
     end
 
@@ -320,7 +347,7 @@ end
 
 local function checkVictory()
     if game.red_count == 0 then
-        broadcast("Zombies have overrun the humans!")
+        broadcast(nil, "Zombies have overrun the humans!")
         execute_command('sv_map_next')
     end
 end
@@ -333,7 +360,7 @@ local function startGame()
 
     game.waiting_for_players = false
     game.countdown_start = os_time()
-    broadcast("Game starting in " .. CONFIG.COUNTDOWN_DELAY .. " seconds...")
+    broadcast(nil, "Game starting in " .. CONFIG.COUNTDOWN_DELAY .. " seconds...")
     timer(CONFIG.COUNTDOWN_DELAY, 'OnCountdown')
 end
 
@@ -376,6 +403,41 @@ local function getPlayerType(player)
     return player.zombie_type or
         (player.team == 'red' and (player.is_last_man_standing and 'last_man_standing' or 'humans')) or
         'standard_zombies'
+end
+
+local function showAttributes(id)
+    local player = game.players[id]
+    if not player then return end
+
+    local player_type = getPlayerType(player)
+    local attributes = CONFIG.ATTRIBUTES[player_type]
+
+    -- Get current health if player is alive
+    local current_health = "N/A"
+    local dyn = get_dynamic_player(id)
+    if dyn ~= 0 and player_alive(id) then
+        current_health = string.format("%.0f%%", read_float(dyn + 0xE0) * 100)
+    end
+
+    -- Send message to player line by line
+    broadcast(id, "** Your Attributes **")
+    broadcast(id, "Type: " .. player_type:gsub("_", " "):gsub("(%l)(%w*)", function(a, b) return a:upper() .. b end))
+    broadcast(id, "Health: " .. current_health .. " (Base: " .. (attributes.HEALTH * 100) .. "%)")
+    broadcast(id, "Speed: " .. (attributes.SPEED * 100) .. "%")
+    broadcast(id, "Damage: " .. attributes.DAMAGE_MULTIPLIER .. "x")
+    broadcast(id, "Grenades - Frags: " .. attributes.GRENADES.frags .. ", Plasmas: " .. attributes.GRENADES.plasmas)
+    broadcast(id, "Camouflage: " .. (attributes.CAMO and "Yes" or "No"))
+    broadcast(id, "Vehicles: " .. (attributes.CAN_USE_VEHICLES and "Yes" or "No"))
+
+    -- Add special attributes for last man standing
+    if player_type == 'last_man_standing' then
+        broadcast(id, "Health Regen: " .. (attributes.HEALTH_REGEN * 100) .. "% per tick")
+    end
+
+    -- Add cure progress for zombies
+    if player.team == 'blue' and CONFIG.CURE_THRESHOLD > 0 then
+        broadcast(id, "Cure Progress: " .. player.consecutive_kills .. "/" .. CONFIG.CURE_THRESHOLD .. " kills")
+    end
 end
 
 -- SAPP Events
@@ -454,7 +516,7 @@ function OnQuit(id)
         if game.player_count < CONFIG.REQUIRED_PLAYERS and not game.started then
             game.started = false
             game.waiting_for_players = true
-            broadcast("Not enough players. Game paused.")
+            broadcast(nil, "Not enough players. Game paused.")
         end
     end
 end
@@ -491,20 +553,26 @@ function OnDeath(victimId, killerId)
     end
 
     if killerId == 0 or (killerId == -1 and not victim.switched) or killerId == nil then
-        broadcast(victim.name .. " died!")
+        broadcast(nil, victim.name .. " died!")
         goto next
     end
 
     if zombie_vs_human then
-        -- Check if killer zombie should be cured
-        if not checkZombieCure(killer) then
-            switchPlayerTeam(victim, 'blue', 'standard_zombies')
-            updateTeamCounts()
-            broadcast(victim.name .. " was infected by " .. killer.name .. "!")
+        -- First, infect the victim (always)
+        switchPlayerTeam(victim, 'blue', 'standard_zombies')
+        updateTeamCounts()
+        broadcast(nil, victim.name .. " was infected by " .. killer.name .. "!")
+
+        -- Then check if the killer should be cured (may switch killer to human)
+        local wasCured = checkZombieCure(killer)
+
+        -- If killer was cured, we need to check victory conditions
+        if wasCured then
+            checkVictory()
         end
         goto next
     elseif human_vs_zombie then
-        broadcast(victim.name .. " was killed by " .. killer.name .. "!")
+        broadcast(nil, victim.name .. " was killed by " .. killer.name .. "!")
         goto next
     end
 
@@ -514,7 +582,7 @@ function OnDeath(victimId, killerId)
             switchPlayerTeam(victim, 'blue', 'standard_zombies')
             updateTeamCounts()
         end
-        broadcast(victim.name .. " died!")
+        broadcast(nil, victim.name .. " died!")
     end
 
     ::next::
@@ -603,6 +671,17 @@ function OnSpawn(id)
     end
 end
 
+function OnCommand(id, command, environment, is_script)
+    if not game.started then return true end
+
+    if CONFIG.ATTRIBUTES_COMMAND_ENABLED and command == CONFIG.ATTRIBUTES_COMMAND then
+        showAttributes(id)
+        return false
+    end
+
+    return true
+end
+
 function OnVehicleEnter(id)
     if not game.started then return end
 
@@ -624,7 +703,7 @@ function OnCountdown()
     local remaining = CONFIG.COUNTDOWN_DELAY - elapsed
 
     if remaining <= 0 then
-        broadcast("Zombies are coming! Survive or become one of them!")
+        broadcast(nil, "Zombies are coming! Survive or become one of them!")
 
         disableDeathMessages()
         execute_command('sv_map_reset')
