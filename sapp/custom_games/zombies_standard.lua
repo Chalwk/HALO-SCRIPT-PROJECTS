@@ -13,6 +13,22 @@ KEY FEATURES:
                  - Countdown timer before the match starts
                  - Enhanced team shuffling with anti-duplicate protection
                  - Death message suppression during team changes
+                 - Works on all maps (includes custom maps, and even ones with obfuscated tags)
+
+CONFIGURATION:
+    - REQUIRED_PLAYERS (number): Minimum players needed to start (default: 2)
+    - COUNTDOWN_DELAY (number): Countdown duration in seconds (default: 5)
+    - SERVER_PREFIX (string): Server message prefix (default: "**ZOMBIES**")
+    - ZOMBIFY_ON_SUICIDE (boolean): Convert humans to zombies on suicide (default: true)
+    - ZOMBIFY_ON_FALL_DAMAGE (boolean): Convert humans to zombies on fall damage (default: true)
+    - Team Attributes:
+        * humans: Default human players
+        * zombies: Zombie players
+      Each team type has configurable:
+        - SPEED: Movement multiplier
+        - RESPAWN_TIME: Respawn delay (seconds)
+        - DAMAGE_MULTIPLIER: Damage amplification
+        - CAMO: Active camouflage
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -22,18 +38,17 @@ LICENSE:          MIT License
 
 -- Configuration -----------------------------------------------------------------------
 local CONFIG = {
-    REQUIRED_PLAYERS = 2,          -- Minimum players required to start
-    COUNTDOWN_DELAY = 5,           -- Seconds before game starts
-    SERVER_PREFIX = "**ZOMBIES**", -- Server message prefix
-    ZOMBIFY_ON_SUICIDE = true,     -- Convert humans to zombies when they die by suicide causes
-    ZOMBIFY_ON_FALL_DAMAGE = true, -- Convert humans to zombies when they die by fall damage
-
+    REQUIRED_PLAYERS = 2,
+    COUNTDOWN_DELAY = 5,
+    SERVER_PREFIX = "**ZOMBIES**",
+    ZOMBIFY_ON_SUICIDE = true,
+    ZOMBIFY_ON_FALL_DAMAGE = true,
     ATTRIBUTES = {
         ['humans'] = {
-            SPEED = 1.0,             -- Movement speed
-            RESPAWN_TIME = 5,        -- Respawn time
-            DAMAGE_MULTIPLIER = 1,   -- Damage multiplier
-            CAMO = false,            -- Camouflage when crouching
+            SPEED = 1.0,
+            RESPAWN_TIME = 5,
+            DAMAGE_MULTIPLIER = 1,
+            CAMO = false,
         },
         ['zombies'] = {
             SPEED = 1.15,
@@ -43,23 +58,40 @@ local CONFIG = {
         }
     }
 }
--- End of Configuration -----------------------------------------------------------------
 
 api_version = '1.12.0.0'
 
+-- Localize frequently used functions and variables
 local pairs, ipairs, table_insert = pairs, ipairs, table.insert
 local math_random, os_time, tonumber = math.random, os.time, tonumber
 local string_format = string.format
-
 local get_var, say_all = get_var, say_all
 local execute_command, player_present = execute_command, player_present
 
-local death_message_hook_enabled = false
+-- Game state and constants
+local game = {
+    players = {},
+    player_count = 0,
+    started = false,
+    countdown_start = 0,
+    waiting_for_players = true,
+    red_count = 0,
+    blue_count = 0,
+    oddball = nil
+}
+
+local falling, distance
 local death_message_address = nil
 local original_death_message_bytes = nil
-local DEATH_MESSAGE_SIGNATURE = "8B42348A8C28D500000084C9"
-local falling, distance
+local death_message_hook_enabled = false
 
+local base_tag_table = 0x40440000
+
+local TEAM_RED = 'red'
+local TEAM_BLUE = 'blue'
+local death_message_signature = "8B42348A8C28D500000084C9"
+
+-- Event mapping
 local sapp_events = {
     [cb['EVENT_TICK']] = 'OnTick',
     [cb['EVENT_DIE']] = 'OnDeath',
@@ -72,6 +104,7 @@ local sapp_events = {
     [cb['EVENT_DAMAGE_APPLICATION']] = 'OnDamage'
 }
 
+-- Helper functions
 local function registerCallbacks(team_game)
     for event, callback in pairs(sapp_events) do
         if team_game then
@@ -83,24 +116,21 @@ local function registerCallbacks(team_game)
 end
 
 local function scanMapObjects()
-    local base_tag_table = 0x40440000
     local tag_array = read_dword(base_tag_table)
     local tag_count = read_dword(base_tag_table + 0xC)
-
     local objects = { vehicles = {}, weapons = {}, equipment = {} }
 
     for i = 0, tag_count - 1 do
-        local tag   = tag_array + 0x20 * i
+        local tag = tag_array + 0x20 * i
         local class = read_dword(tag)
-        local name  = read_string(read_dword(tag + 0x10))
-        --local id    = read_dword(tag + 0xC) -- meta ID
+        local name = read_string(read_dword(tag + 0x10))
 
-        if class == 0x76656869 then         -- "vehi" (disable for all teams)
-            table.insert(objects.vehicles, { tag = name, team = 0 })
-        elseif class == 0x77656170 then     -- "weap" (disable for blue team only)
-            table.insert(objects.weapons, { tag = name, team = 2 })
-        elseif class == 1701931376 then     -- "eqip" (disable for blue team only)
-            table.insert(objects.equipment, { tag = name, team = 2 })
+        if class == 0x76656869 then
+            table_insert(objects.vehicles, { tag = name, team = 0 })
+        elseif class == 0x77656170 then
+            table_insert(objects.weapons, { tag = name, team = 2 })
+        elseif class == 1701931376 then
+            table_insert(objects.equipment, { tag = name, team = 2 })
         end
     end
 
@@ -123,7 +153,7 @@ local function getTag(class, name)
 end
 
 local function SetupDeathMessageHook()
-    local address = sig_scan(DEATH_MESSAGE_SIGNATURE)
+    local address = sig_scan(death_message_signature)
     if address == 0 then
         cprint("Zombies: Death message signature not found!", 4)
         return false
@@ -158,7 +188,6 @@ local function restoreDeathMessages()
 end
 
 local function getOddbalID()
-    local base_tag_table = 0x40440000
     local tag_array = read_dword(base_tag_table)
     local tag_count = read_dword(base_tag_table + 0xC)
     for i = 0, tag_count - 1 do
@@ -173,26 +202,15 @@ local function getOddbalID()
     return nil
 end
 
--- Game State
-local game = {
-    players = {},
-    player_count = 0,
-    started = false,
-    countdown_start = 0,
-    waiting_for_players = true,
-    red_count = 0,
-    blue_count = 0,
-    oddball = nil
-}
-
+-- Player management
 local function createPlayer(id)
     return {
         id = id,
         name = get_var(id, '$name'),
         team = get_var(id, '$team'),
-        drone = nil,   -- tracking oddball object
+        drone = nil,
         assign = false,
-        meta_id = nil, -- meta id of last known damage (for fall damage)
+        meta_id = nil,
         switched = nil
     }
 end
@@ -209,18 +227,13 @@ local function switchPlayerTeam(player, new_team)
     execute_command('st ' .. player.id .. ' ' .. new_team)
     player.team = new_team
 
-    -- Update player attributes based on new team
-    local attributes = CONFIG.ATTRIBUTES[new_team == 'red' and 'humans' or 'zombies']
+    local attributes = CONFIG.ATTRIBUTES[new_team == TEAM_RED and 'humans' or 'zombies']
     execute_command("s " .. player.id .. " " .. attributes.SPEED)
 
-    -- Handle weapon assignment for zombies
-    if new_team == 'blue' then
+    if new_team == TEAM_BLUE then
         player.assign = true
     else
-        if player.drone then
-            destroy_object(player.drone)
-            player.drone = nil
-        end
+        destroyDrone(player)
         execute_command('wdel ' .. player.id)
     end
 end
@@ -234,9 +247,9 @@ end
 local function updateTeamCounts()
     game.red_count, game.blue_count = 0, 0
     for _, player in pairs(game.players) do
-        if player.team == 'red' then
+        if player.team == TEAM_RED then
             game.red_count = game.red_count + 1
-        elseif player.team == 'blue' then
+        elseif player.team == TEAM_BLUE then
             game.blue_count = game.blue_count + 1
         end
     end
@@ -250,24 +263,20 @@ local function shuffleTeams()
 
     if #players < 2 then return end
 
-    -- Fisher-Yates shuffle
     for i = #players, 2, -1 do
         local j = math_random(i)
         players[i], players[j] = players[j], players[i]
     end
 
-    -- Make first player a zombie, rest humans
     for i, id in ipairs(players) do
-        local desired_team = (i == 1) and "blue" or "red"
+        local desired_team = (i == 1) and TEAM_BLUE or TEAM_RED
         execute_command("st " .. id .. " " .. desired_team)
         game.players[id].team = desired_team
 
-        -- Set player attributes
-        local attributes = CONFIG.ATTRIBUTES[desired_team == 'red' and 'humans' or 'zombies']
+        local attributes = CONFIG.ATTRIBUTES[desired_team == TEAM_RED and 'humans' or 'zombies']
         execute_command("s " .. id .. " " .. attributes.SPEED)
 
-        -- Assign oddball to zombies
-        if desired_team == 'blue' then
+        if desired_team == TEAM_BLUE then
             game.players[id].assign = true
         end
     end
@@ -295,7 +304,7 @@ local function startGame()
 end
 
 local function getRespawnTime(team)
-    local attributes = CONFIG.ATTRIBUTES[team == 'red' and 'humans' or 'zombies']
+    local attributes = CONFIG.ATTRIBUTES[team == TEAM_RED and 'humans' or 'zombies']
     return attributes.RESPAWN_TIME * 33
 end
 
@@ -303,7 +312,7 @@ local function setRespawnTime(id, team)
     local respawn_time = getRespawnTime(team)
     local player = get_player(id)
     if player ~= 0 then
-        write_dword(player + 0x2C, respawn_time * 33)
+        write_dword(player + 0x2C, respawn_time)
     end
 end
 
@@ -320,26 +329,24 @@ local function isFriendlyFire(killer, victim)
 end
 
 local function zombieVsHuman(victim, killer)
-    return killer and killer.id ~= victim.id and victim.team == 'red' and killer.team == 'blue'
+    return killer and killer.id ~= victim.id and victim.team == TEAM_RED and killer.team == TEAM_BLUE
 end
 
 local function humanVsZombie(victim, killer)
-    return killer and killer.id ~= victim.id and victim.team == 'blue' and killer.team == 'red'
+    return killer and killer.id ~= victim.id and victim.team == TEAM_BLUE and killer.team == TEAM_RED
 end
 
 local function getDamageMultiplier(player)
-    local team = player.team == 'blue' and 'zombies' or 'humans'
-    return true, CONFIG.ATTRIBUTES[team].DAMAGE_MULTIPLIER
+    local team = player.team == TEAM_BLUE and 'zombies' or 'humans'
+    return CONFIG.ATTRIBUTES[team].DAMAGE_MULTIPLIER
 end
 
 -- SAPP Events
 function OnScriptLoad()
     death_message_hook_enabled = SetupDeathMessageHook()
     register_callback(cb['EVENT_GAME_START'], 'OnStart')
-
     execute_command('sv_tk_ban 0')
-    execute_command('sv_friendly_fire 1') -- 1 = 0ff, 2 = shields, 3 = on
-
+    execute_command('sv_friendly_fire 1')
     OnStart()
 end
 
@@ -359,7 +366,6 @@ function OnStart()
     game.oddball = getOddbalID()
 
     execute_command('scorelimit 9999')
-
     falling = getTag('jpt!', 'globals\\falling')
     distance = getTag('jpt!', 'globals\\distance')
 
@@ -388,7 +394,7 @@ function OnJoin(id)
     updateTeamCounts()
 
     if game.started then
-        switchPlayerTeam(game.players[id], "blue")
+        switchPlayerTeam(game.players[id], TEAM_BLUE)
         updateTeamCounts()
     elseif game.waiting_for_players and game.player_count >= CONFIG.REQUIRED_PLAYERS then
         startGame()
@@ -397,9 +403,7 @@ end
 
 function OnQuit(id)
     if game.players[id] then
-        if game.players[id].drone then
-            destroy_object(game.players[id].drone)
-        end
+        destroyDrone(game.players[id])
         game.players[id] = nil
         game.player_count = game.player_count - 1
         updateTeamCounts()
@@ -419,7 +423,6 @@ function OnTeamSwitch(id)
     if player then
         player.team = get_var(id, '$team')
         player.switched = true
-
         updateTeamCounts()
         checkVictory()
     end
@@ -432,39 +435,29 @@ function OnDeath(victimId, killerId)
 
     local killer = game.players[killerId]
     local victim = game.players[victimId]
-
     local zombie_vs_human = zombieVsHuman(victim, killer)
     local human_vs_zombie = humanVsZombie(victim, killer)
-
     local fall_damage = isFallDamage(victim.meta_id)
     local suicide = isSuicide(killerId, victimId)
 
     if killerId == 0 or (killerId == -1 and not victim.switched) or killerId == nil then
         broadcast(victim.name .. " died!")
-        goto next
     elseif zombie_vs_human then
-        switchPlayerTeam(victim, 'blue')
+        switchPlayerTeam(victim, TEAM_BLUE)
         updateTeamCounts()
         broadcast(victim.name .. " was infected by " .. killer.name .. "!")
-        goto next
     elseif human_vs_zombie then
         broadcast(victim.name .. " was killed by " .. killer.name .. "!")
-        goto next
-    end
-
-    -- Handle suicide / fall damage case
-    if (suicide or fall_damage) then
-        if victim.team == 'red' then
-            switchPlayerTeam(victim, 'blue')
+    elseif (suicide or fall_damage) then
+        if victim.team == TEAM_RED then
+            switchPlayerTeam(victim, TEAM_BLUE)
             updateTeamCounts()
         end
         broadcast(victim.name .. " died!")
     end
 
-    ::next::
     destroyDrone(victim)
-    setRespawnTime(victim)
-
+    setRespawnTime(victim.id, victim.team)
     victim.switched = nil
 end
 
@@ -473,27 +466,23 @@ function OnTick()
 
     for i, player in pairs(game.players) do
         if player and player_alive(i) then
-            local attributes = CONFIG.ATTRIBUTES[player.team == 'red' and 'humans' or 'zombies']
-
+            local attributes = CONFIG.ATTRIBUTES[player.team == TEAM_RED and 'humans' or 'zombies']
             local dyn_player = get_dynamic_player(i)
-            if dyn_player == 0 then goto next end
 
-            -- Handle camouflage
-            if attributes.CAMO then
-                local crouching = read_float(dyn_player + 0x50C) == 1
-                if crouching then
-                    execute_command('camo ' .. i .. ' 1')
-                end
+            if dyn_player == 0 then goto continue end
+
+            if attributes.CAMO and read_float(dyn_player + 0x50C) == 1 then
+                execute_command('camo ' .. i .. ' 1')
             end
 
-            -- Handle weapon assignment for zombies
-            if player.team == 'blue' and player.assign then
+            if player.team == TEAM_BLUE and player.assign then
                 player.assign = false
                 execute_command('wdel ' .. i)
                 player.drone = spawn_object('', '', 0, 0, 0, 0, game.oddball)
                 assign_weapon(player.drone, i)
             end
-            ::next::
+
+            ::continue::
         end
     end
 end
@@ -501,12 +490,10 @@ end
 function OnWeaponDrop(id)
     if not game.started then return end
     local player = game.players[id]
-    if player then
-        if player.drone then
-            destroy_object(player.drone)
-            player.drone = nil
-            player.assign = true
-        end
+    if player and player.drone then
+        destroy_object(player.drone)
+        player.drone = nil
+        player.assign = true
     end
 end
 
@@ -521,8 +508,7 @@ function OnDamage(victimId, killerId, metaId, damage)
     local killer_data = game.players[killer]
     if not killer_data then return true end
 
-    local friendly_fire = isFriendlyFire(killer_data, victim_data)
-    if friendly_fire then return false end
+    if isFriendlyFire(killer_data, victim_data) then return false end
 
     return true, damage * getDamageMultiplier(killer_data)
 end
@@ -534,15 +520,10 @@ function OnSpawn(id)
     if not player then return end
     player.meta_id = nil
 
-    local team = player.team
-    local attributes = CONFIG.ATTRIBUTES[team == 'red' and 'humans' or 'zombies']
-
-    -- Apply speed
+    local attributes = CONFIG.ATTRIBUTES[player.team == TEAM_RED and 'humans' or 'zombies']
     execute_command("s " .. id .. " " .. attributes.SPEED)
 
-    if player.team == 'blue' then
-        player.assign = true
-    end
+    if player.team == TEAM_BLUE then player.assign = true end
 end
 
 function OnCountdown()
@@ -553,11 +534,9 @@ function OnCountdown()
 
     if remaining <= 0 then
         broadcast("Zombies are coming! Survive or become one of them!")
-
         disableDeathMessages()
         execute_command('sv_map_reset')
         shuffleTeams()
-
         game.started = true
     end
 
