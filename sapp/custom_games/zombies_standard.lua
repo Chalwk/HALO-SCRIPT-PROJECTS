@@ -16,19 +16,21 @@ KEY FEATURES:
                  - Works on all maps (includes custom maps, and even ones with obfuscated tags)
 
 CONFIGURATION:
-    - REQUIRED_PLAYERS (number): Minimum players needed to start (default: 2)
-    - COUNTDOWN_DELAY (number): Countdown duration in seconds (default: 5)
-    - SERVER_PREFIX (string): Server message prefix (default: "**ZOMBIES**")
-    - ZOMBIFY_ON_SUICIDE (boolean): Convert humans to zombies on suicide (default: true)
-    - ZOMBIFY_ON_FALL_DAMAGE (boolean): Convert humans to zombies on fall damage (default: true)
+    - REQUIRED_PLAYERS:                 Minimum players needed to start (default: 2)
+    - COUNTDOWN_DELAY:                  Countdown duration in seconds (default: 5)
+    - SERVER_PREFIX:                    Server message prefix (default: "**ZOMBIES**")
+    - ZOMBIFY_ON_SUICIDE:               Convert humans to zombies on suicide (default: true)
+    - ZOMBIFY_ON_FALL_DAMAGE:           Convert humans to zombies on fall damage (default: true)
+
     - Team Attributes:
-        * humans: Default human players
-        * zombies: Zombie players
+        * humans:                       Default human players
+        * zombies:                      Zombie players
+
       Each team type has configurable:
-        - SPEED: Movement multiplier
-        - RESPAWN_TIME: Respawn delay (seconds)
-        - DAMAGE_MULTIPLIER: Damage amplification
-        - CAMO: Active camouflage
+        - SPEED:                        Movement multiplier
+        - RESPAWN_TIME:                 Respawn delay (seconds)
+        - DAMAGE_MULTIPLIER:            Damage amplification
+        - CAMO:                         Active camouflage
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

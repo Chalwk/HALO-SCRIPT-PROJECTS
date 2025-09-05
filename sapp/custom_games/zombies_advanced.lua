@@ -18,28 +18,30 @@ KEY FEATURES:
                  - Works on all maps (includes custom maps, and even ones with obfuscated tags)
 
 CONFIGURATION:
-    - REQUIRED_PLAYERS (number): Minimum players needed to start (default: 2)
-    - COUNTDOWN_DELAY (number): Countdown duration in seconds (default: 5)
-    - CURE_THRESHOLD (number): Kills needed for zombies to become human again (default: 6)
-    - SERVER_PREFIX (string): Server message prefix (default: "**ZOMBIES**")
-    - ZOMBIFY_ON_SUICIDE (boolean): Convert humans to zombies on suicide (default: true)
-    - ZOMBIFY_ON_FALL_DAMAGE (boolean): Convert humans to zombies on fall damage (default: true)
-    - LAST_MAN_NAV (boolean): Enable navigation waypoints for Last Man Standing (default: true)
-    - ATTRIBUTES_COMMAND_ENABLED (boolean): Enable "/attributes" command (default: true)
-    - ATTRIBUTES_COMMAND (string): Command to show player attributes (default: "attributes")
+    - REQUIRED_PLAYER:            Minimum players needed to start (default: 2)
+    - COUNTDOWN_DELAY:            Countdown duration in seconds (default: 5)
+    - CURE_THRESHOLD:             Kills needed for zombies to become human again (default: 6)
+    - SERVER_PREFIX:              Server message prefix (default: "**ZOMBIES**")
+    - ZOMBIFY_ON_SUICIDE:         Convert humans to zombies on suicide (default: true)
+    - ZOMBIFY_ON_FALL_DAMAGE:     Convert humans to zombies on fall damage (default: true)
+    - LAST_MAN_NAV:               Enable navigation waypoints for Last Man Standing (default: true)
+    - ATTRIBUTES_COMMAND_ENABLED: Enable "/attributes" command (default: true)
+    - ATTRIBUTES_COMMAND:         Command to show player attributes (default: "attributes")
+
     - Team Attributes:
-        * alpha_zombies: Enhanced zombies with better stats
-        * standard_zombies: Regular zombies
-        * humans: Default human players
-        * last_man_standing: Enhanced human attributes for last remaining player
+        * alpha_zombies:          Enhanced zombies with better stats
+        * standard_zombies:       Regular zombies
+        * humans:                 Default human players
+        * last_man_standing:      Enhanced human attributes for last remaining player
+
       Each team type has configurable:
-        - SPEED: Movement multiplier
-        - HEALTH: Health multiplier
-        - RESPAWN_TIME: Respawn delay (seconds)
-        - DAMAGE_MULTIPLIER: Damage amplification
-        - CAMO: Active camouflage
-        - GRENADES: Number of frag/plasma grenades
-        - HEALTH_REGEN: Health regeneration rate (Last Man Standing only)
+        - SPEED:                  Movement multiplier
+        - HEALTH:                 Health multiplier
+        - RESPAWN_TIME:           Respawn delay (seconds)
+        - DAMAGE_MULTIPLIER:      Damage amplification
+        - CAMO:                   Active camouflage
+        - GRENADES:               Number of frag/plasma grenades
+        - HEALTH_REGEN:           Health regeneration rate (Last Man Standing only)
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -257,10 +259,10 @@ end
 
 local function applyPlayerAttributes(player, player_type)
     local attributes = CONFIG.ATTRIBUTES[player_type]
-    local dyn = get_dynamic_player(player.id)
+    local dyn_player = get_dynamic_player(player.id)
 
-    if player_alive(player.id) and dyn ~= 0 then
-        write_float(dyn + 0xE0, attributes.HEALTH)
+    if player_alive(player.id) and dyn_player ~= 0 then
+        write_float(dyn_player + 0xE0, attributes.HEALTH)
         execute_command('nades ' .. player.id .. ' ' .. attributes.GRENADES.frags .. ' 1')
         execute_command('nades ' .. player.id .. ' ' .. attributes.GRENADES.plasmas .. ' 2')
         execute_command("s " .. player.id .. " " .. attributes.SPEED)
@@ -472,10 +474,10 @@ local function showAttributes(id)
     local player_type = getPlayerType(player)
     local attributes = CONFIG.ATTRIBUTES[player_type]
     local current_health = "N/A"
-    local dyn = get_dynamic_player(id)
+    local dyn_player = get_dynamic_player(id)
 
-    if dyn ~= 0 and player_alive(id) then
-        current_health = string_format("%.0f%%", read_float(dyn + 0xE0) * 100)
+    if dyn_player ~= 0 and player_alive(id) then
+        current_health = string_format("%.0f%%", read_float(dyn_player + 0xE0) * 100)
     end
 
     broadcast(id, "** Your Attributes **")
@@ -492,6 +494,20 @@ local function showAttributes(id)
 
     if player.team == TEAM_BLUE and CONFIG.CURE_THRESHOLD > 0 then
         broadcast(id, "Cure Progress: " .. player.consecutive_kills .. "/" .. CONFIG.CURE_THRESHOLD .. " kills")
+    end
+end
+
+local function setNav(id)
+    if not CONFIG.LAST_MAN_NAV then return end
+
+    local player = get_player(id)
+    if player == 0 then return end
+
+    local last_man_id = game.last_man_id
+    if id ~= last_man_id and last_man_id ~= nil and player_alive(last_man_id) then
+        write_word(player + 0x88, to_real_index(last_man_id))
+    else
+        write_word(player + 0x88, to_real_index(id))
     end
 end
 
@@ -631,20 +647,6 @@ function OnDeath(victimId, killerId)
     destroyDrone(victim)
     setRespawnTime(victim)
     victim.switched = nil
-end
-
-local function setNav(playerId)
-    if not CONFIG.LAST_MAN_NAV then return end
-
-    local player = get_player(playerId)
-    if player == 0 then return end
-
-    local last_man_id = game.last_man_id
-    if playerId ~= last_man_id and last_man_id ~= nil and player_alive(last_man_id) then
-        write_word(player + 0x88, to_real_index(last_man_id))
-    else
-        write_word(player + 0x88, to_real_index(playerId))
-    end
 end
 
 function OnTick()
