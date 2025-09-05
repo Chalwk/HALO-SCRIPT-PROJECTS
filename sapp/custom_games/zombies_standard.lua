@@ -13,6 +13,7 @@ KEY FEATURES:
                  - Countdown timer before the match starts
                  - Enhanced team shuffling with anti-duplicate protection
                  - Death message suppression during team changes
+                 - Dynamic zombie count based on player population
                  - Works on all maps (includes custom maps, and even ones with obfuscated tags)
 
 CONFIGURATION:
@@ -21,6 +22,9 @@ CONFIGURATION:
     - SERVER_PREFIX:                    Server message prefix (default: "**ZOMBIES**")
     - ZOMBIFY_ON_SUICIDE:               Convert humans to zombies on suicide (default: true)
     - ZOMBIFY_ON_FALL_DAMAGE:           Convert humans to zombies on fall damage (default: true)
+    - ZOMBIE_COUNT:                     Dynamic zombie count based on player population
+                                        Format: {min players, max players, zombie count}
+                                        Example: {1, 4, 1} = 1 zombie for 1-4 players
 
     - Team Attributes:
         * humans:                       Default human players
@@ -46,6 +50,12 @@ local CONFIG = {
     ZOMBIFY_ON_SUICIDE = true,
     ZOMBIFY_ON_FALL_DAMAGE = true,
     END_ON_NO_PLAYERS = true,
+    ZOMBIE_COUNT = {
+        { 1,  4,  1 },
+        { 5,  8,  2 },
+        { 9,  12, 3 },
+        { 13, 16, 4 },
+    },
     ATTRIBUTES = {
         ['humans'] = {
             SPEED = 1.0,
@@ -205,6 +215,16 @@ local function getOddbalID()
     return nil
 end
 
+local function getZombieCount()
+    local player_count = game.player_count
+    for _, range in ipairs(CONFIG.ZOMBIE_COUNT) do
+        if player_count >= range[1] and player_count <= range[2] then
+            return range[3]
+        end
+    end
+    return 1 -- Default to 1 if no range matches
+end
+
 -- Player management
 local function createPlayer(id)
     return {
@@ -241,7 +261,7 @@ local function switchPlayerTeam(player, new_team)
     end
 end
 
-local function broadcast(msg)
+local function send(msg)
     execute_command('msg_prefix ""')
     say_all(msg)
     execute_command('msg_prefix "' .. CONFIG.SERVER_PREFIX .. '"')
@@ -266,13 +286,18 @@ local function shuffleTeams()
 
     if #players < 2 then return end
 
+    -- Shuffle players
     for i = #players, 2, -1 do
         local j = math_random(i)
         players[i], players[j] = players[j], players[i]
     end
 
+    -- Determine number of zombies
+    local zombie_count = getZombieCount()
+
+    -- Assign teams
     for i, id in ipairs(players) do
-        local desired_team = (i == 1) and TEAM_BLUE or TEAM_RED
+        local desired_team = (i <= zombie_count) and TEAM_BLUE or TEAM_RED
         execute_command("st " .. id .. " " .. desired_team)
         game.players[id].team = desired_team
 
@@ -289,10 +314,10 @@ end
 
 local function checkVictory()
     if game.red_count == 0 then
-        broadcast("Zombies have overrun the humans!")
+        send("Zombies have overrun the humans!")
         execute_command('sv_map_next')
     elseif CONFIG.END_ON_NO_PLAYERS and game.blue_count == 0 then
-        broadcast("Zombies have retreated. Humans win!")
+        send("Zombies have retreated. Humans win!")
         execute_command('sv_map_next')
     end
 end
@@ -300,11 +325,11 @@ end
 local function checkEmptyTeams()
     if CONFIG.END_ON_NO_PLAYERS and game.started then
         if game.red_count == 0 then
-            broadcast("Zombies have overrun the humans!")
+            send("Zombies have overrun the humans!")
             execute_command('sv_map_next')
             return true
         elseif game.blue_count == 0 then
-            broadcast("Humans have eliminated all zombies!")
+            send("Humans have eliminated all zombies!")
             execute_command('sv_map_next')
             return true
         end
@@ -320,7 +345,7 @@ local function startGame()
 
     game.waiting_for_players = false
     game.countdown_start = os_time()
-    broadcast("Game starting in " .. CONFIG.COUNTDOWN_DELAY .. " seconds...")
+    send("Game starting in " .. CONFIG.COUNTDOWN_DELAY .. " seconds...")
     timer(CONFIG.COUNTDOWN_DELAY, 'OnCountdown')
 end
 
@@ -434,7 +459,7 @@ function OnQuit(id)
         if game.player_count < CONFIG.REQUIRED_PLAYERS and not game.started then
             game.started = false
             game.waiting_for_players = true
-            broadcast("Not enough players. Game paused.")
+            send("Not enough players. Game paused.")
         end
     end
 end
@@ -467,16 +492,16 @@ function OnDeath(victimId, killerId)
     local suicide = isSuicide(killerId, victimId)
 
     if killerId == 0 or (killerId == -1 and not victim.switched) or killerId == nil then
-        broadcast(victim.name .. " died!")
+        send(victim.name .. " died!")
     elseif zombie_vs_human then
         switchPlayerTeam(victim, TEAM_BLUE)
         updateTeamCounts()
 
         if checkEmptyTeams() then return end
 
-        broadcast(victim.name .. " was infected by " .. killer.name .. "!")
+        send(victim.name .. " was infected by " .. killer.name .. "!")
     elseif human_vs_zombie then
-        broadcast(victim.name .. " was killed by " .. killer.name .. "!")
+        send(victim.name .. " was killed by " .. killer.name .. "!")
     elseif (suicide or fall_damage) then
         if victim.team == TEAM_RED then
             switchPlayerTeam(victim, TEAM_BLUE)
@@ -484,7 +509,7 @@ function OnDeath(victimId, killerId)
 
             if checkEmptyTeams() then return end
         end
-        broadcast(victim.name .. " died!")
+        send(victim.name .. " died!")
     end
 
     destroyDrone(victim)
@@ -564,7 +589,7 @@ function OnCountdown()
     local remaining = CONFIG.COUNTDOWN_DELAY - elapsed
 
     if remaining <= 0 then
-        broadcast("Zombies are coming! Survive or become one of them!")
+        send("Zombies are coming! Survive or become one of them!")
         disableDeathMessages()
         execute_command('sv_map_reset')
         shuffleTeams()
