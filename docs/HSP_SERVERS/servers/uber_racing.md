@@ -79,10 +79,10 @@ across the finish line.
 ### Maps:
 
 **Stock Maps:**
-`ratrace, hangemhigh, beavercreek, carousel, chillout, damnation, gephyrophobia, prisoner, timberland, bloodgulch, putput`
+`ratrace`, `hangemhigh`, `beavercreek`, `carousel`, `chillout`, `damnation`, `gephyrophobia`, `prisoner`, `timberland`, `bloodgulch`, `putput`
 
 **Custom Maps:**
-`tsce_multiplayerv1`
+`tsce_multiplayerv1`, `cliffhanger`, `New_Mombasa_Race_v2`, `mercury_falling`
 
 ---
 
