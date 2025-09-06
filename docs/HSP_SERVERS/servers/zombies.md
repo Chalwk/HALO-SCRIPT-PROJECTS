@@ -21,19 +21,8 @@
 
 The Zombie game mode is designed to run Team Slayer on the following stock maps:
 
-### Available Maps:
-
-- **Ratrace**
-- **Hangemhigh**
-- **Beavercreek**
-- **Carousel**
-- **Chillout**
-- **Damnation**
-- **Gephyrophobia**
-- **Prisoner**
-- **Timberland**
-- **Bloodgulch**
-- **Putput**
+### Maps:
+`the_narrows`, `division`, `graveyard`, `homestead`, `church`, `rev_sanctuary_cavebeta`, `immure`, `quagmire`, `portent`, `overgrown`
 
 ---
 
@@ -62,8 +51,8 @@ The Zombie game mode is designed to run Team Slayer on the following stock maps:
 
 ### Vehicle Options:
 
-- **Vehicle Respawn Time:** 90 seconds
-- **Red Team Vehicle Set:** 1 Rocket Hog, 1 Chain Gun Hog
+- **Vehicle Respawn Time:** NEVER
+- **Red Team Vehicle Set:** None
 - **Blue Team Vehicle Set:** None
 
 ---
