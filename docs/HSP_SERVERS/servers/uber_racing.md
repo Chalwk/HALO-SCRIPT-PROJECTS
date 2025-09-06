@@ -66,7 +66,7 @@ across the finish line.
 
 ### Indicator Options
 
-- **Objectives Indicator:** NONE
+- **Objectives Indicator:** NAV
 - **Other Players On Radar:** NO
 - **Friend Indicators On Screen:** YES
 
