@@ -464,7 +464,6 @@
       "description": "This Lua script modifies core gameplay by overhauling 20+ weapons and vehicle armaments. It includes enhancements to projectile physics, custom explosion effects, weapon-specific modifications (AR, Pistol, Sniper, etc.), vehicle weapon upgrades (Warthog, Scorpion, Banshee), and grenade behavior tweaks. Technical implementation relies on direct memory modification of game tags and supports most game modes without external dependencies. Includes global gameplay tweaks while preserving overall balance, but it is not recommended for competitive play.",
       "filename": "snipers_dream_team.lua"
     },
-
     "survival_slayer": {
       "title": "Survival Slayer",
       "shortDescription": "Time-based survival with kill rewards",
@@ -1018,6 +1017,12 @@
       "shortDescription": "Automatic password removal after configurable duration",
       "description": "Automatically removes the server password after a set time period (default: 5 minutes). Useful for temporary private sessions or events. Notifies players when password is removed.",
       "filename": "timed_server_password.lua"
+    },
+    "track_master": {
+      "title": "Track Master",
+      "shortDescription": "Real-time race tracking and leaderboard system for Halo maps.",
+      "description": "Track Master is an advanced race tracking and leaderboard system for Halo custom games. It monitors individual lap times for each player in real-time, records personal bests, map records, and global records, and calculates average lap times and total laps per player. The script maintains persistent JSON storage for both all-time and current-game statistics. Players can use in-game commands to view stats, top 5 best laps, and current race rankings. Personal bests and map record achievements are automatically announced in-game. Supports both FFA and Team race types.",
+      "filename": "track_master.lua"
     },
     "vehicle_blocker_v1": {
       "title": "Vehicle Blocker (v1)",
