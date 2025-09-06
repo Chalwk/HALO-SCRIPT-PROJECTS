@@ -16,7 +16,7 @@ KEY FEATURES:
                  - Alpha Zombie and Standard Zombie types
                  - Last Man Standing bonus for the final human
                  - Dynamic alpha zombie count based on player population
-                 - Works on all maps (includes custom maps, and even ones with obfuscated tags)
+                 - Works on MOST custom maps (including many with obfuscated tags)
 
 CONFIGURATION:
     - REQUIRED_PLAYER:            Minimum players needed to start (default: 2)

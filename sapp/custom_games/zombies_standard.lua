@@ -14,7 +14,7 @@ KEY FEATURES:
                  - Enhanced team shuffling with anti-duplicate protection
                  - Death message suppression during team changes
                  - Dynamic zombie count based on player population
-                 - Works on all maps (includes custom maps, and even ones with obfuscated tags)
+                 - Works on MOST custom maps (including many with obfuscated tags)
 
 CONFIGURATION:
     - REQUIRED_PLAYERS:                 Minimum players needed to start (default: 2)
