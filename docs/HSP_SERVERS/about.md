@@ -6,17 +6,18 @@ free-for-all action, or something in between, we have something for everyone.
 
 Here's a quick overview of the current HSP **Halo: Custom Edition** servers:
 
-| Game Mode                                               | Description                                                                                                                                                  | Server                 |
-|---------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------|
-| **[Divide & Conquer](servers/divide_and_conquer.md)**   | A dynamic game mode where each team works to recruit opponents after eliminating them, with the game ending when one team is fully converted.                | **jericraft.net:2301** |
-| **[Gun Game](servers/gun_game.md)**                     | Start with basic weapons and upgrade after each kill, aiming to reach the top weapon and claim victory.                                                      | **jericraft.net:2302** |
-| **[Kill Confirmed](servers/kill_confirmed.md)**         | Score points by eliminating enemies and collecting their dog tags (skulls), ensuring kills count towards your team's score.                                  | **jericraft.net:2303** |
-| **[Melee Attack](servers/melee_attack.md)**             | A mode focused entirely on close combat, where players only use melee attacks to fight their enemies.                                                        | **jericraft.net:2304** |
-| **[One In The Chamber](servers/one_in_the_chamber.md)** | Players only have one bullet per life, and must use their wits to outsmart and eliminate opponents without wasting ammo.                                     | **jericraft.net:2305** |
-| **[Rooster CTF](servers/rooster_ctf.md)**               | A CTF mode for Slayer (FFA/Team), where players fight to capture a single flag and return it to either the Red or Blue Base to score.                        | **jericraft.net:2306** |
-| **[Snipers Dream Team](servers/snipers_dream_team.md)** | A highly modded snipers game mode with unique features and gameplay mechanics.                                                                               | **jericraft.net:2307** |
-| **[Tag](servers/tag.md)**                               | A fast-paced and exciting variation of tag, where players must catch (melee) and eliminate each other in a thrilling chase.                                  | **jericraft.net:2308** |
-| **[Zombies](servers/zombies.md)**                       | A highly modded zombies game mode with unique features and gameplay mechanics.                                                                               | **jericraft.net:2309** |
+| Game Mode                                               | Description                                                                                                                                   | Server                 |
+|---------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------|------------------------|
+| **[Divide & Conquer](servers/divide_and_conquer.md)**   | A dynamic game mode where each team works to recruit opponents after eliminating them, with the game ending when one team is fully converted. | **jericraft.net:2301** |
+| **[Gun Game](servers/gun_game.md)**                     | Start with basic weapons and upgrade after each kill, aiming to reach the top weapon and claim victory.                                       | **jericraft.net:2302** |
+| **[Kill Confirmed](servers/kill_confirmed.md)**         | Score points by eliminating enemies and collecting their dog tags (skulls), ensuring kills count towards your team's score.                   | **jericraft.net:2303** |
+| **[Melee Attack](servers/melee_attack.md)**             | A mode focused entirely on close combat, where players only use melee attacks to fight their enemies.                                         | **jericraft.net:2304** |
+| **[One In The Chamber](servers/one_in_the_chamber.md)** | Players only have one bullet per life, and must use their wits to outsmart and eliminate opponents without wasting ammo.                      | **jericraft.net:2305** |
+| **[Rooster CTF](servers/rooster_ctf.md)**               | A CTF mode for Slayer (FFA/Team), where players fight to capture a single flag and return it to either the Red or Blue Base to score.         | **jericraft.net:2306** |
+| **[Snipers Dream Team](servers/snipers_dream_team.md)** | A highly modded snipers game mode with unique features and gameplay mechanics.                                                                | **jericraft.net:2307** |
+| **[Tag](servers/tag.md)**                               | A fast-paced and exciting variation of tag, where players must catch (melee) and eliminate each other in a thrilling chase.                   | **jericraft.net:2308** |
+| **[Uber Racing](servers/uber_racing.md)**               | ...                                                                                                                                           | **jericraft.net:2309** |
+| **[Zombies](servers/zombies.md)**                       | A highly modded zombies game mode with unique features and gameplay mechanics.                                                                | **jericraft.net:2310** |
 
 Each server offers a unique and custom experience, crafted to deliver the best possible gameplay. Whether you're looking
 to compete in a classic mode or try something completely new, HSP Halo servers are ready for you. Dive into the
