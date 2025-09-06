@@ -87,8 +87,8 @@ local function formatMessage(message, ...)
     return message
 end
 
-local function roundToMilliseconds(num)
-    return math_floor(num * 1000 + 0.5) / 1000
+local function roundToHundredths(num)
+    return math_floor(num * 100 + 0.5) / 100
 end
 
 local function getConfigPath()
@@ -96,12 +96,15 @@ local function getConfigPath()
 end
 
 local function formatTime(seconds)
-    if seconds == 0 or seconds == math_huge then return "00:00.000" end
-    local minutes = math_floor(seconds / 60)
-    local secs = seconds % 60
-    local millis = math_floor((secs * 1000) % 1000)
-    secs = math_floor(secs)
-    return string_format("%02d:%02d.%03d", minutes, secs, millis)
+    if seconds == 0 or seconds == math_huge then return "00:00.00" end
+
+    local total_hundredths = math_floor(seconds * 100 + 0.5)
+    local minutes = math_floor(total_hundredths / 6000)
+    local remaining_hundredths = total_hundredths % 6000
+    local secs = math_floor(remaining_hundredths / 100)
+    local hundredths = remaining_hundredths % 100
+
+    return string_format("%02d:%02d.%02d", minutes, secs, hundredths)
 end
 
 local function readJSON(file_path, default)
@@ -215,7 +218,7 @@ function OnTick()
                 if not inVehicleAsDriver(id) then goto continue end
 
                 local lap_ticks = read_word(static_player + 0xC4)
-                local lap_time = roundToMilliseconds(lap_ticks / 30)
+                local lap_time = roundToHundredths(lap_ticks / 30)
 
                 if lap_time > 0 and lap_time ~= previous_time[id] then
                     player.laps = player.laps + 1
