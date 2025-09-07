@@ -76,19 +76,26 @@ local function getTag(class, name)
     return tag ~= 0 and read_dword(tag + 0xC) or nil
 end
 
+local function getVehicleObj(playerId)
+    local dyn = get_dynamic_player(playerId)
+    if dyn == 0 then return end
+
+    local vehicle_id = read_dword(dyn + 0x11C)
+    if vehicle_id == 0xFFFFFFFF then return end
+
+    return get_object_memory(vehicle_id)
+end
+
+local function isInVehicle(playerId, vehicleObj)
+    return player_present(playerId)
+        and player_alive(playerId)
+        and getVehicleObj(playerId) == vehicleObj
+end
+
 local function isOccupied(vehicleObj)
     for i = 1, 16 do
-        if player_present(i) and player_alive(i) then
-            local dyn = get_dynamic_player(i)
-            if dyn ~= 0 then
-                local v_id = read_dword(dyn + 0x11C)
-                if v_id ~= 0xFFFFFFFF then
-                    local v_obj = get_object_memory(v_id)
-                    if v_obj ~= 0 and v_obj == vehicleObj then
-                        return true
-                    end
-                end
-            end
+        if isInVehicle(i, vehicleObj) then
+            return true
         end
     end
     return false
