@@ -50,7 +50,7 @@ If you are a server administrator or operator using SAPP or Phasor, you will fin
 | [**SAPP Scripts**](./sapp)                                              | Attractive, Custom Games, Utilities                                      |
 | [**Phasor Scripts**](./phasor)                                          | Phasor Scripts                                                           |
 | [**Releases**](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases) | Larger SAPP projects with advanced functionality beyond standard scripts |
-| [**HSP Wiki**](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/wiki)     | Documentation and community knowledge base                               |
+| [Knowledge Base (docs)](docs/knowledge_base)                            | Documentation and community knowledge base                               |
 
 ---
 
@@ -100,13 +100,6 @@ If you are a server administrator or operator using SAPP or Phasor, you will fin
 - [Ready-To-Go SAPP Server](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/ReadyToGo)
 
 </details>
-
----
-
-### Knowledge Base
-
-[Knowledge Base](docs/knowledge_base)
-> Guides, tutorials, and insights to enhance, customize, and extend your server experience.
 
 ---
 
