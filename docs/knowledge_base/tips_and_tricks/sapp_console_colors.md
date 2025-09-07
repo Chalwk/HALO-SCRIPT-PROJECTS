@@ -1,10 +1,10 @@
-### 🎨 SAPP Console Color Tutorial (`cprint` / `set_ccolor`)
+## 🎨 SAPP Console Color Tutorial (`cprint` / `set_ccolor`)
 
 Understanding how to use colors in SAPP's console and messages can make your server logs, automated messages, and scripts much more readable and organized. The system is based on the classic Windows console color attributes.
 
 ---
 
-#### **1. The Basics: The Color Number**
+### **1. The Basics: The Color Number**
 
 The color is defined by a single number. This number is calculated by combining a **Foreground** color and a **Background** color.
 
@@ -25,7 +25,7 @@ The formula is:
 
 ---
 
-#### **2. The Color Code Table**
+### **2. The Color Code Table**
 
 Here are all the possible values for the foreground and background. The "Value" is the number you use in the formula above.
 
@@ -52,7 +52,7 @@ Here are all the possible values for the foreground and background. The "Value" 
 
 ---
 
-#### **3. How to Use It**
+### **3. How to Use It**
 
 **A) In Lua Scripts with `cprint`**
 The `cprint` function sends a colored message to the **server's console**. It's perfect for logging script events.
@@ -71,7 +71,7 @@ The above command would set the entire console to **Aqua text on a Black backgro
 
 ---
 
-#### **4. Common Color Combinations & Tips**
+### **4. Common Color Combinations & Tips**
 
 *   **Success:** Green (`10`)
 *   **Info / Notification:** Aqua (`11`) or Yellow (`14`)
