@@ -192,10 +192,14 @@ local function levelUp(player)
 end
 
 local function levelDown(player)
-    player.level = math.max(CONFIG.SETTINGS.STARTING_LEVEL, player.level - 1)
-    say_all(CONFIG.MESSAGES.DEMOTED
-        :gsub("$name", player.name)
-        :gsub("$level", player.level))
+    if player.level > CONFIG.SETTINGS.STARTING_LEVEL then
+        player.level = player.level - 1
+        say_all(CONFIG.MESSAGES.DEMOTED
+            :gsub("$name", player.name)
+            :gsub("$level", player.level))
+    else
+        player.level = CONFIG.SETTINGS.STARTING_LEVEL
+    end
     player.assign = true
 end
 
