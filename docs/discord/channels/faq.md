@@ -1,4 +1,4 @@
-## Welcome to the [HALO SCRIPT PROJECTS](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS) Discord!
+## Welcome to the [HALO SCRIPT PROJECTS](../../..) Discord!
 
 This server is the **official community for the HSP GitHub repository**, a maintained collection of Lua scripting resources for **Halo: CE** and **Halo: PC** dedicated servers.
 
@@ -23,10 +23,9 @@ See #〔📚〕list for more information.
 # :question: HSP FAQ - Quick Answers
 
 **Q1: What scripts can I use?**
-* **SAPP Scripts:** Utilities, Custom Games, Attractive features
-* **Phasor Scripts:** Legacy scripts for older servers
-* **Releases:** Larger, more complex projects
-* **Chimera Scripts:**
+* **[SAPP Scripts](../../../sapp):** Utilities, Custom Games, Attractive features
+* **[Phasor Scripts](../../../phasor):** Legacy scripts for older servers
+* **[Releases](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases):** Larger, more complex projects
 
 **Q2: How do I get help?**
 * #〔🙋〕help - Ask questions about scripts, server setup, or technical issues
@@ -35,7 +34,7 @@ See #〔📚〕list for more information.
 **Q3: How can I contribute?**
 * [Feature Requests](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/issues/new?template=FEATURE_REQUEST.yaml) - Suggest new scripts or improvements
 * Share your scripts in #〔🏆〕showcase
-* **Submit Pull Requests:** Contribute code improvements, bug fixes, or new scripts directly via GitHub. See [CONTRIBUTING.md](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/CONTRIBUTING.md) for full workflow and coding style.
+* **Submit Pull Requests:** Contribute code improvements, bug fixes, or new scripts directly via GitHub. See [CONTRIBUTING.md](../../../CONTRIBUTING.md) for full workflow and coding style.
 
 **Q4: How do I keep up with updates?**
 * #〔🔔〕commits - Live GitHub commit feed
@@ -49,6 +48,7 @@ See #〔📚〕list for more information.
 1. Post in #〔👋〕introductions
 2. Read #〔📕〕community-rules
 3. Browse #〔🙋〕help or the Wiki for scripting guidance
-4. Check <#1409766478592475227> and <#1409830021060886621> for ready-to-use scripts and tips
-
-:bulb: **Pro tip:** Want to dive deeper into contributing? Check the [CONTRIBUTING.md](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/CONTRIBUTING.md) for full instructions, coding style tips, and a list of credited contributors.
+4. Read extensive docs in `◉ KNOWLEDGE BASE (forums)`:
+- #〔👾〕code-snippets
+- #〔🛠️〕resources
+- #〔💡〕tips-tricks
