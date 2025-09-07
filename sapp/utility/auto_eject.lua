@@ -8,21 +8,17 @@ LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
+
 api_version = '1.12.0.0'
 
--- Returns true if the player is in any vehicle
-local function inVehicle(dyn_player)
-    return read_dword(dyn_player + 0x11C) ~= 0xFFFFFFFF
-end
-
 local function blockVehicleEntry(player)
-    local dyn_player = get_dynamic_player(player.id)
-    if dyn_player ~= 0 and inVehicle(dyn_player) then
-        exit_vehicle(player.id)
+    local dyn_player = get_dynamic_player(player)
+    if dyn_player ~= 0 and read_dword(dyn_player + 0x11C) ~= 0xFFFFFFFF then
+        exit_vehicle(player)
     end
 end
 
--- Poll all players every tick
+-- Poll all players every 1 second
 function DelayedTick()
     for i = 1, 16 do
         if player_alive(i) then
