@@ -43,7 +43,7 @@ local blacklist = {
 
 -- Output message formats:
 local messages = {
-    spy_notify = "[SPY] $name used command: $cmd",
+    spy_notify = "[SPY] $name: $cmd",
     no_permission = "You do not have permission to use this command.",
 }
 
