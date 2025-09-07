@@ -152,4 +152,4 @@ All community interactions are governed by our:
 
 ## Contact
 
-**Discord:** Chalwk
+**Discord:** Chalwk / [HSP Discord](https://discord.gg/D76H7RVPC9)
