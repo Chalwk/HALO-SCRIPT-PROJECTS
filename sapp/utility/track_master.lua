@@ -209,28 +209,35 @@ local function updatePlayerStats(id, lapTime)
     end)
 end
 
-function OnTick()
-    for id, player in pairs(players) do
-        if player_present(id) and player_alive(id) then
-            local static_player = get_player(id)
-            local dyn_player = get_dynamic_player(id)
-            if static_player ~= 0 and dyn_player ~= 0 then
-                if not inVehicleAsDriver(id) then goto continue end
+local function updatePlayer(player, lap_time)
+    player.laps = player.laps + 1
+    player.previous_time = lap_time
+    table_insert(player.lapTimes, lap_time)
+end
 
-                local lap_ticks = read_word(static_player + 0xC4)
-                local lap_time = roundToHundredths(lap_ticks / 30)
+local function checkPlayer(i, player)
+    local static_player = get_player(i)
+    local dyn_player = get_dynamic_player(i)
+    if static_player ~= 0 and dyn_player ~= 0 then
+        if not inVehicleAsDriver(i) then return end
 
-                if lap_time > 0 and lap_time ~= previous_time[id] then
-                    player.laps = player.laps + 1
-                    player.previous_time = lap_time
-                    table_insert(player.lapTimes, lap_time)
-                    updatePlayerStats(id, lap_time)
-                end
+        local lap_ticks = read_word(static_player + 0xC4)
+        local lap_time = roundToHundredths(lap_ticks / 30)
 
-                previous_time[id] = lap_time
-            end
+        if lap_time > 0 and lap_time ~= previous_time[i] then
+            updatePlayer(player, lap_time)
+            updateStats(player, lap_time)
         end
-        ::continue::
+
+        previous_time[i] = lap_time
+    end
+end
+
+function OnTick()
+    for i, player in pairs(players) do
+        if player_present(i) and player_alive(i) then
+            checkPlayer(i, player)
+        end
     end
 end
 
