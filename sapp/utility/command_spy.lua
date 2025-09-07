@@ -60,12 +60,24 @@ function OnScriptLoad()
     register_callback(cb['EVENT_JOIN'], "OnJoin")
     register_callback(cb['EVENT_LEAVE'], "OnQuit")
     register_callback(cb['EVENT_COMMAND'], "OnCommand")
+    register_callback(cb['EVENT_GAME_START'], "OnStart")
+    OnStart() -- incase script is loaded mid game
+end
+
+function OnStart()
+    if get_var(0, '$gt') == 'n/a' then return end
+    players = {}
+    for i = 1, 16 do
+        if player_present(i) then
+            OnJoin(i)
+        end
+    end
 end
 
 function OnJoin(id)
     players[id] = {
         name = get_var(id, "$name"),
-        get_level = function()
+        level = function()
             return tonumber(get_var(id, "$lvl")) or 0
         end
     }
@@ -75,7 +87,7 @@ function OnQuit(id)
     players[id] = nil
 end
 
-local function is_blacklisted(cmd)
+local function hasSensitiveInfo(cmd)
     cmd = cmd:lower():match("^(%S+)")
     for _, black_cmd in ipairs(blacklist) do
         if cmd == black_cmd:lower() then
@@ -85,9 +97,9 @@ local function is_blacklisted(cmd)
     return false
 end
 
-function OnCommand(id, Command)
+function OnCommand(id, command)
     if id > 0 then
-        if is_blacklisted(Command) then return end
+        if hasSensitiveInfo(command) then return end
 
         local player = players[id]
         local name = player.name
@@ -96,10 +108,10 @@ function OnCommand(id, Command)
         for i = 1, 16 do
             if player_present(i) then
                 local a = players[i]
-                if a and spy_levels[a.get_level()] and i ~= id then
+                if a and spy_levels[a.level()] and i ~= id then
                     local msg = messages.spy_notify
                     msg = msg:gsub("$name", name)
-                    msg = msg:gsub("$cmd", Command)
+                    msg = msg:gsub("$cmd", command)
                     rprint(i, msg)
                 end
             end
@@ -107,7 +119,7 @@ function OnCommand(id, Command)
 
         -- Log to console:
         if log_to_console then
-            cprint(string.format("[CommandSpy] %s used: %s", name, Command))
+            cprint(string.format("[CommandSpy] %s used: %s", name, command))
         end
     end
 end
