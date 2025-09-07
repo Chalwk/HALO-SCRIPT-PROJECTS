@@ -13,12 +13,12 @@
         * Tracks member joins and leaves.
 
 * ◉ KNOWLEDGE BASE
+    * 〔👾〕code-snippets
+        * Handy code snippets for SAPP and Phasor scripting.
     * 〔🛠️〕resources (forum)
         * Guides, tutorials, and best practices for using HSP scripts.
     * 〔💡〕tips-tricks
         * Useful tips, tricks, and technical advice for Halo servers.
-    * 〔👾〕code-snippets
-        * Handy code snippets for SAPP and Phasor scripting.
 
 * ◉ GITHUB
     * 〔🙋〕help
@@ -47,6 +47,8 @@
     *  rooster-ctf _(only users with @HSP SERVERS can see this)_
     *  snipers-dream-team _(only users with @HSP SERVERS can see this)_
     *  tag _(only users with @HSP SERVERS can see this)_
+    * uber-racing _(only users with @HSP SERVERS can see this)_
+    * zombies _(only users with @HSP SERVERS can see this)_
 
 * ◉ COMMS
     * 〔🎤〕General
