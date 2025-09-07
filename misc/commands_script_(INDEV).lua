@@ -1001,7 +1001,7 @@ function OnPlayerPrejoin(PlayerIndex)
     cprint("---------------------------------------------------------------------------------------------------")
     cprint("              - - |   P L A Y E R   J O I N   | - -")
     cprint("     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ")
-    cprint("Player: " .. name, 2 + 8)
+    cprint("Player: " .. name, 10)
     cprint("CD Hash: " .. hash)
     cprint("IP Address: " .. ip)
     cprint("IndexID: " .. id)
@@ -1040,8 +1040,8 @@ function OnPlayerPrejoin(PlayerIndex)
                     privateSay(i, "Rejecting " .. entry_name .. " - banned from BoS.")
                     privateSay(i, "Entry: " .. entry_name .. " - " .. words[2] .. " - " .. words[3])
                     -- Log to dedicated server console
-                    cprint("Rejecting " .. entry_name .. " - banned from BoS.", 2 + 8)
-                    cprint("Entry: " .. entry_name .. " - " .. words[2] .. " - " .. words[3], 2 + 8)
+                    cprint("Rejecting " .. entry_name .. " - banned from BoS.", 10)
+                    cprint("Entry: " .. entry_name .. " - " .. words[2] .. " - " .. words[3], 10)
                     -- Send message to banned player.
                     privateSay(PlayerIndex, "Unable to connect. You are currently banned!")
                     execute_command("k" .. " " .. i)
@@ -1166,10 +1166,10 @@ function OnPlayerChat(PlayerIndex, Message, type)
     if (player_present(PlayerIndex) ~= nil) then
         if iscommand then
             WriteData(s_chat_dir, "   " .. ChatType .. "     " .. s_chat_name .. " [" .. s_chat_id .. "]: " .. Message)
-            cprint(ChatType .. " " .. s_chat_name .. " [" .. s_chat_id .. "]: " .. Message, 3 + 8)
+            cprint(ChatType .. " " .. s_chat_name .. " [" .. s_chat_id .. "]: " .. Message, 11)
         else
             WriteData(s_chat_dir, "   " .. Type .. "     " .. s_chat_name .. " [" .. s_chat_id .. "]: " .. Message)
-            cprint(Type .. " " .. s_chat_name .. " [" .. s_chat_id .. "]: " .. Message, 3 + 8)
+            cprint(Type .. " " .. s_chat_name .. " [" .. s_chat_id .. "]: " .. Message, 11)
         end
     end
     local response = nil
@@ -1949,7 +1949,7 @@ function OnPlayerLeave(PlayerIndex)
     local ping = get_var(PlayerIndex, "$ping")
     local timestamp = os.date("%A %d %B %Y - %X")
     cprint("---------------------------------------------------------------------------------------------------")
-    cprint(name .. " quit the game!", 4 + 8)
+    cprint(name .. " quit the game!", 12)
     cprint("CD Hash: " .. hash)
     cprint("IndexID: " .. id)
     cprint("Player Ping: " .. ping)

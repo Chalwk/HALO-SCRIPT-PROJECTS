@@ -722,7 +722,7 @@ function OnTick()
                                                 t.time_until_tp = math.random(V1.min, V1.max)
                                                 local x, y, z = read_vector3d(DynamicPlayer + 0x5c)
                                                 write_vector3d(DynamicPlayer + 0x5c, x, y, z - t.zaxis)
-                                                cprint("[TROLL] " .. ply.name .. " was teleported under the map", 5 + 8)
+                                                cprint("[TROLL] " .. ply.name .. " was teleported under the map", 13)
                                             end
                                         end
 

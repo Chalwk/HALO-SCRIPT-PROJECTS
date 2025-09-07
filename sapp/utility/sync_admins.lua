@@ -97,7 +97,7 @@ end
 local function respond(Message, PlayerIndex)
     if Message and Message ~= "" then
         if settings.DisplayConsoleOutput then
-            cprint(Message, 2 + 8)
+            cprint(Message, 10)
         end
 
         if PlayerIndex and player_present(PlayerIndex) then

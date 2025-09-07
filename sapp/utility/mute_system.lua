@@ -638,7 +638,7 @@ end
 -- In the event of an error, the script will trigger these two functions: OnError(), report()
 function report(StackTrace, Error)
 
-    cprint(StackTrace, 4 + 8)
+    cprint(StackTrace, 12)
 
     cprint("--------------------------------------------------------", 12)
     cprint("Please report this error on github:", 11)

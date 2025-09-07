@@ -352,10 +352,10 @@ function punish:Execute(params)
             elseif (params.type == "CRASH") then
                 if punish:Crash(params) then
                     if (params.notify_console) then
-                        cprint("The Punisher: " .. name .. " was crashed for " .. params.reason, 2 + 8)
+                        cprint("The Punisher: " .. name .. " was crashed for " .. params.reason, 12)
                     end
                 else
-                    cprint("The Punished: Unable to Crash player. Something went wrong!", 4 + 8)
+                    cprint("The Punished: Unable to Crash player. Something went wrong!", 12)
                 end
             end
         end
@@ -381,7 +381,7 @@ function punish:Kick(params)
     if (params ~= nil) then
         execute_command("k" .. " " .. params.player .. " " .. params.reason)
         if (params.notify_console) then
-            cprint("The Punisher: " .. params.name .. " was crashed for " .. params.reason, 2 + 8)
+            cprint("The Punisher: " .. params.name .. " was crashed for " .. params.reason, 10)
         end
     end
 end
@@ -418,7 +418,7 @@ function punish:KillSilently(params)
             end
 
             if (params.notify_console) then
-                cprint("The Punisher: " .. params.name .. " was killed for " .. params.reason, 2 + 8)
+                cprint("The Punisher: " .. params.name .. " was killed for " .. params.reason, 10)
             end
         end
     end

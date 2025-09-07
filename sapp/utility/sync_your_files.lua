@@ -217,14 +217,14 @@ function respond(Message, PlayerIndex)
         PlayerIndex = tonumber(PlayerIndex)
         if tonumber(PlayerIndex) and PlayerIndex ~= nil and PlayerIndex ~= -1 and PlayerIndex >= 0 and PlayerIndex < 16 then
             if settings["DisplayConsoleOutput"] then
-                cprint(Message, 2 + 8)
+                cprint(Message, 10)
             end
             rprint(PlayerIndex, Message)
             note = string.format('[SyncFilesUtility] -->> ' .. get_var(PlayerIndex, "$name") .. ': ' .. Message)
             execute_command("log_note \"" .. note .. "\"")
         else
             if settings["DisplayConsoleOutput"] then
-                cprint(Message, 2 + 8)
+                cprint(Message, 10)
             end
             v1note = string.format('[SyncFilesUtility]: ' .. Message)
             execute_command("log_note \"" .. v1note .. "\"")

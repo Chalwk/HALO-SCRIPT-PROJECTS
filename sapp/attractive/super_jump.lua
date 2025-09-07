@@ -209,7 +209,7 @@ function OnServerCommand(PlayerIndex, Command, Environment, Password)
             return false
         end
     else
-        cprint(environment_error, 2 + 8)
+        cprint(environment_error, 10)
     end
 end
 
