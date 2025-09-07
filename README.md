@@ -103,6 +103,13 @@ If you are a server administrator or operator using SAPP or Phasor, you will fin
 
 ---
 
+### Knowledge Base
+
+[Knowledge Base](docs/knowledge_base)
+> Guides, tutorials, and insights to enhance, customize, and extend your server experience.
+
+---
+
 ## Contribute & Request Features
 
 ### Submit Ideas
