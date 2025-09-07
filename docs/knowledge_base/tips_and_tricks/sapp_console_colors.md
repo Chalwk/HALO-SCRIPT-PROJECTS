@@ -1,5 +1,3 @@
-<span style="color:red">Red text</span>
-
 ### 🎨 SAPP Console Color Tutorial (`cprint` / `set_ccolor`)
 
 Understanding how to use colors in SAPP's console and messages can make your server logs, automated messages, and scripts much more readable and organized. The system is based on the classic Windows console color attributes.
