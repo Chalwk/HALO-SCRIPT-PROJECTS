@@ -1,13 +1,15 @@
-* **[SAPP docs (official)](https://halo-sapp.readthedocs.io/en/latest/scripting/index.html)** - SAPP's Lua API, events, commands, and examples.
-* **[Phasor (legacy)](https://phasor.halonet.net/)** - legacy server extension/docs; helpful for older scripts and historical examples.
-* **[Halopedia - Halo: Combat Evolved (main)](https://www.halopedia.org/Halo:_Combat_Evolved)** - canonical game/tag behavior & weapon overviews.
-* **[Halopedia - Category weapons](https://www.halopedia.org/Halo:_Combat_Evolved#Weapons)** - full list of weapons in Halo.
-* **[Netcode (Wikipedia)](https://en.wikipedia.org/wiki/Netcode)** - general networking concepts (tickrate/latency/packet loss) useful for server sync debugging.
-* **[Exploring the Halo 1 System Link Protocol - hllmn.net (2023-09-18)](https://hllmn.net/blog/2023-09-18_h1x-net/)** - deep, low-level CE networking reverse-engineering.
-* **[OpenCarnage (forum & community)](https://opencarnage.net/)** - threads, HEK help, scripts, and CE community resources.
-* **[Elite Game Servers - SAPP overview & examples](https://www.elitegameservers.net/sapp/)** - practical SAPP usage notes.
-* **[HAC2 Map Repo](https://maps.halonet.net/)** - Custom maps for PC & CE.
-* **[HaloMaps.org](https://www.halomaps.org/hce/)** - Custom maps for PC & CE.
+* [**SAPP docs (official)**](https://halo-sapp.readthedocs.io/en/latest/scripting/index.html) - SAPP's Lua API, events, commands, and examples.
+* [**Phasor (legacy)**](https://phasor.halonet.net/) - legacy server extension/docs; helpful for older scripts and historical examples.
+* [**Phasor V1 Docs**](http://phasor.halonet.net/archive/docs/05x.html) - Documentation for Phasor V1.
+* [**Phasor V2 Docs**](http://phasor.halonet.net/archive/docs/200.html) - Documentation for Phasor V2.
+* [**Halopedia - Halo: Combat Evolved (main)**](https://www.halopedia.org/Halo:_Combat_Evolved) - canonical game/tag behavior & weapon overviews.
+* [**Halopedia - Category weapons**](https://www.halopedia.org/Halo:_Combat_Evolved#Weapons) - full list of weapons in Halo.
+* [**Netcode (Wikipedia)**](https://en.wikipedia.org/wiki/Netcode) - general networking concepts (tickrate/latency/packet loss) useful for server sync debugging.
+* [**Exploring the Halo 1 System Link Protocol - hllmn.net (2023-09-18)**](https://hllmn.net/blog/2023-09-18_h1x-net/) - deep, low-level CE networking reverse-engineering.
+* [**OpenCarnage (forum & community)**](https://opencarnage.net/) - threads, HEK help, scripts, and CE community resources.
+* [**Elite Game Servers - SAPP overview & examples**](https://www.elitegameservers.net/sapp/) - practical SAPP usage notes.
+* [**HAC2 Map Repo**](https://maps.halonet.net/) - Custom maps for PC & CE.
+* [**HaloMaps.org**](https://www.halomaps.org/hce/) - Custom maps for PC & CE.
 
 ---
 

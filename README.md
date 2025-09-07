@@ -46,7 +46,7 @@ insights to enhance, customize, and extend your multiplayer server experience.
 
 ---
 
-## Explore Script Collections
+## Scripts, Releases and Knowledge Base
 
 | Category                                                                | Description                                                              |
 |-------------------------------------------------------------------------|--------------------------------------------------------------------------|
@@ -96,10 +96,6 @@ insights to enhance, customize, and extend your multiplayer server experience.
 |                  | [Weapon Assigner](./sapp/utility/weapon_assigner.lua)                 |
 |                  | [Word Buster](./sapp/utility/word_buster.lua)                         |
 
-### Releases
-
-- [Ready-To-Go SAPP Server](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/ReadyToGo)
-
 </details>
 
 ---
@@ -115,20 +111,6 @@ Have an idea for a new feature or script?
 
 - [Bug Report Form](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/issues/new?assignees=Chalwk&labels=Bug%2CNeeds+Triage&projects=&template=BUG_REPORT.yaml&title=%5BBUG%5D+%3Ctitle%3E)
 - [Feature Request Form](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/issues/new?assignees=Chalwk&labels=Feature%2CNeeds+Review&projects=&template=FEATURE_REQUEST.yaml&title=%5BFEATURE%5D+%3Ctitle%3E)
-
----
-
-## Resources & Documentation
-
-| Category                | Resource                                                                                     | Backup / Notes                  |
-|-------------------------|----------------------------------------------------------------------------------------------|---------------------------------|
-| **SAPP**                | [Download](http://halo.isimaginary.com)                                                      | [Backup](./misc/sapp_downloads) |
-|                         | [Documentation (PDF)](http://halo.isimaginary.com/SAPP%20Documentation%20Revision%202.5.pdf) | [Backup](./docs/sapp-2.4.pdf)   |
-| **Phasor**              | [V1 Documentation](http://phasor.halonet.net/archive/docs/05x.html)                          | -                               |
-|                         | [V2 Documentation](http://phasor.halonet.net/archive/docs/200.html)                          | -                               |
-| **HAC2 Map Repository** | [Custom Maps Repo](https://maps.halonet.net/)                                                | -                               |
-| **HSP Docs**            | [Knowledge Base](docs/knowledge_base)                                                        | -                               |
-
 
 ---
 
