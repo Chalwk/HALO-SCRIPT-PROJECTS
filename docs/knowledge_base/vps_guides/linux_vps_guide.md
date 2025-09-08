@@ -24,7 +24,7 @@ This is a step-by-step tutorial for installing an **Ubuntu 22.04 LTS** VPS with 
 - **Security First:** This guide prioritizes security by creating a non-root user, using a firewall, and locking down
   remote access. Please follow these steps carefully.
 - **Cost:** Vultr charges hourly up to a monthly cap. A server with 1 vCPU and 2GB RAM (the $10/mo plan) is sufficient
-  for most needs. You can destroy the VPS at any time to stop charges.
+  for most needs. You can destroy the VPS at any time to stop charges. As of 8/9/2025, the ideal plan is `vc2-1c-2gb | 1 vCPU | 2GB RAM | 55 GB SSD | 2TB/mo Bandwidth` @ $10.00/mo (not including Automatic Backups, which are an extra $2.00)
 - **Your Home IP:** Some steps require your home public IP address. Google "what is my ip" to find it. **Note that this
   may change if your internet provider does not assign a static IP.**
 
