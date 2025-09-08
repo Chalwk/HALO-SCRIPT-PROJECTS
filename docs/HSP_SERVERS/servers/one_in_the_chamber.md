@@ -29,7 +29,7 @@ The **One In The Chamber** mode runs Slayer on all Stock Maps.
 * Navigate to the Multiplayer section.
 * Join by:
     * Searching for **HSP-One In The Chamber**
-    * Direct IP: `jericraft.net:2305`
+    * Direct IP: `jericraft.net:2308`
 
 ---
 

@@ -27,7 +27,7 @@ across the finish line.
 * Navigate to the Multiplayer section.
 * Join by:
     * Searching for **`HSP-Uber Racing`**
-    * Direct IP: `jericraft.net:2309`
+    * Direct IP: `jericraft.net:2312`
 
 ---
 

@@ -34,7 +34,7 @@
 * Navigate to the Multiplayer section.
 * Join by:
     * Searching for **HSP-Kill Confirmed**
-    * Direct IP: `jericraft.net:2303`
+    * Direct IP: `jericraft.net:2306`
 
 ---
 

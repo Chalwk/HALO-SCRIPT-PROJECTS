@@ -69,7 +69,7 @@
 * Navigate to the Multiplayer section.
 * Join by:
     * Searching for **HSP-Gun Game**
-    * Direct IP: `jericraft.net:2302`
+    * Direct IP: `jericraft.net:2305`
 
 ---
 

@@ -46,7 +46,7 @@ The **Divide and Conquer** mode can be played across a variety of maps. The serv
 * Navigate to the Multiplayer section. 
 * Join by: 
   * Searching for **Divide & Conquer**
-  * Direct IP: `jericraft.net:2301`
+  * Direct IP: `jericraft.net:2304`
 
 ---
 

@@ -29,7 +29,7 @@ SDTM supports all **stock maps** and includes custom mechanics tailored to these
 * Navigate to the Multiplayer section.
 * Join by:
     * Searching for **HSP-Snipers Dream Team**
-    * Direct IP: `jericraft.net:2307`
+    * Direct IP: `jericraft.net:2310`
 
 ---
 

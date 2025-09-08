@@ -112,7 +112,7 @@ The Zombie game mode is designed to run Team Slayer on the following stock maps:
 * Navigate to the Multiplayer section.
 * Join by:
     * Searching for **HSP-Zombies**
-    * Direct IP: `jericraft.net:2310`
+    * Direct IP: `jericraft.net:2313`
 
 ---
 

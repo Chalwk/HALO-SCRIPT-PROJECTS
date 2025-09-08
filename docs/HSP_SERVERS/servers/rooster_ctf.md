@@ -23,7 +23,7 @@ spawn in the middle of the map. Players need to return the flag to either the **
 * Navigate to the Multiplayer section.
 * Join by:
     * Searching for **HSP-Rooster CTF**
-    * Direct IP: `jericraft.net:2306`
+    * Direct IP: `jericraft.net:2309`
 
 ---
 

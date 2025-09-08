@@ -41,7 +41,7 @@ The **Melee Attack** mode runs on the following **stock maps** and **game modes*
 * Navigate to the Multiplayer section.
 * Join by:
     * Searching for **HSP-Melee Attack**
-    * Direct IP: `jericraft.net:2304`
+    * Direct IP: `jericraft.net:2307`
 
 ---
 
