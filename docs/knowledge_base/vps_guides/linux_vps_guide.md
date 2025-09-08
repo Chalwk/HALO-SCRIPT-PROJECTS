@@ -281,12 +281,14 @@ Since we configured the VNC server with the `-localhost` option for maximum secu
     *   In BitVise, go to the **C2S** tab.
     *   Under **C2S (Client-to-Server) Port Forwarding**, click **Add**.
     *   Enter the following:
+    
         | Field            | Value       |
-        | ---------------- | ----------- |
+        |------------------|-------------|
         | Listen Interface | `127.0.0.1` |
         | Listen Port      | `5901`      |
         | Destination Host | `127.0.0.1` |
         | Destination Port | `5901`      |
+    
     *   Click **OK**.
 
 3.  **Connect TightVNC Viewer through the tunnel:**
