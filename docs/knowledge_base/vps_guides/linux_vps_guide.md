@@ -313,7 +313,7 @@ For ease of use when connected via VNC or X2Go, you can create a desktop shortcu
 2.  **Create a launch script.** This script will navigate to your server directory and start the dedicated server with Wine. Replace `divide_and_conquer` with your server's folder name and adjust the `-port` number if necessary.
 
 ```bash
-sudo nano /home/haloadmin/HCE_Server/divide_and_conquer.sh
+nano /home/haloadmin/HCE_Server/divide_and_conquer.sh
 ```
 
 **Paste the following contents into the file.**
@@ -330,13 +330,13 @@ wine haloceded.exe -path "cg/divide_and_conquer" -exec "cg/divide_and_conquer/in
 Make the script executable:
 
 ```bash
-sudo chmod +x /home/haloadmin/HCE_Server/divide_and_conquer.sh
+chmod +x /home/haloadmin/HCE_Server/divide_and_conquer.sh
 ```
 
 3. **Create the desktop shortcut file.**
 
 ```bash
-sudo nano /home/haloadmin/Desktop/divide_and_conquer.desktop
+nano /home/haloadmin/Desktop/divide_and_conquer.desktop
 ```
 
 **Paste the following configuration into the file.** Edit the `Name` and `Exec` lines to match your server.
@@ -357,7 +357,7 @@ Terminal=true
 Make the desktop file executable:
 
 ```bash
-sudo chmod +x /home/haloadmin/Desktop/divide_and_conquer.desktop
+chmod +x /home/haloadmin/Desktop/divide_and_conquer.desktop
 ```
 
 4. **Using the Shortcut:** You should now see a new icon on your VPS desktop. The first time you double-click it, you will likely be prompted by Wine to **install Mono**. Click "Install" and allow it to complete. Once installed, the server console window will open. Subsequent double-clicks will launch the server directly.
