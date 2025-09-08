@@ -101,6 +101,15 @@ sudo wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/ubuntu/
 # Update the package list
 sudo apt update
 
+# --- IMPORTANT: Check for and Install System Upgrades ---
+# It's good practice to apply any available OS updates before installing new software.
+# Check for upgradable packages (this is informational, you can run it to see what's available)
+apt list --upgradable
+
+# Apply all available updates. This ensures your system has the latest security patches.
+sudo apt upgrade -y
+
+# --- Proceed with Wine Installation ---
 # Install Wine
 sudo apt install --install-recommends winehq-stable -y
 
