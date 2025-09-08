@@ -402,7 +402,7 @@ chmod +x /home/haloadmin/Desktop/divide_and_conquer.desktop
 
 **You can now launch your server directly from the desktop.**
 
-*See [Multiple Halo Server Launchers](#multiple-halo-server-launchers) for automating the creation of many launchers or launching all servers at once.*
+*See [Multiple Halo Server Launchers](#15-optional-multiple-halo-server-launchers) for automating the creation of many launchers or launching all servers at once.*
 
 ---
 
