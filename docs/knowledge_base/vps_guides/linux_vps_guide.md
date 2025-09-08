@@ -4,6 +4,10 @@
 
 This is a step-by-step tutorial for installing an **Ubuntu 22.04 LTS** VPS with **Wine** and a secured **VNC server** to host a Halo Custom Edition or Combat Evolved (PC) dedicated server.
 
+⚠️ This guide will take you an estimated ~1 to 1.5 hours (for a non-Linux user) to complete.
+
+---
+
 ## Target OS: Ubuntu 22.04 LTS (Jammy Jellyfish) x64
 
 **Note on Compatibility**: While these instructions are specifically written and tested for **Ubuntu 22.04 LTS x64**, the core process (using Wine, VNC, and UFW) is similar for other versions. However, repository links (especially for Wine) and package names may differ significantly on other Ubuntu versions or different Linux distributions (like Debian or CentOS). For the most reliable results, it is strongly recommended to use Ubuntu 22.04 LTS.
