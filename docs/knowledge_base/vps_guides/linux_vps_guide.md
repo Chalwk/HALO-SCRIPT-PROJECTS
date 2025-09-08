@@ -45,7 +45,7 @@ This is a step-by-step tutorial for installing an **Ubuntu 22.04 LTS** VPS with 
 2. Select **Cloud Compute**.
 3. Choose a server location closest to you and your players.
 4. Under **Server Type**, select **Ubuntu 22.04 LTS x64**.
-5. Select a plan (e.g., **$6/mo** for 1 vCPU, 1GB RAM).
+5. Select your subscription plan (see [Important Notes Before You Begin](#-important-notes-before-you-begin) for cost and hardware recommendations).
 6. (**Recommended**) Under **SSH Keys**, add your public SSH key for more secure authentication. If you don't know how, you can use the password method shown later.
 7. Give your server a hostname label (e.g., `halo-server`).
 8. Click **Deploy Now**. Wait a few minutes for it to install.
@@ -263,7 +263,7 @@ sudo ufw enable
 # Type 'y' and press ENTER to confirm.
 ```
 
-> **Note:** The VNC server is bound to `localhost` and is **not accessible directly from the internet**. The only way to connect is through the secure SSH tunnel described in the next step. This is the most secure configuration.
+> **Note:** The VNC server is bound to `localhost` and is **not accessible directly from the internet**. The only way to connect is through the secure SSH tunnel described in the [next step](#9-connect-to-your-vnc-desktop-securely-via-bitvise-c2s-tunneling). This is the most secure configuration.
 
 ---
 
@@ -294,7 +294,7 @@ Since we configured the VNC server with the `-localhost` option for maximum secu
 3.  **Connect TightVNC Viewer through the tunnel:**
     *   Open **TightVNC Viewer** on your PC.
     *   In the **VNC Server** field, enter: `127.0.0.1:5901`
-    *   Enter the VNC password you created in step 6.
+    *   Enter the VNC password you created in [step 6](#6-install-and-configure-tightvnc--xfce).
     *   Click **Connect**. You should now see the XFCE desktop of your VPS.
 
 > ⚠️ Important: BitVise must remain connected as `haloadmin` while using TightVNC Viewer. If you disconnect SSH, the VNC tunnel will close.
@@ -331,7 +331,7 @@ sudo systemctl enable fail2ban
 
 ### 12. Final Setup via VNC Desktop
 
-1.  Ensure you are connected via the VNC tunnel as described in Step 9.
+1.  Ensure you are connected via the VNC tunnel as described in [step 9](#9-connect-to-your-vnc-desktop-securely-via-bitvise-c2s-tunneling).
 2.  You should see the XFCE desktop environment.
 3.  Use the file manager to navigate to the server folder you uploaded (e.g., `HPC_Server`).
 4.  Inside, find the `Wine Launch Files` folder and double-click the `run.desktop` file.
