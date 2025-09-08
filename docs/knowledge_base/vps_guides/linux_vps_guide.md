@@ -1,5 +1,3 @@
-Of course. Here is the entire revised guide, incorporating all the recommended changes for improved security, clarity, and flow.
-
 **Last Updated: 8 Sep 2025**
 
 # VPS Setup Instructions for Halo CE / Halo PC
