@@ -17,7 +17,6 @@ This is a step-by-step tutorial for installing an **Ubuntu 22.04 LTS** VPS with 
 | [BitVise SSH Client](https://www.bitvise.com/ssh-client-download)                               | For secure remote terminal access and file uploads via SFTP. |
 | [TightVNC Viewer](https://www.tightvnc.com/download.php)                                        | For remote desktop connections to the VPS GUI.               |
 | [HPC/CE Server Template](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/ReadyToGo) | Pre-configured server files compatible with Linux/Wine.      |
-| [7-Zip](https://www.7-zip.org/) or WinRAR                                                       | To extract the downloaded server template.                   |
 
 ### ⚠️ Important Notes Before You Begin
 
@@ -34,8 +33,8 @@ This is a step-by-step tutorial for installing an **Ubuntu 22.04 LTS** VPS with 
 
 ### 1. Download and Prepare the Server Template
 
-1. Download the [HPC.Server.zip or HCE.Server.zip](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/ReadyToGo) file.
-2. Extract the ZIP file on your local computer using 7-Zip or WinRAR. You should have a folder named `HPC Server` or `HCE Server`. Keep this handy for later.
+1. Download the [HPC_Server.zip or HCE_Server.zip](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/ReadyToGo) file.
+2. Extract the ZIP file on your local computer using 7-Zip or WinRAR. You should have a folder named `HPC_Server` or `HCE_Server`. Keep this handy for later.
 
 ### 2. Deploying a New VPS on Vultr
 
@@ -274,7 +273,7 @@ connections.
 
 1. In your existing BitVise session, click the **New SFTP Window** button.
 2. In the SFTP window, navigate to the `/home/haloadmin/` directory.
-3. On your local computer, locate the extracted `HPC Server` or `HCE Server` folder.
+3. On your local computer, locate the extracted `HPC_Server` or `HCE_Server` folder.
 4. Drag and drop the entire server folder from your local machine into the `/home/haloadmin/` directory on the VPS. This may take a few minutes.
 
 ### 10. Final Setup via VNC Desktop
@@ -283,7 +282,7 @@ connections.
 2. Connect to `your.vps.ip.address:5901`.
 3. Enter the VNC password you created earlier.
 4. You should now see the XFCE desktop environment.
-5. Use the file manager to navigate to the server folder you uploaded (e.g., `HPC Server`).
+5. Use the file manager to navigate to the server folder you uploaded (e.g., `HPC_Server`).
 6. Inside, find the `Wine Launch Files` folder and double-click the `run.desktop` file.
 7. The first time you run it, Wine will prompt you to install Mono. **Click "Install"** and allow it to complete. The server console window should open once finished.
 8. You can now configure your server by editing the `server.cfg` file in the main server directory.
@@ -292,7 +291,72 @@ Your server should now be running and accessible to players. You can manage it v
 
 ---
 
-### 11. (Optional, Recommended Upgrade) Install X2Go for a Superior Remote Desktop
+Of course. Here is the new section, written to match the professional tone and structure of your existing guide. It has been integrated as a new step between your current Step 10 and Step 11.
+
+---
+
+### 11. (Optional) Create a Desktop Shortcut for Your Server
+
+For ease of use when connected via VNC or X2Go, you can create a desktop shortcut to launch your Halo server with a double-click. This example will create a shortcut for a server named "divide_and_conquer" - replace this name with your actual server's directory name.
+
+1.  **Open a Terminal** from your remote desktop (Applications > System Tools > Terminal) or via your existing BitVise SSH session (logged in as `haloadmin`).
+
+2.  **Create a launch script.** This script will navigate to your server directory and start the dedicated server with Wine. Replace `divide_and_conquer` with your server's folder name and adjust the `-port` number if necessary.
+
+```bash
+sudo nano /home/haloadmin/HCE_Server/divide_and_conquer.sh
+```
+
+**Paste the following contents into the file.**
+> ⚠️ **Important:** Double-check that the paths (`-path`, `-exec`) and `-port` number match your server's configuration.
+
+```bash
+#!/bin/bash
+cd "/home/haloadmin/HCE_Server"
+wine haloceded.exe -path "cg/divide_and_conquer" -exec "cg/divide_and_conquer/init.txt" -port 2304
+```
+
+**Save and exit nano (`CTRL+O`, `ENTER`, `CTRL+X`).**
+
+Make the script executable:
+
+```bash
+sudo chmod +x /home/haloadmin/HCE_Server/divide_and_conquer.sh
+```
+
+3. **Create the desktop shortcut file.**
+
+```bash
+sudo nano /home/haloadmin/Desktop/divide_and_conquer.desktop
+```
+
+**Paste the following configuration into the file.** Edit the `Name` and `Exec` lines to match your server.
+
+```ini
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Divide and Conquer Server
+Exec=/home/haloadmin/HCE_Server/divide_and_conquer.sh
+Icon=utilities-terminal
+Categories=Game;
+```
+
+**Save and exit nano.**
+
+Make the desktop file executable:
+
+```bash
+sudo chmod +x /home/haloadmin/Desktop/divide_and_conquer.desktop
+```
+
+4. **Using the Shortcut:** You should now see a new icon on your VPS desktop. The first time you double-click it, you will likely be prompted by Wine to **install Mono**. Click "Install" and allow it to complete. Once installed, the server console window will open. Subsequent double-clicks will launch the server directly.
+
+**You can now launch your server directly from the desktop.**
+
+---
+
+### 12. (Optional, Recommended Upgrade) Install X2Go for a Superior Remote Desktop
 
 TightVNC works but can be laggy. **X2Go** uses a more efficient protocol, offering a much faster and more responsive remote desktop experience. It also allows you to disconnect and reconnect to your running desktop session.
 
