@@ -340,6 +340,7 @@ Name=Divide and Conquer Server
 Exec=/home/haloadmin/HCE_Server/divide_and_conquer.sh
 Icon=utilities-terminal
 Categories=Game;
+Terminal=true
 ```
 
 **Save and exit nano.**
