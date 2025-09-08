@@ -272,9 +272,18 @@ connections.
 ### 9. Upload Server Files via BitVise SFTP
 
 1. In your existing BitVise session, click the **New SFTP Window** button.
-2. In the SFTP window, navigate to the `/home/haloadmin/` directory.
-3. On your local computer, locate the extracted `HPC_Server` or `HCE_Server` folder.
-4. Drag and drop the entire server folder from your local machine into the `/home/haloadmin/` directory on the VPS. This may take a few minutes.
+2. **Important**: Make sure you are logged in as the `haloadmin` user, **not** root. Files uploaded as root may cause permission errors.
+3. In the SFTP window, navigate to the `/home/haloadmin/` directory.
+4. On your local computer, locate the extracted `HPC_Server` or `HCE_Server` folder.
+5. Drag and drop the entire server folder from your local machine into the `/home/haloadmin/` directory on the VPS. This may take a few minutes.
+
+⚠️ If you accidentally uploaded as root, run this command via SSH as root to fix permissions:
+```bash
+sudo chown -R haloadmin:haloadmin /home/haloadmin/HCE_Server
+chmod -R u+rw /home/haloadmin/HCE_Server
+```
+
+This ensures that no matter what, `haloadmin` owns all the server files and Wine/SAPP will work correctly.
 
 ### 10. Final Setup via VNC Desktop
 
