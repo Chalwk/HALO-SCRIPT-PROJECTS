@@ -285,8 +285,7 @@ connections.
 4. You should now see the XFCE desktop environment.
 5. Use the file manager to navigate to the server folder you uploaded (e.g., `HPC Server`).
 6. Inside, find the `Wine Launch Files` folder and double-click the `run.desktop` file.
-7. The first time you run it, Wine will prompt you to install Mono. **Click "Install"** and allow it to complete. The
-   server console window should open once finished.
+7. The first time you run it, Wine will prompt you to install Mono. **Click "Install"** and allow it to complete. The server console window should open once finished.
 8. You can now configure your server by editing the `server.cfg` file in the main server directory.
 
 Your server should now be running and accessible to players. You can manage it via the VNC desktop. The VNC service will automatically restart if your VPS reboots.
