@@ -134,6 +134,7 @@ sudo apt install xfce4 xfce4-goodies tightvncserver -y
 vncserver
 # You will be prompted to create a VNC password (max 8 characters).
 # Then, you can choose to create a view-only password (select 'n' for no).
+# "View-only password" means a separate password that allows someone to see your desktop but not interact with it. They cannot click, type, or move the mouse. It's like a "read-only" mode for your screen.
 
 # Now, stop the VNC server instance
 vncserver -kill :1
@@ -174,6 +175,7 @@ sudo nano /etc/systemd/system/vncserver@.service
 ```
 
 **Paste the following configuration into the file. This is a standard, reliable template.**
+> ⚠️ Don't forget to edit the file to replace `haloadmin` with your actual username.
 
 ```ini
 [Unit]
@@ -216,7 +218,7 @@ sudo ufw allow OpenSSH
 sudo ufw allow 2302:2303/udp
 
 # Allow Halo server list (heartbeat) ports if needed (UDP)
-sudo ufw allow 2310:2312/udp
+sudo ufw allow 2304:2313/udp
 
 # CRITICAL: Allow VNC ONLY from your home IP address for security.
 sudo ufw allow from YOUR_HOME_IP to any port 5901
@@ -241,7 +243,7 @@ Find the line `#Port 22`, uncomment it, and change it to a number between 1024 a
 sudo apt install fail2ban -y
 sudo systemctl enable fail2ban
 
-# Allow the new SSH port in the firewall
+# Allow the new SSH port in the firewall.
 sudo ufw allow 22992/tcp
 
 # IMPORTANT: Restart the SSH service for changes to take effect.
@@ -251,7 +253,7 @@ sudo systemctl restart sshd
 ```
 
 **⚠️ Warning:** After this, you must specify the new port (e.g., `22992`) in the Port field in BitVise for all future
-connections.
+connections. This is the port set in step 8.
 
 ### 9. Upload Server Files via BitVise SFTP
 
