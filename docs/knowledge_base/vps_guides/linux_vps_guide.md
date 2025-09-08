@@ -65,9 +65,6 @@ This is a step-by-step tutorial for installing an **Ubuntu 22.04 LTS** VPS with 
 adduser haloadmin
 # Follow the prompts to set a strong password for this user.
 
-# Exit the current session to go back to root user:
-exit
-
 # Add the new user to the 'sudo' group to grant administrative privileges
 usermod -aG sudo haloadmin
 
