@@ -253,6 +253,7 @@ sudo ufw enable
 # 6. Reload UFW to apply all the complex routing rules we just added
 sudo ufw reload
 ```
+> **Note:** Because the VNC server is bound to `localhost`, you must connect via an SSH tunnel using BitVise C2S forwarding (see next step).
 
 ---
 
@@ -269,7 +270,7 @@ Since we configured the VNC server with the `-localhost` option for maximum secu
 
 2. **Enable Client-to-Server (C2S) Port Forwarding:**
 
-    * In BitVise, go to the **Services** tab.
+    * In BitVise, go to the **CS2** tab.
 
     * Under **C2S (Client-to-Server) Port Forwarding**, click **Add**.
 
@@ -282,7 +283,7 @@ Since we configured the VNC server with the `-localhost` option for maximum secu
       | Destination Host | `127.0.0.1` |
       | Destination Port | `5901`      |
 
-    * Click **OK** and make sure the forwarding entry is **enabled**.
+    * Click **OK**.
 
 3. **Connect TightVNC Viewer through the tunnel:**
 
@@ -292,18 +293,10 @@ Since we configured the VNC server with the `-localhost` option for maximum secu
       ```
       127.0.0.1:5901
       ```
-    * Enter the VNC password you created earlier.
+    * Enter the VNC password you created in step 5.
     * Click **Connect**. You should now see the XFCE desktop of your VPS.
 
 > ⚠️ Important: BitVise must remain connected as `haloadmin` while using TightVNC Viewer. If you disconnect SSH, the VNC tunnel will close.
-
----
-
-**Current Step 8 (SSH Hardening)** → becomes Step 9, and all subsequent steps increment by 1.
-
-You might also add a tiny note at the end of Step 7:
-
-> **Note:** Because the VNC server is bound to `localhost`, you must connect via an SSH tunnel using BitVise C2S forwarding (see next step).
 
 ---
 
