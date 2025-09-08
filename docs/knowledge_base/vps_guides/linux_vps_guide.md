@@ -4,7 +4,7 @@
 
 This is a step-by-step tutorial for installing an **Ubuntu 22.04 LTS** VPS with **Wine** and a secured **VNC server** to host a Halo Custom Edition or Combat Evolved (PC) dedicated server.
 
-⚠️ This guide will take you an estimated ~1 to 1.5 hours (for a non-Linux user) to complete.
+**NOTE** This guide will take you an estimated ~1 to 1.5 hours (for a non-Linux user) to complete.
 
 ---
 
@@ -23,7 +23,7 @@ This is a step-by-step tutorial for installing an **Ubuntu 22.04 LTS** VPS with 
 | [HPC/CE Server Template](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/ReadyToGo) | Pre-configured server files compatible with Linux/Wine.                                                                                                                                                                                                                                  |
 | **Note on Dynamic IPs**:                                                                        | This guide uses a VPS with a permanent (static) IP address. Your home internet connection's dynamic IP address is only used for you to access and manage the server. The Halo server itself will always be available at the VPS's static IP, regardless of whether your home IP changes. | 
 
-### ⚠️ Important Notes Before You Begin
+### Important Notes Before You Begin
 
 -   **Security First:** This guide prioritizes security by creating a non-root user, using a firewall, and locking down remote access. Please follow these steps carefully.
 -   **Cost:** Vultr charges hourly up to a monthly cap. A server with 1 vCPU and 2GB RAM (the **\$10/mo plan**) is sufficient for most needs. You can destroy the VPS at any time to stop charges. As of 8/9/2025, the ideal plan is `vc2-1c-2gb | 1 vCPU | 2GB RAM | 55 GB SSD | 2TB/mo Bandwidth` @ **\$10.00/mo** (not including Automatic Backups, which are an extra $2.00)
@@ -45,7 +45,7 @@ This is a step-by-step tutorial for installing an **Ubuntu 22.04 LTS** VPS with 
 2. Select **Cloud Compute**.
 3. Choose a server location closest to you and your players.
 4. Under **Server Type**, select **Ubuntu 22.04 LTS x64**.
-5. Select your subscription plan (see [Important Notes Before You Begin](#-important-notes-before-you-begin) for cost and hardware recommendations).
+5. Select your subscription plan (see [Important Notes Before You Begin](#important-notes-before-you-begin) for cost and hardware recommendations).
 6. (**Recommended**) Under **SSH Keys**, add your public SSH key for more secure authentication. If you don't know how, you can use the password method shown later.
 7. Give your server a hostname label (e.g., `halo-server`).
 8. Click **Deploy Now**. Wait a few minutes for it to install.
@@ -115,7 +115,7 @@ PasswordAuthentication no
 sudo systemctl restart sshd
 ```
 
-**⚠️ Warning:** After this, you must specify the new port (e.g., `22992`) in the Port field in BitVise for all future connections. If you disabled password authentication, you must use your SSH key.
+**Warning:** After this, you must specify the new port (e.g., `22992`) in the Port field in BitVise for all future connections. If you disabled password authentication, you must use your SSH key.
 
 ---
 
@@ -211,7 +211,7 @@ sudo nano /etc/systemd/system/vncserver@.service
 ```
 
 **Paste the following configuration into the file.**
-> ⚠️ Don't forget to edit the file to replace `haloadmin` with your actual username.
+> Don't forget to edit the file to replace `haloadmin` with your actual username.
 
 ```ini
 [Unit]
@@ -297,7 +297,7 @@ Since we configured the VNC server with the `-localhost` option for maximum secu
     *   Enter the VNC password you created in [step 6](#6-install-and-configure-tightvnc--xfce).
     *   Click **Connect**. You should now see the XFCE desktop of your VPS.
 
-> ⚠️ Important: BitVise must remain connected as `haloadmin` while using TightVNC Viewer. If you disconnect SSH, the VNC tunnel will close.
+> Important: BitVise must remain connected as `haloadmin` while using TightVNC Viewer. If you disconnect SSH, the VNC tunnel will close.
 
 ---
 
@@ -355,7 +355,7 @@ nano /home/haloadmin/HCE_Server/divide_and_conquer.sh
 ```
 
 **Paste the following contents into the file.**
-> ⚠️ **Important:** Double-check that the paths (`-path`, `-exec`) and `-port` number match your server's configuration.
+> **Important:** Double-check that the paths (`-path`, `-exec`) and `-port` number match your server's configuration.
 
 ```bash
 #!/bin/bash
@@ -402,6 +402,8 @@ chmod +x /home/haloadmin/Desktop/divide_and_conquer.desktop
 
 **You can now launch your server directly from the desktop.**
 
+*See [Multiple Halo Server Launchers](#multiple-halo-server-launchers) for automating the creation of many launchers or launching all servers at once.*
+
 ---
 
 ### 14. (Optional, Recommended Upgrade) Install X2Go for a Superior Remote Desktop
@@ -433,9 +435,183 @@ sudo apt install x2goserver x2goserver-xsession -y
 4.  Select the new session and click **Session** -> **Start**. You will be prompted for your `haloadmin` user's password (or your SSH key if you set one up).
 5.  You will now be connected to a much smoother and more responsive desktop.
 
-**⚠️ Important Note:** X2Go uses your existing SSH connection for secure tunneling. Once you verify X2Go works, you can **stop and disable the VNC service** if you wish, as you will no longer need it:
+**Important Note:** X2Go uses your existing SSH connection for secure tunneling. Once you verify X2Go works, you can **stop and disable the VNC service** if you wish, as you will no longer need it:
 
 ```bash
 sudo systemctl stop vncserver@1.service
 sudo systemctl disable vncserver@1.service
 ```
+
+---
+
+## 15 (Optional) Multiple Halo Server Launchers
+
+For advanced setups, you can automate the creation of multiple Halo server launchers and even add a single script to launch them all at once. This example create 10 server launchers (divide_and_conquer, gun_game, kill_confirmed, melee_attack, one_in_the_chamber, rooster_ctf, snipers_dream_team, tag, uber_racing, zombies).
+
+---
+
+### A. Create Individual Launchers for Multiple Servers
+
+1. **Create the batch script**
+
+```bash
+nano /home/haloadmin/create_halo_launchers.sh
+```
+
+**Paste the following:**
+
+```bash
+#!/bin/bash
+
+# Base path
+BASE_DIR="/home/haloadmin/HCE_Server"
+DESKTOP_DIR="/home/haloadmin/Desktop"
+
+# Array of EXAMPLE servers: "ServerFolder|DisplayName|Port"
+servers=(
+  "divide_and_conquer|HSP-Divide & Conquer|2304"
+  "gun_game|HSP-Gun Game|2305"
+  "kill_confirmed|HSP-Kill Confirmed|2306"
+  "melee_attack|HSP-Melee Attack|2307"
+  "one_in_the_chamber|HSP-One in the Chamber|2308"
+  "rooster_ctf|HSP-Rooster CTF|2309"
+  "snipers_dream_team|HSP-Snipers Dream Team|2310"
+  "tag|HSP-Tag|2311"
+  "uber_racing|HSP-Uber Racing|2312"
+  "zombies|HSP-Zombies|2313"
+)
+
+for entry in "${servers[@]}"; do
+  IFS='|' read -r folder name port <<< "$entry"
+
+  # Create the launch script
+  SCRIPT_PATH="$BASE_DIR/$folder.sh"
+  echo "#!/bin/bash" > "$SCRIPT_PATH"
+  echo "cd \"$BASE_DIR\"" >> "$SCRIPT_PATH"
+  echo "wine haloceded.exe -path \"cg/$folder\" -exec \"cg/$folder/init.txt\" -port $port" >> "$SCRIPT_PATH"
+  chmod +x "$SCRIPT_PATH"
+
+  # Create the desktop shortcut
+  DESKTOP_PATH="$DESKTOP_DIR/$folder.desktop"
+  echo "[Desktop Entry]" > "$DESKTOP_PATH"
+  echo "Version=1.0" >> "$DESKTOP_PATH"
+  echo "Type=Application" >> "$DESKTOP_PATH"
+  echo "Name=$name" >> "$DESKTOP_PATH"
+  echo "Exec=$SCRIPT_PATH" >> "$DESKTOP_PATH"
+  echo "Icon=utilities-terminal" >> "$DESKTOP_PATH"
+  echo "Categories=Game;" >> "$DESKTOP_PATH"
+  echo "Terminal=true" >> "$DESKTOP_PATH"
+  chmod +x "$DESKTOP_PATH"
+done
+
+echo "All 10 launchers and scripts have been created!"
+```
+
+2. **Make the script executable**
+
+```bash
+chmod +x /home/haloadmin/create_halo_launchers.sh
+```
+
+3. **Run the script**
+
+```bash
+/home/haloadmin/create_halo_launchers.sh
+```
+
+This will:
+
+* Create 10 `.sh` launch scripts in `/home/haloadmin/HCE_Server`
+* Create 10 `.desktop` shortcuts on the VPS desktop
+* Assign the correct ports for each server
+
+Now you can double-click to start any server individually.
+
+---
+
+### B. Create a Master Script to Launch All Servers at Once
+
+1. **Create the master launch script**
+
+```bash
+nano /home/haloadmin/HCE_Server/launch_all_servers.sh
+```
+
+**Paste this:**
+
+```bash
+#!/bin/bash
+
+# Base path
+BASE_DIR="/home/haloadmin/HCE_Server"
+
+# Array of server folders and ports
+servers=(
+  "divide_and_conquer|2304"
+  "gun_game|2305"
+  "kill_confirmed|2306"
+  "melee_attack|2307"
+  "one_in_the_chamber|2308"
+  "rooster_ctf|2309"
+  "snipers_dream_team|2310"
+  "tag|2311"
+  "uber_racing|2312"
+  "zombies|2313"
+)
+
+# Loop through and launch each server in its own terminal
+for entry in "${servers[@]}"; do
+  IFS='|' read -r folder port <<< "$entry"
+  gnome-terminal -- bash -c "cd \"$BASE_DIR\"; wine haloceded.exe -path \"cg/$folder\" -exec \"cg/$folder/init.txt\" -port $port; exec bash"
+done
+
+echo "All servers launched!"
+```
+
+2. **Make it executable**
+
+```bash
+chmod +x /home/haloadmin/HCE_Server/launch_all_servers.sh
+```
+
+3. **(Optional) Create a desktop shortcut**
+
+```bash
+nano /home/haloadmin/Desktop/launch_all_servers.desktop
+```
+
+**Paste this:**
+
+```ini
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Launch All Halo Servers
+Exec=/home/haloadmin/HCE_Server/launch_all_servers.sh
+Icon=utilities-terminal
+Categories=Game;
+Terminal=true
+```
+
+```bash
+chmod +x /home/haloadmin/Desktop/launch_all_servers.desktop
+```
+
+---
+
+### C. Running the Master Script
+
+From terminal:
+
+```bash
+cd /home/haloadmin/HCE_Server
+./launch_all_servers.sh
+```
+
+Or directly:
+
+```bash
+/home/haloadmin/HCE_Server/launch_all_servers.sh
+```
+
+---
