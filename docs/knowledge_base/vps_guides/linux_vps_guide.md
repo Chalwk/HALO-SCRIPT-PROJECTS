@@ -66,10 +66,17 @@ Edition or Combat Evolved (PC) dedicated server.
 adduser haloadmin
 # Follow the prompts to set a strong password for this user.
 
+# Exit the current session to go back to root user:
+exit
+
 # Add the new user to the 'sudo' group to grant administrative privileges
 usermod -aG sudo haloadmin
 
-# Switch to the new user's environment
+# Verify the user was added correctly
+grep sudo /etc/group
+# You should see 'haloadmin' in the output, e.g., 'sudo:x:27:ubuntu,haloadmin'
+
+# Switch to the new user's environment USING A LOGIN SHELL (the '-' is important)
 su - haloadmin
 ```
 
@@ -81,6 +88,7 @@ Run these commands in the SSH terminal to install Wine. These are correct for Ub
 
 ```bash
 # Enable 32-bit architecture
+# You may be asked for your haloadmin password, enter it when prompted.
 sudo dpkg --add-architecture i386
 
 # Create the keyring directory and download the WineHQ key
