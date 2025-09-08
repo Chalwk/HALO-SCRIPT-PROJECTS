@@ -36,6 +36,8 @@ This is a step-by-step tutorial for installing an **Ubuntu 22.04 LTS** VPS with 
 1. Download the [HPC_Server.zip or HCE_Server.zip](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/ReadyToGo) file.
 2. Extract the ZIP file on your local computer using 7-Zip or WinRAR. You should have a folder named `HPC_Server` or `HCE_Server`. Keep this handy for later.
 
+---
+
 ### 2. Deploying a New VPS on Vultr
 
 1. Navigate to the [Vultr Deploy](https://my.vultr.com/deploy/) page.
@@ -46,6 +48,8 @@ This is a step-by-step tutorial for installing an **Ubuntu 22.04 LTS** VPS with 
 6. (**Recommended**) Under **SSH Keys**, add your public SSH key for more secure authentication. If you don't know how, you can use the password method shown later.
 7. Give your server a hostname label (e.g., `halo-server`).
 8. Click **Deploy Now**. Wait a few minutes for it to install.
+
+---
 
 ### 3. Initial Connection & User Setup via BitVise
 
@@ -76,6 +80,8 @@ su - haloadmin
 ```
 
 *Your terminal prompt should now show `haloadmin@your-server-name` instead of `root@your-server-name`.*
+
+---
 
 ### 4. Install Wine
 
@@ -111,6 +117,8 @@ sudo apt install --install-recommends winehq-stable -y
 # Verify the installation (it will likely prompt to install Mono, just close the window for now)
 wine --version
 ```
+
+---
 
 ### 5. Install and Configure TightVNC & XFCE
 
@@ -156,6 +164,8 @@ Make the script executable:
 chmod +x ~/.vnc/xstartup
 ```
 
+---
+
 ### 6. Create a Systemd Service for VNC (Auto-start on boot)
 
 Create a service file to manage VNC. The `-localhost` flag is used for maximum security, meaning VNC will only accept connections from the machine itself. We will later configure the firewall to securely forward our external connection.
@@ -195,6 +205,8 @@ sudo systemctl daemon-reload
 sudo systemctl enable vncserver@1.service
 sudo systemctl start vncserver@1.service
 ```
+
+---
 
 ### 7. Configure the Firewall (UFW) for Security and VNC Access
 
@@ -242,7 +254,60 @@ sudo ufw enable
 sudo ufw reload
 ```
 
-### 8. (Optional but Recommended) Harden SSH Security
+---
+
+### 8. Connect to Your VNC Desktop Securely via BitVise (C2S Tunneling)
+
+Since we configured the VNC server with the `-localhost` option for maximum security, **you cannot connect directly to your VPS IP via TightVNC Viewer**. Instead, we will tunnel the VNC connection through your existing SSH session using BitVise.
+
+1. **Open BitVise and log in as `haloadmin`.**
+
+    * **Host:** Your VPS IP
+    * **Username:** `haloadmin`
+    * **Authentication:** Password or SSH key
+    * **Port:** `22` (or your custom port if you changed it in Step 8)
+
+2. **Enable Client-to-Server (C2S) Port Forwarding:**
+
+    * In BitVise, go to the **Services** tab.
+
+    * Under **C2S (Client-to-Server) Port Forwarding**, click **Add**.
+
+    * Enter the following:
+
+      | Field            | Value       |
+           |------------------|-------------|
+      | Listen Interface | `127.0.0.1` |
+      | Listen Port      | `5901`      |
+      | Destination Host | `127.0.0.1` |
+      | Destination Port | `5901`      |
+
+    * Click **OK** and make sure the forwarding entry is **enabled**.
+
+3. **Connect TightVNC Viewer through the tunnel:**
+
+    * Open **TightVNC Viewer** on your PC.
+    * In the **VNC Server** field, enter:
+
+      ```
+      127.0.0.1:5901
+      ```
+    * Enter the VNC password you created earlier.
+    * Click **Connect**. You should now see the XFCE desktop of your VPS.
+
+> ⚠️ Important: BitVise must remain connected as `haloadmin` while using TightVNC Viewer. If you disconnect SSH, the VNC tunnel will close.
+
+---
+
+**Current Step 8 (SSH Hardening)** → becomes Step 9, and all subsequent steps increment by 1.
+
+You might also add a tiny note at the end of Step 7:
+
+> **Note:** Because the VNC server is bound to `localhost`, you must connect via an SSH tunnel using BitVise C2S forwarding (see next step).
+
+---
+
+### 9. Harden SSH Security
 
 ```bash
 # Change the default SSH port to reduce bot noise
@@ -269,7 +334,9 @@ sudo systemctl restart sshd
 **⚠️ Warning:** After this, you must specify the new port (e.g., `22992`) in the Port field in BitVise for all future
 connections.
 
-### 9. Upload Server Files via BitVise SFTP
+---
+
+### 10. Upload Server Files via BitVise SFTP
 
 1. In your existing BitVise session, click the **New SFTP Window** button.
 2. **Important**: Make sure you are logged in as the `haloadmin` user, **not** root. Files uploaded as root may cause permission errors.
@@ -285,7 +352,9 @@ chmod -R u+rw /home/haloadmin/HCE_Server
 
 This ensures that no matter what, `haloadmin` owns all the server files and Wine/SAPP will work correctly.
 
-### 10. Final Setup via VNC Desktop
+---
+
+### 11. Final Setup via VNC Desktop
 
 1. Open **TightVNC Viewer** on your PC.
 2. Connect to `your.vps.ip.address:5901`.
@@ -300,11 +369,7 @@ Your server should now be running and accessible to players. You can manage it v
 
 ---
 
-Of course. Here is the new section, written to match the professional tone and structure of your existing guide. It has been integrated as a new step between your current Step 10 and Step 11.
-
----
-
-### 11. (Optional) Create a Desktop Shortcut for Your Server
+### 12. (Optional) Create a Desktop Shortcut for Your Server
 
 For ease of use when connected via VNC or X2Go, you can create a desktop shortcut to launch your Halo server with a double-click. This example will create a shortcut for a server named "divide_and_conquer" - replace this name with your actual server's directory name.
 
@@ -366,7 +431,7 @@ chmod +x /home/haloadmin/Desktop/divide_and_conquer.desktop
 
 ---
 
-### 12. (Optional, Recommended Upgrade) Install X2Go for a Superior Remote Desktop
+### 13. (Optional, Recommended Upgrade) Install X2Go for a Superior Remote Desktop
 
 TightVNC works but can be laggy. **X2Go** uses a more efficient protocol, offering a much faster and more responsive remote desktop experience. It also allows you to disconnect and reconnect to your running desktop session.
 
