@@ -1,16 +1,21 @@
-**Last Updated: 29 Aug 2025**
+Of course. Here is the updated guide with the new "Optional, Recommended Upgrade" section for X2Go added at the end. This provides users with a clear path to a much better remote desktop experience after they have the basics working with TightVNC.
+
+**Last Updated: 8 Sep 2025**
 
 # VPS Setup Instructions for Halo CE / Halo PC
 
-This is a step-by-step tutorial for installing an Ubuntu VPS with Wine and a secured VNC server to host a Halo Custom
-Edition or Combat Evolved (PC) dedicated server.
+This is a step-by-step tutorial for installing an **Ubuntu 22.04 LTS** VPS with **Wine** and a secured **VNC server** to host a Halo Custom Edition or Combat Evolved (PC) dedicated server.
+
+## Target OS: Ubuntu 22.04 LTS (Jammy Jellyfish) x64
+
+**Note on Compatibility**: While these instructions are specifically written and tested for **Ubuntu 22.04 LTS x64**, the core process (using Wine, VNC, and UFW) is similar for other versions. However, repository links (especially for Wine) and package names may differ significantly on other Ubuntu versions or different Linux distributions (like Debian or CentOS). For the most reliable results, it is strongly recommended to use Ubuntu 22.04 LTS.
 
 ---
 
 ## Prerequisite Applications
 
 | Application                                                                                     | Description                                                  |
-|:------------------------------------------------------------------------------------------------|:-------------------------------------------------------------|
+| :---------------------------------------------------------------------------------------------- | :----------------------------------------------------------- |
 | [BitVise SSH Client](https://www.bitvise.com/ssh-client-download)                               | For secure remote terminal access and file uploads via SFTP. |
 | [TightVNC Viewer](https://www.tightvnc.com/download.php)                                        | For remote desktop connections to the VPS GUI.               |
 | [HPC/CE Server Template](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/ReadyToGo) | Pre-configured server files compatible with Linux/Wine.      |
@@ -270,3 +275,43 @@ connections.
 
 Your server should now be running and accessible to players. You can manage it via the VNC desktop. The VNC service will
 automatically restart if your VPS reboots.
+
+---
+
+### 11. (Optional, Recommended Upgrade) Install X2Go for a Superior Remote Desktop
+
+TightVNC works but can be laggy. **X2Go** uses a more efficient protocol, offering a much faster and more responsive remote desktop experience. It also allows you to disconnect and reconnect to your running desktop session.
+
+**Prerequisite:** Download and install the [X2Go Client](https://wiki.x2go.org/doku.php/doc:installation:x2goclient) on your Windows PC.
+
+**On the VPS (via BitVise SSH):**
+
+```bash
+# Install the X2Go server and the XFCE session module
+sudo apt install x2goserver x2goserver-xsession -y
+
+# The XFCE desktop you installed earlier is the perfect match for X2Go.
+# No further configuration is needed on the server.
+```
+
+**On Your Windows PC:**
+
+1.  Open the **X2Go Client**.
+2.  Create a new session:
+    *   **Session Name:** `Halo Server`
+    *   **Host:** Your VPS's IP address
+    *   **Login:** `haloadmin`
+    *   **SSH Port:** `22` (or your custom port if you changed it in Step 8)
+    *   **Session Type:** `XFCE`
+3.  Click **OK** to save the session.
+4.  Select the new session and click **Session** -> **Start**. You will be prompted for your `haloadmin` user's password (or your SSH key if you set one up).
+5.  You will now be connected to a much smoother and more responsive desktop.
+
+**⚠️ Important Security Note:** X2Go uses your existing SSH connection for secure tunneling. Once you verify X2Go works, you can **remove the VNC firewall rule** for increased security, as you will no longer need it:
+
+```bash
+sudo ufw delete allow from YOUR_HOME_IP to any port 5901
+# You can also stop and disable the VNC service if you wish:
+sudo systemctl stop vncserver@1.service
+sudo systemctl disable vncserver@1.service
+```
