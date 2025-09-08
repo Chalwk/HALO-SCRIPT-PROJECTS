@@ -1,5 +1,3 @@
-Of course. Here is the updated guide with the new "Optional, Recommended Upgrade" section for X2Go added at the end. This provides users with a clear path to a much better remote desktop experience after they have the basics working with TightVNC.
-
 **Last Updated: 8 Sep 2025**
 
 # VPS Setup Instructions for Halo CE / Halo PC
@@ -15,7 +13,7 @@ This is a step-by-step tutorial for installing an **Ubuntu 22.04 LTS** VPS with 
 ## Prerequisite Applications
 
 | Application                                                                                     | Description                                                  |
-| :---------------------------------------------------------------------------------------------- | :----------------------------------------------------------- |
+|:------------------------------------------------------------------------------------------------|:-------------------------------------------------------------|
 | [BitVise SSH Client](https://www.bitvise.com/ssh-client-download)                               | For secure remote terminal access and file uploads via SFTP. |
 | [TightVNC Viewer](https://www.tightvnc.com/download.php)                                        | For remote desktop connections to the VPS GUI.               |
 | [HPC/CE Server Template](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/ReadyToGo) | Pre-configured server files compatible with Linux/Wine.      |
@@ -36,10 +34,8 @@ This is a step-by-step tutorial for installing an **Ubuntu 22.04 LTS** VPS with 
 
 ### 1. Download and Prepare the Server Template
 
-1. Download
-   the [HPC.Server.zip or HCE.Server.zip](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/ReadyToGo) file.
-2. Extract the ZIP file on your local computer using 7-Zip or WinRAR. You should have a folder named `HPC Server` or
-   `HCE Server`. Keep this handy for later.
+1. Download the [HPC.Server.zip or HCE.Server.zip](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/ReadyToGo) file.
+2. Extract the ZIP file on your local computer using 7-Zip or WinRAR. You should have a folder named `HPC Server` or `HCE Server`. Keep this handy for later.
 
 ### 2. Deploying a New VPS on Vultr
 
@@ -48,15 +44,13 @@ This is a step-by-step tutorial for installing an **Ubuntu 22.04 LTS** VPS with 
 3. Choose a server location closest to you and your players.
 4. Under **Server Type**, select **Ubuntu 22.04 LTS x64**.
 5. Select a plan (e.g., **$6/mo** for 1 vCPU, 1GB RAM).
-6. (**Recommended**) Under **SSH Keys**, add your public SSH key for more secure authentication. If you don't know how,
-   you can use the password method shown later.
+6. (**Recommended**) Under **SSH Keys**, add your public SSH key for more secure authentication. If you don't know how, you can use the password method shown later.
 7. Give your server a hostname label (e.g., `halo-server`).
 8. Click **Deploy Now**. Wait a few minutes for it to install.
 
 ### 3. Initial Connection & User Setup via BitVise
 
-1. From your Vultr control panel, note the server's **IP Address**, **Password** (if you didn't use an SSH key), and
-   username (`root`).
+1. From your Vultr control panel, note the server's **IP Address**, **Password** (if you didn't use an SSH key), and username (`root`).
 2. Open BitVise SSH Client.
 3. Enter the IP address under **Host**.
 4. For **Username**, enter `root`.
@@ -168,13 +162,13 @@ chmod +x ~/.vnc/xstartup
 
 ### 6. Create a Systemd Service for VNC (Auto-start on boot)
 
-Create a service file to manage VNC.
+Create a service file to manage VNC. The `-localhost` flag is used for maximum security, meaning VNC will only accept connections from the machine itself. We will later configure the firewall to securely forward our external connection.
 
 ```bash
 sudo nano /etc/systemd/system/vncserver@.service
 ```
 
-**Paste the following configuration into the file. This is a standard, reliable template.**
+**Paste the following configuration into the file.**
 > ⚠️ Don't forget to edit the file to replace `haloadmin` with your actual username.
 
 ```ini
@@ -206,9 +200,11 @@ sudo systemctl enable vncserver@1.service
 sudo systemctl start vncserver@1.service
 ```
 
-### 7. Configure the Firewall (UFW)
+### 7. Configure the Firewall (UFW) for Security and VNC Access
 
 Configure the firewall to only allow essential ports. **Replace `YOUR_HOME_IP` with your actual public IP address.**
+
+This step is **CRITICAL**. We will configure the firewall to forward connections from your IP to the VNC server, which is locked down to localhost.
 
 ```bash
 # Enable SSH connections
@@ -220,12 +216,34 @@ sudo ufw allow 2302:2303/udp
 # Allow Halo server list (heartbeat) ports if needed (UDP)
 sudo ufw allow 2304:2313/udp
 
-# CRITICAL: Allow VNC ONLY from your home IP address for security.
-sudo ufw allow from YOUR_HOME_IP to any port 5901
+# --- Configure Secure VNC Access via Port Forwarding ---
+# 1. Enable IP forwarding and add NAT rule for UFW
+sudo nano /etc/ufw/before.rules
+
+# 2. Add the following lines AT THE TOP OF THE FILE, *ABOVE* the line that says '*filter'
+# Replace YOUR_HOME_IP with your actual public IP address.
+*nat
+:PREROUTING ACCEPT [0:0]
+-A PREROUTING -p tcp -s YOUR_HOME_IP --dport 5901 -j REDIRECT --to-port 5901
+COMMIT
+
+# 3. Save and exit the file (CTRL+O, ENTER, CTRL+X)
+
+# 4. Enable IP forwarding in the UFW configuration
+sudo nano /etc/ufw/sysctl.conf
+# Find and uncomment (remove the # from) this line:
+# net/ipv4/ip_forward=1
+# Save and exit the file.
+
+# 5. Add a firewall rule to ACCEPT the forwarded VNC traffic on the internal interface
+sudo ufw allow in on lo from YOUR_HOME_IP to any port 5901 proto tcp
 
 # Enable the firewall and deny all other incoming traffic by default
 sudo ufw enable
 # Type 'y' and press ENTER to confirm.
+
+# 6. Reload UFW to apply all the complex routing rules we just added
+sudo ufw reload
 ```
 
 ### 8. (Optional but Recommended) Harden SSH Security
@@ -253,15 +271,14 @@ sudo systemctl restart sshd
 ```
 
 **⚠️ Warning:** After this, you must specify the new port (e.g., `22992`) in the Port field in BitVise for all future
-connections. This is the port set in step 8.
+connections.
 
 ### 9. Upload Server Files via BitVise SFTP
 
 1. In your existing BitVise session, click the **New SFTP Window** button.
 2. In the SFTP window, navigate to the `/home/haloadmin/` directory.
 3. On your local computer, locate the extracted `HPC Server` or `HCE Server` folder.
-4. Drag and drop the entire server folder from your local machine into the `/home/haloadmin/` directory on the VPS. This
-   will take a few minutes.
+4. Drag and drop the entire server folder from your local machine into the `/home/haloadmin/` directory on the VPS. This may take a few minutes.
 
 ### 10. Final Setup via VNC Desktop
 
@@ -275,8 +292,7 @@ connections. This is the port set in step 8.
    server console window should open once finished.
 8. You can now configure your server by editing the `server.cfg` file in the main server directory.
 
-Your server should now be running and accessible to players. You can manage it via the VNC desktop. The VNC service will
-automatically restart if your VPS reboots.
+Your server should now be running and accessible to players. You can manage it via the VNC desktop. The VNC service will automatically restart if your VPS reboots.
 
 ---
 
@@ -309,10 +325,12 @@ sudo apt install x2goserver x2goserver-xsession -y
 4.  Select the new session and click **Session** -> **Start**. You will be prompted for your `haloadmin` user's password (or your SSH key if you set one up).
 5.  You will now be connected to a much smoother and more responsive desktop.
 
-**⚠️ Important Security Note:** X2Go uses your existing SSH connection for secure tunneling. Once you verify X2Go works, you can **remove the VNC firewall rule** for increased security, as you will no longer need it:
+**⚠️ Important Security Note:** X2Go uses your existing SSH connection for secure tunneling. Once you verify X2Go works, you can **remove the VNC firewall rules** for increased security, as you will no longer need them:
 
 ```bash
-sudo ufw delete allow from YOUR_HOME_IP to any port 5901
+# Delete the rule allowing VNC on the loopback interface
+sudo ufw delete allow in on lo from YOUR_HOME_IP to any port 5901 proto tcp
+# Remove the NAT rule by deleting the lines you added to /etc/ufw/before.rules and reloading UFW.
 # You can also stop and disable the VNC service if you wish:
 sudo systemctl stop vncserver@1.service
 sudo systemctl disable vncserver@1.service
