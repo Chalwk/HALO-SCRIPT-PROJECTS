@@ -10,22 +10,23 @@ This is a step-by-step tutorial for installing an **Ubuntu 22.04 LTS** VPS with 
 
 ---
 
-## Prerequisite Applications
+## Prerequisites
 
-| Application                                                                                     | Description                                                  |
-|:------------------------------------------------------------------------------------------------|:-------------------------------------------------------------|
-| [BitVise SSH Client](https://www.bitvise.com/ssh-client-download)                               | For secure remote terminal access and file uploads via SFTP. |
-| [TightVNC Viewer](https://www.tightvnc.com/download.php)                                        | For remote desktop connections to the VPS GUI.               |
-| [HPC/CE Server Template](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/ReadyToGo) | Pre-configured server files compatible with Linux/Wine.      |
+| Application                                                                                     | Description                                                                                                                                                                                                                                                      |
+|:------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [BitVise SSH Client](https://www.bitvise.com/ssh-client-download)                               | For secure remote terminal access and file uploads via SFTP.                                                                                                                                                                                                     |
+| [TightVNC Viewer](https://www.tightvnc.com/download.php)                                        | For remote desktop connections to the VPS GUI.                                                                                                                                                                                                                   |
+| [HPC/CE Server Template](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/ReadyToGo) | Pre-configured server files compatible with Linux/Wine.                                                                                                                                                                                                          |
+| [Static IP](https://www.broadbandcompare.co.nz/p/what-is-static-ip-address)                     | Ensures the connecting client's IP matches the one allowed in your UFW firewall rules. Since the VPS firewall only permits SSH/VNC/X2Go from a specific IP, a static IP is required for reliable access as `haloadmin`. Without it, you could be locked out.     |
 
 ### ⚠️ Important Notes Before You Begin
 
 - **Security First:** This guide prioritizes security by creating a non-root user, using a firewall, and locking down
   remote access. Please follow these steps carefully.
-- **Cost:** Vultr charges hourly up to a monthly cap. A server with 1 vCPU and 1GB RAM (the $6/mo plan) is sufficient
+- **Cost:** Vultr charges hourly up to a monthly cap. A server with 1 vCPU and 2GB RAM (the $10/mo plan) is sufficient
   for most needs. You can destroy the VPS at any time to stop charges.
-- **Your Home IP:** Some steps require your home public IP address. Google "what is my ip" to find it. Note that this
-  may change if your internet provider does not assign a static IP.
+- **Your Home IP:** Some steps require your home public IP address. Google "what is my ip" to find it. **Note that this
+  may change if your internet provider does not assign a static IP.**
 
 ---
 
