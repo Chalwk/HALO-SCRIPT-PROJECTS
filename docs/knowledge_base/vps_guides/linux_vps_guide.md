@@ -307,6 +307,8 @@ sudo ufw allow 2302:2303/udp comment 'Halo Game Ports'
 # This is the port that players will use to connect to your Halo server.
 # You can change this to any port you want.
 sudo ufw allow 2304/udp comment 'Server Port'
+# Use xxxx:xxxx/udp for multiple ports
+# Example: sudo ufw allow 2304:2310/udp comment 'Halo Game Ports'
 
 # Enable the firewall and deny all other incoming traffic by default
 sudo ufw enable
@@ -375,14 +377,14 @@ sudo systemctl enable fail2ban
 
 ### 12. (Final Step) Create a Desktop Shortcut for Your Server
 
-For ease of use when connected via VNC, you can create a desktop shortcut to launch your Halo server with a double-click. This example will create a shortcut for a server named "halo_server".
+For ease of use when connected via VNC, you can create a desktop shortcut to launch your Halo server with a double-click.
 
 1. **Open a Terminal** from your remote desktop (right-click on the desktop > Open Terminal Here) or via your existing BitVise SSH session.
 
-2. **Create a launch script:** This script will navigate to your server directory and start the dedicated server with Wine. Replace `halo_server` with your server's folder name and adjust the `-port` number if necessary.
+2. **Create a launch script:** This script will navigate to your server directory and start the dedicated server with Wine.
 
 ```bash
-nano /home/haloadmin/HCE_Server/halo_server.sh
+nano /home/haloadmin/HCE_Server/run.sh
 ```
 
 **Paste the following contents into the file.**
@@ -391,7 +393,7 @@ nano /home/haloadmin/HCE_Server/halo_server.sh
 ```bash
 #!/bin/bash
 cd "/home/haloadmin/HCE_Server"
-wine haloceded.exe -path "cg/halo_server" -exec "cg/halo_server/init.txt" -port 2304
+wine haloceded.exe -path "cg/" -exec "cg/init.txt" -port 2304
 ```
 
 **Save and exit nano (Press `CTRL+S`, then `CTRL+X`).**
@@ -399,13 +401,13 @@ wine haloceded.exe -path "cg/halo_server" -exec "cg/halo_server/init.txt" -port 
 Make the script executable:
 
 ```bash
-chmod +x /home/haloadmin/HCE_Server/halo_server.sh
+chmod +x /home/haloadmin/HCE_Server/run.sh
 ```
 
 3. **Create the desktop shortcut file.**
 
 ```bash
-nano /home/haloadmin/Desktop/halo_server.desktop
+nano /home/haloadmin/Desktop/run.desktop
 ```
 
 **Paste the following configuration into the file.** Edit the `Name` and `Exec` lines to match your server.
@@ -414,8 +416,8 @@ nano /home/haloadmin/Desktop/halo_server.desktop
 [Desktop Entry]
 Version=1.0
 Type=Application
-Name=Divide and Conquer Server
-Exec=/home/haloadmin/HCE_Server/halo_server.sh
+Name=RENAME_THIS
+Exec=/home/haloadmin/HCE_Server/run.sh
 Icon=utilities-terminal
 Categories=Game;
 Terminal=true
@@ -426,7 +428,7 @@ Terminal=true
 Make the desktop file executable:
 
 ```bash
-chmod +x /home/haloadmin/Desktop/halo_server.desktop
+chmod +x /home/haloadmin/Desktop/run.desktop
 ```
 
 4. **Using the Shortcut:** You should now see a new icon on your VPS desktop. The first time you double-click it, you will likely be prompted by Wine to **install Mono**. Click "Install" and allow it to complete. Once installed, the server console window will open. Subsequent double-clicks will launch the server directly.
