@@ -85,7 +85,7 @@ This guide requires SSH key authentication (password login will be disabled late
 
 ```bash
 # Create a new user named 'haloadmin' (you can change this)
-adduser haloadmin
+sudo adduser haloadmin
 # Follow the prompts to set a strong password for this user.
 # Leave "Full Name, Room Number, Work Phone, Home Phone, and other fields blank.
 # Type "y" and press ENTER to confirm.
@@ -125,8 +125,8 @@ Close the terminal console.
 **Test Key Login in BitVise:**
 * Go to the **Login** tab.
 * Log out of the `root` session and log in as `haloadmin`.
-* Set **Initial Method** to `publickey`.
-* Select your generated key under **Client key**.
+* Set **Initial Method** to `publickey`
+* Select your generated key (Global 1) under **Client key**
 * Click **Log in**
 
 > Only proceed once key login works.
@@ -135,9 +135,9 @@ Close the terminal console.
 
 ---
 
-### 4. Harden SSH Access
+### 4. Harden SSH Access and Configure the Firewall (UFW)
 
-We will change the default SSH port and disable root login *now* to improve security before we configure the firewall.
+This step changes the SSH port, sets the Halo server port, disables root login, and configures the firewall. **It is crucial to follow this order to avoid locking yourself out.**
 
 ```bash
 # Edit the SSH server configuration file
@@ -162,13 +162,47 @@ PasswordAuthentication no
 
 **Save and exit nano (Press `CTRL+S`, then `CTRL+X`).**
 
+> WARNING: DO NOT LOG OUT OR CLOSE THIS TERMINAL WINDOW YET UNTIL YOU RESTART SSH (see below)
+
+**CRITICAL: Configure Firewall Before Restarting SSH**
+
+**Before restarting SSH**, we must configure the firewall (UFW) to allow connections on your new custom port and the Halo server port. If you restart SSH first, you will be locked out.
+
+```bash
+# Enable SSH connections on your new custom port
+sudo ufw allow 22992/tcp comment 'Custom SSH Port'
+
+# Allow the Halo Server Port:
+# This is the port players will use to connect to your Halo server.
+# Default is 2302. Change if needed.
+sudo ufw allow 2302/udp comment 'Halo Server Port'
+
+# Enable the firewall. It will deny all other incoming traffic by default.
+sudo ufw enable
+# Type 'y' and press ENTER to confirm.
+
+# Verify the rule was added correctly
+sudo ufw status verbose
+# You should see lines allowing '22992/tcp' for SSH and '2302/udp' for Halo Server,
+# along with the default rules that deny other incoming connections.
+```
+
+**NOW You Can Restart SSH**
+
 ```bash
 # Restart the SSH service for changes to take effect.
-# DO NOT CLOSE THIS WINDOW YET. Open a NEW BitVise session to test the new port.
 sudo systemctl restart sshd
 ```
 
-> **Warning:** After this change, always use the new SSH port (e.g., `22992`) in BitVise.
+**Test the New SSH Port:**
+
+1. Open a **new instance** of BitVise SSH Client.
+2. Fill in the **Host** (your server IP) and the new Port (`22992`).
+3. Set the Username to `haloadmin`.
+4. Set Initial Method to `publickey` and select your key.
+5. Click **Log In**.
+
+**Only after you have successfully logged into this new session on port 22992 should you close the original terminal window and the old BitVise session.**
 
 ---
 
@@ -290,36 +324,7 @@ sudo systemctl start vncserver@1.service
 
 ---
 
-### 8. Configure the Firewall (UFW) for Security
-
-Configure the firewall to only allow essential ports. This is a critical step.
-
-**Note:** This is the step where we also allow the Halo ports.
-
-```bash
-# Enable SSH connections on your custom port
-sudo ufw allow 22992/tcp comment 'Custom SSH Port'
-
-# Allow Halo game connections (UDP)
-sudo ufw allow 2302:2303/udp comment 'Halo Game Ports'
-
-# Allow Halo server port (UDP)
-# This is the port that players will use to connect to your Halo server.
-# You can change this to any port you want.
-sudo ufw allow 2304/udp comment 'Server Port'
-# Use xxxx:xxxx/udp for multiple ports
-# Example: sudo ufw allow 2304:2310/udp comment 'Halo Game Ports'
-
-# Enable the firewall and deny all other incoming traffic by default
-sudo ufw enable
-# Type 'y' and press ENTER to confirm.
-```
-
-> **Note:** The VNC server is bound to `localhost` and is **not accessible directly from the internet**. The only way to connect is through the secure SSH tunnel described in the [next step](#9-connect-to-your-vnc-desktop-securely-via-bitvise-c2s-tunneling). This is the most secure configuration.
-
----
-
-### 9. Connect to Your VNC Desktop Securely via BitVise (C2S Tunneling)
+### 8. Connect to Your VNC Desktop Securely via BitVise (C2S Tunneling)
 
 Since we configured the VNC server with the `-localhost` option for maximum security, **you cannot connect directly to your VPS IP via TightVNC Viewer**.
 Instead, we tunnel the VNC connection through your SSH session using BitVise.
@@ -351,7 +356,7 @@ Instead, we tunnel the VNC connection through your SSH session using BitVise.
 
 ---
 
-### 10. Install and Enable Fail2ban
+### 9. Install and Enable Fail2ban
 
 Protect against brute-force attacks on your SSH port.
 
@@ -366,7 +371,7 @@ sudo systemctl enable fail2ban
 
 ---
 
-### 11. Upload Server Files via BitVise SFTP
+### 10. Upload Server Files via BitVise SFTP
 
 1. In your BitVise session, click the **New SFTP Window** button.
 2. In the SFTP window, navigate to the `/home/haloadmin/` directory.
@@ -375,7 +380,7 @@ sudo systemctl enable fail2ban
 
 ---
 
-### 12. (Final Step) Create a Desktop Shortcut for Your Server
+### 11. (Final Step) Create a Desktop Shortcut for Your Server
 
 For ease of use when connected via VNC, you can create a desktop shortcut to launch your Halo server with a double-click.
 
@@ -388,12 +393,12 @@ nano /home/haloadmin/HCE_Server/run.sh
 ```
 
 **Paste the following contents into the file.**
-**Important:** Double-check that the paths (`-path`, `-exec`) and `-port` number match your server's configuration. The port must be the same as the port defined in [Step 8](#8-configure-the-firewall-ufw-for-security).
+**Important:** Double-check that the paths (`-path`, `-exec`) and `-port` number match your server's configuration. The **port** must be the same as the port defined in [Step 4](#4-harden-ssh-access-and-configure-the-firewall-ufw).
 
 ```bash
 #!/bin/bash
 cd "/home/haloadmin/HCE_Server"
-wine haloceded.exe -path "cg/" -exec "cg/init.txt" -port 2304
+wine haloceded.exe -path "cg/" -exec "cg/init.txt" -port 2302
 ```
 
 **Save and exit nano (Press `CTRL+S`, then `CTRL+X`).**
@@ -437,7 +442,7 @@ chmod +x /home/haloadmin/Desktop/run.desktop
 
 ---
 
-### 13. (Optional, Recommended Upgrade) Install X2Go for a Superior Remote Desktop
+### 12. (Optional, Recommended Upgrade) Install X2Go for a Superior Remote Desktop
 
 TightVNC works but can be laggy. **X2Go** uses a more efficient protocol, offering a much faster and more responsive remote desktop experience. It also allows you to disconnect and reconnect to your running desktop session.
 
