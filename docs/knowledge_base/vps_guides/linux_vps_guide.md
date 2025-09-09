@@ -164,8 +164,6 @@ PasswordAuthentication no
 
 > WARNING: DO NOT LOG OUT OR CLOSE THIS TERMINAL WINDOW YET UNTIL YOU RESTART SSH (see below)
 
-**CRITICAL: Configure Firewall Before Restarting SSH**
-
 **Before restarting SSH**, we must configure the firewall (UFW) to allow connections on your new custom port and the Halo server port. If you restart SSH first, you will be locked out.
 
 ```bash
