@@ -1,4 +1,4 @@
-**Last Updated: 9 Sep 2025**
+**Last Updated: 10 Sep 2025**
 
 # VPS Setup Instructions for Halo CE / Halo PC
 
