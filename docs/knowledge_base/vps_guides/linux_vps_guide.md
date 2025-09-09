@@ -111,7 +111,7 @@ nano /home/haloadmin/.ssh/authorized_keys
 * Open it in a text editor (e.g., Notepad).
 * Copy the public key (it should be a single line starting with `ssh-ed25519 AAAA...`).
 * Paste it into the `authorized_keys` file.
-* Save and exit (`CTRL+S`, `CTRL+X`).
+* Save and exit (Press `CTRL+S`, then `CTRL+X`).
 * Now we need to **Fix permissions** (critical):
 
 ```bash
@@ -160,7 +160,7 @@ PermitRootLogin no
 PasswordAuthentication no
 ```
 
-**Save and exit nano (`CTRL+S`, `CTRL+X`).**
+**Save and exit nano (Press `CTRL+S`, then `CTRL+X`).**
 
 ```bash
 # Restart the SSH service for changes to take effect.
@@ -238,7 +238,7 @@ xrdb $HOME/.Xresources
 startxfce4 &
 ```
 
-**To save and exit nano:** Press `CTRL+S`, then `ENTER`, then `CTRL+X`.
+**To save and exit nano:** Press `CTRL+S`, then `CTRL+X`.
 
 Make the script executable:
 
@@ -278,7 +278,7 @@ ExecStop = /usr/bin/vncserver -kill :%i
 WantedBy = multi-user.target
 ```
 
-**Save and exit nano (`CTRL+S`, `CTRL+X`).**
+**Save and exit nano (Press `CTRL+S`, then `CTRL+X`).**
 
 Reload systemd and enable the service:
 
@@ -315,15 +315,12 @@ sudo ufw enable
 
 ### 9. Connect to Your VNC Desktop Securely via BitVise (C2S Tunneling)
 
-Since we configured the VNC server with the `-localhost` option for maximum security, **you cannot connect directly to your VPS IP via TightVNC Viewer**. Instead, we tunnel the VNC connection through your SSH session using BitVise.
+Since we configured the VNC server with the `-localhost` option for maximum security, **you cannot connect directly to your VPS IP via TightVNC Viewer**.
+Instead, we tunnel the VNC connection through your SSH session using BitVise.
 
-1. **Open a NEW BitVise window and log in as `haloadmin` using your SSH key on the new port.**
-    * **Host:** Your VPS IP
-    * **Username:** `haloadmin`
-    * **Authentication:** Public SSH key
-    * **Port:** `22992` (or your custom port)
-
-2. **Enable Client-to-Server (C2S) Port Forwarding:**
+1. **In BitVise:**
+    * Set **Port:** `22992` (or your custom port)
+2. **Enable the Client-to-Server (C2S) Port Forwarding:**
     * Go to the **C2S** tab.
     * Click Add under **C2S (Client-to-Server) Port Forwarding**.
     * Enter the following:
@@ -336,9 +333,10 @@ Since we configured the VNC server with the `-localhost` option for maximum secu
       | Destination Port | `5901`      |
 
     * Click **OK**.
+    * Go back to the **Login** tab and login as `haloadmin`.
 
 3. **Connect TightVNC Viewer through the tunnel:**
-    * Open **TightVNC Viewer** on your PC.
+    * Open **TightVNC Viewer**.
     * In the **VNC Server** field, enter: `127.0.0.1:5901`
     * Enter the VNC password you created in [step 6](#6-install-and-configure-tightvnc--xfce).
     * Click **Connect**. You should now see the XFCE desktop of your VPS.
@@ -350,6 +348,8 @@ Since we configured the VNC server with the `-localhost` option for maximum secu
 ### 10. Install and Enable Fail2ban
 
 Protect against brute-force attacks on your SSH port.
+
+1. **Open a Terminal** from your remote desktop (R-click on the desktop > Open Terminal Here) or via your existing BitVise SSH session.
 
 ```bash
 # Install and enable fail2ban
@@ -363,15 +363,9 @@ sudo systemctl enable fail2ban
 ### 11. Upload Server Files via BitVise SFTP
 
 1. In your BitVise session, click the **New SFTP Window** button.
-2. Make sure you are logged in as the `haloadmin` user, **not** root.
-3. In the SFTP window, navigate to the `/home/haloadmin/` directory.
-4. On your local computer, locate the extracted `HPC_Server` or `HCE_Server` folder.
-5. Drag and drop the entire server folder from your local machine into the `/home/haloadmin/` directory on the VPS. This may take a few minutes.
-6. **Set correct permissions** for the server files from the SSH terminal:
-   ```bash
-   chmod -R u+rw /home/haloadmin/HCE_Server
-   ```
-   This ensures the `haloadmin` user can read and write all server files.
+2. In the SFTP window, navigate to the `/home/haloadmin/` directory.
+3. On your local computer, locate the extracted `HPC_Server` or `HCE_Server` folder.
+4. Drag and drop the entire server folder from your local machine into the `/home/haloadmin/` directory on the VPS. This may take a few minutes.
 
 ---
 
