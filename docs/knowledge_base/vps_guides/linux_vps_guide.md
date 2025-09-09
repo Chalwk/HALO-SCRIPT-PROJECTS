@@ -84,10 +84,7 @@ usermod -aG sudo haloadmin
 
 # Verify the user was added correctly
 grep sudo /etc/group
-# You should see 'haloadmin' in the output, e.g., 'sudo:x:27:ubuntu,haloadmin'
 ```
-
-*Your terminal prompt should now show `haloadmin@your-server-name` instead of `root@your-server-name`.*
 
 **Upload the Key to Your VPS:**
 
@@ -111,11 +108,14 @@ chown -R haloadmin:haloadmin /home/haloadmin/.ssh
 **Test Key Login in BitVise:**
 
 * Go to the **Login** tab.
+* Log out of the `root` session.
 * Set **Initial Method** to `publickey`.
 * Select your generated key under **Client key**.
 * Log in as `haloadmin`. You should get in without a password.
 
 Only proceed once key login works.
+
+*Your terminal prompt should now show `haloadmin@your-server-name` instead of `root@your-server-name`.*
 
 ---
 
@@ -161,10 +161,9 @@ Run these commands in the SSH terminal to install Wine. These are correct for **
 
 ```bash
 # Enable 32-bit architecture
-# You may be asked for your haloadmin password, enter it when prompted.
 sudo dpkg --add-architecture i386
 
-# Create the keyring directory and download the WineHQ key
+# Download and add the WineHQ key
 sudo mkdir -pm755 /etc/apt/keyrings
 sudo wget -O /etc/apt/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key
 
@@ -174,19 +173,13 @@ sudo wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/ubuntu/
 # Update the package list
 sudo apt update
 
-# --- IMPORTANT: Check for and Install System Upgrades ---
-# It's good practice to apply any available OS updates before installing new software.
-# Check for upgradable packages (this is informational, you can run it to see what's available)
-apt list --upgradable
-
-# Apply all available updates. This ensures your system has the latest security patches.
+# --- Check for and Install System Upgrades ---
 sudo apt upgrade -y
 
-# --- Proceed with Wine Installation ---
-# Install Wine
+# --- Install Wine ---
 sudo apt install --install-recommends winehq-stable -y
 
-# Verify the installation (it will likely prompt to install Mono, just close the window for now)
+# Verify the installation
 wine --version
 ```
 
@@ -291,7 +284,7 @@ sudo ufw allow 22992/tcp comment 'Custom SSH Port'
 # Allow Halo game connections (UDP)
 sudo ufw allow 2302:2303/udp comment 'Halo Game Ports'
 
-# Allow Halo server list (heartbeat) ports if needed (UDP)
+# Allow Halo server port(s) (heartbeat) ports if needed (UDP)
 sudo ufw allow 2304:2313/udp comment 'Halo Heartbeat Ports'
 
 # Enable the firewall and deny all other incoming traffic by default
