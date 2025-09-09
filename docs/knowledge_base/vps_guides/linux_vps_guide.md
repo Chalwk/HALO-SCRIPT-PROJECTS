@@ -59,7 +59,7 @@ This is a step-by-step tutorial for installing an **Ubuntu 22.04 LTS** VPS with 
 ### 3. Initial Connection & User Setup via BitVise
 
 This guide requires SSH key authentication (password login will be disabled later).
-*This will be the only time you use password login.*
+> This will be the only time you use password login.
 
 1. Open BitVise SSH Client.
 2. Fill in the `Host` and `Username`.
@@ -70,6 +70,10 @@ This guide requires SSH key authentication (password login will be disabled late
     * Leave passphrase blank unless you want to type it every login.
 6. Highlight your new key and click **Export Public Key**. Copy the full line (starts with `ssh-ed25519`).
 7. Go to the **Login** tab and log in as `root`.
+
+> **Note**: If you see a warning about the host key, this is normal for a new server. Verify the fingerprint matches the
+> one shown in your Vultr control panel under the 'Overview' tab, then accept it.
+
 8. Click the **New Terminal Console** button.
 
 **We will now create a new user (`haloadmnin`) instead of running everything as root:**
@@ -113,7 +117,7 @@ chown -R haloadmin:haloadmin /home/haloadmin/.ssh
 * Select your generated key under **Client key**.
 * Log in as `haloadmin`. You should get in without a password.
 
-Only proceed once key login works.
+> Only proceed once key login works.
 
 *Your terminal prompt should now show `haloadmin@your-server-name` instead of `root@your-server-name`.*
 
@@ -151,7 +155,7 @@ PasswordAuthentication no
 sudo systemctl restart sshd
 ```
 
-**Warning:** After this change, always use the new SSH port (e.g., `22992`) in BitVise and log in as `haloadmin` instead of `root`. If password authentication is disabled, you must connect using your SSH key.
+> **Warning:** After this change, always use the new SSH port (e.g., `22992`) in BitVise and log in as `haloadmin` instead of `root`. If password authentication is disabled, you must connect using your SSH key.
 
 ---
 
@@ -285,7 +289,7 @@ sudo ufw allow 22992/tcp comment 'Custom SSH Port'
 sudo ufw allow 2302:2303/udp comment 'Halo Game Ports'
 
 # Allow Halo server port(s) (heartbeat) ports if needed (UDP)
-sudo ufw allow 2304:2313/udp comment 'Halo Heartbeat Ports'
+sudo ufw allow 2304:2313/udp comment 'Ports for additional Halo server instances'
 
 # Enable the firewall and deny all other incoming traffic by default
 sudo ufw enable
@@ -326,7 +330,7 @@ Since we configured the VNC server with the `-localhost` option for maximum secu
     * Enter the VNC password you created in [step 6](#6-install-and-configure-tightvnc--xfce).
     * Click **Connect**. You should now see the XFCE desktop of your VPS.
 
-**Important**: BitVise must remain connected as `haloadmin` while using TightVNC Viewer. If you disconnect SSH, the VNC tunnel will close.
+> **Important**: BitVise must remain connected as `haloadmin` while using TightVNC Viewer. If you disconnect SSH, the VNC tunnel will close.
 
 ---
 
@@ -585,7 +589,7 @@ servers=(
   "snipers_dream_team|2310"
   "tag|2311"
   "uber_racing|2312"
-  "zombies|2313"
+  "zombies_advanced|2313"
 )
 
 # Loop through and launch each server in its own terminal
