@@ -166,6 +166,8 @@ PasswordAuthentication no
 
 **Before restarting SSH**, we must configure the firewall (UFW) to allow connections on your new custom port and the Halo server port. If you restart SSH first, you will be locked out.
 
+**Small technical note:** Since the VPS is a **public internet server** (not LAN), and we're not running the Halo client on the same machine, **TCP 2303 is not required**. The UFW rule allowing UDP 2302 is sufficient. If you were installing a Halo PC/CE server on your local machine, you would need to allow TCP 2303 as well.
+
 ```bash
 # Enable SSH connections on your new custom port
 sudo ufw allow 22992/tcp comment 'Custom SSH Port'
