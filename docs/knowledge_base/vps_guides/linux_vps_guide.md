@@ -68,7 +68,12 @@ This guide requires SSH key authentication (password login will be disabled late
 5. Click **Generate New**.
     * **Algorithm:** `ed25519` (recommended).
     * Leave passphrase blank unless you want to type it every login.
-6. Highlight your new key and click **Export Public Key**. Copy the full line (starts with `ssh-ed25519`).
+    * Click **Generate**
+6. Highlight your new key and click **Export** (the **Export Public or Private Key** window will open):
+    * Select **Export Public Key**
+    * Select **OpenSSH format**
+    * Click **Export**
+    * Save to a location you can find later, (e.g., `C:\Users\YourUsername\Desktop\halo-server-key.pub`)
 7. Go to the **Login** tab and log in as `root`.
 
 > **Note**: If you see a warning about the host key, this is normal for a new server. Verify the fingerprint matches the
@@ -82,12 +87,15 @@ This guide requires SSH key authentication (password login will be disabled late
 # Create a new user named 'haloadmin' (you can change this)
 adduser haloadmin
 # Follow the prompts to set a strong password for this user.
+# Leave "Full Name, Room Number, Work Phone, Home Phone, and other fields blank.
+# Type "y" and press ENTER to confirm.
 
 # Add the new user to the 'sudo' group to grant administrative privileges
 usermod -aG sudo haloadmin
 
 # Verify the user was added correctly
 grep sudo /etc/group
+# You should see something like, "sudo:x:27:ubuntu,haloadmin"
 ```
 
 **Upload the Key to Your VPS:**
@@ -99,9 +107,12 @@ mkdir -p /home/haloadmin/.ssh
 nano /home/haloadmin/.ssh/authorized_keys
 ```
 
-* Paste the public key you copied earlier (it should be a single line starting with `ssh-ed25519 AAAA...`).
+* Locate the `halo-server-key.pub` file you exported earlier.
+* Open it in a text editor (e.g., Notepad).
+* Copy the public key (it should be a single line starting with `ssh-ed25519 AAAA...`).
+* Paste it into the `authorized_keys` file.
 * Save and exit (`CTRL+S`, `CTRL+X`).
-* Fix permissions (critical):
+* Now we need to **Fix permissions** (critical):
 
 ```bash
 chmod 700 /home/haloadmin/.ssh
@@ -109,17 +120,18 @@ chmod 600 /home/haloadmin/.ssh/authorized_keys
 chown -R haloadmin:haloadmin /home/haloadmin/.ssh
 ```
 
-**Test Key Login in BitVise:**
+Close the terminal console.
 
+**Test Key Login in BitVise:**
 * Go to the **Login** tab.
-* Log out of the `root` session.
+* Log out of the `root` session and log in as `haloadmin`.
 * Set **Initial Method** to `publickey`.
 * Select your generated key under **Client key**.
-* Log in as `haloadmin`. You should get in without a password.
+* Click **Log in**
 
 > Only proceed once key login works.
 
-*Your terminal prompt should now show `haloadmin@your-server-name` instead of `root@your-server-name`.*
+* Click the **New Terminal Console** button. *Your terminal prompt should now show `haloadmin@your-server-name` instead of `root@your-server-name`.*
 
 ---
 
@@ -130,6 +142,7 @@ We will change the default SSH port and disable root login *now* to improve secu
 ```bash
 # Edit the SSH server configuration file
 sudo nano /etc/ssh/sshd_config
+# Enter the password for the "haloadmin" user when prompted
 ```
 
 Find and change the following lines:
@@ -141,7 +154,7 @@ Port 22992
 #PermitRootLogin yes -> Change to 'no'
 PermitRootLogin no
 
-# (OPTIONAL BUT RECOMMENDED) For maximum security, disable password authentication.
+# For maximum security, disable password authentication.
 # ONLY do this if you have already added your SSH public key to /home/haloadmin/.ssh/authorized_keys
 #PasswordAuthentication yes -> Change to 'no'
 PasswordAuthentication no
@@ -155,7 +168,7 @@ PasswordAuthentication no
 sudo systemctl restart sshd
 ```
 
-> **Warning:** After this change, always use the new SSH port (e.g., `22992`) in BitVise and log in as `haloadmin` instead of `root`. If password authentication is disabled, you must connect using your SSH key.
+> **Warning:** After this change, always use the new SSH port (e.g., `22992`) in BitVise.
 
 ---
 
