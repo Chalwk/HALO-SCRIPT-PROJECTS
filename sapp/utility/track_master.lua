@@ -5,7 +5,7 @@ DESCRIPTION:      Advanced race tracking and leaderboard system.
                   - Tracks individual lap times for each player in real-time
                   - Records personal bests, map records, and global records
                   - Computes average lap times and total laps per player
-                  - Maintains persistent JSON storage for all-time and current-game stats
+                  - Maintains persistent JSON storage for all-time stats
                   - Provides in-game commands for retrieving stats, top 5 best laps,
                     and current race rankings
                   - Announces personal bests and map record achievements automatically
@@ -22,7 +22,6 @@ api_version = '1.12.0.0'
 -- Configuration -------------------------------------------
 local CONFIG = {
     STATS_FILE = "race_stats.json",
-    CURRENT_GAME_STATS_FILE = "current_race_stats.json",
     STATS_COMMAND = "stats",
     TOP5_COMMAND = "top5",
     CURRENT_COMMAND = "current",
@@ -71,7 +70,7 @@ local current_game_stats = {
 }
 
 local io_open = io.open
-local stats_file, current_game_stats_file
+local stats_file
 local math_floor, math_huge = math.floor, math.huge
 local table_insert, table_sort = table.insert, table.sort
 local string_format, string_match = string.format, string.match
@@ -252,7 +251,6 @@ end
 
 function OnEnd()
     writeJSON(stats_file, all_time_stats)
-    writeJSON(current_game_stats_file, current_game_stats)
 
     local map = current_game_stats.map
     local map_stats = all_time_stats.maps[map]
@@ -375,7 +373,6 @@ end
 function OnScriptLoad()
     local config_path = getConfigPath()
     stats_file = config_path .. "\\sapp\\" .. CONFIG.STATS_FILE
-    current_game_stats_file = config_path .. "\\sapp\\" .. CONFIG.CURRENT_GAME_STATS_FILE
 
     register_callback(cb['EVENT_JOIN'], 'OnJoin')
     register_callback(cb['EVENT_TICK'], 'OnTick')
@@ -389,5 +386,4 @@ end
 
 function OnScriptUnload()
     writeJSON(stats_file, all_time_stats)
-    writeJSON(current_game_stats_file, current_game_stats)
 end
