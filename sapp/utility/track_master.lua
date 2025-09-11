@@ -145,6 +145,11 @@ local function exportLapRecords(path, stats)
     end
 end
 
+local function saveStats()
+    writeJSON(stats_file, all_time_stats)
+    exportLapRecords(txt_export_file, all_time_stats)
+end
+
 local function inVehicleAsDriver(playerId)
     local dyn_player = get_dynamic_player(playerId)
     if not player_alive(playerId) or dyn_player == 0 then return false end
@@ -271,8 +276,7 @@ function OnStart()
 end
 
 function OnEnd()
-    writeJSON(stats_file, all_time_stats)
-    exportLapRecords(txt_export_file, stats)
+    saveStats()
 
     local map = current_game_stats.map
     local map_stats = all_time_stats.maps[map]
@@ -408,6 +412,5 @@ function OnScriptLoad()
 end
 
 function OnScriptUnload()
-    writeJSON(stats_file, all_time_stats)
-    exportLapRecords(txt_export_file, stats)
+    saveStats()
 end
