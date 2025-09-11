@@ -145,7 +145,6 @@ local function exportLapRecords(path, stats)
     end
 end
 
-
 local function inVehicleAsDriver(playerId)
     local dyn_player = get_dynamic_player(playerId)
     if not player_alive(playerId) or dyn_player == 0 then return false end
