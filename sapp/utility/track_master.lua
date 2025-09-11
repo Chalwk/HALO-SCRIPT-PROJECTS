@@ -22,6 +22,7 @@ api_version = '1.12.0.0'
 -- Configuration -------------------------------------------
 local CONFIG = {
     STATS_FILE = "race_stats.json",
+    TEXT_EXPORT_FILE = "lap_records.txt",
     STATS_COMMAND = "stats",
     TOP5_COMMAND = "top5",
     CURRENT_COMMAND = "current",
@@ -70,9 +71,9 @@ local current_game_stats = {
 }
 
 local io_open = io.open
-local stats_file
+local stats_file, txt_export_file
 local math_floor, math_huge = math.floor, math.huge
-local table_insert, table_sort = table.insert, table.sort
+local table_insert, table_sort, table_concat = table.insert, table.sort, table.concat
 local string_format, string_match = string.format, string.match
 local get_var, player_present, register_callback, say_all, rprint =
     get_var, player_present, register_callback, say_all, rprint
@@ -123,6 +124,27 @@ local function writeJSON(file_path, data)
     file:close()
     return true
 end
+
+local function exportLapRecords(path, stats)
+    local lines = {}
+    for map, data in pairs(stats) do
+        if data.best_lap and data.best_lap.time < math.huge then
+            local line = string_format("`%s`, `%s`, `%s`",
+                map,
+                data.best_lap.time,
+                data.best_lap.player
+            )
+            table.insert(lines, line)
+        end
+    end
+    table_sort(lines) -- alphabetize
+    local file = io_open(path, "w")
+    if file then
+        file:write(table_concat(lines, "\n"))
+        file:close()
+    end
+end
+
 
 local function inVehicleAsDriver(playerId)
     local dyn_player = get_dynamic_player(playerId)
@@ -251,6 +273,7 @@ end
 
 function OnEnd()
     writeJSON(stats_file, all_time_stats)
+    exportLapRecords(txt_export_file, stats)
 
     local map = current_game_stats.map
     local map_stats = all_time_stats.maps[map]
@@ -373,6 +396,7 @@ end
 function OnScriptLoad()
     local config_path = getConfigPath()
     stats_file = config_path .. "\\sapp\\" .. CONFIG.STATS_FILE
+    txt_export_file = config_path .. "\\sapp\\" .. CONFIG.TEXT_EXPORT_FILE
 
     register_callback(cb['EVENT_JOIN'], 'OnJoin')
     register_callback(cb['EVENT_TICK'], 'OnTick')
@@ -386,4 +410,5 @@ end
 
 function OnScriptUnload()
     writeJSON(stats_file, all_time_stats)
+    exportLapRecords(txt_export_file, stats)
 end
