@@ -26,6 +26,7 @@ local CONFIG = {
     STATS_COMMAND = "stats",
     TOP5_COMMAND = "top5",
     CURRENT_COMMAND = "current",
+    EXPORT_LAP_RECORDS = true, -- Set to false to disable exporting lap records to lap_records.txt
 
     -- Configurable messages
     MESSAGES = {
@@ -54,22 +55,6 @@ local CONFIG = {
 }
 -- Config ends ---------------------------------------------
 
-local json = loadfile('json.lua')()
-local players, previous_time = {}, {}
-local all_time_stats = {
-    maps = {},
-    global = {
-        best_lap = { time = math.huge, player = "", map = "" },
-        players = {}
-    }
-}
-local current_game_stats = {
-    race_type = "",
-    map = "",
-    best_lap = { time = math.huge, player = "" },
-    rankings = {}
-}
-
 local io_open = io.open
 local stats_file, txt_export_file
 local math_floor, math_huge = math.floor, math.huge
@@ -79,6 +64,22 @@ local get_var, player_present, register_callback, say_all, rprint =
     get_var, player_present, register_callback, say_all, rprint
 local get_dynamic_player, get_player, player_alive, read_dword, read_word =
     get_dynamic_player, get_player, player_alive, read_dword, read_word
+
+local json = loadfile('json.lua')()
+local players, previous_time = {}, {}
+local all_time_stats = {
+    maps = {},
+    global = {
+        best_lap = { time = math_huge, player = "", map = "" },
+        players = {}
+    }
+}
+local current_game_stats = {
+    race_type = "",
+    map = "",
+    best_lap = { time = math_huge, player = "" },
+    rankings = {}
+}
 
 local function formatMessage(message, ...)
     if select('#', ...) > 0 then
@@ -120,7 +121,7 @@ end
 local function writeJSON(file_path, data)
     local file = io_open(file_path, "w")
     if not file then return false end
-    file:write(json:encode_pretty(data))
+    file:write(json:encode(data))
     file:close()
     return true
 end
@@ -128,34 +129,27 @@ end
 local function exportLapRecords(path, stats)
     local lines = {}
 
-    -- Find max map name length
-    local max_map_len = 0
     for map, data in pairs(stats) do
-        if data.best_lap and data.best_lap.time < math.huge then
-            if #map > max_map_len then max_map_len = #map end
+        if data.best_lap and data.best_lap.time < math_huge then
+            local line = string_format("%s, %s, %s", map, data.best_lap.time, data.best_lap.player)
+            table_insert(lines, line)
         end
     end
 
-    -- Build formatted lines
-    for map, data in pairs(stats) do
-        if data.best_lap and data.best_lap.time < math.huge then
-            local map_padded = map .. string.rep(" ", max_map_len - #map + 2)
-            local line = string.format("`%s%s  %s`", map_padded, data.best_lap.time, data.best_lap.player)
-            table.insert(lines, line)
-        end
-    end
+    table_sort(lines) -- alphabetical by map
 
-    table.sort(lines) -- optional: alphabetically by map
-    local file = io.open(path, "w")
+    local file = io_open(path, "w")
     if file then
-        file:write(table.concat(lines, "\n"))
+        file:write(table_concat(lines, "\n"))
         file:close()
     end
 end
 
 local function saveStats()
     writeJSON(stats_file, all_time_stats)
-    exportLapRecords(txt_export_file, all_time_stats)
+    if CONFIG.EXPORT_LAP_RECORDS then
+        exportLapRecords(txt_export_file, all_time_stats)
+    end
 end
 
 local function inVehicleAsDriver(playerId)
@@ -272,7 +266,7 @@ function OnStart()
     current_game_stats = {
         race_type = get_var(0, '$ffa') == '1' and 'FFA' or 'Team',
         map = get_var(0, "$map"),
-        best_lap = { time = math.huge, player = "" },
+        best_lap = { time = math_huge, player = "" },
         rankings = {}
     }
     players, previous_time = {}, {}
@@ -322,7 +316,7 @@ function OnJoin(id)
     players[id] = {
         name = get_var(id, "$name"),
         laps = 0,
-        best_lap = math.huge,
+        best_lap = math_huge,
         previous_time = 0,
         lapTimes = {},
     }
