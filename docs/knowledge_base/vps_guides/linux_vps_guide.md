@@ -468,7 +468,7 @@ sudo apt install x2goserver x2goserver-xsession -y
     * **SSH Port:** `22992` (or your custom port)
     * **Session Type:** `XFCE`
 3. Click **OK** to save the session.
-4. Select the new session and click **Session** -> **Start**. You will be prompted for your `haloadmin` user's password (or your SSH key if you set one up).
+4. Select the new session and click **Session** -> **Start**.
 5. You will now be connected to a much smoother and more responsive desktop.
 
 **Important Note:** X2Go uses your existing SSH connection for secure tunneling. Once you verify X2Go works, you can **stop and disable the VNC service** if you wish, as you will no longer need it:
