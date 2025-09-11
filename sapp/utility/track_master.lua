@@ -127,20 +127,28 @@ end
 
 local function exportLapRecords(path, stats)
     local lines = {}
+
+    -- Find max map name length
+    local max_map_len = 0
     for map, data in pairs(stats) do
         if data.best_lap and data.best_lap.time < math.huge then
-            local line = string_format("`%s`, `%s`, `%s`",
-                map,
-                data.best_lap.time,
-                data.best_lap.player
-            )
+            if #map > max_map_len then max_map_len = #map end
+        end
+    end
+
+    -- Build formatted lines
+    for map, data in pairs(stats) do
+        if data.best_lap and data.best_lap.time < math.huge then
+            local map_padded = map .. string.rep(" ", max_map_len - #map + 2)
+            local line = string.format("`%s%s  %s`", map_padded, data.best_lap.time, data.best_lap.player)
             table.insert(lines, line)
         end
     end
-    table_sort(lines) -- alphabetize
-    local file = io_open(path, "w")
+
+    table.sort(lines) -- optional: alphabetically by map
+    local file = io.open(path, "w")
     if file then
-        file:write(table_concat(lines, "\n"))
+        file:write(table.concat(lines, "\n"))
         file:close()
     end
 end
