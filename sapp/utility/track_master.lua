@@ -11,6 +11,9 @@ DESCRIPTION:      Advanced race tracking and leaderboard system.
                   - Announces personal bests and map record achievements automatically
                   - Supports both FFA and Team race types
 
+REQUIREMENTS:     Install to the same directory as sapp.dll
+                  - Lua JSON Parser:   http://regex.info/blog/lua/json
+
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
@@ -66,8 +69,6 @@ local get_var, player_present, register_callback, say_all, rprint =
 local get_dynamic_player, get_player, player_alive, read_dword, read_word =
     get_dynamic_player, get_player, player_alive, read_dword, read_word
 
-local tick_rate = 1 / 30
-
 local json = loadfile('json.lua')()
 local players, previous_time = {}, {}
 local all_time_stats = {
@@ -84,6 +85,8 @@ local current_game_stats = {
     rankings = {}
 }
 
+local tick_rate = 1 / 30
+
 local function formatMessage(message, ...)
     if select('#', ...) > 0 then
         return message:format(...)
@@ -97,10 +100,6 @@ end
 
 local function getConfigPath()
     return read_string(read_dword(sig_scan('68??????008D54245468') + 0x1))
-end
-
-local function validateLapTime(lap_time)
-    return lap_time >= CONFIG.MIN_LAP_TIME
 end
 
 local function formatTime(seconds)
@@ -159,9 +158,9 @@ local function saveStats()
     end
 end
 
-local function inVehicleAsDriver(playerId)
-    local dyn_player = get_dynamic_player(playerId)
-    if not player_alive(playerId) or dyn_player == 0 then return false end
+local function inVehicleAsDriver(id)
+    local dyn_player = get_dynamic_player(id)
+    if not player_alive(id) or dyn_player == 0 then return false end
 
     local vehicle_id = read_dword(dyn_player + 0x11C)
     if vehicle_id == 0xFFFFFFFF then return false end
@@ -170,6 +169,15 @@ local function inVehicleAsDriver(playerId)
     if vehicle_object == 0 then return false end
 
     return read_word(dyn_player + 0x2F0) == 0
+end
+
+local function validateLapTime(lap_time)
+    return lap_time >= CONFIG.MIN_LAP_TIME
+end
+
+local function safeReadWord(address)
+    if address == 0 then return 0 end
+    return read_word(address)
 end
 
 local function updateStats(stats, lapTime)
@@ -181,9 +189,7 @@ local function updateStats(stats, lapTime)
     stats.avg_lap_seconds = total_time / stats.laps
 end
 
-local function updatePlayerStats(id, lapTime)
-    local player = players[id]
-    if not player then return end
+local function updatePlayerStats(player, lapTime)
     local name, map = player.name, current_game_stats.map
     local map_stats = all_time_stats.maps[map] or {
         best_lap = { time = math_huge, player = "" },
@@ -243,45 +249,52 @@ local function updatePlayerStats(id, lapTime)
     end)
 end
 
+local function processLapTime(player, lap_time)
+    player.laps = player.laps + 1
+    player.previous_time = lap_time
+    table_insert(player.lapTimes, lap_time)
+    updatePlayerStats(player, lap_time)
+end
+
+local function shouldProcessPlayer(id)
+    return player_present(id) and player_alive(id) and
+        get_player(id) ~= 0 and get_dynamic_player(id) ~= 0 and
+        inVehicleAsDriver(id)
+end
+
 function OnTick()
     for id, player in pairs(players) do
-        if player_present(id) and player_alive(id) then
-            local static_player = get_player(id)
-            local dyn_player = get_dynamic_player(id)
-            if static_player ~= 0 and dyn_player ~= 0 then
-                if not inVehicleAsDriver(id) then goto continue end
+        if not shouldProcessPlayer(id) then goto continue end
 
-                local lap_ticks = read_word(static_player + 0xC4)
-                local lap_time = roundToHundredths(lap_ticks * tick_rate)
+        local static_player = get_player(id)
+        local lap_ticks = safeReadWord(static_player + 0xC4)
+        local lap_time = roundToHundredths(lap_ticks * tick_rate)
 
-                if lap_time > 0 and lap_time ~= previous_time[id] then
-                    if validateLapTime(lap_time) then
-                        player.laps = player.laps + 1
-                        player.previous_time = lap_time
-                        table_insert(player.lapTimes, lap_time)
-                        updatePlayerStats(id, lap_time)
-                    else
-                        rprint(id, string_format("Lap of %.2f seconds ignored: too fast!", lap_time))
-                    end
-                end
-
-                previous_time[id] = lap_time
-            end
+        if lap_time > 0 and lap_time ~= previous_time[id] and validateLapTime(lap_time) then
+            processLapTime(player, lap_time)
         end
+
+        previous_time[id] = lap_time
         ::continue::
     end
 end
 
 function OnStart()
     if get_var(0, '$gt') ~= 'race' then return end
+
+    local current_map = get_var(0, "$map")
+    local is_ffa = get_var(0, '$ffa') == '1'
+
     current_game_stats = {
-        race_type = get_var(0, '$ffa') == '1' and 'FFA' or 'Team',
-        map = get_var(0, "$map"),
+        race_type = is_ffa and 'FFA' or 'Team',
+        map = current_map,
         best_lap = { time = math_huge, player = "" },
         rankings = {}
     }
+
     players, previous_time = {}, {}
     all_time_stats = readJSON(stats_file, all_time_stats)
+
     for i = 1, 16 do
         if player_present(i) then OnJoin(i) end
         previous_time[i] = 0
@@ -335,7 +348,10 @@ function OnJoin(id)
 end
 
 function OnQuit(id)
-    players[id] = nil
+    local player = players[id]
+    if player then
+        players[id] = nil
+    end
 end
 
 function OnCommand(id, command)
