@@ -420,7 +420,6 @@ Name=RENAME_THIS
 Exec=/home/haloadmin/HCE_Server/run.sh
 Icon=utilities-terminal
 Categories=Game;
-Terminal=true
 ```
 
 **Save and exit nano.**
