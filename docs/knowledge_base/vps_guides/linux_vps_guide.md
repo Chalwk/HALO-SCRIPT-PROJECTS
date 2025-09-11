@@ -398,7 +398,7 @@ nano /home/haloadmin/HCE_Server/run.sh
 ```bash
 #!/bin/bash
 cd "/home/haloadmin/HCE_Server"
-wine haloceded.exe -path "cg/" -exec "cg/init.txt" -port 2302
+wineconsole haloceded.exe -path "cg/" -exec "cg/init.txt" -port 2302
 ```
 
 **Save and exit nano (Press `CTRL+S`, then `CTRL+X`).**
