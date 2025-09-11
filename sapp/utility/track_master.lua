@@ -65,6 +65,9 @@ local get_var, player_present, register_callback, say_all, rprint =
 local get_dynamic_player, get_player, player_alive, read_dword, read_word =
     get_dynamic_player, get_player, player_alive, read_dword, read_word
 
+local tick_rate = 1 / 30
+local MIN_LAP_TIME = 10.0  -- Minimum reasonable lap time in seconds
+
 local json = loadfile('json.lua')()
 local players, previous_time = {}, {}
 local all_time_stats = {
@@ -94,6 +97,10 @@ end
 
 local function getConfigPath()
     return read_string(read_dword(sig_scan('68??????008D54245468') + 0x1))
+end
+
+local function validateLapTime(lap_time)
+    return lap_time >= MIN_LAP_TIME
 end
 
 local function formatTime(seconds)
@@ -245,13 +252,17 @@ function OnTick()
                 if not inVehicleAsDriver(id) then goto continue end
 
                 local lap_ticks = read_word(static_player + 0xC4)
-                local lap_time = roundToHundredths(lap_ticks / 30)
+                local lap_time = roundToHundredths(lap_ticks * tick_rate)
 
                 if lap_time > 0 and lap_time ~= previous_time[id] then
-                    player.laps = player.laps + 1
-                    player.previous_time = lap_time
-                    table_insert(player.lapTimes, lap_time)
-                    updatePlayerStats(id, lap_time)
+                    if validateLapTime(lap_time) then
+                        player.laps = player.laps + 1
+                        player.previous_time = lap_time
+                        table_insert(player.lapTimes, lap_time)
+                        updatePlayerStats(id, lap_time)
+                    else
+                        rprint(id, string_format("Lap of %.2f seconds ignored: too fast!", lap_time))
+                    end
                 end
 
                 previous_time[id] = lap_time
