@@ -329,28 +329,23 @@ sudo systemctl start vncserver@1.service
 Since we configured the VNC server with the `-localhost` option for maximum security, **you cannot connect directly to your VPS IP via TightVNC Viewer**.
 Instead, we tunnel the VNC connection through your SSH session using BitVise.
 
-1. **In BitVise:**
-    * Set **Port:** `22992` (or your custom port)
-2. **Enable the Client-to-Server (C2S) Port Forwarding:**
-    * Go to the **C2S** tab.
-    * Click Add under **C2S (Client-to-Server) Port Forwarding**.
-    * Enter the following:
+1. Go to the **C2S** tab.
+2. Click Add under **C2S (Client-to-Server) Port Forwarding**.
+3. Enter the following:
 
-      | Field            | Value       |
-      |------------------|-------------|
-      | Listen Interface | `127.0.0.1` |
-      | Listen Port      | `5901`      |
-      | Destination Host | `127.0.0.1` |
-      | Destination Port | `5901`      |
+| Field            | Value       |
+|------------------|-------------|
+| Listen Interface | `127.0.0.1` |
+| Listen Port      | `5901`      |
+| Destination Host | `127.0.0.1` |
+| Destination Port | `5901`      |
 
-    * Click **OK**.
-    * Go back to the **Login** tab and login as `haloadmin`.
+**Connect TightVNC Viewer through the tunnel:**
 
-3. **Connect TightVNC Viewer through the tunnel:**
-    * Open **TightVNC Viewer**.
-    * In the **VNC Server** field, enter: `127.0.0.1:5901`
-    * Enter the VNC password you created in [step 6](#6-install-and-configure-tightvnc--xfce).
-    * Click **Connect**. You should now see the XFCE desktop of your VPS.
+1. Open **TightVNC Viewer**.
+2. In the **VNC Server** field, enter: `127.0.0.1:5901`
+3. Enter the VNC password you created in [step 6](#6-install-and-configure-tightvnc--xfce).
+4. Click **Connect**. You should now see the XFCE desktop of your VPS.
 
 > **Important**: BitVise must remain connected as `haloadmin` while using TightVNC Viewer. If you disconnect SSH, the VNC tunnel will close.
 
