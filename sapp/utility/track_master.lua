@@ -21,12 +21,13 @@ api_version = '1.12.0.0'
 
 -- Configuration -------------------------------------------
 local CONFIG = {
-    STATS_FILE = "race_stats.json",
-    TEXT_EXPORT_FILE = "lap_records.txt",
-    STATS_COMMAND = "stats",
-    TOP5_COMMAND = "top5",
-    CURRENT_COMMAND = "current",
-    EXPORT_LAP_RECORDS = true,
+    STATS_FILE = "race_stats.json",       -- File to store all-time stats
+    TEXT_EXPORT_FILE = "lap_records.txt", -- File to export lap records to
+    STATS_COMMAND = "stats",              -- Command to display all-time stats
+    TOP5_COMMAND = "top5",                -- Command to display top 5 best laps
+    CURRENT_COMMAND = "current",          -- Command to display current race rankings
+    EXPORT_LAP_RECORDS = true,            -- Export lap records to lap_records.txt
+    MIN_LAP_TIME = 10.0,                  -- Minimum reasonable lap time in seconds
 
     -- Configurable messages
     MESSAGES = {
@@ -66,7 +67,6 @@ local get_dynamic_player, get_player, player_alive, read_dword, read_word =
     get_dynamic_player, get_player, player_alive, read_dword, read_word
 
 local tick_rate = 1 / 30
-local MIN_LAP_TIME = 10.0  -- Minimum reasonable lap time in seconds
 
 local json = loadfile('json.lua')()
 local players, previous_time = {}, {}
@@ -100,7 +100,7 @@ local function getConfigPath()
 end
 
 local function validateLapTime(lap_time)
-    return lap_time >= MIN_LAP_TIME
+    return lap_time >= CONFIG.MIN_LAP_TIME
 end
 
 local function formatTime(seconds)
