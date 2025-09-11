@@ -26,7 +26,7 @@ local CONFIG = {
     STATS_COMMAND = "stats",
     TOP5_COMMAND = "top5",
     CURRENT_COMMAND = "current",
-    EXPORT_LAP_RECORDS = true, -- Set to false to disable exporting lap records to lap_records.txt
+    EXPORT_LAP_RECORDS = true,
 
     -- Configurable messages
     MESSAGES = {
