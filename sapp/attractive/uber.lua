@@ -24,7 +24,7 @@ CONFIGURATION OPTIONS:
                  - Accept/reject command customization
                  - Call radius configuration
 
-LAST UPDATED:     22/8/2025
+LAST UPDATED:     13/9/2025
 
 Copyright (c) 2020-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -43,6 +43,8 @@ local COOLDOWN_PERIOD = 10                -- Cooldown time (seconds) between Ube
 local CROUCH_TO_CALL = false              -- Enable Uber call when player crouches
 
 local BLOCK_OBJECTIVE = true              -- Prevent Uber calls if player is carrying an objective (e.g. flag)
+
+local DRIVER_ONLY_IMMUNE = true           -- Vehicles with only a driver are immune to damage
 
 local EJECT_FROM_DISABLE_VEHICLE = true   -- Eject players from vehicles that aren't enabled for Uber
 local EJECT_FROM_DISABLE_VEHICLE_time = 3 -- Delay before ejecting from disabled vehicle (seconds)
@@ -154,15 +156,19 @@ local VEHICLE_SETTINGS = {
     { 'levels\\test\\racetrack\\custom_hogs\\mp_warthog_blue', {
         [0] = 'driver',
         [1] = 'passenger',
-        [2] = 'gunner',
     }, true, 'Warthog', { 0, 1 } },
 
     -- bc_raceway_final_mp
     { 'levels\\test\\racetrack\\custom_hogs\\mp_warthog_green', {
         [0] = 'driver',
         [1] = 'passenger',
-        [2] = 'gunner',
     }, true, 'Warthog', { 0, 1 } },
+
+    -- bc_raceway_final_mp
+    { 'levels\\test\\racetrack\\custom_hogs\\mp_warthog', {
+        [0] = 'driver',
+        [2] = 'passenger',
+    }, true, 'Warthog', { 0, 2 } },
 
     -- gauntlet_race
     { 'vehicles\\rwarthog2\\rwarthog2', {
@@ -570,7 +576,8 @@ local sapp_events = {
     [cb['EVENT_DIE']] = 'OnPlayerDeath',
     [cb['EVENT_TEAM_SWITCH']] = 'OnTeamSwitch',
     [cb['EVENT_VEHICLE_ENTER']] = 'OnVehicleEnter',
-    [cb['EVENT_VEHICLE_EXIT']] = 'OnVehicleExit'
+    [cb['EVENT_VEHICLE_EXIT']] = 'OnVehicleExit',
+    [cb['EVENT_DAMAGE_APPLICATION']] = 'OnDamageApplication'
 }
 
 local function fmt(message, ...)
@@ -1117,6 +1124,21 @@ end
 
 function OnTeamSwitch(id)
     players[id].team = get_var(id, '$team')
+end
+
+function OnDamageApplication(id)
+    if not DRIVER_ONLY_IMMUNE then return true end
+
+    local victim_obj = get_object_memory(id)
+    if victim_obj == 0 then return true end
+
+    local config_entry = validateVehicle(victim_obj)
+    if config_entry then
+        local occupants = countOccupants(victim_obj)
+        if occupants == 1 then return false end
+    end
+
+    return true
 end
 
 function OnCommand(id, command)

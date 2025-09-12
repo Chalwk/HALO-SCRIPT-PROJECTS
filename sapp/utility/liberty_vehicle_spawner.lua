@@ -235,7 +235,7 @@ function OnChat(player, message)
     return true
 end
 
--- todo: object.data appears to be nil before the vehicle is destroyed, therefore it never despawns
+-- todo: object.data appears to be nil before the vehicle is destroyed, therefore it never despawns.
 function OnTick()
     local now = os_clock()
     for _, data in pairs(active_vehicles) do
