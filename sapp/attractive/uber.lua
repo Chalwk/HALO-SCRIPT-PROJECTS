@@ -155,14 +155,14 @@ local VEHICLE_SETTINGS = {
         [0] = 'driver',
         [1] = 'passenger',
         [2] = 'gunner',
-    }, true, 'Warthog', { 0, 2, 1 } },
+    }, true, 'Warthog', { 0, 1 } },
 
     -- bc_raceway_final_mp
     { 'levels\\test\\racetrack\\custom_hogs\\mp_warthog_green', {
         [0] = 'driver',
         [1] = 'passenger',
         [2] = 'gunner',
-    }, true, 'Warthog', { 0, 2, 1 } },
+    }, true, 'Warthog', { 0, 1 } },
 
     -- gauntlet_race
     { 'vehicles\\rwarthog2\\rwarthog2', {

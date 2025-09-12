@@ -11,9 +11,6 @@ DESCRIPTION:      Advanced race tracking and leaderboard system.
                   - Announces personal bests and map record achievements automatically
                   - Supports both FFA and Team race types
 
-REQUIREMENTS:     Install to the same directory as sapp.dll
-                  - Lua JSON Parser:   http://regex.info/blog/lua/json
-
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
@@ -135,14 +132,15 @@ end
 local function exportLapRecords(path, stats)
     local lines = {}
 
-    for map, data in pairs(stats) do
+    for map, data in pairs(stats.maps) do
         if data.best_lap and data.best_lap.time < math_huge then
             local line = string_format("%s, %s, %s", map, data.best_lap.time, data.best_lap.player)
             table_insert(lines, line)
         end
     end
 
-    table_sort(lines) -- alphabetical by map
+    -- Alphabetical by map name
+    table_sort(lines)
 
     local file = io_open(path, "w")
     if file then
