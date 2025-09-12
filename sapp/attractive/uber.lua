@@ -41,11 +41,8 @@ local CALL_RADIUS = 0                     -- Radius for calling an Uber (0 to di
 local CALLS_PER_GAME = 20                 -- Max Uber calls allowed per player per game (0 = unlimited)
 local COOLDOWN_PERIOD = 10                -- Cooldown time (seconds) between Uber calls per player
 local CROUCH_TO_CALL = false              -- Enable Uber call when player crouches
-
 local BLOCK_OBJECTIVE = true              -- Prevent Uber calls if player is carrying an objective (e.g. flag)
-
 local DRIVER_ONLY_IMMUNE = true           -- Vehicles with only a driver are immune to damage
-
 local EJECT_FROM_DISABLE_VEHICLE = true   -- Eject players from vehicles that aren't enabled for Uber
 local EJECT_FROM_DISABLE_VEHICLE_time = 3 -- Delay before ejecting from disabled vehicle (seconds)
 local EJECT_WITHOUT_DRIVER = true         -- Eject passengers if vehicle has no driver
@@ -695,9 +692,9 @@ end
 
 local function countOccupants(vehicle_obj)
     local count = 0
-    for id = 1, 16 do
-        local player = players[id]
-        if player and player.current_vehi_obj == vehicle_obj and player_alive(id) then
+    for i = 1, 16 do
+        local player = players[i]
+        if player and player.current_vehi_obj == vehicle_obj and player_alive(i) then
             count = count + 1
         end
     end
@@ -929,7 +926,7 @@ end
 
 local function updateVehicleState(player, dyn)
     local vehicle_id = read_dword(dyn + 0x11C)
-    if vehicle_id == 0xFFFFFFFF then
+    if vehicle_id == 0xFFFFFFFF then -- not in vehicle
         player.seat = nil
         player.current_vehi_obj = nil
         return
@@ -1126,18 +1123,26 @@ function OnTeamSwitch(id)
     players[id].team = get_var(id, '$team')
 end
 
--- todo: review this and make sure it works
 function OnDamageApplication(id, _, _, damage)
     if not DRIVER_ONLY_IMMUNE then return true end
 
-    local victim_obj = get_object_memory(id)
-    if victim_obj == 0 then return true end
+    local victim_dyn = get_dynamic_player(id)
+    if victim_dyn == 0 then return true end
 
-    local config_entry = validateVehicle(victim_obj)
-    if config_entry then
-        local occupants = countOccupants(victim_obj)
-        if occupants == 1 then return false end
-    end
+    local vehicle_id = read_dword(victim_dyn + 0x11C)
+    if vehicle_id == 0xFFFFFFFF then return true end
+
+    local vehicle_obj = get_object_memory(vehicle_id)
+    if vehicle_obj == 0 then return true end
+
+    local config_entry = validateVehicle(vehicle_obj)
+    if not config_entry then return true end
+
+    local seat = read_word(victim_dyn + 0x2F0)
+    if seat ~= 0 then return true end
+
+    local occupant_count = countOccupants(vehicle_obj)
+    if occupant_count == 1 then return false end
 
     return true, damage
 end
