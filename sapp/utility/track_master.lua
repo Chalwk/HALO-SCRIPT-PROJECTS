@@ -131,16 +131,23 @@ end
 
 local function exportLapRecords(path, stats)
     local lines = {}
+    local maps = {}
 
-    for map, data in pairs(stats.maps) do
+    for map in pairs(stats.maps) do
+        table_insert(maps, map)
+    end
+
+    table_sort(maps, function(a, b)
+        return a:lower() < b:lower()
+    end)
+
+    for _, map in ipairs(maps) do
+        local data = stats.maps[map]
         if data.best_lap and data.best_lap.time < math_huge then
             local line = string_format("%s, %s, %s", map, data.best_lap.time, data.best_lap.player)
             table_insert(lines, line)
         end
     end
-
-    -- Alphabetical by map name
-    table_sort(lines)
 
     local file = io_open(path, "w")
     if file then
