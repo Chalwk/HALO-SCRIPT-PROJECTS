@@ -38,13 +38,13 @@ local map_vehicles = {
     -- }
 
     ["bc_raceway_final_mp"] = {
-        ["hog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_blue",
+        ["hog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_green",
     },
-    ["Camtrack-Arena-Race"] = {
+    ["camtrack-arena-race"] = {
         ["hog"] = "vehicles\\warthog\\mp_warthog",
         ["rhog"] = "vehicles\\rwarthog\\rwarthog",
     },
-    ["ciffhanger"] = {
+    ["cliffhanger"] = {
         ["hog"] = "vehicles\\warthog\\mp_warthog",
         ["rhog"] = "vehicles\\rwarthog\\rwarthog",
     },
@@ -56,7 +56,7 @@ local map_vehicles = {
         ["hog"] = "vehicles\\warthog\\mp_warthog",
         ["rhog"] = "vehicles\\rwarthog\\rwarthog",
     },
-    ["Gauntlet_Race"] = {
+    ["gauntlet_race"] = {
         ["hog"] = "vehicles\\warthog\\mp_warthog",
         ["rhog"] = "vehicles\\rwarthog\\rwarthog",
     },
@@ -67,7 +67,7 @@ local map_vehicles = {
     ["hypothermia_race"] = {
         ["hog"] = "vehicles\\g_warthog\\g_warthog",
     },
-    ["LostCove_Race"] = {
+    ["lostcove_race"] = {
         ["hog"] = "vehicles\\warthog\\mp_warthog",
         ["rhog"] = "vehicles\\rwarthog\\rwarthog",
     },
@@ -75,14 +75,14 @@ local map_vehicles = {
         ["hog"] = "vehicles\\warthog\\mp_warthog",
         ["rhog"] = "vehicles\\rwarthog\\rwarthog",
     },
-    ["Mongoose_Point"] = {
+    ["mongoose_point"] = {
         ["hog"] = "vehicles\\m257_multvp\\m257_multvp",
     },
     ["New_Mombasa_Race_v2"] = {
         ["hog"] = "vehicles\\warthog\\mp_warthog",
         ["rhog"] = "vehicles\\rwarthog\\rwarthog",
     },
-    ["Prime_C3_Race"] = {
+    ["prime_c3_race"] = {
         ["hog"] = "vehicles\\warthog\\mp_warthog",
         ["rhog"] = "vehicles\\rwarthog\\rwarthog",
     },
@@ -90,9 +90,25 @@ local map_vehicles = {
         ["hog"] = "vehicles\\warthog\\mp_warthog",
         ["rhog"] = "vehicles\\rwarthog\\rwarthog",
     },
-    ["TLSstronghold"] = {
+    ["tlsstronghold"] = {
         ["hog"] = "vehicles\\warthog\\mp_warthog",
         ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+    },
+    ["islandthunder_race"] = {
+        ["hog"] = "vehicles\\warthog\\mp_warthog",
+        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+    },
+    ["mystic_mod"] = {
+        ["hog"] = "vehicles\\puma\\puma_lt",
+        ["rhog"] = "vehicles\\puma\\rpuma_lt",
+    },
+    ["Nervous_King"] = {
+        ["hog"] = "vehicles\\warthog\\mp_warthog",
+        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+    },
+    ["cityscape-adrenaline"] = {
+        ["hog"] = "vehicles\\g_warthog\\g_warthog",
+        ["rhog"] = "vehicles\\rwarthog\\boogerhawg",
     },
     ["wpitest1_race"] = {
         ["hog"] = "vehicles\\warthog\\mp_warthog",
@@ -159,7 +175,7 @@ local function getVehicle(player_index)
 end
 
 local function isOccupied(vehicle_object)
-    if vehicle_object == 0 then  return false end
+    if vehicle_object == 0 then return false end
     for i = 1, 16 do
         local current_vehicle = getVehicle(i)
         if current_vehicle == vehicle_object then return true end
@@ -198,7 +214,6 @@ function OnChat(player, message)
 
     for meta_id, data in pairs(active_vehicles) do
         if data.keyword == input then
-
             local x, y, z = getPos(player)
             if not x then return false end
 
@@ -246,7 +261,6 @@ function OnTick()
 end
 
 function OnStart()
-
     if get_var(0, "$gt") == "n/a" then return end
 
     local map_name = get_var(0, "$map")
