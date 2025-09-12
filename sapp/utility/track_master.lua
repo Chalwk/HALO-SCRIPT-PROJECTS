@@ -130,16 +130,11 @@ local function writeJSON(file_path, data)
 end
 
 local function exportLapRecords(path, stats)
-    local lines = {}
-    local maps = {}
+    local lines, maps = {}, {}
 
-    for map in pairs(stats.maps) do
-        table_insert(maps, map)
-    end
+    for map in pairs(stats.maps) do table_insert(maps, map) end
 
-    table_sort(maps, function(a, b)
-        return a:lower() < b:lower()
-    end)
+    table_sort(maps, function(a, b) return a:lower() < b:lower() end)
 
     for _, map in ipairs(maps) do
         local data = stats.maps[map]
