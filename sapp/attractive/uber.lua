@@ -1126,7 +1126,8 @@ function OnTeamSwitch(id)
     players[id].team = get_var(id, '$team')
 end
 
-function OnDamageApplication(id)
+-- todo: review this and make sure it works
+function OnDamageApplication(id, _, _, damage)
     if not DRIVER_ONLY_IMMUNE then return true end
 
     local victim_obj = get_object_memory(id)
@@ -1138,7 +1139,7 @@ function OnDamageApplication(id)
         if occupants == 1 then return false end
     end
 
-    return true
+    return true, damage
 end
 
 function OnCommand(id, command)
