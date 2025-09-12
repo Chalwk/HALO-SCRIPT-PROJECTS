@@ -38,7 +38,9 @@ local map_vehicles = {
     -- }
 
     ["bc_raceway_final_mp"] = {
-        ["hog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_green",
+        ["ghog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_green",
+        ["bhog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_blue",
+        ["hog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog",
     },
     ["camtrack-arena-race"] = {
         ["hog"] = "vehicles\\warthog\\mp_warthog",
