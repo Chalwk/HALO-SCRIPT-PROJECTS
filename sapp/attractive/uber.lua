@@ -682,12 +682,8 @@ local function hasObjective(dyn_player)
 end
 
 local function getVehicleIfDriver(dyn)
-    local vehicle_id_offset = 0x11C
-    local seat_offset = 0x2F0
-    local invalid_vehicle_id = 0xFFFFFFFF
-
-    local vehicle_id = read_dword(dyn + vehicle_id_offset)
-    if vehicle_id == invalid_vehicle_id then return nil end
+    local vehicle_id = read_dword(dyn + 0x11C)
+    if vehicle_id == 0xFFFFFFFF then return nil end
 
     local vehicle_obj = get_object_memory(vehicle_id)
     if vehicle_obj == 0 then return nil end
@@ -695,8 +691,8 @@ local function getVehicleIfDriver(dyn)
     local config_entry = validateVehicle(vehicle_obj)
     if not config_entry then return nil end
 
-    local seat = read_word(dyn + seat_offset)
-    if seat ~= 0 then return nil end
+    local seat = read_word(dyn + 0x2F0)
+    if read_word(dyn + 0x2F0) ~= 0 then return nil end
 
     return vehicle_obj, vehicle_id, config_entry
 end
@@ -1134,28 +1130,25 @@ function OnTeamSwitch(id)
 end
 
 function OnDamageApplication(id, _, _, damage)
-    if not DRIVER_ONLY_IMMUNE then return true end
+    if not DRIVER_ONLY_IMMUNE then return true, damage end
 
     local victim_dyn = get_dynamic_player(id)
-    if victim_dyn == 0 then return true end
+    if victim_dyn == 0 then return true, damage end
 
     local vehicle_id = read_dword(victim_dyn + 0x11C)
-    if vehicle_id == 0xFFFFFFFF then return true end
+    local vehicle_obj = (vehicle_id ~= 0xFFFFFFFF) and get_object_memory(vehicle_id) or 0
+    if vehicle_obj == 0 or not validateVehicle(vehicle_obj) then
+        return true, damage
+    end
 
-    local vehicle_obj = get_object_memory(vehicle_id)
-    if vehicle_obj == 0 then return true end
-
-    local config_entry = validateVehicle(vehicle_obj)
-    if not config_entry then return true end
-
-    local seat = read_word(victim_dyn + 0x2F0)
-    if seat ~= 0 then return true end
-
-    local occupant_count = countOccupants(vehicle_obj)
-    if occupant_count == 1 then return false end
+    -- Seat 0 = driver
+    if read_word(victim_dyn + 0x2F0) == 0 and countOccupants(vehicle_obj) == 1 then
+        return false
+    end
 
     return true, damage
 end
+
 
 function OnCommand(id, command)
     local cmd = command:lower()
