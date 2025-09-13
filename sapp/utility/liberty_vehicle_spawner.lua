@@ -41,11 +41,11 @@ local VEHICLES = {
     -- }
 
     ["bc_raceway_final_mp"] = {
-        ["hog1"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_green",
-        ["hog2"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_blue",
-        ["hog3"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi1",
-        ["hog4"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi2",
-        ["hog5"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi3",
+        ["bhog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_blue",    -- blue
+        ["ghog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_green",   -- green
+        ["rhog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi1",  -- red and pink
+        ["grhog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi2", -- green and red
+        ["brphog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi3",-- blue, red, green, pink
     },
     ["camtrack-arena-race"] = {
         ["hog"] = "vehicles\\warthog\\mp_warthog",
