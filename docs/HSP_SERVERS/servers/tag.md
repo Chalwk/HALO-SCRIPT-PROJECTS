@@ -1,14 +1,17 @@
-# Tag
+# HSP-Tag
 
-## 📝 Overview
+## How to Connect
 
-**Tag**, you're it! This game mode is a fun, fast-paced version of the classic game of tag. It's designed for two or more players and involves a dynamic chase between **runners** and **taggers**. The tagger's job is to tag runners, while the runners try to stay out of reach to accumulate points.
-
-A game starts when a player is whacked to become "it" (the tagger). The tagger's turn ends when they either tag their first victim or when the turn time expires. If the tagger fails to tag anyone within the time limit, a random player becomes the new tagger.
+* 🔗 **IP Address:** jericraft.net:2311
+* **Client:** Halo Custom Edition
 
 ---
 
-## 🎮 Features
+## Overview
+
+**Tag**, you're it! This game mode is a fun, fast-paced version of the classic game of tag. It's designed for two or more players and involves a dynamic chase between **runners** and **taggers**. The tagger's job is to tag runners, while the runners try to stay out of reach to accumulate points. A game starts when a player is whacked to become "it" (the tagger). The tagger's turn ends when they either tag their first victim or when the turn time expires. If the tagger fails to tag anyone within the time limit, a random player becomes the new tagger.
+
+### Key Features
 
 - **Runners:** All runners are armed with plasma rifles. This weapon is strategically chosen because it slows down the tagger when fired at.
 - **Taggers:** The taggers wield an oddball, and their goal is to tag the runners.
@@ -20,39 +23,9 @@ A game starts when a player is whacked to become "it" (the tagger). The tagger's
 
 ---
 
-## 🗺️ Best Maps for Tag
+## Maps
 
-**Tag** runs on the following small and medium maps, which keep the game fast and exciting:
-
-- **Timberland**
-- **Bloodgulch**
-- **Damnation**
-- **Longest**
-- **Chillout**
-- **Carousel**
-- **Ratrace**
-- **Putput**
-- **Prisoner**
-- **Wizard**
-- **Beavercreek**
-- **Hangemhigh**
+`bloodgulch`, `beavercreek`, `ratrace`, `icefields`, `carousel`, `chillout`, `wizard`, `timberland`,  
+`longest`, `hangemhigh`, `prisoner`, `damnation`
 
 ---
-
-* Open Halo: Custom Edition.
-* Navigate to the Multiplayer section.
-* Join by:
-    * Searching for **HSP-Tag**
-    * Direct IP: `jericraft.net:2311`
-
----
-
-## 💡 Tips for Success
-
-- **As a Runner:** Use the plasma rifle to slow down the tagger and gain time to accumulate points. Stay mobile and try to avoid getting caught!
-- **As a Tagger:** Take advantage of your speed boost to chase down and tag runners. Timing your attacks is key, tag them before the turn time runs out!
-- **Map Knowledge:** On medium and small maps, the layout can make a huge difference. Learn the best hiding spots and chokepoints to outwit your opponents.
-
----
-
-**Tag** brings a unique twist to the classic game of tag with added speed, weapons, and strategy. Run, dodge, and tag your way to victory!
