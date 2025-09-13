@@ -125,7 +125,7 @@ BEHAVIOR EXAMPLES:
    - If a vehicle has no driver: Passengers may be ejected after a delay (if configured)
 ]]
 
-local VEHICLE_SETTINGS = {
+local VEHICLES = {
 
     -- Format: {tag_path, seat_roles, enabled, display_name, insertion_order}
 
@@ -966,7 +966,7 @@ local function initialize()
 
     if not vehicle_meta_cache[map_name] then -- not cached yet
         vehicle_meta_cache[map_name] = {}
-        for _, v in ipairs(VEHICLE_SETTINGS) do
+        for _, v in ipairs(VEHICLES) do
             local tag, seats, enabled, label, insertion_order = v[1], v[2], v[3], v[4], v[5]
             local meta_id = getTag('vehi', tag)
             if meta_id then
