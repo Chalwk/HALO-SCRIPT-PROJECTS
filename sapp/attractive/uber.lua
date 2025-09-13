@@ -692,7 +692,7 @@ local function getVehicleIfDriver(dyn)
     if not config_entry then return nil end
 
     local seat = read_word(dyn + 0x2F0)
-    if read_word(dyn + 0x2F0) ~= 0 then return nil end
+    if seat ~= 0 then return nil end
 
     return vehicle_obj, vehicle_id, config_entry
 end
