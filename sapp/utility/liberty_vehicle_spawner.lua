@@ -30,7 +30,10 @@ LICENSE:          MIT License
 -- CONFIG START
 ---------------------------------------------------------------
 
-local DESPAWN_DELAY_SECONDS = 30 -- Time (in seconds) before a spawned vehicle despawns
+
+local ANNOUNCEMENTS = true        -- Perioically announce available vehicles (set to false to disable)
+local ANNOUNCEMENT_INTERVAL = 180 -- Time (in seconds) between announcements
+local DESPAWN_DELAY_SECONDS = 30  -- Time (in seconds) before a spawned vehicle despawns
 local VEHICLES = {
 
     -- EXAMPLE MAP CONFIG:
@@ -203,6 +206,7 @@ local VEHICLES = {
 api_version = "1.12.0.0"
 
 local map_name
+local game_started
 local os_clock = os.clock
 local active_vehicles = {}    -- Now keyed by object ID instead of meta_id
 local vehicle_meta_cache = {} -- Cache for pre-loaded meta_ids
@@ -265,6 +269,15 @@ local function getPos(id)
     if player_obj == 0 then return nil end
 
     return read_vector3d(player_obj + 0x5C)
+end
+
+local function getKeyWords()
+    local keywords = vehicle_meta_cache[map_name]
+    local message = ""
+    for keyword, _ in pairs(keywords) do
+        message = message .. " [" .. keyword .. "]"
+    end
+    return message
 end
 
 function OnChat(id, message)
@@ -350,23 +363,38 @@ function OnStart()
             }
         end
     end
+    game_started = true
+    timer(ANNOUNCEMENT_INTERVAL * 1000, "AnnounceVehicles")
     register_callbacks(true)
 end
 
 function OnJoin(player)
-    local keywords = vehicle_meta_cache[map_name]
-
     rprint(player, "Type keywords in chat to spawn vehicles:")
-    local message = ""
-    for keyword, _ in pairs(keywords) do
-        message = message .. " [" .. keyword .. "]"
-    end
-    rprint(player, message)
+    rprint(player, getKeyWords())
 end
 
 function OnScriptLoad()
+    register_callback(cb["EVENT_GAME_END"], "OnEnd")
     register_callback(cb["EVENT_GAME_START"], "OnStart")
     OnStart()
+end
+
+function OnEnd()
+    game_started = false
+end
+
+function AnnounceVehicles()
+    if not ANNOUNCEMENTS or not game_started then return false end
+
+    local keywords = getKeyWords()
+    for i = 1, 16 do
+        if player_present(i) then
+            rprint(i, "Type keywords in chat to spawn vehicles:")
+            rprint(i, keywords)
+        end
+    end
+
+    return true
 end
 
 function OnScriptUnload()
