@@ -124,6 +124,8 @@ Have an idea for a new feature or script?
 | [Halo Net](https://halonet.net/)                                                                   | [Website](https://halonet.net/)          |
 | [XG Gaming](https://www.xgclan.com)                                                                | [Website](https://www.xgclan.com)        |
 | [POQ Clan](http://poqclan.com/)                                                                    | [Website](http://poqclan.com/)           |
+| [Bigass](https://discord.gg/yUKg56uhqG)                                                            | [Discord](https://discord.gg/yUKg56uhqG) |
+| [BK (BlacksHalo)](https://www.blackshalo.com)                                                      | [Website](https://www.blackshalo.com)    |
 
 ---
 
