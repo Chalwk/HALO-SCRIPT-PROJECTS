@@ -24,7 +24,7 @@ CONFIGURATION OPTIONS:
                  - Accept/reject command customization
                  - Call radius configuration
 
-LAST UPDATED:     13/9/2025
+LAST UPDATED:     14/9/2025
 
 Copyright (c) 2020-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -198,6 +198,10 @@ local VEHICLES = {
 
     -- Mongoose_Point
     { 'vehicles\\m257_multvp\\m257_multvp', {
+        [0] = 'driver',
+        [1] = 'passenger'
+    }, true, 'Mongoose', { 0, 1 } },
+    { 'vehicles\\m257_multvp\\m257_multvp2', {
         [0] = 'driver',
         [1] = 'passenger'
     }, true, 'Mongoose', { 0, 1 } },

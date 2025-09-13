@@ -4,21 +4,9 @@ SCRIPT NAME:      liberty_vehicle_spawner.lua
 DESCRIPTION:      On-demand vehicle spawning system with:
                   - Chat command activation
                   - Automatic player entry
-                  - Intelligent cleanup system
                   - Multi-map support
 
-FEATURES:
-                  - Keyword-based spawning (e.g. "hog", "rhog")
-                  - Configurable despawn timer
-                  - Occupancy detection
-                  - Automatic position adjustment
-
-CONFIGURATION:    Edit 'VEHICLES' table to:
-                  - Add vehicle keywords per map
-                  - Set vehicle tag paths
-                  - Adjust DESPAWN_DELAY_SECONDS
-
-LAST UPDATED:     13/9/2025
+LAST UPDATED:     14/9/2025
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -26,191 +14,73 @@ LICENSE:          MIT License
 ===============================================================================
 ]]
 
----------------------------------------------------------------
--- CONFIG START
----------------------------------------------------------------
-
+-- CONFIG START ----------------------------------------------------------------
 
 local ANNOUNCEMENTS = true        -- Perioically announce available vehicles (set to false to disable)
 local ANNOUNCEMENT_INTERVAL = 180 -- Time (in seconds) between announcements
 local DESPAWN_DELAY_SECONDS = 30  -- Time (in seconds) before a spawned vehicle despawns
-local VEHICLES = {
 
-    -- EXAMPLE MAP CONFIG:
-    -- ["map_name"] = {
-    --     ["keyword"] = "tag_path",
-    --     ["keyword"] = "tag_path",
-    --     -- Add more keyword here
-    -- }
+-- DEFAULT_TAGS: Fallback vehicle definitions used when a map isn't listed in CUSTOM_TAGS
+-- Format: ["keyword"] = "tag_path"
+--  - keyword: What players type in chat to spawn the vehicle
+--  - tag_path: The internal path to the vehicle tag name
+local DEFAULT_TAGS = {
+    ["hog"] = "vehicles\\warthog\\mp_warthog",
+    ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+}
 
-    ----------------
-    -- STOCK MAPS --
-    ----------------
-
-    ["bloodgulch"] = {
-        ["hog"] = "vehicles\\warthog\\mp_warthog",
-        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
-    },
-    ["sidewinder"] = {
-        ["hog"] = "vehicles\\warthog\\mp_warthog",
-        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
-    },
-    ["prisoner"] = {
-        ["hog"] = "vehicles\\warthog\\mp_warthog",
-        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
-    },
-    ["gephyrophobia"] = {
-        ["hog"] = "vehicles\\warthog\\mp_warthog",
-        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
-    },
-    ["dangercanyon"] = {
-        ["hog"] = "vehicles\\warthog\\mp_warthog",
-        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
-    },
-    ["boardingaction"] = {
-        ["hog"] = "vehicles\\warthog\\mp_warthog",
-        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
-    },
-    ["chillout"] = {
-        ["hog"] = "vehicles\\warthog\\mp_warthog",
-        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
-    },
-    ["wizard"] = {
-        ["hog"] = "vehicles\\warthog\\mp_warthog",
-        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
-    },
-    ["hangemhigh"] = {
-        ["hog"] = "vehicles\\warthog\\mp_warthog",
-        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
-    },
-    ["timberland"] = {
-        ["hog"] = "vehicles\\warthog\\mp_warthog",
-        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
-    },
-    ["damnation"] = {
-        ["hog"] = "vehicles\\warthog\\mp_warthog",
-        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
-    },
-    ["ratrace"] = {
-        ["hog"] = "vehicles\\warthog\\mp_warthog",
-        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
-    },
-    ["carousel"] = {
-        ["hog"] = "vehicles\\warthog\\mp_warthog",
-        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
-    },
-    ["construct"] = {
-        ["hog"] = "vehicles\\warthog\\mp_warthog",
-        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
-    },
-    ["longest"] = {
-        ["hog"] = "vehicles\\warthog\\mp_warthog",
-        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
-    },
-
-    -----------------
-    -- CUSTOM MAPS --
-    -----------------
-
+-- CUSTOM_TAGS: Map-specific vehicle definitions (overrides DEFAULT_TAGS for listed maps)
+-- Format: ["map_name"] = {["keyword"] = "tag_path", ...}
+--  - map_name: The exact name of the map as it appears in $map (case-sensitive)
+--  - keyword: What players type in chat to spawn the vehicle
+--  - tag_path: The internal path to the vehicle tag name
+local CUSTOM_TAGS = {
     ["bc_raceway_final_mp"] = {
         ["bhog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_blue",     -- blue
         ["ghog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_green",    -- green
-        ["rhog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi1",   -- red and pink
+        ["rphog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi1",   -- red and pink
         ["grhog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi2",  -- green and red
         ["brphog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi3", -- blue, red, green, pink
     },
-    ["camtrack-arena-race"] = {
-        ["hog"] = "vehicles\\warthog\\mp_warthog",
-        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
-    },
-    ["cliffhanger"] = {
-        ["hog"] = "vehicles\\warthog\\mp_warthog",
-        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
-    },
-    ["tsce_multiplayerv1"] = {
-        ["hog"] = "cmt\\vehicles\\evolved_h1-spirit\\warthog\\_warthog_mp\\warthog_mp",
-        ["rhog"] = "cmt\\vehicles\\evolved_h1-spirit\\warthog\\_warthog_rocket\\warthog_rocket",
-    },
-    ["mercury_falling"] = {
-        ["hog"] = "vehicles\\warthog\\mp_warthog",
-        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
-    },
-    ["dessication_pb1"] = {
-        ["hog"] = "vehicles\\warthog\\mp_warthog",
-        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
-    },
-    ["equinox_v2"] = {
-        ["hog"] = "vehicles\\warthog\\mp_warthog",
-        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
-    },
-    ["gauntlet_race"] = {
-        ["hog"] = "vehicles\\warthog\\mp_warthog",
-        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
-    },
-    ["hornets_nest"] = {
-        ["hog"] = "halo3\\vehicles\\warthog\\mp_warthog",
-        ["rhog"] = "halo3\\vehicles\\warthog\\rwarthog",
+    ["Cityscape-Adrenaline"] = {
+        ["hog"] = "vehicles\\g_warthog\\g_warthog",
+        ["rhog"] = "vehicles\\rwarthog\\boogerhawg",
     },
     ["hypothermia_race"] = {
         ["hog"] = "vehicles\\g_warthog\\g_warthog",
     },
-    ["lostcove_race"] = {
-        ["hog"] = "vehicles\\warthog\\mp_warthog",
-        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
-    },
-    ["massacre_mountain_race_v2"] = {
-        ["hog"] = "vehicles\\warthog\\mp_warthog",
-        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
-    },
-    ["mongoose_point"] = {
-        ["hog"] = "vehicles\\m257_multvp\\m257_multvp",
-    },
-    ["New_Mombasa_Race_v2"] = {
-        ["hog"] = "vehicles\\warthog\\mp_warthog",
-        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
-    },
-    ["prime_c3_race"] = {
-        ["hog"] = "vehicles\\warthog\\mp_warthog",
-        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
-    },
-    ["tlsstronghold"] = {
-        ["hog"] = "vehicles\\warthog\\mp_warthog",
-        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
-    },
-    ["islandthunder_race"] = {
-        ["hog"] = "vehicles\\warthog\\mp_warthog",
-        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+    ["Mongoose_Point"] = {
+        ["mon1"] = "vehicles\\m257_multvp\\m257_multvp",
+        ["mon2"] = "vehicles\\m257_multvp\\m257_multvp2",
     },
     ["mystic_mod"] = {
         ["hog"] = "vehicles\\puma\\puma_lt",
         ["rhog"] = "vehicles\\puma\\rpuma_lt",
     },
-    ["Nervous_King"] = {
-        ["hog"] = "vehicles\\warthog\\mp_warthog",
-        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
-    },
-    ["cityscape-adrenaline"] = {
-        ["hog"] = "vehicles\\g_warthog\\g_warthog",
-        ["rhog"] = "vehicles\\rwarthog\\boogerhawg",
-    },
-    ["wpitest1_race"] = {
-        ["hog"] = "vehicles\\warthog\\mp_warthog",
-        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+    ["tsce_multiplayerv1"] = {
+        ["hog"] = "cmt\\vehicles\\evolved_h1-spirit\\warthog\\_warthog_mp\\warthog_mp",
+        ["rhog"] = "cmt\\vehicles\\evolved_h1-spirit\\warthog\\_warthog_rocket\\warthog_rocket",
     },
 }
 
----------------------------------------------------------------
--- CONFIG ENDS
----------------------------------------------------------------
+-- CONFIG ENDS ----------------------------------------------------------------
 
 api_version = "1.12.0.0"
 
 local map_name
 local game_started
-local os_clock = os.clock
-local active_vehicles = {}    -- Now keyed by object ID instead of meta_id
-local vehicle_meta_cache = {} -- Cache for pre-loaded meta_ids
-local height_offset = 0.3     -- Default height offset for vehicle spawning
+local height_offset = 0.3
+local active_vehicles, vehicle_meta_cache = {}, {}
+
+local string_format, os_clock, pairs = string.format, os.clock, pairs
+
+local rprint, cprint, get_var = rprint, cprint, get_var
+local player_present, player_alive = player_present, player_alive
+local get_dynamic_player, get_object_memory = get_dynamic_player, get_object_memory
+local lookup_tag = lookup_tag
+local read_dword, read_vector3d = read_dword, read_vector3d
+local spawn_object, destroy_object = spawn_object, destroy_object
+local enter_vehicle = enter_vehicle
 
 local sapp_events = {
     [cb['EVENT_TICK']] = 'OnTick',
@@ -342,19 +212,20 @@ function OnStart()
     map_name = get_var(0, "$map")
     active_vehicles = {}
 
-    local map_config = VEHICLES[map_name]
-    if not map_config then
-        cprint(string.format("[WARNING] No vehicle configuration found for map: %s", map_name), 12)
+    local cfg = CUSTOM_TAGS[map_name] or DEFAULT_TAGS
+    if not cfg then
+        cprint(string.format("[ERROR] No vehicle configuration found for map: %s", map_name), 12)
         return
     end
 
     if not vehicle_meta_cache[map_name] then -- not cached yet
         vehicle_meta_cache[map_name] = {}
-        for keyword, tag_path in pairs(map_config) do
+        for keyword, tag_path in pairs(cfg) do
             local meta_id = getTag("vehi", tag_path)
             if not meta_id then
                 register_callbacks(false)
-                cprint(string.format("[ERROR] Failed to get meta ID for vehicle: %s (%s)", keyword, tag_path), 12)
+                cprint(string_format("[ERROR] Failed to get meta ID for vehicle: %s (%s)", keyword, tag_path), 12)
+                vehicle_meta_cache[map_name] = nil
                 return
             end
             vehicle_meta_cache[map_name][keyword] = {
@@ -363,6 +234,7 @@ function OnStart()
             }
         end
     end
+
     game_started = true
     timer(ANNOUNCEMENT_INTERVAL * 1000, "AnnounceVehicles")
     register_callbacks(true)
