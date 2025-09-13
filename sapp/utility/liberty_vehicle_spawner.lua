@@ -18,6 +18,8 @@ CONFIGURATION:    Edit 'VEHICLES' table to:
                   - Set vehicle tag paths
                   - Adjust DESPAWN_DELAY_SECONDS
 
+LAST UPDATED:     13/9/2025
+
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE

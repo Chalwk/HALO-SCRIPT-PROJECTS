@@ -559,6 +559,7 @@ local tag_data_offset = 0x14
 local bit_check_offset = 0x308
 local bit_index = 3
 
+local map_name
 local gametype_is_ctf_or_oddball = nil
 
 local pairs, ipairs, tonumber, select = pairs, ipairs, tonumber, select
@@ -580,10 +581,10 @@ local sapp_events = {
     [cb['EVENT_LEAVE']] = 'OnQuit',
     [cb['EVENT_CHAT']] = 'OnChat',
     [cb['EVENT_COMMAND']] = 'OnCommand',
-    [cb['EVENT_DIE']] = 'OnPlayerDeath',
+    [cb['EVENT_DIE']] = 'HandleEjection',
     [cb['EVENT_TEAM_SWITCH']] = 'OnTeamSwitch',
     [cb['EVENT_VEHICLE_ENTER']] = 'OnVehicleEnter',
-    [cb['EVENT_VEHICLE_EXIT']] = 'OnVehicleExit',
+    [cb['EVENT_VEHICLE_EXIT']] = 'HandleEjection',
     [cb['EVENT_DAMAGE_APPLICATION']] = 'OnDamageApplication'
 }
 
@@ -621,7 +622,7 @@ local function getPos(dyn)
 end
 
 local function validateVehicle(object_memory)
-    return vehicle_meta[read_dword(object_memory)]
+    return vehicle_meta[map_name][read_dword(object_memory)]
 end
 
 local function newEject(player, object, delay)
@@ -961,18 +962,21 @@ local function processPendingRequests(now)
 end
 
 local function initialize()
-    vehicle_meta = {}
+    map_name = get_var(0, '$map')
 
-    for _, v in ipairs(VEHICLE_SETTINGS) do
-        local tag, seats, enabled, label, insertion_order = v[1], v[2], v[3], v[4], v[5]
-        local meta_id = getTag('vehi', tag)
-        if meta_id then
-            vehicle_meta[meta_id] = {
-                seats = seats,
-                enabled = enabled,
-                display_name = label,
-                insertion_order = insertion_order
-            }
+    if not vehicle_meta[map_name] then -- not cached yet
+        vehicle_meta[map_name] = {}
+        for _, v in ipairs(VEHICLE_SETTINGS) do
+            local tag, seats, enabled, label, insertion_order = v[1], v[2], v[3], v[4], v[5]
+            local meta_id = getTag('vehi', tag)
+            if meta_id then
+                vehicle_meta[map_name][meta_id] = {
+                    seats = seats,
+                    enabled = enabled,
+                    display_name = label,
+                    insertion_order = insertion_order
+                }
+            end
         end
     end
 
@@ -1121,11 +1125,7 @@ function OnVehicleEnter(id, seat)
     end
 end
 
-function OnVehicleExit(id)
-    ejectionCheck(players[id])
-end
-
-function OnPlayerDeath(id)
+function HandleEjection(id) -- event_vehicle_exit/event_die
     ejectionCheck(players[id])
 end
 
