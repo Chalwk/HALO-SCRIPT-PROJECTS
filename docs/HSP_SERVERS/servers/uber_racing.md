@@ -32,7 +32,6 @@ finish line.
 
 ## Maps
 
-`sidewinder`, `bloodgulch`, `cliffhanger`, `gephyrophobia`, `New_Mombasa_Race_v2`, `timberland`,  
-`bc_raceway_final_mp`, `icefields`, `dangercanyon`, `tsce_multiplayerv1`, `mercury_falling`, `infinity`
+`bc_raceway_final_mp`, `bloodgulch`, `Camtrack-Arena-Race`, `Cityscape-Adrenaline`, `cliffhanger`, `dangercanyon`, `Gauntlet_Race`, `gephyrophobia`, `hypothermia_race`, `icefields`, `infinity`, `islandthunder_race`, `LostCove_Race`, `mercury_falling`, `Mongoose_Point`, `New_Mombasa_Race_v2`, `sidewinder`, `timberland`, `tsce_multiplayerv1`
 
 ---
