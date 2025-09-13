@@ -81,7 +81,7 @@ This guide requires SSH key authentication (password login will be disabled late
 
 8. Click the **New Terminal Console** button.
 
-**We will now create a new user (`haloadmnin`) instead of running everything as root:**
+**We will now create a new user (`haloadmin`) instead of running everything as root:**
 
 ```bash
 # Create a new user named 'haloadmin' (you can change this)
@@ -203,6 +203,19 @@ sudo systemctl restart sshd
 5. Click **Log In**.
 
 **Only after you have successfully logged into this new session on port 22992 should you close the original terminal window and the old BitVise session.**
+
+Now that you have successfully logged into this new session on port 22992, we need to remove the default SSH port (22) from the firewall.
+
+```bash
+# Show rules with numbers
+sudo ufw status numbered
+# You should see:   22/tcp  ALLOW IN  Anywhere
+#                   22/tcp (v6)  ALLOW  Anywhere (v6)
+
+# Delete the rules for 22/tcp (replace X and Y with the numbers shown for IPv4 and IPv6)
+sudo ufw delete X
+sudo ufw delete Y
+```
 
 ---
 
