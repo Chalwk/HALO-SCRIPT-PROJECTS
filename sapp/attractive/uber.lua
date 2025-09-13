@@ -551,7 +551,7 @@ local VEHICLE_SETTINGS = {
 api_version = '1.12.0.0'
 
 local players = {}
-local vehicle_meta = {}
+local vehicle_meta_cache = {}
 
 local base_tag_table = 0x40440000
 local tag_entry_size = 0x20
@@ -622,7 +622,7 @@ local function getPos(dyn)
 end
 
 local function validateVehicle(object_memory)
-    return vehicle_meta[map_name][read_dword(object_memory)]
+    return vehicle_meta_cache[map_name][read_dword(object_memory)]
 end
 
 local function newEject(player, object, delay)
@@ -964,13 +964,13 @@ end
 local function initialize()
     map_name = get_var(0, '$map')
 
-    if not vehicle_meta[map_name] then -- not cached yet
-        vehicle_meta[map_name] = {}
+    if not vehicle_meta_cache[map_name] then -- not cached yet
+        vehicle_meta_cache[map_name] = {}
         for _, v in ipairs(VEHICLE_SETTINGS) do
             local tag, seats, enabled, label, insertion_order = v[1], v[2], v[3], v[4], v[5]
             local meta_id = getTag('vehi', tag)
             if meta_id then
-                vehicle_meta[map_name][meta_id] = {
+                vehicle_meta_cache[map_name][meta_id] = {
                     seats = seats,
                     enabled = enabled,
                     display_name = label,
