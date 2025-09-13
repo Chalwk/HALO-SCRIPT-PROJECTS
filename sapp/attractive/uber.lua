@@ -149,6 +149,18 @@ local VEHICLES = {
     -- CUSTOM VEHICLES:
     --================--
 
+    -- tsce_multiplayerv1
+    { 'cmt\\vehicles\\evolved_h1-spirit\\warthog\\_warthog_mp\\warthog_mp', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner'
+    }, true, 'Chain Gun Hog', { 0, 2, 1 } },
+    { 'cmt\\vehicles\\evolved_h1-spirit\\warthog\\_warthog_rocket\\warthog_rocket', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner'
+    }, true, 'Rocket Hog', { 0, 2, 1 } },
+
     -- bc_raceway_final_mp
     { 'levels\\test\\racetrack\\custom_hogs\\mp_warthog_green', {
         [0] = 'driver',

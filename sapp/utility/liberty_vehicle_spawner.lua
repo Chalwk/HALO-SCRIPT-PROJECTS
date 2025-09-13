@@ -40,18 +40,95 @@ local VEHICLES = {
     --     -- Add more keyword here
     -- }
 
+    ----------------
+    -- STOCK MAPS --
+    ----------------
+
+    ["bloodgulch"] = {
+        ["hog"] = "vehicles\\warthog\\mp_warthog",
+        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+    },
+    ["sidewinder"] = {
+        ["hog"] = "vehicles\\warthog\\mp_warthog",
+        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+    },
+    ["prisoner"] = {
+        ["hog"] = "vehicles\\warthog\\mp_warthog",
+        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+    },
+    ["gephyrophobia"] = {
+        ["hog"] = "vehicles\\warthog\\mp_warthog",
+        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+    },
+    ["dangercanyon"] = {
+        ["hog"] = "vehicles\\warthog\\mp_warthog",
+        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+    },
+    ["boardingaction"] = {
+        ["hog"] = "vehicles\\warthog\\mp_warthog",
+        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+    },
+    ["chillout"] = {
+        ["hog"] = "vehicles\\warthog\\mp_warthog",
+        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+    },
+    ["wizard"] = {
+        ["hog"] = "vehicles\\warthog\\mp_warthog",
+        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+    },
+    ["hangemhigh"] = {
+        ["hog"] = "vehicles\\warthog\\mp_warthog",
+        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+    },
+    ["timberland"] = {
+        ["hog"] = "vehicles\\warthog\\mp_warthog",
+        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+    },
+    ["damnation"] = {
+        ["hog"] = "vehicles\\warthog\\mp_warthog",
+        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+    },
+    ["ratrace"] = {
+        ["hog"] = "vehicles\\warthog\\mp_warthog",
+        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+    },
+    ["carousel"] = {
+        ["hog"] = "vehicles\\warthog\\mp_warthog",
+        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+    },
+    ["construct"] = {
+        ["hog"] = "vehicles\\warthog\\mp_warthog",
+        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+    },
+    ["longest"] = {
+        ["hog"] = "vehicles\\warthog\\mp_warthog",
+        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+    },
+
+    -----------------
+    -- CUSTOM MAPS --
+    -----------------
+
     ["bc_raceway_final_mp"] = {
-        ["bhog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_blue",    -- blue
-        ["ghog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_green",   -- green
-        ["rhog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi1",  -- red and pink
-        ["grhog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi2", -- green and red
-        ["brphog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi3",-- blue, red, green, pink
+        ["bhog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_blue",     -- blue
+        ["ghog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_green",    -- green
+        ["rhog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi1",   -- red and pink
+        ["grhog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi2",  -- green and red
+        ["brphog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi3", -- blue, red, green, pink
     },
     ["camtrack-arena-race"] = {
         ["hog"] = "vehicles\\warthog\\mp_warthog",
         ["rhog"] = "vehicles\\rwarthog\\rwarthog",
     },
     ["cliffhanger"] = {
+        ["hog"] = "vehicles\\warthog\\mp_warthog",
+        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+    },
+    ["tsce_multiplayerv1"] = {
+        ["hog"] = "cmt\\vehicles\\evolved_h1-spirit\\warthog\\_warthog_mp\\warthog_mp",
+        ["rhog"] = "cmt\\vehicles\\evolved_h1-spirit\\warthog\\_warthog_rocket\\warthog_rocket",
+    },
+    ["mercury_falling"] = {
         ["hog"] = "vehicles\\warthog\\mp_warthog",
         ["rhog"] = "vehicles\\rwarthog\\rwarthog",
     },
@@ -90,10 +167,6 @@ local VEHICLES = {
         ["rhog"] = "vehicles\\rwarthog\\rwarthog",
     },
     ["prime_c3_race"] = {
-        ["hog"] = "vehicles\\warthog\\mp_warthog",
-        ["rhog"] = "vehicles\\rwarthog\\rwarthog",
-    },
-    ["timberland"] = {
         ["hog"] = "vehicles\\warthog\\mp_warthog",
         ["rhog"] = "vehicles\\rwarthog\\rwarthog",
     },
