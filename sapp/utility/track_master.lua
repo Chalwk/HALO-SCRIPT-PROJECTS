@@ -43,7 +43,6 @@ LICENSE:          MIT License
 ===============================================================================
 ]]
 
-
 api_version = '1.12.0.0'
 
 -- Configuration -------------------------------------------
@@ -178,7 +177,7 @@ local function exportLapRecords(path, stats)
     for _, map in ipairs(maps) do
         local data = stats.maps[map]
         if data.best_lap and data.best_lap.time < math_huge then
-            local line = string_format("%s, %s, %s", map, formatTime(data.best_lap.time), data.best_lap.player)
+            local line = string_format("%s, %s, %s", map, data.best_lap.time, data.best_lap.player)
             table_insert(lines, line)
         end
     end
