@@ -19,6 +19,7 @@ LICENSE:          MIT License
 local ANNOUNCEMENTS = true        -- Perioically announce available vehicles (set to false to disable)
 local ANNOUNCEMENT_INTERVAL = 180 -- Time (in seconds) between announcements
 local DESPAWN_DELAY_SECONDS = 30  -- Time (in seconds) before a spawned vehicle despawns
+local COOLDOWN_PERIOD = 10        -- Cooldown time (seconds) between vehicle spawns per player
 
 -- DEFAULT_TAGS: Fallback vehicle definitions used when a map isn't listed in CUSTOM_TAGS
 -- Format: ["keyword"] = "tag_path"
@@ -36,10 +37,10 @@ local DEFAULT_TAGS = {
 --  - tag_path: The internal path to the vehicle tag name
 local CUSTOM_TAGS = {
     ["bc_raceway_final_mp"] = {
-        ["hog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_green",    -- green
-        ["hog2"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_blue",     -- blue
-        ["hog3"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi1",  -- red and pink
-        ["hog4"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi2",  -- green and red
+        ["hog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_green",   -- green
+        ["hog2"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_blue",   -- blue
+        ["hog3"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi1", -- red and pink
+        ["hog4"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi2", -- green and red
         ["hog5"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi3", -- blue, red, green, pink
     },
     ["Cityscape-Adrenaline"] = {
@@ -70,8 +71,9 @@ api_version = "1.12.0.0"
 local map_name
 local game_started
 local height_offset = 0.3
-local active_vehicles, vehicle_meta_cache = {}, {}
+local active_vehicles, vehicle_meta_cache, player_cooldowns = {}, {}, {}
 
+local os_time = os.time
 local string_format, os_clock, pairs = string.format, os.clock, pairs
 
 local rprint, cprint, get_var = rprint, cprint, get_var
@@ -159,16 +161,38 @@ local function getKeyWords()
     return message
 end
 
+local function canSpawnVehicle(id)
+    local now = os_time()
+    local player_cooldown = player_cooldowns[id]
+
+    if player_cooldown and now < player_cooldown then
+        local remaining = player_cooldown - now
+        rprint(id, string.format("Please wait %d seconds before spawning another vehicle.", math.floor(remaining)))
+        return false
+    end
+
+    return true
+end
+
 function OnChat(id, message)
     local input = message:lower():gsub("^%s*(.-)%s*$", "%1")
     local map_config = vehicle_meta_cache[map_name]
 
     for keyword, data in pairs(map_config) do
         if input == keyword then
+            if not canSpawnVehicle(id) then return false end
+
             local x, y, z, yaw = getPos(id)
             if not x then return false end
 
             local object_id = spawn_object('', '', x, y, z + height_offset, yaw, data.meta_id)
+            if object_id == 0 then
+                rprint(id, "Failed to spawn vehicle.")
+                return false
+            end
+
+            -- Set cooldown
+            player_cooldowns[id] = os_time() + COOLDOWN_PERIOD
 
             active_vehicles[object_id] = {
                 keyword = keyword,
@@ -247,9 +271,16 @@ function OnStart()
     game_started = true
     timer(ANNOUNCEMENT_INTERVAL * 1000, "AnnounceVehicles")
     register_callbacks(true)
+
+    for i = 1, 16 do
+        if player_present(i) then
+            OnJoin(i)
+        end
+    end
 end
 
 function OnJoin(player)
+    player_cooldowns[player] = nil
     rprint(player, "Type keywords in chat to spawn vehicles:")
     rprint(player, getKeyWords())
 end
@@ -262,6 +293,7 @@ end
 
 function OnEnd()
     game_started = false
+    player_cooldowns = {}
 end
 
 function AnnounceVehicles()
