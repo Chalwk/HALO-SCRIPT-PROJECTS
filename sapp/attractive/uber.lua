@@ -1144,26 +1144,25 @@ function OnTeamSwitch(id)
     players[id].team = get_var(id, '$team')
 end
 
-function OnDamageApplication(id, _, _, damage)
-    if not DRIVER_ONLY_IMMUNE then return true, damage end
+function OnDamageApplication(id, killer, _, damage)
+    if killer ~= 0 then
+        if not DRIVER_ONLY_IMMUNE then return true, damage end
 
-    local victim_dyn = get_dynamic_player(id)
-    if victim_dyn == 0 then return true, damage end
+        local victim_dyn = get_dynamic_player(id)
+        if victim_dyn == 0 then return true, damage end
 
-    local vehicle_id = read_dword(victim_dyn + 0x11C)
-    local vehicle_obj = (vehicle_id ~= 0xFFFFFFFF) and get_object_memory(vehicle_id) or 0
-    if vehicle_obj == 0 or not validateVehicle(vehicle_obj) then
+        local vehicle_id = read_dword(victim_dyn + 0x11C)
+        local vehicle_obj = (vehicle_id ~= 0xFFFFFFFF) and get_object_memory(vehicle_id) or 0
+        if vehicle_obj == 0 or not validateVehicle(vehicle_obj) then
+            return true, damage
+        end
+
+        if read_word(victim_dyn + 0x2F0) == 0 and countOccupants(vehicle_obj) == 1 then
+            return false -- prevent driver from taking damage if they are the only occupant
+        end
         return true, damage
     end
-
-    -- Seat 0 = driver
-    if read_word(victim_dyn + 0x2F0) == 0 and countOccupants(vehicle_obj) == 1 then
-        return false
-    end
-
-    return true, damage
 end
-
 
 function OnCommand(id, command)
     local cmd = command:lower()
