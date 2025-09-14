@@ -126,6 +126,7 @@ Have an idea for a new feature or script?
 | [POQ Clan](http://poqclan.com/)                                                                    | [Website](http://poqclan.com/)           |
 | [Bigass](https://discord.gg/yUKg56uhqG)                                                            | [Discord](https://discord.gg/yUKg56uhqG) |
 | [BK (BlacksHalo)](https://www.blackshalo.com)                                                      | [Website](https://www.blackshalo.com)    |
+| [Liberty](https://discord.gg/3J2Zppghz5)                                                           | [Discord](https://discord.gg/3J2Zppghz5) |
 
 ---
 

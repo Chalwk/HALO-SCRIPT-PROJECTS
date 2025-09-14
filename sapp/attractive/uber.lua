@@ -1165,7 +1165,6 @@ function OnDamageApplication(id, _, _, damage)
     return true, damage
 end
 
-
 function OnCommand(id, command)
     local cmd = command:lower()
     local player = players[id]
