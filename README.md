@@ -13,7 +13,7 @@
 4. [Community Favorites](#community-favorites)
 5. [Contribute & Request Features](#contribute--request-features)
 6. [Community Hubs](#community-hubs)
-7. [Installers](#installers)
+7. [Halo Custom Edition Installer](#halo-custom-edition-installer)
 8. [Support](#support-my-work)
 9. [Contributors](#contributors)
 10. [Code of Conduct](#code-of-conduct)
@@ -129,12 +129,12 @@ Have an idea for a new feature or script?
 
 ---
 
-## Installers:
+## Halo Custom Edition Installer:
 
-**Note:** You need your own CD Key to install these.
+**Note:** You need your own CD Key to install this.
 
-[halo_ce_installer.zip](https://drive.google.com/file/d/1TTiBYhO9JS5Js0exRlygH9pAC2yV1KsV/view?usp=sharing) | [haloce-patch-1.0.10.zip](https://drive.google.com/file/d/1CIPg3XZ3VIm4ngUnDqLCRNSn9x-jxD6W/view?usp=drive_link)
-[halo_pc_installer.zip](https://drive.google.com/file/d/1hPFp63UzM8qBu39qXqP2TSN6u_EUd2hj/view?usp=sharing) | [halopc-patch-1.0.10.zip](https://drive.google.com/file/d/16OSQxpKiV_g0BNQESygtTrHa3TTvrm1F/view?usp=drive_link)
+[halo_ce_installer.zip](https://drive.google.com/file/d/1TTiBYhO9JS5Js0exRlygH9pAC2yV1KsV/view?usp=sharing)
+  - [haloce-patch-1.0.10.zip](https://drive.google.com/file/d/1CIPg3XZ3VIm4ngUnDqLCRNSn9x-jxD6W/view?usp=drive_link)
 
 ---
 
