@@ -11,11 +11,38 @@ DESCRIPTION:      Advanced race tracking and leaderboard system.
                   - Announces personal bests and map record achievements automatically
                   - Supports both FFA and Team race types
 
+COMMANDS:
+  /stats
+      - Usage:
+          /stats
+              -> Shows your stats on the current map
+          /stats <player id|name>
+              -> Shows the specified player's stats on the current map
+          /stats <map name>
+              -> Shows your stats on the specified map
+          /stats <player id|name> <map name>
+              -> Shows the specified player's stats on the specified map
+      - Notes:
+          Player IDs must correspond to currently online players.
+          Historical stats for offline players can be queried by name.
+
+  /top5
+      - Usage:
+          /top5 <global|map> [map name]
+              -> global -> Shows top 5 all-time global best laps
+              -> map    -> Shows top 5 all-time best laps on the specified map (or current map if omitted)
+      - Notes:
+          Optional map name only applies when using "map" scope.
+
+  /current
+    -> Shows current race rankings, including laps and best lap times
+
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 ===============================================================================
 ]]
+
 
 api_version = '1.12.0.0'
 
@@ -23,27 +50,27 @@ api_version = '1.12.0.0'
 local CONFIG = {
     STATS_FILE = "race_stats.json",       -- File to store all-time stats
     TEXT_EXPORT_FILE = "lap_records.txt", -- File to export lap records to
+
     STATS_COMMAND = "stats",              -- Command to display all-time stats
     TOP5_COMMAND = "top5",                -- Command to display top 5 best laps
     CURRENT_COMMAND = "current",          -- Command to display current race rankings
+
     EXPORT_LAP_RECORDS = true,            -- Export lap records to lap_records.txt
     MIN_LAP_TIME = 10.0,                  -- Minimum reasonable lap time in seconds
 
     -- Configurable messages
     MESSAGES = {
-        NEW_MAP_RECORD = "%s set a new map record with %s!",
-        PERSONAL_BEST = "%s beat their personal best with %s!",
-        CURRENT_GAME_BEST = "Current Game Best on %s: %s by %s",
-        ALL_TIME_BEST = "All-Time Best on %s: %s by %s",
+        NEW_MAP_RECORD = "New map record by %s: %s!",
+        PERSONAL_BEST = "New personal best for %s: %s",
+        CURRENT_GAME_BEST = "Current best on %s: %s (%s)",
+        ALL_TIME_BEST = "All-time best on %s: %s (%s)",
         NO_LAPS = "No laps completed this game.",
         NO_RECORD = "No all-time record for this map yet.",
         NO_STATS = "No stats recorded for this map yet.",
 
-        STATS_GLOBAL_HEADER = "Global Stats:",
-        STATS_BEST_LAP = "Best Lap: %s",
-        STATS_AVG_LAP = "Average Lap: %s",
-        STATS_MAP_HEADER = "Stats for %s:",
-        STATS_NO_MAP_STATS = "No statistics recorded yet for %s",
+        STATS_GLOBAL = "Global: Best %s | Avg %s",
+        STATS_MAP = "%s: Best %s | Avg %s",
+        STATS_NO_MAP = "%s: No stats yet",
 
         TOP5_GLOBAL_HEADER = "All-Time Global Best Laps:",
         TOP5_MAP_HEADER = "All-Time Best Laps on %s:",
@@ -57,17 +84,24 @@ local CONFIG = {
 -- Config ends ---------------------------------------------
 
 local io_open = io.open
-local stats_file, txt_export_file
+
 local math_floor, math_huge = math.floor, math.huge
 local table_insert, table_sort, table_concat = table.insert, table.sort, table.concat
-local string_format, string_match = string.format, string.match
+local string_format = string.format
+
+local stats_file, txt_export_file
+
 local get_var, player_present, register_callback, say_all, rprint =
     get_var, player_present, register_callback, say_all, rprint
+
 local get_dynamic_player, get_player, player_alive, read_dword, read_word =
     get_dynamic_player, get_player, player_alive, read_dword, read_word
 
 local json = loadfile('json.lua')()
+local tick_rate = 1 / 30
+
 local players, previous_time = {}, {}
+
 local all_time_stats = {
     maps = {},
     global = {
@@ -75,6 +109,7 @@ local all_time_stats = {
         players = {}
     }
 }
+
 local current_game_stats = {
     race_type = "",
     map = "",
@@ -82,13 +117,17 @@ local current_game_stats = {
     rankings = {}
 }
 
-local tick_rate = 1 / 30
-
 local function formatMessage(message, ...)
-    if select('#', ...) > 0 then
-        return message:format(...)
-    end
+    if select('#', ...) > 0 then return message:format(...) end
     return message
+end
+
+local function parseArgs(input, delimiter)
+    local result = {}
+    for substring in input:gmatch("([^" .. delimiter .. "]+)") do
+        result[#result + 1] = substring
+    end
+    return result
 end
 
 local function roundToHundredths(num)
@@ -357,61 +396,125 @@ end
 function OnCommand(id, command)
     if id == 0 then return true end
 
-    local cmd = string_match(command, "^%s*(%S+)") or ""
-    cmd = cmd:lower()
+    local args = parseArgs(command, " ")
+    if #args == 0 then return end
+
+    local cmd = args[1]:lower()
+    local arg_map = args[2]
+    local map = arg_map or current_game_stats.map
 
     if cmd == CONFIG.STATS_COMMAND then
-        local name, map = get_var(id, "$name"), current_game_stats.map
-        local global_stats = all_time_stats.global.players[name]
-        local map_stats = all_time_stats.maps[map] and all_time_stats.maps[map].players[name]
+        local target_player
+
+        if #args == 1 then
+            -- /stats -> self, current map
+            target_player = get_var(id, "$name")
+            map = current_game_stats.map
+        elseif #args == 2 then
+            local arg = args[2]
+            local pid = tonumber(arg)
+
+            if pid then
+                -- Argument is numeric -> check if player is present
+                if player_present(pid) then
+                    target_player = get_var(pid, "$name")
+                else
+                    rprint(id, "Player #" .. pid .. " is not online.")
+                    return false
+                end
+                map = current_game_stats.map
+            elseif all_time_stats.maps[arg] then
+                -- Argument matches a map -> self, that map
+                target_player = get_var(id, "$name")
+                map = arg
+            else
+                -- Treat as player name -> that player, current map
+                target_player = arg
+                map = current_game_stats.map
+            end
+        elseif #args == 3 then
+            local arg = args[2]
+            local pid = tonumber(arg)
+
+            if pid then
+                if player_present(pid) then
+                    target_player = get_var(pid, "$name")
+                else
+                    rprint(id, "Player #" .. pid .. " is not online.")
+                    return false
+                end
+            else
+                target_player = arg
+            end
+
+            map = args[3]
+        else
+            rprint(id, "Syntax error: /stats [player id|name|map] [optional map name]")
+            return false
+        end
+
+        local global_stats = all_time_stats.global.players[target_player]
+        local map_stats = all_time_stats.maps[map] and all_time_stats.maps[map].players[target_player]
 
         if global_stats then
-            rprint(id, CONFIG.MESSAGES.STATS_GLOBAL_HEADER)
-            rprint(id, formatMessage(CONFIG.MESSAGES.STATS_BEST_LAP, formatTime(global_stats.best_lap_seconds)))
-            rprint(id, formatMessage(CONFIG.MESSAGES.STATS_AVG_LAP, formatTime(global_stats.avg_lap_seconds)))
-            rprint(id, " ")
+            rprint(id, formatMessage(CONFIG.MESSAGES.STATS_GLOBAL,
+                formatTime(global_stats.best_lap_seconds),
+                formatTime(global_stats.avg_lap_seconds)))
+        else
+            rprint(id, "No global stats recorded for " .. target_player)
         end
 
         if map_stats then
-            rprint(id, formatMessage(CONFIG.MESSAGES.STATS_MAP_HEADER, map))
-            rprint(id, formatMessage(CONFIG.MESSAGES.STATS_BEST_LAP, formatTime(map_stats.best_lap_seconds)))
-            rprint(id, formatMessage(CONFIG.MESSAGES.STATS_AVG_LAP, formatTime(map_stats.avg_lap_seconds)))
+            rprint(id, formatMessage(CONFIG.MESSAGES.STATS_MAP,
+                map,
+                formatTime(map_stats.best_lap_seconds),
+                formatTime(map_stats.avg_lap_seconds)))
         else
-            rprint(id, formatMessage(CONFIG.MESSAGES.STATS_NO_MAP_STATS, map))
+            rprint(id, formatMessage(CONFIG.MESSAGES.STATS_NO_MAP, map))
         end
+
         return false
     end
 
     if cmd == CONFIG.TOP5_COMMAND then
-        local map = current_game_stats.map
-
-        rprint(id, CONFIG.MESSAGES.TOP5_GLOBAL_HEADER)
-        local global_players = {}
-        for name, stats in pairs(all_time_stats.global.players) do
-            table_insert(global_players, { name = name, best_lap = stats.best_lap_seconds })
+        if #args < 2 or #args > 3 then
+            rprint(id, "Syntax error: /top5 <global|map> [optional map name]")
+            return false
         end
-        table_sort(global_players, function(a, b) return a.best_lap < b.best_lap end)
-        for i = 1, math.min(5, #global_players) do
-            rprint(id,
-                formatMessage(CONFIG.MESSAGES.TOP5_ENTRY, i, global_players[i].name,
-                    formatTime(global_players[i].best_lap)))
-        end
-        rprint(id, " ")
 
-        if all_time_stats.maps[map] then
-            rprint(id, formatMessage(CONFIG.MESSAGES.TOP5_MAP_HEADER, map))
-            local map_players = {}
-            for name, stats in pairs(all_time_stats.maps[map].players) do
-                table_insert(map_players, { name = name, best_lap = stats.best_lap_seconds })
+        local scope = args[2]:lower() -- "global" or "map"
+        map = args[3] or current_game_stats.map
+
+        if scope == "global" then
+            rprint(id, CONFIG.MESSAGES.TOP5_GLOBAL_HEADER)
+            local global_players = {}
+            for pname, stats in pairs(all_time_stats.global.players) do
+                table_insert(global_players, { name = pname, best_lap = stats.best_lap_seconds })
             end
-            table_sort(map_players, function(a, b) return a.best_lap < b.best_lap end)
-            for i = 1, math.min(5, #map_players) do
-                rprint(id,
-                    formatMessage(CONFIG.MESSAGES.TOP5_ENTRY, i, map_players[i].name, formatTime(map_players[i].best_lap)))
+            table_sort(global_players, function(a, b) return a.best_lap < b.best_lap end)
+            for i = 1, math.min(5, #global_players) do
+                rprint(id, formatMessage(CONFIG.MESSAGES.TOP5_ENTRY, i, global_players[i].name,
+                    formatTime(global_players[i].best_lap)))
+            end
+        elseif scope == "map" then
+            if all_time_stats.maps[map] then
+                rprint(id, formatMessage(CONFIG.MESSAGES.TOP5_MAP_HEADER, map))
+                local map_players = {}
+                for pname, stats in pairs(all_time_stats.maps[map].players) do
+                    table_insert(map_players, { name = pname, best_lap = stats.best_lap_seconds })
+                end
+                table_sort(map_players, function(a, b) return a.best_lap < b.best_lap end)
+                for i = 1, math.min(5, #map_players) do
+                    rprint(id, formatMessage(CONFIG.MESSAGES.TOP5_ENTRY, i, map_players[i].name,
+                        formatTime(map_players[i].best_lap)))
+                end
+            else
+                rprint(id, formatMessage(CONFIG.MESSAGES.TOP5_NO_RECORDS, map))
             end
         else
-            rprint(id, formatMessage(CONFIG.MESSAGES.TOP5_NO_RECORDS, map))
+            rprint(id, "Syntax error: /top5 <global|map> [optional map name]")
         end
+
         return false
     end
 
