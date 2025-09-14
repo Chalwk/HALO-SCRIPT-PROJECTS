@@ -165,23 +165,23 @@ local VEHICLES = {
     { 'levels\\test\\racetrack\\custom_hogs\\mp_warthog_green', {
         [0] = 'driver',
         [1] = 'passenger'
-    }, true, 'Warthog', { 0, 1 } },
+    }, true, 'Green Warthog', { 0, 1 } },
     { 'levels\\test\\racetrack\\custom_hogs\\mp_warthog_blue', {
         [0] = 'driver',
         [1] = 'passenger'
-    }, true, 'Warthog', { 0, 1 } },
+    }, true, 'Blue Warthog', { 0, 1 } },
     { 'levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi1', {
         [0] = 'driver',
         [1] = 'passenger'
-    }, true, 'Warthog', { 0, 1 } },
+    }, true, 'Red & Pink Warthog', { 0, 1 } },
     { 'levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi2', {
         [0] = 'driver',
         [1] = 'passenger'
-    }, true, 'Warthog', { 0, 1 } },
+    }, true, 'Green & Red Warthog', { 0, 1 } },
     { 'levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi3', {
         [0] = 'driver',
         [1] = 'passenger'
-    }, true, 'Warthog', { 0, 1 } },
+    }, true, 'Blue, Red, Green & Pink Warthog', { 0, 1 } },
 
     -- bc_raceway_final_mp
     { 'levels\\test\\racetrack\\custom_hogs\\mp_warthog', {
