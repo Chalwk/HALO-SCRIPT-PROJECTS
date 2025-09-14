@@ -133,13 +133,8 @@ Have an idea for a new feature or script?
 
 **Note:** You need your own CD Key to install these.
 
-[Halo Custom Edition](https://drive.google.com/file/d/1e_qUnKUlgbAhH5m3gApBJiNb3qhXJvw-/view?usp=drive_link)
-
-- [1.0.10 Patch](https://drive.google.com/file/d/1CIPg3XZ3VIm4ngUnDqLCRNSn9x-jxD6W/view?usp=drive_link)
-
-[Halo Combat Evolved (retail)](https://drive.google.com/file/d/1ogl61Wg90vtdD5o196WFY9-JpECyTKxa/view?usp=drive_link)
-
-- [1.0.10 Patch](https://drive.google.com/file/d/16OSQxpKiV_g0BNQESygtTrHa3TTvrm1F/view?usp=drive_link)
+[halo_ce_installer.zip](https://drive.google.com/file/d/1TTiBYhO9JS5Js0exRlygH9pAC2yV1KsV/view?usp=sharing) | [haloce-patch-1.0.10.zip](https://drive.google.com/file/d/1CIPg3XZ3VIm4ngUnDqLCRNSn9x-jxD6W/view?usp=drive_link)
+[halo_pc_installer.zip](https://drive.google.com/file/d/1hPFp63UzM8qBu39qXqP2TSN6u_EUd2hj/view?usp=sharing) | [halopc-patch-1.0.10.zip](https://drive.google.com/file/d/16OSQxpKiV_g0BNQESygtTrHa3TTvrm1F/view?usp=drive_link)
 
 ---
 
