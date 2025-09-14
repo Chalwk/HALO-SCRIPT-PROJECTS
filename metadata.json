@@ -186,6 +186,12 @@
       "description": "Broadcasts custom welcome messages when special players join, with unique messages for MVPs and random generic greetings for regular players. Supports identification by IP, hash, or exact name. Fully configurable messages and prefixes.",
       "filename": "mvp_join_alerts.lua"
     },
+    "nitrous_boost": {
+      "title": "Nitrous Boost",
+      "shortDescription": "Toggleable vehicle nitrous boost with HUD and cooldown.",
+      "description": "Adds a nitrous boost system for vehicles: activate with the flashlight key, temporarily increase velocity, manage a finite nitrous meter, and view nitrous status on a HUD with automatic cooldown and regeneration.",
+      "filename": "nitrous_boost.lua"
+    },
     "portal_gun_type_1": {
       "title": "Portal Gun (Vehicle-Compatible)",
       "shortDescription": "Shoot-to-teleport system that works in vehicles",
