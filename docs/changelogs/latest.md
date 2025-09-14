@@ -45,12 +45,6 @@
 - Improved error handling for missing vehicle tags
 - Fixed timer-based announcement system
 
-### Backward Compatibility:
-
-- Maintains same basic functionality: chat-based vehicle spawning
-- Keeps same DESPAWN_DELAY_SECONDS configuration option
-- Preserves core vehicle spawning mechanics
-
 ---
 
 # Change Log: track_master.lua
@@ -113,12 +107,6 @@
 - **STATS display**: Consolidated into simpler format without headers
 - **Removed STATS_GLOBAL_HEADER, STATS_BEST_LAP, STATS_AVG_LAP, STATS_MAP_HEADER**
 
-### Backward Compatibility:
-
-- Maintains same core functionality: lap tracking, record keeping, and statistics
-- Preserves same data storage format (JSON compatibility)
-- Keeps same basic command structure (stats, top5, current)
-
 ---
 
 # Change Log: uber.lua
@@ -179,11 +167,5 @@
 2. **Enhanced Error Handling:**
     - Better validation for vehicle object memory
     - Improved player state checking
-
-### Backward Compatibility:
-
-- Maintains all existing functionality and configuration structure
-- Preserves same chat commands and user interface
-- Compatible with existing vehicle configurations
 
 ---
