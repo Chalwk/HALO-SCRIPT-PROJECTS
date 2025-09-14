@@ -29,7 +29,7 @@ api_version = '1.12.0.0'
 local get_dynamic_player, write_float, read_bit = get_dynamic_player, write_float, read_bit
 local player_present, player_alive, rprint = player_present, player_alive, rprint
 local string_rep, string_format = string.rep, string.format
-local math_floor, math_min= math.floor, math.min
+local math_floor, math_min = math.floor, math.min
 
 -- Nitrous states
 local NITROUS_STATE = {
@@ -50,10 +50,10 @@ local function getVehicle(dyn)
     local vehicle_id = read_dword(dyn + 0x11C)
     if vehicle_id == 0xFFFFFFFF then return nil end
 
-    local vehicle_object = get_object_memory(vehicle_id)
     local seat = read_word(dyn + 0x2F0)
     if seat ~= 0 then return nil end
 
+    local vehicle_object = get_object_memory(vehicle_id)
     return vehicle_object ~= 0 and vehicle_object or nil
 end
 
