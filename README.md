@@ -129,6 +129,20 @@ Have an idea for a new feature or script?
 
 ---
 
+## Installers:
+
+**Note:** You need your own CD Key to install these.
+
+[Halo Custom Edition](https://drive.google.com/file/d/1e_qUnKUlgbAhH5m3gApBJiNb3qhXJvw-/view?usp=drive_link)
+
+- [1.0.10 Patch](https://drive.google.com/file/d/1CIPg3XZ3VIm4ngUnDqLCRNSn9x-jxD6W/view?usp=drive_link)
+
+[Halo Combat Evolved (retail)](https://drive.google.com/file/d/1ogl61Wg90vtdD5o196WFY9-JpECyTKxa/view?usp=drive_link)
+
+- [1.0.10 Patch](https://drive.google.com/file/d/16OSQxpKiV_g0BNQESygtTrHa3TTvrm1F/view?usp=drive_link)
+
+---
+
 ## Support My Work
 
 Enjoy these projects? Help me continue development:
