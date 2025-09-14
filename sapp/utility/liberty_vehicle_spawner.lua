@@ -38,7 +38,7 @@ local CUSTOM_TAGS = {
     ["bc_raceway_final_mp"] = {
         ["bhog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_blue",     -- blue
         ["ghog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_green",    -- green
-        ["rphog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi1",   -- red and pink
+        ["rphog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi1",  -- red and pink
         ["grhog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi2",  -- green and red
         ["brphog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi3", -- blue, red, green, pink
     },
@@ -118,10 +118,13 @@ end
 local function isOccupied(vehicle_object)
     if vehicle_object == 0 then return false end
     for i = 1, 16 do
-        local current_vehicle = getVehicle(i)
-        if current_vehicle == vehicle_object then return true end
+        if getVehicle(i) == vehicle_object then return true end
     end
     return false
+end
+
+local function atan2(y, x)
+    return math.atan(y / x) + ((x < 0) and math.pi or 0)
 end
 
 local function getPos(id)
@@ -135,10 +138,16 @@ local function getPos(id)
         return nil
     end
 
-    local player_obj = get_dynamic_player(id)
-    if player_obj == 0 then return nil end
+    local player_dyn = get_dynamic_player(id)
+    if player_dyn == 0 then return nil end
 
-    return read_vector3d(player_obj + 0x5C)
+    local x, y, z = read_vector3d(player_dyn + 0x5C)
+
+    local cam_x = read_float(player_dyn + 0x230)
+    local cam_y = read_float(player_dyn + 0x234)
+    local yaw = atan2(cam_y, cam_x)
+
+    return x, y, z, yaw
 end
 
 local function getKeyWords()
@@ -156,10 +165,10 @@ function OnChat(id, message)
 
     for keyword, data in pairs(map_config) do
         if input == keyword then
-            local x, y, z = getPos(id)
+            local x, y, z, yaw = getPos(id)
             if not x then return false end
 
-            local object_id = spawn_object('', '', x, y, z + height_offset, 0, data.meta_id)
+            local object_id = spawn_object('', '', x, y, z + height_offset, yaw, data.meta_id)
 
             active_vehicles[object_id] = {
                 keyword = keyword,
