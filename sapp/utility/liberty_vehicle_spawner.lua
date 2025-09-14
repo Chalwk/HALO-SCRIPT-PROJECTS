@@ -19,7 +19,7 @@ LICENSE:          MIT License
 local ANNOUNCEMENTS = true        -- Perioically announce available vehicles (set to false to disable)
 local ANNOUNCEMENT_INTERVAL = 180 -- Time (in seconds) between announcements
 local DESPAWN_DELAY_SECONDS = 30  -- Time (in seconds) before a spawned vehicle despawns
-local COOLDOWN_PERIOD = 10        -- Cooldown time (seconds) between vehicle spawns per player
+local COOLDOWN_PERIOD = 5         -- Cooldown time (seconds) between vehicle spawns per player
 
 -- DEFAULT_TAGS: Fallback vehicle definitions used when a map isn't listed in CUSTOM_TAGS
 -- Format: ["keyword"] = "tag_path"
