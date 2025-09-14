@@ -468,12 +468,11 @@ local VEHICLES = {
         [2] = 'gunner'
     }, true, 'Flamehog', { 0, 2, 1 } },
 
-    -- glenns_castle, hypo_v0.3, hypothermia_v0.1, hypothermia_v0.2
+    -- glenns_castle, hypo_v0.3, hypothermia_v0.1, hypothermia_v0.2, hypothermia_race
     { 'vehicles\\civvi\\civvi', {
         [0] = 'driver',
-        [1] = 'passenger',
-        [2] = 'gunner'
-    }, true, 'Civvi', { 0, 2, 1 } },
+        [1] = 'passenger'
+    }, true, 'Civvi', { 0, 1 } },
 
     -- glupo_aco
     { 'vehicles\\sandking\\sandking', {
@@ -1164,6 +1163,7 @@ function OnDamageApplication(id, _, _, damage)
 
     return true, damage
 end
+
 
 function OnCommand(id, command)
     local cmd = command:lower()
