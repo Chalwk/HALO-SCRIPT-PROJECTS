@@ -36,11 +36,11 @@ local DEFAULT_TAGS = {
 --  - tag_path: The internal path to the vehicle tag name
 local CUSTOM_TAGS = {
     ["bc_raceway_final_mp"] = {
-        ["bhog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_blue",     -- blue
-        ["ghog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_green",    -- green
-        ["rphog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi1",  -- red and pink
-        ["grhog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi2",  -- green and red
-        ["brphog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi3", -- blue, red, green, pink
+        ["hog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_green",    -- green
+        ["hog2"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_blue",     -- blue
+        ["hog3"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi1",  -- red and pink
+        ["hog4"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi2",  -- green and red
+        ["hog5"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi3", -- blue, red, green, pink
     },
     ["Cityscape-Adrenaline"] = {
         ["hog"] = "vehicles\\g_warthog\\g_warthog",
