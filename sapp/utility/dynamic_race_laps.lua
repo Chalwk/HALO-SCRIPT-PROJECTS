@@ -14,29 +14,157 @@ LICENSE:          MIT License
 local SCORE_LIMIT_MESSAGE = 'Score limit changed to %s lap%s'
 
 local MAPS = {
-
-    -- Example format: { min_players, max_players, score_limit }
-    -- Last entry in each map is the message string.
-
-    default = { -- if map is not found in the table, use this
-        { 1,  4,  10 },
-        { 5,  8,  20 },
-        { 9,  12, 30 },
-        { 13, 16, 40 }
+    default = {
+        { 1,  4,  3 },
+        { 5,  8,  6 },
+        { 9,  12, 9 },
+        { 13, 16, 12 }
     },
 
+    -- Small technical tracks (high lap counts)
+    ['bc_raceway_final_mp'] = {
+        { 1,  4,  12 },
+        { 5,  8,  15 },
+        { 9,  12, 15 },
+        { 13, 16, 15 }
+    },
+
+    ['Camtrack-Arena-Race'] = {
+        { 1,  4,  12 },
+        { 5,  8,  15 },
+        { 9,  12, 15 },
+        { 13, 16, 15 }
+    },
+
+    -- Medium-length tracks
+    ['cliffhanger'] = {
+        { 1,  4,  8 },
+        { 5,  8,  12 },
+        { 9,  12, 15 },
+        { 13, 16, 15 }
+    },
+
+    ['islandthunder_race'] = {
+        { 1,  4,  8 },
+        { 5,  8,  12 },
+        { 9,  12, 15 },
+        { 13, 16, 15 }
+    },
+
+    ['LostCove_Race'] = {
+        { 1,  4,  8 },
+        { 5,  8,  12 },
+        { 9,  12, 15 },
+        { 13, 16, 15 }
+    },
+
+    -- Large/open maps (lower lap counts)
     ['bloodgulch'] = {
-        { 1,  4,  25 },
-        { 5,  8,  35 },
-        { 9,  12, 45 },
-        { 13, 16, 50 }
+        { 1,  4,  5 },
+        { 5,  8,  8 },
+        { 9,  12, 10 },
+        { 13, 16, 12 }
     },
+
     ['sidewinder'] = {
-        { 1,  4,  15 },
-        { 5,  8,  25 },
-        { 9,  12, 35 },
-        { 13, 16, 50 }
+        { 1,  4,  5 },
+        { 5,  8,  8 },
+        { 9,  12, 10 },
+        { 13, 16, 12 }
     },
+
+    ['icefields'] = {
+        { 1,  4,  5 },
+        { 5,  8,  8 },
+        { 9,  12, 10 },
+        { 13, 16, 12 }
+    },
+
+    ['infinity'] = {
+        { 1,  4,  5 },
+        { 5,  8,  8 },
+        { 9,  12, 10 },
+        { 13, 16, 12 }
+    },
+
+    -- Very long tracks (minimal laps)
+    ['gephyrophobia'] = {
+        { 1,  4,  3 },
+        { 5,  8,  5 },
+        { 9,  12, 8 },
+        { 13, 16, 10 }
+    },
+
+    ['New_Mombasa_Race_v2'] = {
+        { 1,  4,  3 },
+        { 5,  8,  5 },
+        { 9,  12, 8 },
+        { 13, 16, 10 }
+    },
+
+    -- Medium-to-long tracks
+    ['dangercanyon'] = {
+        { 1,  4,  6 },
+        { 5,  8,  8 },
+        { 9,  12, 10 },
+        { 13, 16, 12 }
+    },
+
+    ['Gauntlet_Race'] = {
+        { 1,  4,  6 },
+        { 5,  8,  8 },
+        { 9,  12, 10 },
+        { 13, 16, 12 }
+    },
+
+    ['hypothermia_race'] = {
+        { 1,  4,  6 },
+        { 5,  8,  8 },
+        { 9,  12, 10 },
+        { 13, 16, 12 }
+    },
+
+    ['mercury_falling'] = {
+        { 1,  4,  6 },
+        { 5,  8,  8 },
+        { 9,  12, 10 },
+        { 13, 16, 12 }
+    },
+
+    ['Mongoose_Point'] = {
+        { 1,  4,  6 },
+        { 5,  8,  8 },
+        { 9,  12, 10 },
+        { 13, 16, 12 }
+    },
+
+    ['Cityscape-Adrenaline'] = {
+        { 1,  4,  6 },
+        { 5,  8,  8 },
+        { 9,  12, 10 },
+        { 13, 16, 12 }
+    },
+
+    ['mystic_mod'] = {
+        { 1,  4,  6 },
+        { 5,  8,  8 },
+        { 9,  12, 10 },
+        { 13, 16, 12 }
+    },
+
+    ['timberland'] = {
+        { 1,  4,  6 },
+        { 5,  8,  8 },
+        { 9,  12, 10 },
+        { 13, 16, 12 }
+    },
+
+    ['tsce_multiplayerv1'] = {
+        { 1,  4,  6 },
+        { 5,  8,  8 },
+        { 9,  12, 10 },
+        { 13, 16, 12 }
+    }
 }
 
 -- CONFIG end ----------------------------------------------------------
@@ -61,9 +189,7 @@ local function changeScoreLimit(quitFlag)
     if not score_table then return end
 
     local player_count = tonumber(get_var(0, '$pn'))
-    if quitFlag then
-        player_count = player_count - 1
-    end
+    player_count = quitFlag and player_count - 1 or player_count
 
     for _, limit_data in ipairs(score_table) do
         local min, max, limit = table.unpack(limit_data)

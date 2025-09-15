@@ -16,8 +16,8 @@ LICENSE:          MIT License
 
 local config = {
     -- Messages can use the following variables:
-    -- %s   = the new score limit
-    -- %s       = pluralization character for laps/minutes
+    -- %s  = the new score limit
+    -- %s  = pluralization character for laps/minutes
 
     -- Example format: { min_players, max_players, score_limit }
 
