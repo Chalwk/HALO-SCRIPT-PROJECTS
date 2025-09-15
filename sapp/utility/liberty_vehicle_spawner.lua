@@ -27,7 +27,7 @@ local COOLDOWN_PERIOD = 5         -- Cooldown time (seconds) between vehicle spa
 --  - tag_path: The internal path to the vehicle tag name
 local DEFAULT_TAGS = {
     ["hog"] = "vehicles\\warthog\\mp_warthog",
-    ["rhog"] = "vehicles\\rwarthog\\rwarthog",
+    ["rhog"] = "vehicles\\rwarthog\\rwarthog"
 }
 
 -- CUSTOM_TAGS: Map-specific vehicle definitions (overrides DEFAULT_TAGS for listed maps)
