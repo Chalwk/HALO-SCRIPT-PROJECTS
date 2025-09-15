@@ -47,6 +47,8 @@
     "write_float",
     "write_vector3d",
     "write_word",
-        "register_callback"
+        "register_callback",
+        "write_short",
+        "write_int"
   ]
 }

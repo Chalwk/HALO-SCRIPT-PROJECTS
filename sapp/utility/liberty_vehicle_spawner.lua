@@ -20,6 +20,7 @@ local ANNOUNCEMENTS = true        -- Perioically announce available vehicles (se
 local ANNOUNCEMENT_INTERVAL = 180 -- Time (in seconds) between announcements
 local DESPAWN_DELAY_SECONDS = 30  -- Time (in seconds) before a spawned vehicle despawns
 local COOLDOWN_PERIOD = 5         -- Cooldown time (seconds) between vehicle spawns per player
+local HELP_COMMAND = "vehicles"
 
 -- DEFAULT_TAGS: Fallback vehicle definitions used when a map isn't listed in CUSTOM_TAGS
 -- Format: ["keyword"] = "tag_path"
@@ -51,8 +52,7 @@ local CUSTOM_TAGS = {
         ["hog"] = "vehicles\\g_warthog\\g_warthog",
     },
     ["Mongoose_Point"] = {
-        ["mon1"] = "vehicles\\m257_multvp\\m257_multvp",
-        ["mon2"] = "vehicles\\m257_multvp\\m257_multvp2",
+        ["hog"] = "vehicles\\m257_multvp\\m257_multvp"
     },
     ["mystic_mod"] = {
         ["hog"] = "vehicles\\puma\\puma_lt",
@@ -77,17 +77,17 @@ local os_time = os.time
 local string_format, os_clock, pairs = string.format, os.clock, pairs
 
 local rprint, cprint, get_var = rprint, cprint, get_var
-local player_present, player_alive = player_present, player_alive
-local get_dynamic_player, get_object_memory = get_dynamic_player, get_object_memory
-local lookup_tag = lookup_tag
 local read_dword, read_vector3d = read_dword, read_vector3d
+local lookup_tag, enter_vehicle = lookup_tag, enter_vehicle
+local player_present, player_alive = player_present, player_alive
 local spawn_object, destroy_object = spawn_object, destroy_object
-local enter_vehicle = enter_vehicle
+local get_dynamic_player, get_object_memory = get_dynamic_player, get_object_memory
 
 local sapp_events = {
     [cb['EVENT_TICK']] = 'OnTick',
     [cb['EVENT_JOIN']] = 'OnJoin',
-    [cb['EVENT_CHAT']] = 'OnChat'
+    [cb['EVENT_CHAT']] = 'OnChat',
+    [cb['EVENT_COMMAND']] = 'OnCommand'
 }
 
 local function register_callbacks(enable)
@@ -174,33 +174,38 @@ local function canSpawnVehicle(id)
     return true
 end
 
+local function showKeyWords(id, keywords)
+    keywords = keywords or getKeyWords()
+    rprint(id, "Type keywords in chat to spawn vehicles:")
+    rprint(id, keywords)
+end
+
+function OnCommand(id, command)
+    if id > 0 and command:lower() == HELP_COMMAND then
+        showKeyWords(id)
+        return false
+    end
+end
+
 function OnChat(id, message)
     local input = message:lower():gsub("^%s*(.-)%s*$", "%1")
     local map_config = vehicle_meta_cache[map_name]
 
-    for keyword, data in pairs(map_config) do
+    for keyword, meta_id in pairs(map_config) do
         if input == keyword then
             if not canSpawnVehicle(id) then return false end
 
             local x, y, z, yaw = getPos(id)
             if not x then return false end
 
-            local object_id = spawn_object('', '', x, y, z + height_offset, yaw, data.meta_id)
+            local object_id = spawn_object('', '', x, y, z + height_offset, yaw, meta_id)
             if object_id == 0 then
                 rprint(id, "Failed to spawn vehicle.")
                 return false
             end
 
-            -- Set cooldown
             player_cooldowns[id] = os_time() + COOLDOWN_PERIOD
-
-            active_vehicles[object_id] = {
-                keyword = keyword,
-                path = data.tag_path,
-                object = object_id,
-                despawn_time = nil
-            }
-
+            active_vehicles[object_id] = { object = object_id, despawn_time = nil }
             enter_vehicle(object_id, id, 0)
             return false
         end
@@ -231,9 +236,7 @@ function OnTick()
                 end
             else
                 -- Vehicle is occupied, reset despawn timer
-                if data.despawn_time then
-                    data.despawn_time = nil
-                end
+                if data.despawn_time then data.despawn_time = nil end
             end
         end
     end
@@ -246,11 +249,6 @@ function OnStart()
     active_vehicles = {}
 
     local cfg = CUSTOM_TAGS[map_name] or DEFAULT_TAGS
-    if not cfg then
-        cprint(string.format("[ERROR] No vehicle configuration found for map: %s", map_name), 12)
-        return
-    end
-
     if not vehicle_meta_cache[map_name] then -- not cached yet
         vehicle_meta_cache[map_name] = {}
         for keyword, tag_path in pairs(cfg) do
@@ -261,10 +259,7 @@ function OnStart()
                 vehicle_meta_cache[map_name] = nil
                 return
             end
-            vehicle_meta_cache[map_name][keyword] = {
-                tag_path = tag_path,
-                meta_id = meta_id
-            }
+            vehicle_meta_cache[map_name][keyword] = meta_id
         end
     end
 
@@ -279,10 +274,9 @@ function OnStart()
     end
 end
 
-function OnJoin(player)
-    player_cooldowns[player] = nil
-    rprint(player, "Type keywords in chat to spawn vehicles:")
-    rprint(player, getKeyWords())
+function OnJoin(id)
+    player_cooldowns[id] = nil
+    showKeyWords(id)
 end
 
 function OnScriptLoad()
@@ -302,8 +296,7 @@ function AnnounceVehicles()
     local keywords = getKeyWords()
     for i = 1, 16 do
         if player_present(i) then
-            rprint(i, "Type keywords in chat to spawn vehicles:")
-            rprint(i, keywords)
+            showKeyWords(i, keywords)
         end
     end
 
