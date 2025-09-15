@@ -12,30 +12,24 @@ DESCRIPTION:      Advanced race tracking and leaderboard system.
                   - Supports both FFA and Team race types
 
 COMMANDS:
-  /stats
-      - Usage:
-          /stats
-              -> Shows your stats on the current map
-          /stats <player id|name>
-              -> Shows the specified player's stats on the current map
-          /stats <map name>
-              -> Shows your stats on the specified map
-          /stats <player id|name> <map name>
-              -> Shows the specified player's stats on the specified map
-      - Notes:
-          Player IDs must correspond to currently online players.
-          Historical stats for offline players can be queried by name.
 
-  /top5
-      - Usage:
-          /top5 <global|map> [map name]
-              -> global -> Shows top 5 all-time global best laps
-              -> map    -> Shows top 5 all-time best laps on the specified map (or current map if omitted)
-      - Notes:
-          Optional map name only applies when using "map" scope.
+    /stats
+        - Shows your stats on the current map
+    /stats <player id|name>
+        - Shows the specified player's stats on the current map
+    /stats <map name>
+        - Shows your stats on the specified map
+    /stats <player id|name> <map name>
+        - Shows the specified player's stats on the specified map
 
-  /current
-    -> Shows current race rankings, including laps and best lap times
+    /top5 <global|map> [map name]
+        - global -> Shows top 5 all-time global best laps
+        - map    -> Shows top 5 all-time best laps on the specified map (or current map if omitted)
+
+    /current
+        - Shows current race rankings, including laps and best lap times
+
+LAST UPDATED:     16/9/2025
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

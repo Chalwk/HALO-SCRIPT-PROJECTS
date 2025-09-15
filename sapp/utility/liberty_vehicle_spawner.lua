@@ -6,7 +6,7 @@ DESCRIPTION:      On-demand vehicle spawning system with:
                   - Automatic player entry
                   - Multi-map support
 
-LAST UPDATED:     14/9/2025
+LAST UPDATED:     16/9/2025
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

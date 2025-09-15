@@ -24,7 +24,7 @@ CONFIGURATION OPTIONS:
                  - Accept/reject command customization
                  - Call radius configuration
 
-LAST UPDATED:     14/9/2025
+LAST UPDATED:     16/9/2025
 
 Copyright (c) 2020-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
