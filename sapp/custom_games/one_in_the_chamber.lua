@@ -101,9 +101,7 @@ function OnSpawn(id)
 end
 
 function OnDamage(victim, causer, _, damage)
-    if causer > 0 and victim ~= causer then
-        return true, damage * 10
-    end
+    if causer > 0 and victim ~= causer then return true, damage * 10 end
 end
 
 function OnScriptUnload() end
