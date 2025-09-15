@@ -700,6 +700,12 @@
       "description": "Automatically monitors and enforces ping limits that adjust based on server population, with warning systems, admin immunity, and detailed logging capabilities.",
       "filename": "dynamic_ping_kicker.lua"
     },
+    "dynamic_race_laps": {
+      "title": "Dynamic Race Laps",
+      "shortDescription": "Automatically adjusts the lap score limit based on player count.",
+      "description": "This script dynamically changes the lap score limit in race games depending on the number of players. It includes per-map configurations for small, medium, large, and very long tracks, ensuring balanced gameplay across different player counts. Supports automatic announcements when the score limit changes.",
+      "filename": "dynamic_race_laps.lua"
+    },
     "dynamic_score_limit": {
       "title": "Dynamic Score Limit",
       "shortDescription": "Automatically adjusts game score limits based on player count",
@@ -729,6 +735,12 @@
       "description": "Retrieves and displays the server name, with example implementation for welcome messages.",
       "shortDescription": "Accesses and utilizes server name information",
       "filename": "get_server_name.lua"
+    },
+    "infinite_ammo": {
+      "title": "Infinite Ammo",
+      "shortDescription": "Grants all players unlimited ammunition in real time.",
+      "description": "This script continuously checks all players and their equipped weapons, setting their ammo and clip counts to maximum. It works dynamically during gameplay to ensure players never run out of ammo.",
+      "filename": "infinite_ammo.lua"
     },
     "item_sky_spawner": {
       "title": "Item Sky Spawner",
