@@ -105,7 +105,7 @@ local function changeScoreLimit(quitFlag)
     player_count = quitFlag and player_count - 1 or player_count
 
     for _, limit_data in ipairs(score_table) do
-        local min, max, limit = table.unpack(limit_data)
+        local min, max, limit = unpack(limit_data)
         if player_count >= min and player_count <= max and limit ~= current_limit then
             current_limit = limit
             execute_command('scorelimit ' .. limit)
