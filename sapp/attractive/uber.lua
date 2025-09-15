@@ -43,8 +43,8 @@ local COOLDOWN_PERIOD = 10                -- Cooldown time (seconds) between Ube
 local CROUCH_TO_CALL = false              -- Enable Uber call when player crouches
 local BLOCK_OBJECTIVE = true              -- Prevent Uber calls if player is carrying an objective (e.g. flag)
 local DRIVER_ONLY_IMMUNE = true           -- Vehicles with only a driver are immune to damage
-local EJECT_FROM_DISABLE_VEHICLE = true   -- Eject players from vehicles that aren't enabled for Uber
-local EJECT_FROM_DISABLE_VEHICLE_time = 3 -- Delay before ejecting from disabled vehicle (seconds)
+local EJECT_FROM_DISABLED_VEHICLE = true   -- Eject players from vehicles that aren't enabled for Uber
+local EJECT_FROM_DISABLED_VEHICLE_TIME = 3 -- Delay before ejecting from disabled vehicle (seconds)
 local EJECT_WITHOUT_DRIVER = true         -- Eject passengers if vehicle has no driver
 local EJECT_WITHOUT_DRIVER_TIME = 5       -- Delay before ejecting without driver (seconds)
 
@@ -669,11 +669,11 @@ local function scheduleEjection(player, object, delay, reason)
 end
 
 local function scheduleEjectionIfDisabled(player, vehicle_obj, config_entry)
-    if EJECT_FROM_DISABLE_VEHICLE and not config_entry.enabled then
+    if EJECT_FROM_DISABLED_VEHICLE and not config_entry.enabled then
         scheduleEjection(
             player,
             vehicle_obj,
-            EJECT_FROM_DISABLE_VEHICLE_time,
+            EJECT_FROM_DISABLED_VEHICLE_TIME,
             fmt(MESSAGES.vehicle_not_enabled)
         )
     end
