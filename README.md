@@ -140,8 +140,7 @@ Have an idea for a new feature or script?
 ### LAA Patched Executables
 These are Large Address Aware (LAA) patched versions of Halo executables, allowing the game to use more than 2 GB of RAM on 64-bit systems:
 
-- [halo.exe (LAA Patched)](https://drive.google.com/file/d/1xlHcv-x1OPfHxjgwRMIYInLnDz7Tqi3_/view?usp=sharing)
-- [haloce.exe (LAA Patched)](https://drive.google.com/file/d/10hIn10CNRQqdHO5T2RoD4KM6RvEP3-9K/view?usp=sharing)
+- [Download Page](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/laa_patched)
 
 ---
 
