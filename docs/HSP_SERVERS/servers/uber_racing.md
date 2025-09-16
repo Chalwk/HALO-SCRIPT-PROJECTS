@@ -30,11 +30,28 @@ finish line.
 
 ---
 
-## Maps
+## Maps and Lap Numbers
 
-`bc_raceway_final_mp`, `bloodgulch`, `Camtrack-Arena-Race`, `Cityscape-Adrenaline`, `cliffhanger`, `dangercanyon`,
-`Gauntlet_Race`, `gephyrophobia`, `hornets_nest`, `hypothermia_race`, `icefields`, `infinity`, `islandthunder_race`,
-`LostCove_Race`, `mercury_falling`, `Mongoose_Point`, `mystic_mod`, `New_Mombasa_Race_v2`, `sidewinder`, `timberland`,
-`tsce_multiplayerv1`
+* `bc_raceway_final_mp` - 8 laps
+* `bloodgulch` - 10 laps
+* `Camtrack-Arena-Race` - 16 laps
+* `Cityscape-Adrenaline` - 10 laps
+* `cliffhanger` - 12 laps
+* `dangercanyon` - 10 laps
+* `Gauntlet_Race` - 10 laps
+* `gephyrophobia` - 6 laps
+* `hornets_nest` - 12 laps
+* `hypothermia_race` - 10 laps
+* `icefields` - 8 laps
+* `infinity` - 8 laps
+* `islandthunder_race` - 12 laps
+* `LostCove_Race` - 14 laps
+* `mercury_falling` - 8 laps
+* `Mongoose_Point` - 16 laps
+* `mystic_mod` - 10 laps
+* `New_Mombasa_Race_v2` - 6 laps
+* `sidewinder` - 8 laps
+* `timberland` - 10 laps
+* `tsce_multiplayerv1` - 8 laps
 
 ---
