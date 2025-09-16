@@ -20,7 +20,6 @@ local ANNOUNCEMENTS = true        -- Perioically announce available vehicles (se
 local ANNOUNCEMENT_INTERVAL = 180 -- Time (in seconds) between announcements
 local DESPAWN_DELAY_SECONDS = 30  -- Time (in seconds) before a spawned vehicle despawns
 local COOLDOWN_PERIOD = 5         -- Cooldown time (seconds) between vehicle spawns per player
-local HELP_COMMAND = "vehicles"
 
 -- DEFAULT_TAGS: Fallback vehicle definitions used when a map isn't listed in CUSTOM_TAGS
 -- Format: ["keyword"] = "tag_path"
@@ -87,7 +86,7 @@ local sapp_events = {
     [cb['EVENT_TICK']] = 'OnTick',
     [cb['EVENT_JOIN']] = 'OnJoin',
     [cb['EVENT_CHAT']] = 'OnChat',
-    [cb['EVENT_COMMAND']] = 'OnCommand'
+    [cb['EVENT_GAME_END']] = 'OnEnd',
 }
 
 local function register_callbacks(enable)
@@ -178,13 +177,6 @@ local function showKeyWords(id, keywords)
     keywords = keywords or getKeyWords()
     rprint(id, "Type keywords in chat to spawn vehicles:")
     rprint(id, keywords)
-end
-
-function OnCommand(id, command)
-    if id > 0 and command:lower() == HELP_COMMAND then
-        showKeyWords(id)
-        return false
-    end
 end
 
 function OnChat(id, message)
@@ -280,7 +272,6 @@ function OnJoin(id)
 end
 
 function OnScriptLoad()
-    register_callback(cb["EVENT_GAME_END"], "OnEnd")
     register_callback(cb["EVENT_GAME_START"], "OnStart")
     OnStart()
 end
