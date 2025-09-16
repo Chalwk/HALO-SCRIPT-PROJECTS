@@ -61,6 +61,10 @@ local CUSTOM_TAGS = {
         ["hog"] = "cmt\\vehicles\\evolved_h1-spirit\\warthog\\_warthog_mp\\warthog_mp",
         ["rhog"] = "cmt\\vehicles\\evolved_h1-spirit\\warthog\\_warthog_rocket\\warthog_rocket",
     },
+    ["hornets_nest"] = {
+        ["hog"] = "halo3\\vehicles\\warthog\\mp_warthog",
+        ["rhog"] = "halo3\\vehicles\\warthog\\rwarthog",
+    },
 }
 
 -- CONFIG ENDS ----------------------------------------------------------------
