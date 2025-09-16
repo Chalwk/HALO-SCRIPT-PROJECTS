@@ -850,6 +850,12 @@
       "description": "Developer tool that detects player teleportation events by monitoring position changes. Useful for debugging and anti-cheat systems.",
       "filename": "on_teleport.lua"
     },
+    "per_map_score_limits": {
+      "title": "Per-Map Score Limits",
+      "shortDescription": "Sets the score limit at game start based on the map",
+      "description": "Applies a fixed score limit automatically when a game starts. Each map can have a predefined limit, or a default value will be used if not listed. Useful for Race and other gametypes where consistent score limits are desired.",
+      "filename": "per_map_score_limits.lua"
+    },
     "ping_checker": {
       "title": "Ping Checker",
       "shortDescription": "Player latency monitoring tool",

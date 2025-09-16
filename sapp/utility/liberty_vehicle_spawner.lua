@@ -183,6 +183,48 @@ local function showKeyWords(id, keywords)
     rprint(id, keywords)
 end
 
+function OnScriptLoad()
+    register_callback(cb["EVENT_GAME_START"], "OnStart")
+    OnStart()
+end
+
+function OnStart()
+    if get_var(0, "$gt") == "n/a" then return end
+
+    map_name = get_var(0, "$map")
+    active_vehicles = {}
+
+    local cfg = CUSTOM_TAGS[map_name] or DEFAULT_TAGS
+    if not vehicle_meta_cache[map_name] then -- not cached yet
+        vehicle_meta_cache[map_name] = {}
+        for keyword, tag_path in pairs(cfg) do
+            local meta_id = getTag("vehi", tag_path)
+            if not meta_id then
+                register_callbacks(false)
+                cprint(string_format("[ERROR] Failed to get meta ID for vehicle: %s (%s)", keyword, tag_path), 12)
+                vehicle_meta_cache[map_name] = nil
+                return
+            end
+            vehicle_meta_cache[map_name][keyword] = meta_id
+        end
+    end
+
+    game_started = true
+    timer(ANNOUNCEMENT_INTERVAL * 1000, "AnnounceVehicles")
+    register_callbacks(true)
+
+    for i = 1, 16 do
+        if player_present(i) then
+            OnJoin(i)
+        end
+    end
+end
+
+function OnEnd()
+    game_started = false
+    player_cooldowns = {}
+end
+
 function OnChat(id, message)
     local input = message:lower():gsub("^%s*(.-)%s*$", "%1")
     local map_config = vehicle_meta_cache[map_name]
@@ -238,51 +280,9 @@ function OnTick()
     end
 end
 
-function OnStart()
-    if get_var(0, "$gt") == "n/a" then return end
-
-    map_name = get_var(0, "$map")
-    active_vehicles = {}
-
-    local cfg = CUSTOM_TAGS[map_name] or DEFAULT_TAGS
-    if not vehicle_meta_cache[map_name] then -- not cached yet
-        vehicle_meta_cache[map_name] = {}
-        for keyword, tag_path in pairs(cfg) do
-            local meta_id = getTag("vehi", tag_path)
-            if not meta_id then
-                register_callbacks(false)
-                cprint(string_format("[ERROR] Failed to get meta ID for vehicle: %s (%s)", keyword, tag_path), 12)
-                vehicle_meta_cache[map_name] = nil
-                return
-            end
-            vehicle_meta_cache[map_name][keyword] = meta_id
-        end
-    end
-
-    game_started = true
-    timer(ANNOUNCEMENT_INTERVAL * 1000, "AnnounceVehicles")
-    register_callbacks(true)
-
-    for i = 1, 16 do
-        if player_present(i) then
-            OnJoin(i)
-        end
-    end
-end
-
 function OnJoin(id)
     player_cooldowns[id] = nil
     showKeyWords(id)
-end
-
-function OnScriptLoad()
-    register_callback(cb["EVENT_GAME_START"], "OnStart")
-    OnStart()
-end
-
-function OnEnd()
-    game_started = false
-    player_cooldowns = {}
 end
 
 function AnnounceVehicles()
