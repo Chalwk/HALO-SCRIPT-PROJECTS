@@ -375,12 +375,15 @@ local function isFriendlyFire(killer, victim)
     return killer.id ~= victim.id and killer.team == victim.team
 end
 
-local function zombieVsHuman(victim, killer)
-    return killer and killer.id ~= victim.id and victim.team == TEAM_RED and killer.team == TEAM_BLUE
-end
-
-local function humanVsZombie(victim, killer)
-    return killer and killer.id ~= victim.id and victim.team == TEAM_BLUE and killer.team == TEAM_RED
+local function checkTeams(victim, killer)
+    if killer and killer.id ~= victim.id then
+        if victim.team == TEAM_RED and killer.team == TEAM_BLUE then
+            return 1 -- zombie vs human (infection)
+        elseif victim.team == TEAM_BLUE and killer.team == TEAM_RED then
+            return 0 -- human vs zombie (kill)
+        end
+    end
+    return nil
 end
 
 local function getDamageMultiplier(player)
@@ -487,21 +490,20 @@ function OnDeath(victimId, killerId)
 
     local killer = game.players[killerId]
     local victim = game.players[victimId]
-    local zombie_vs_human = zombieVsHuman(victim, killer)
-    local human_vs_zombie = humanVsZombie(victim, killer)
+    local pvp = checkTeams(victim, killer)
     local fall_damage = isFallDamage(victim.meta_id)
     local suicide = isSuicide(killerId, victimId)
 
     if killerId == 0 or (killerId == -1 and not victim.switched) or killerId == nil then
         send(victim.name .. " died!")
-    elseif zombie_vs_human then
+    elseif pvp == 1 then
         switchPlayerTeam(victim, TEAM_BLUE)
         updateTeamCounts()
 
         if checkEmptyTeams() then return end
 
         send(victim.name .. " was infected by " .. killer.name .. "!")
-    elseif human_vs_zombie then
+    elseif pvp == 0 then
         send(victim.name .. " was killed by " .. killer.name .. "!")
     elseif (suicide or fall_damage) then
         if victim.team == TEAM_RED then
