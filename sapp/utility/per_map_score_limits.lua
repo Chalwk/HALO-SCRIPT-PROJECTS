@@ -14,27 +14,27 @@ LICENSE:          MIT License
 local MAPS = {
     default = 3, -- fallback if map not listed
 
-    ['bc_raceway_final_mp'] = 6,
-    ['bloodgulch'] = 8,
+    ['bc_raceway_final_mp'] = 8,
+    ['bloodgulch'] = 10,
     ['Camtrack-Arena-Race'] = 15,
     ['Cityscape-Adrenaline'] = 10,
     ['cliffhanger'] = 12,
     ['dangercanyon'] = 10,
     ['Gauntlet_Race'] = 10,
     ['gephyrophobia'] = 5,
-    ['hornets_nest'] = 10,
+    ['hornets_nest'] = 12,
     ['icefields'] = 8,
-    ['infinity'] = 5,
+    ['infinity'] = 8,
     ['hypothermia_race'] = 10,
     ['islandthunder_race'] = 12,
-    ['LostCove_Race'] = 12,
-    ['mercury_falling'] = 10,
-    ['Mongoose_Point'] = 10,
+    ['LostCove_Race'] = 13,
+    ['mercury_falling'] = 8,
+    ['Mongoose_Point'] = 15,
     ['mystic_mod'] = 10,
     ['New_Mombasa_Race_v2'] = 5,
     ['sidewinder'] = 8,
     ['timberland'] = 10,
-    ['tsce_multiplayerv1'] = 4
+    ['tsce_multiplayerv1'] = 8
 }
 
 -- CONFIG end ----------------------------------------------------------
