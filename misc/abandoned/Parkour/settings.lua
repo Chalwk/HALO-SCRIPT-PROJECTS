@@ -60,7 +60,7 @@ return {
         -- Set the respawn time (in seconds):
         -- Default: 3
         --
-        respawn_time = 3, -- CURRENTLY SET TO ZERO FOR TESTING PURPOSES
+        respawn_time = 0, -- CURRENTLY SET TO ZERO FOR TESTING PURPOSES
         --
         -- Set the running speed:
         -- Default: 1.4

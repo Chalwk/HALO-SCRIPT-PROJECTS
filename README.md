@@ -38,11 +38,15 @@ insights to enhance, customize, and extend your multiplayer server experience.
 
 ## What are SAPP & Phasor?
 
-**SAPP** and **Phasor** are server-side extensions that provide advanced scripting and customization capabilities for **Halo: PC** and **Halo: CE** dedicated servers.
+**SAPP** and **Phasor** are server-side extensions that provide advanced scripting and customization capabilities for *
+*Halo: PC** and **Halo: CE** dedicated servers.
 
-**SAPP**, developed and maintained by **sehé** ([halo.isimaginary.com](http://halo.isimaginary.com)), is the most feature-rich and widely used extension. It provides powerful Lua scripting support, anti-cheat tools, event hooks, command handling, player management, logging, and numerous under-the-hood features.
+**SAPP**, developed and maintained by **sehé** ([halo.isimaginary.com](http://halo.isimaginary.com)), is the most
+feature-rich and widely used extension. It provides powerful Lua scripting support, anti-cheat tools, event hooks,
+command handling, player management, logging, and numerous under-the-hood features.
 
-**Phasor** was an earlier server extension with similar goals. Though no longer actively maintained, it remains compatible with many scripts and still sees use in some legacy setups.
+**Phasor** was an earlier server extension with similar goals. Though no longer actively maintained, it remains
+compatible with many scripts and still sees use in some legacy setups.
 
 ---
 
@@ -116,17 +120,17 @@ Have an idea for a new feature or script?
 
 ## Community Hubs
 
-| Community                                                                                          | Discord                                  |
-|----------------------------------------------------------------------------------------------------|------------------------------------------|
-| [Official HSP Discord](https://discord.gg/D76H7RVPC9)                                              | [Discord](https://discord.gg/D76H7RVPC9) |
-| [Open Carnage](https://opencarnage.net)                                                            | [Discord](https://discord.gg/2pf3Yjb)    |
-| [Chimera](https://opencarnage.net/index.php?/topic/6916-chimera-download-source-code-and-discord/) | [Discord](https://discord.gg/ZwQeBE2)    |
-| [Halo Net](https://halonet.net/)                                                                   | [Website](https://halonet.net/)          |
-| [XG Gaming](https://www.xgclan.com)                                                                | [Website](https://www.xgclan.com)        |
-| [POQ Clan](http://poqclan.com/)                                                                    | [Website](http://poqclan.com/)           |
-| [Bigass](https://discord.gg/yUKg56uhqG)                                                            | [Discord](https://discord.gg/yUKg56uhqG) |
-| [BK (BlacksHalo)](https://www.blackshalo.com)                                                      | [Website](https://www.blackshalo.com)    |
-| [Liberty](https://discord.gg/3J2Zppghz5)                                                           | [Discord](https://discord.gg/3J2Zppghz5) |
+| Community                                                                                          | Discord                                                               |
+|----------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------|
+| [Official HSP Discord](https://discord.gg/D76H7RVPC9)                                              | [Discord](https://discord.gg/D76H7RVPC9)                              |
+| [Open Carnage](https://opencarnage.net)                                                            | [Discord](https://discord.gg/2pf3Yjb)                                 |
+| [Chimera](https://opencarnage.net/index.php?/topic/6916-chimera-download-source-code-and-discord/) | [Discord](https://discord.gg/ZwQeBE2)                                 |
+| [Halo Net](https://halonet.net/)                                                                   | [Website](https://halonet.net/)                                       |
+| [XG Gaming](https://www.xgclan.com)                                                                | [Website](https://www.xgclan.com)                                     |
+| [POQ Clan](http://poqclan.com/)                                                                    | [Website](http://poqclan.com/)/[Discord](https://discord.gg/CgDHE7cc) |
+| [Bigass](https://discord.gg/yUKg56uhqG)                                                            | [Discord](https://discord.gg/yUKg56uhqG)                              |
+| [BK (BlacksHalo)](https://www.blackshalo.com)                                                      | [Website](https://www.blackshalo.com)                                 |
+| [Liberty](https://discord.gg/3J2Zppghz5)                                                           | [Discord](https://discord.gg/3J2Zppghz5)                              |
 
 ---
 
@@ -139,7 +143,8 @@ Have an idea for a new feature or script?
 
 ### LAA Patched Executables
 
-These are Large Address Aware (LAA) patched versions of Halo executables, allowing the game to use more than 2 GB of RAM on 64-bit systems:
+These are Large Address Aware (LAA) patched versions of Halo executables, allowing the game to use more than 2 GB of RAM
+on 64-bit systems:
 
 - [Download Page](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/laa_patched)
 
