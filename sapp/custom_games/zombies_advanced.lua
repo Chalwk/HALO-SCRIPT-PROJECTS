@@ -22,6 +22,7 @@ CONFIGURATION:
     - REQUIRED_PLAYER:            Minimum players needed to start (default: 2)
     - COUNTDOWN_DELAY:            Countdown duration in seconds (default: 5)
     - CURE_THRESHOLD:             Kills needed for zombies to become human again (default: 6)
+    - CONSECUTIVE:                Players need 'CURE_THRESHOLD' kills per life, otherwise 'CURE_THRESHOLD' kills total
     - SERVER_PREFIX:              Server message prefix (default: "**ZOMBIES**")
     - ZOMBIFY_ON_SUICIDE:         Convert humans to zombies on suicide (default: true)
     - ZOMBIFY_ON_FALL_DAMAGE:     Convert humans to zombies on fall damage (default: true)
@@ -60,6 +61,7 @@ local CONFIG = {
     REQUIRED_PLAYERS = 2,
     COUNTDOWN_DELAY = 5,
     CURE_THRESHOLD = 6,
+    CONSECUTIVE = false,
     SERVER_PREFIX = "**ZOMBIES**",
     ZOMBIFY_ON_SUICIDE = true,
     ZOMBIFY_ON_FALL_DAMAGE = true,
@@ -69,10 +71,10 @@ local CONFIG = {
     ATTRIBUTES_COMMAND_ENABLED = true,
     ATTRIBUTES_COMMAND = "attributes",
     ZOMBIE_COUNT = {
-        {1, 4, 1},
-        {5, 8, 2},
-        {9, 12, 3},
-        {13, 16, 4},
+        { 1,  4,  1 },
+        { 5,  8,  2 },
+        { 9,  12, 3 },
+        { 13, 16, 4 }
     },
     ATTRIBUTES = {
         ['alpha_zombies'] = {
@@ -272,7 +274,7 @@ local function createPlayer(id)
         drone = nil,
         assign = false,
         is_last_man_standing = false,
-        consecutive_kills = 0,
+        kills = 0,
         meta_id = nil,
         switched = nil
     }
@@ -311,6 +313,10 @@ local function send(id, msg)
     rprint(id, msg)
 end
 
+local function resetKills(player)
+    if CONFIG.CONSECUTIVE then player.kills = 0 end
+end
+
 local function switchPlayerTeam(player, new_team, zombie_type)
     player.switched = true
     execute_command('st ' .. player.id .. ' ' .. new_team)
@@ -320,7 +326,7 @@ local function switchPlayerTeam(player, new_team, zombie_type)
         player.zombie_type = zombie_type or 'standard_zombies'
         applyPlayerAttributes(player, player.zombie_type)
         player.assign = true
-        player.consecutive_kills = 0
+        player.kills = 0
         if CONFIG.SHOW_ZOMBIE_TYPE_MESSAGES then
             if player.zombie_type == 'alpha_zombies' then
                 send(player.id, "You are an Alpha Zombie! (Stronger/faster than normal zombies)")
@@ -368,11 +374,11 @@ end
 local function checkZombieCure(killer)
     if CONFIG.CURE_THRESHOLD <= 0 then return false end
 
-    killer.consecutive_kills = killer.consecutive_kills + 1
+    killer.kills = killer.kills + 1
 
-    if killer.consecutive_kills >= CONFIG.CURE_THRESHOLD then
+    if killer.kills >= CONFIG.CURE_THRESHOLD then
         switchPlayerTeam(killer, TEAM_RED)
-        killer.consecutive_kills = 0
+        killer.kills = 0 -- reset once cured
         updateTeamCounts()
 
         if game.red_count > 1 and game.last_man_id then
@@ -525,7 +531,7 @@ local function showAttributes(id)
     end
 
     if player.team == TEAM_BLUE and CONFIG.CURE_THRESHOLD > 0 then
-        send(id, "Cure Progress: " .. player.consecutive_kills .. "/" .. CONFIG.CURE_THRESHOLD .. " kills")
+        send(id, "Cure Progress: " .. player.kills .. "/" .. CONFIG.CURE_THRESHOLD .. " kills")
     end
 end
 
@@ -650,7 +656,7 @@ function OnDeath(victimId, killerId)
     local fall_damage = isFallDamage(victim.meta_id)
     local suicide = isSuicide(killerId, victimId)
 
-    if victim.team == TEAM_BLUE then victim.consecutive_kills = 0 end
+    if victim.team == TEAM_BLUE then resetKills(victim) end
 
     if killerId == 0 or (killerId == -1 and not victim.switched) or killerId == nil then
         send(nil, victim.name .. " died!")
