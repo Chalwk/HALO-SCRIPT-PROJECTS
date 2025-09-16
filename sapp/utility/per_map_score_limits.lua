@@ -1,7 +1,7 @@
 --[[
 ===============================================================================
 SCRIPT NAME:      per_map_score_limits.lua
-DESCRIPTION:      Sets a static score limit at game start based on the map
+DESCRIPTION:      Sets a static score limit at game start based on the map.
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -14,36 +14,27 @@ LICENSE:          MIT License
 local MAPS = {
     default = 3, -- fallback if map not listed
 
-    -- Small technical tracks
-    ['bc_raceway_final_mp'] = 15,
-    ['Camtrack-Arena-Race'] = 15,
-
-    -- Medium-length tracks
-    ['cliffhanger'] = 12,
-    ['islandthunder_race'] = 12,
-    ['LostCove_Race'] = 12,
-    ['hornets_nest'] = 12,
-
-    -- Large/open maps
+    ['bc_raceway_final_mp'] = 6,
     ['bloodgulch'] = 8,
-    ['sidewinder'] = 8,
-    ['icefields'] = 8,
-    ['infinity'] = 8,
-
-    -- Very long tracks
-    ['gephyrophobia'] = 5,
-    ['New_Mombasa_Race_v2'] = 5,
-
-    -- Medium-to-long tracks
+    ['Camtrack-Arena-Race'] = 15,
+    ['Cityscape-Adrenaline'] = 10,
+    ['cliffhanger'] = 12,
     ['dangercanyon'] = 10,
     ['Gauntlet_Race'] = 10,
+    ['gephyrophobia'] = 5,
+    ['hornets_nest'] = 10,
+    ['icefields'] = 8,
+    ['infinity'] = 5,
     ['hypothermia_race'] = 10,
+    ['islandthunder_race'] = 12,
+    ['LostCove_Race'] = 12,
     ['mercury_falling'] = 10,
     ['Mongoose_Point'] = 10,
-    ['Cityscape-Adrenaline'] = 10,
     ['mystic_mod'] = 10,
+    ['New_Mombasa_Race_v2'] = 5,
+    ['sidewinder'] = 8,
     ['timberland'] = 10,
-    ['tsce_multiplayerv1'] = 10,
+    ['tsce_multiplayerv1'] = 4
 }
 
 -- CONFIG end ----------------------------------------------------------
