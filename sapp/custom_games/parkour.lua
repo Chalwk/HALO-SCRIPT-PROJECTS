@@ -528,24 +528,25 @@ function OnDeath(id)
 
     player.deaths = player.deaths + 1
 
-    -- Always respawn at last checkpoint if available
-    if player.current_checkpoint then
-        player.spawn_target = {
-            player.current_checkpoint[1],
-            player.current_checkpoint[2],
-            player.current_checkpoint[3],
-            player.current_checkpoint[4]
-        }
-    end
-
     -- Restart course if too many deaths
     if player.deaths >= map_cfg.restart_after then
         player.started = false
         player.finished = false
         player.checkpoint_index = 0
+        player.spawn_target = nil
+        player.current_checkpoint = nil
         player.deaths = 0
         rprint(id, "You have been reset to the start line.")
     else
+        -- Always respawn at last checkpoint if available
+        if player.current_checkpoint then
+            player.spawn_target = {
+                player.current_checkpoint[1],
+                player.current_checkpoint[2],
+                player.current_checkpoint[3],
+                player.current_checkpoint[4]
+            }
+        end
         rprint(id, "You have " .. (map_cfg.restart_after - player.deaths) .. " more deaths before restarting.")
     end
 
