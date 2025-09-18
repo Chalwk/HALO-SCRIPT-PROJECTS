@@ -9,7 +9,7 @@
 
 ## Overview
 
-**EV Jump** is a fast-paced, precision parkour challenge where players navigate custom-designed courses full of jumps, ledges, and obstacles. The goal is to complete the course **as quickly as possible**, passing through checkpoints and finishing the run in record time. Success depends on **timing, movement precision, and course knowledge**.
+**EV Jump** is a parkour challenge where players navigate a course full of jumps, ledges, and obstacles. The goal is to complete the course **as quickly as possible**, passing through checkpoints and finishing the run in record time. Success depends on **timing, movement precision, and course knowledge**.
 
 ### Key Features
 
