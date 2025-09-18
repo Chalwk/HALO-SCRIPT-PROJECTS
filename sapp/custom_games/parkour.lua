@@ -161,22 +161,10 @@ end
 local map_cfg
 local game_over
 local stats_file
+local stats = {}
 local players = {}
 local oddballs = {}
 local alias_to_command = {}
-local all_time_stats = {
-    maps = {},
-    global = {
-        best_time = { time = math_huge, player = "", map = "" },
-        players = {}
-    }
-}
-
-local current_game_stats = {
-    map = "",
-    best_time = { time = math_huge, player = "" },
-    rankings = {}
-}
 
 local sapp_events = {
     [cb['EVENT_TICK']] = 'OnTick',
@@ -259,13 +247,7 @@ local function validatePlayer(id)
     return player_present(id) and player_alive(id) and dyn_player ~= 0
 end
 
-local function hasCommandPermission(id, cmd)
-    local command_data = alias_to_command[cmd]
-    if not command_data then
-        rprint(id, "Unknown command")
-        return false
-    end
-
+local function hasCommandPermission(id, command_data)
     local level_required = command_data.level
     local player_level = tonumber(get_var(id, "$lvl"))
 
@@ -368,90 +350,58 @@ local function isCrossingLine(px, py, pz, lineA, lineB, prevPos)
     return false
 end
 
-local function updateStats(stats, completionTime)
-    if completionTime < stats.best_time_seconds then
-        stats.best_time_seconds = completionTime
-    end
-    local total_time = (stats.avg_time_seconds or 0) * ((stats.completions or 0)) + completionTime
-    stats.completions = (stats.completions or 0) + 1
-    stats.avg_time_seconds = total_time / stats.completions
-end
+local function updateStats(player, completionTime)
+    local map = map_cfg.map
+    local name = player.name
 
-local function updatePlayerStats(player, completionTime)
-    local name, map = player.name, current_game_stats.map
-    local map_stats = all_time_stats.maps[map] or {
-        best_time = { time = math_huge, player = "" },
-        players = {},
-    }
-    local global_stats = all_time_stats.global
-
-    local is_personal_best = false
-    local is_map_record = false
-
-    -- Check for personal best
-    if completionTime < player.best_time then
-        player.best_time = completionTime
-        is_personal_best = true
-    end
-
-    -- Check for map record
-    if completionTime < map_stats.best_time.time then
-        map_stats.best_time = { time = completionTime, player = name }
-        is_map_record = true
-    end
-
-    -- Check for global record
-    if completionTime < global_stats.best_time.time then
-        global_stats.best_time = { time = completionTime, player = name, map = map }
-    end
-
-    -- Initialize player statistics if not present
-    all_time_stats.maps[map] = map_stats
-    if not global_stats.players[name] then
-        global_stats.players[name] = {
-            best_time_seconds = completionTime,
-            completions = 1,
-            avg_time_seconds = completionTime
-        }
-    end
-    if not map_stats.players[name] then
-        map_stats.players[name] = {
-            best_time_seconds = completionTime,
-            completions = 1,
-            avg_time_seconds = completionTime
+    -- Initialize map entry if needed
+    if not stats[map] then
+        stats[map] = {
+            best_time = { time = math_huge, player = "" },
+            players = {}
         }
     end
 
-    -- Update statistics
-    updateStats(global_stats.players[name], completionTime)
-    updateStats(map_stats.players[name], completionTime)
+    -- Initialize player entry if needed
+    if not stats[map].players[name] then
+        stats[map].players[name] = {
+            best_time_seconds = math_huge,
+            completions = 0,
+            avg_time_seconds = 0
+        }
+    end
 
-    -- Announce achievements
-    if is_map_record then
-        say_all(formatMessage("New map record by %s: %s!", name, formatTime(completionTime)))
-    elseif is_personal_best then
+    local player_stats = stats[map].players[name]
+    local map_stats = stats[map]
+
+    -- Update personal best
+    if completionTime < player_stats.best_time_seconds then
+        player_stats.best_time_seconds = completionTime
         say_all(formatMessage("New personal best for %s: %s", name, formatTime(completionTime)))
     end
 
-    -- Update current game rankings
-    current_game_stats.rankings = {}
-    for _, p in pairs(players) do
-        if p.completions > 0 then
-            table_insert(current_game_stats.rankings,
-                { name = p.name, completions = p.completions, best_time = p.best_time })
-        end
+    -- Update map record
+    if completionTime < map_stats.best_time.time then
+        map_stats.best_time = { time = completionTime, player = name }
+        say_all(formatMessage("New map record by %s: %s!", name, formatTime(completionTime)))
     end
-    table_sort(current_game_stats.rankings, function(a, b)
-        return a.completions > b.completions or (a.completions == b.completions and a.best_time < b.best_time)
-    end)
+
+    -- Update averages
+    local total_time = player_stats.avg_time_seconds * player_stats.completions + completionTime
+    player_stats.completions = player_stats.completions + 1
+    player_stats.avg_time_seconds = total_time / player_stats.completions
+
+    -- Update player's session stats
+    player.best_time = player_stats.best_time_seconds
+    player.completions = player_stats.completions
 end
 
 local function saveStats()
-    writeJSON(stats_file, all_time_stats)
+    writeJSON(stats_file, stats)
 end
 
 local function loadStats()
-    all_time_stats = readJSON(stats_file, all_time_stats)
+    stats = readJSON(stats_file, {})
 end
 
 function OnScriptLoad()
@@ -500,10 +450,16 @@ function OnStart()
     end
 
     map_cfg = cfg
+    map_cfg.map = map
     game_over = false
-    current_game_stats.map = map
-    current_game_stats.best_time = { time = math_huge, player = "" }
-    current_game_stats.rankings = {}
+
+    -- Initialize map stats if needed
+    if not stats[map] then
+        stats[map] = {
+            best_time = { time = math_huge, player = "" },
+            players = {}
+        }
+    end
 
     players = {}
     for i = 1, 16 do
@@ -521,19 +477,22 @@ function OnEnd()
 end
 
 function OnJoin(id)
+    local name = get_var(id, '$name')
+    local map = map_cfg.map
+
     players[id] = {
         id = id,
-        name = get_var(id, '$name'),
+        name = name,
         started = false,
         finished = false,
         start_time = 0,
         completion_time = 0,
-        best_time = math_huge,
-        completions = 0,
+        best_time = stats[map] and stats[map].players[name] and stats[map].players[name].best_time_seconds or math_huge,
+        completions = stats[map] and stats[map].players[name] and stats[map].players[name].completions or 0,
         deaths = 0,
         checkpoint_index = 0,
         current_checkpoint = nil,
-        prev_tick_pos = nil -- Added for line crossing detection
+        prev_tick_pos = nil
     }
 end
 
@@ -634,6 +593,9 @@ function OnTick()
         -- Skip if we don't have a previous position
         if not prev_tick_pos then goto continue end
 
+        local cur_index = player.checkpoint_index
+        local max = #map_cfg.checkpoints
+
         -- Check if player is crossing the start line
         if not player.started and isCrossingLine(x, y, z,
                 { map_cfg.start[1], map_cfg.start[2], map_cfg.start[3] },
@@ -653,20 +615,18 @@ function OnTick()
                 { map_cfg.finish[4], map_cfg.finish[5], map_cfg.finish[6] },
                 prev_tick_pos) then
             -- Make sure all checkpoints were passed
-            if player.checkpoint_index >= #map_cfg.checkpoints then
+            if cur_index >= max then
                 player.finished = true
                 player.completion_time = now - player.start_time
-                player.completions = player.completions + 1
 
                 -- Update stats
-                updatePlayerStats(player, player.completion_time)
+                updateStats(player, player.completion_time)
 
                 rprint(id, "Course completed in " .. formatTime(player.completion_time) .. "!")
                 rprint(id, "Type /hardreset to start over.")
                 hardReset(id, true)
             else
-                rprint(id,
-                    "You missed some checkpoints! (" .. player.checkpoint_index .. "/" .. #map_cfg.checkpoints .. ")")
+                rprint(id, "You missed some checkpoints! (" .. cur_index .. "/" .. max .. ")")
             end
         end
 
@@ -677,10 +637,10 @@ function OnTick()
                 local can_claim = false
                 if map_cfg.in_order then
                     -- must be exactly the next checkpoint in sequence
-                    can_claim = (i == player.checkpoint_index + 1)
+                    can_claim = (i == cur_index + 1)
                 else
                     -- allow any checkpoint higher than current
-                    can_claim = (i > player.checkpoint_index)
+                    can_claim = (i > cur_index)
                 end
 
                 if can_claim and isNearPoint(x, y, z, checkpoint, 1.0) then
@@ -689,7 +649,7 @@ function OnTick()
                     local elapsed = now - player.start_time
                     rprint(id, string_format(
                         "Checkpoint %d/%d reached! Total time: %s",
-                        i, #map_cfg.checkpoints,
+                        i, max,
                         formatTime(elapsed)
                     ))
 
@@ -712,7 +672,7 @@ function OnCommand(id, command)
 
     local command_data = alias_to_command[args[1]]
     if not command_data then return true end -- allow all other commands
-    if not hasCommandPermission(id, args[1]) then return false end
+    if not hasCommandPermission(id, command_data) then return false end
 
     local cmd = command_data.command
 
@@ -736,19 +696,21 @@ function OnCommand(id, command)
             rprint(id, "No checkpoint reached yet. Use hardreset to start over.")
         end
     elseif cmd == "stats" then -- shows top 5 players for this map only
-        local map = current_game_stats.map
-        if not map or not all_time_stats.maps[map] then
+        local map = map_cfg.map
+        if not stats[map] then
             rprint(id, "No stats available for this map.")
             return false
         end
-        local map_stats = all_time_stats.maps[map].players
+
         local ranking = {}
-        for name, data in pairs(map_stats) do
+        for name, data in pairs(stats[map].players) do
             table_insert(ranking, { name = name, best_time = data.best_time_seconds, completions = data.completions })
         end
+
         table_sort(ranking, function(a, b)
             return a.best_time < b.best_time
         end)
+
         rprint(id, "Top 5 players for map: " .. map)
         for i = 1, math.min(5, #ranking) do
             local p = ranking[i]
