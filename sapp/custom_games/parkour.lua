@@ -71,10 +71,14 @@ local CONFIG = {
             -- Starting line (straight line between the two points):
             start = {
                 -- Point A (line marker)
-                -0.80, -9.93, .30,
+                -0.80,
+                -9.93,
+                .30,
 
                 -- Point B (line marker)
-                0.30, -9.93, 0.30,
+                0.30,
+                -9.93,
+                0.30,
 
                 -- Spawn position + yaw (x,y,z,radians):
                 spawn = { -0.36, -10.01, 0.30, 1.5639 } -- facing north
@@ -144,6 +148,14 @@ local function getConfigPath()
     return read_string(read_dword(sig_scan('68??????008D54245468') + 0x1))
 end
 
+local function parseArgs(input)
+    local result = {}
+    for substring in input:gmatch("([^%s]+)") do
+        result[#result + 1] = substring
+    end
+    return result
+end
+
 local function formatTime(seconds)
     if seconds == 0 or seconds == math_huge then return "00:00.00" end
 
@@ -178,6 +190,7 @@ end
 local map_cfg
 local game_over
 local stats_file
+local falling_meta_id, distance_meta_id
 local players = {}
 local oddballs = {}
 local alias_to_command = {}
@@ -203,7 +216,8 @@ local sapp_events = {
     [cb['EVENT_SPAWN']] = 'OnSpawn',
     [cb['EVENT_GAME_END']] = 'OnEnd',
     [cb['EVENT_COMMAND']] = 'OnCommand',
-    [cb['EVENT_PRESPAWN']] = 'OnPreSpawn'
+    [cb['EVENT_PRESPAWN']] = 'OnPreSpawn',
+    [cb['EVENT_DAMAGE_APPLICATION']] = 'OnDamage'
 }
 
 local function registerCallbacks(enable)
@@ -244,6 +258,11 @@ local function getFlagAndOddballData()
     return flag_id, flag_name, oddball_id, oddball_name
 end
 
+local function getTag(class, name)
+    local tag = lookup_tag(class, name)
+    return tag ~= 0 and read_dword(tag + 0xC) or nil
+end
+
 local function getPos(dyn_player)
     local crouch = read_float(dyn_player + 0x50C)
     local vehicle_id = read_dword(dyn_player + 0x11C)
@@ -265,6 +284,11 @@ local function setRespawnTime(id)
     if player ~= 0 then
         write_dword(player + 0x2C, map_cfg.respawn_time)
     end
+end
+
+
+local function isFallDamage(metaId)
+    return metaId == falling_meta_id or metaId == distance_meta_id
 end
 
 local function spawnObject(x, y, z, meta_id)
@@ -483,6 +507,9 @@ function OnStart()
     current_game_stats.best_time = { time = math_huge, player = "" }
     current_game_stats.rankings = {}
 
+    falling_meta_id = getTag('jpt!', 'globals\\falling')
+    distance_meta_id = getTag('jpt!', 'globals\\distance')
+
     players = {}
     for i = 1, 16 do
         if player_present(i) then OnJoin(i) end
@@ -518,6 +545,8 @@ function OnQuit(id)
 end
 
 function OnPreSpawn(id)
+    if game_over then return end
+
     local player = players[id]
     if not player or not player.spawn_target then return end
 
@@ -543,6 +572,8 @@ function OnSpawn(id)
 end
 
 function OnDeath(id)
+    if game_over then return end
+
     local player = players[id]
     if not player or not player.started then return end
 
@@ -572,10 +603,28 @@ function OnDeath(id)
         player.finished = false
         player.checkpoint_index = 0
         player.deaths = 0
-        rprint(id, "You've died too many times! Restarting the course...")
+
+        -- set spawn target to start line
+        player.spawn_target = {
+            map_cfg.start.spawn[1],
+            map_cfg.start.spawn[2],
+            map_cfg.start.spawn[3],
+            map_cfg.start.spawn[4]
+        }
+
+        rprint(id, "You have been reset to the start line.")
+    else
+        rprint(id, "You have " .. (map_cfg.restart_after - player.deaths) .. " more deaths before restarting.")
     end
 
     setRespawnTime(id)
+end
+
+function OnDamage(_, _, metaId, damage)
+    if game_over then return true, damage end
+    if metaId == falling_meta_id or metaId == distance_meta_id then
+        return true, damage * 100
+    end
 end
 
 local function anchorOddballs()
@@ -683,14 +732,6 @@ function OnTick()
 
         ::continue::
     end
-end
-
-local function parseArgs(input)
-    local result = {}
-    for substring in input:gmatch("([^%s]+)") do
-        result[#result + 1] = substring
-    end
-    return result
 end
 
 function OnCommand(id, command)
