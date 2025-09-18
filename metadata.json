@@ -446,6 +446,12 @@
       "description": "Implements a tense pistol duel mode where players start with one bullet that guarantees instant kills. Features bullet economy management (gain bullets for kills), melee combat when out of ammo, and configurable damage settings. Includes weapon restrictions, precision-based gameplay mechanics, and risk/reward decision making.",
       "filename": "one_in_the_chamber.lua"
     },
+    "parkour": {
+      "title": "Parkour Challenge",
+      "shortDescription": "Timed obstacle course with checkpoints and leaderboards",
+      "description": "Implements a parkour course mode where players navigate custom maps using running, jumping, and checkpoint mechanics. Tracks player progress, start/finish lines, and checkpoint order. Features statistics tracking (best times, average times, completions), respawn at last checkpoint, death limits, and full run resets. Includes optional visual aids like flags and oddball markers, and supports configurable map settings and player commands for teleporting, resetting, and viewing leaderboards.",
+      "filename": "parkour.lua"
+    },
     "parkour_timer": {
       "title": "Parkour Timer",
       "shortDescription": "Automated obstacle course timing system",
