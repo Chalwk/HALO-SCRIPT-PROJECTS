@@ -11,6 +11,16 @@ DESCRIPTION:      Halo SAPP/Lua parkour plugin.
                   - Includes optional visual aids (flags and oddball markers) for starts, finishes, and checkpoints.
                   - Fully configurable per map via the CONFIG table.
 
+CONFIGURATION:    spawn_flags: Set to true to spawn flag poles at start/finish lines
+                  spawn_checkpoint_markers: Set to true to spawn visual markers at checkpoints
+                  restart_after: Number of deaths after which player is reset to start
+                  respawn_time: Set the respawn timer (seconds), set nil to disable
+                  running_speed: Player speed while running the course
+                  start: Coordinates for start line and spawn point (x, y, z, yaw)
+                  finish: Coordinates for finish line (x, y, z)
+                  in_order: If true, checkpoints must be crossed in order
+                  checkpoints: List of checkpoint positions and yaw (x, y, z, yaw)
+
 REQUIREMENTS:     Install to the same directory as sapp.dll
                   - Lua JSON Parser:  http://regex.info/blog/lua/json
 
@@ -27,77 +37,22 @@ local CONFIG = {
     -- Format: {internal_command = {table_of_aliases, permission_level}}
     -- -1 = public, 1-4 = admin
     COMMANDS = {
-        checkpoint = { { "cp" }, 4 },             -- teleport to checkpoint
-        getposition = { { "getrot" }, 4 },        -- get position + yaw
-        checkpointreset = { { "reset" }, -1 },    -- reset to last checkpoint
-        runreset = { { "runreset" }, -1 },        -- full run reset to start
-        hardreset = { { "hardreset" }, -1 },      -- hard reset
-        statistics = { { "stats", "top5" }, -1 }, -- show personal stats
-        leaderboard = { { "leaderboard" }, -1 },  -- show leaderboard
-        rankings = { { "current" }, -1 },         -- show current game rankings
+        get_position = { { "getpos" }, 4 },
+        hard_reset = { { "hardreset" }, -1 },
+        soft_reset = { { "softreset" }, -1 },
+        stats = { { "stats" }, -1 },
     },
 
     MAPS = {
         ['EV_jump'] = {
-            --
-            -- Set to true to enable flag spawning:
-            -- Flag poles are a visual representation of the start/finish lines:
-            -- Players need to cross a line to start or finish the course.
-            -- Default: true
-            --
             spawn_flags = true,
-            --
-            -- Set to true to enable checkpoint markers:
-            -- Checkpoint markers are small markers that show the location of each checkpoint.
-            -- Default: true
-            --
             spawn_checkpoint_markers = true,
-            --
-            -- If you die this many times, you will have to restart the course:
-            -- Default: 10
-            --
             restart_after = 10,
-            --
-            -- Set the respawn time (in seconds):
-            -- Default: 3
-            --
-            respawn_time = 0, -- set to 'nil' to disable
-            --
-            -- Set the running speed:
-            -- Default: 1.4
-            --
+            respawn_time = 0,
             running_speed = 1.4,
-            --
-            -- Starting line (straight line between the two points):
-            start = {
-                -- Point A (line marker)
-                -0.80,
-                -9.93,
-                .30,
-
-                -- Point B (line marker)
-                0.30,
-                -9.93,
-                0.30,
-
-                -- Spawn position + yaw (x,y,z,radians):
-                spawn = { -0.36, -10.01, 0.30, 1.5639 } -- facing north
-            },
-            --
-            -- Finish line (straight line between the two points):
-            -- 3x 32-bit floating point numbers.
-            finish = {
-                -- Point A (3x 32-bit floating point numbers):
-                50.19, 259.27, -18.62,
-
-                -- Point B (3x 32-bit floating point numbers):
-                52.79, 259.27, -18.62
-            },
-            --
-            -- Checkpoints Settings:
+            start = { -0.80, -9.93, .30, 0.30, -9.93, 0.30 },
+            finish = { 50.19, 259.27, -18.62, 52.79, 259.27, -18.62 },
             in_order = true,
-            -- Format: {x, y, z, yaw}
-            --
             checkpoints = {
                 { 0.11,   11.76,  0.00,  2.4748 },
                 { -10.31, 45.01,  0.00,  1.5598 },
@@ -110,7 +65,23 @@ local CONFIG = {
                 { 39.51,  137.21, 2.78,  1.5210 },
                 { 51.53,  198.75, 5.36,  2.1197 }
             }
-        }
+        },
+
+        ['training_jump'] = {
+            spawn_flags = true,
+            spawn_checkpoint_markers = true,
+            restart_after = 10,
+            respawn_time = 0,
+            running_speed = 1.57,
+            start = { -0.89, -37.80, 0.00, 0.87, -37.80, 0.00 },
+            finish = { -0.71, 41.11, 0.00, 0.69, 41.08, 0.00 },
+            in_order = true,
+            checkpoints = {
+                { -0.01, -20.90, 0.50, 1.5682 },
+                { -0.01, 3.10,   0.20, 1.5682 },
+                { -0.01, 25.42,  2.00, 1.5717 },
+            }
+        },
 
         -- more maps here:
     }
@@ -190,7 +161,6 @@ end
 local map_cfg
 local game_over
 local stats_file
-local falling_meta_id, distance_meta_id
 local players = {}
 local oddballs = {}
 local alias_to_command = {}
@@ -216,8 +186,7 @@ local sapp_events = {
     [cb['EVENT_SPAWN']] = 'OnSpawn',
     [cb['EVENT_GAME_END']] = 'OnEnd',
     [cb['EVENT_COMMAND']] = 'OnCommand',
-    [cb['EVENT_PRESPAWN']] = 'OnPreSpawn',
-    [cb['EVENT_DAMAGE_APPLICATION']] = 'OnDamage'
+    [cb['EVENT_PRESPAWN']] = 'OnPreSpawn'
 }
 
 local function registerCallbacks(enable)
@@ -258,11 +227,6 @@ local function getFlagAndOddballData()
     return flag_id, flag_name, oddball_id, oddball_name
 end
 
-local function getTag(class, name)
-    local tag = lookup_tag(class, name)
-    return tag ~= 0 and read_dword(tag + 0xC) or nil
-end
-
 local function getPos(dyn_player)
     local crouch = read_float(dyn_player + 0x50C)
     local vehicle_id = read_dword(dyn_player + 0x11C)
@@ -284,11 +248,6 @@ local function setRespawnTime(id)
     if player ~= 0 then
         write_dword(player + 0x2C, map_cfg.respawn_time)
     end
-end
-
-
-local function isFallDamage(metaId)
-    return metaId == falling_meta_id or metaId == distance_meta_id
 end
 
 local function spawnObject(x, y, z, meta_id)
@@ -313,6 +272,45 @@ local function hasCommandPermission(id, cmd)
     if player_level >= level_required then return true end
     rprint(id, "You do not have permission to use this command")
     return false
+end
+
+local function getPosition(id)
+    local dyn = get_dynamic_player(id)
+    if dyn == 0 then
+        rprint(id, "You must be alive to use this command.")
+        return
+    end
+
+    local x, y, z = read_vector3d(dyn + 0x5C)
+    local cam_x = read_float(dyn + 0x230)
+    local cam_y = read_float(dyn + 0x234)
+    local yaw = atan2(cam_y, cam_x)
+
+    local out = string.format("Position: %.2f, %.2f, %.2f, %.4f", x, y, z, yaw)
+    rprint(id, out); cprint(out)
+end
+
+local function hardReset(id, finished)
+    local player = players[id]
+    player.started = false
+    player.finished = false
+    player.start_time = 0
+    player.completion_time = 0
+    player.checkpoint_index = 0
+    player.current_checkpoint = nil
+    player.spawn_target = nil
+    player.deaths = 0
+    player.prev_tick_pos = nil
+    if finished then return end -- don't kill player if they finished
+    execute_command('kill ' .. id)
+    rprint(id, "Your course progress has been reset to the start line.")
+end
+
+local function teleportPlayer(dyn_player, x, y, z, r)
+    write_vector3d(dyn_player + 0x5C, x, y, z)
+    if r then
+        write_vector3d(dyn_player + 0x74, math.cos(r), math.sin(r), 0)
+    end
 end
 
 local function distance(x1, y1, z1, x2, y2, z2)
@@ -507,15 +505,14 @@ function OnStart()
     current_game_stats.best_time = { time = math_huge, player = "" }
     current_game_stats.rankings = {}
 
-    falling_meta_id = getTag('jpt!', 'globals\\falling')
-    distance_meta_id = getTag('jpt!', 'globals\\distance')
-
     players = {}
     for i = 1, 16 do
         if player_present(i) then OnJoin(i) end
     end
 
     registerCallbacks(true)
+
+    timer(1000, "AnchorCheckpoints")
 end
 
 function OnEnd()
@@ -554,14 +551,7 @@ function OnPreSpawn(id)
     if dyn == 0 then return end
 
     local x, y, z, r = unpack(player.spawn_target)
-
-    -- Set position
-    write_vector3d(dyn + 0x5C, x, y, z)
-
-    -- Apply rotation if defined
-    if r then
-        write_vector3d(dyn + 0x74, math.cos(r), math.sin(r), 0)
-    end
+    teleportPlayer(dyn, x, y, z, r)
 
     -- Clear spawn target so we don't teleport again
     player.spawn_target = nil
@@ -587,14 +577,6 @@ function OnDeath(id)
             player.current_checkpoint[3],
             player.current_checkpoint[4]
         }
-    else
-        -- Default to starting spawn location
-        player.spawn_target = {
-            map_cfg.start.spawn[1],
-            map_cfg.start.spawn[2],
-            map_cfg.start.spawn[3],
-            map_cfg.start.spawn[4]
-        }
     end
 
     -- Restart course if too many deaths
@@ -603,15 +585,6 @@ function OnDeath(id)
         player.finished = false
         player.checkpoint_index = 0
         player.deaths = 0
-
-        -- set spawn target to start line
-        player.spawn_target = {
-            map_cfg.start.spawn[1],
-            map_cfg.start.spawn[2],
-            map_cfg.start.spawn[3],
-            map_cfg.start.spawn[4]
-        }
-
         rprint(id, "You have been reset to the start line.")
     else
         rprint(id, "You have " .. (map_cfg.restart_after - player.deaths) .. " more deaths before restarting.")
@@ -620,21 +593,16 @@ function OnDeath(id)
     setRespawnTime(id)
 end
 
-function OnDamage(_, _, metaId, damage)
-    if game_over then return true, damage end
-    if metaId == falling_meta_id or metaId == distance_meta_id then
-        return true, damage * 100
-    end
-end
+function AnchorCheckpoints()
+    if not map_cfg.spawn_checkpoint_markers or game_over then return false end
 
-local function anchorOddballs()
-    if not map_cfg.spawn_checkpoint_markers then return end
     for object_id, pos in pairs(oddballs) do
         local object = get_object_memory(object_id)
         if object == 0 then goto continue end
 
         -- update position, velocity, yaw, pitch and roll
         write_vector3d(object + 0x5C, pos.x, pos.y, pos.z)
+
         write_float(object + 0x68, 0) -- x vel
         write_float(object + 0x6C, 0) -- y vel
         write_float(object + 0x70, 0) -- z vel
@@ -644,12 +612,12 @@ local function anchorOddballs()
 
         ::continue::
     end
+    return true
 end
 
 function OnTick()
     if game_over then return end
 
-    anchorOddballs()
     local now = os_time()
 
     for id, player in pairs(players) do
@@ -694,6 +662,8 @@ function OnTick()
                 updatePlayerStats(player, player.completion_time)
 
                 rprint(id, "Course completed in " .. formatTime(player.completion_time) .. "!")
+                rprint(id, "Type /hardreset to start over.")
+                hardReset(id, true)
             else
                 rprint(id,
                     "You missed some checkpoints! (" .. player.checkpoint_index .. "/" .. #map_cfg.checkpoints .. ")")
@@ -746,176 +716,47 @@ function OnCommand(id, command)
 
     local cmd = command_data.command
 
-    if cmd == "checkpoint" then
-        local player = players[id]
-        if not player then return false end
-
-        local index = tonumber(args[2])
-        if not index then
-            rprint(id, "Usage: /cp <checkpoint number>")
-            return false
-        end
-
-        local checkpoint = map_cfg.checkpoints[index]
-        if not checkpoint then
-            rprint(id, "Invalid checkpoint number! Max is " .. #map_cfg.checkpoints)
-            return false
-        end
-
+    if cmd == "get_position" then
+        getPosition(id)
+    elseif cmd == "hard_reset" then -- start over
+        hardReset(id)
+    elseif cmd == "soft_reset" then -- reset to checkpoint
         local dyn = get_dynamic_player(id)
         if dyn == 0 then
-            rprint(id, "You must be alive to teleport.")
+            rprint(id, "You must be alive to use this command.")
             return false
         end
-
-        -- Move player instantly
-        write_vector3d(dyn + 0x5C, checkpoint[1], checkpoint[2], checkpoint[3])
-
-        -- Update player's checkpoint tracking so respawn and UI are consistent
-        player.checkpoint_index = index
-        player.current_checkpoint = { checkpoint[1], checkpoint[2], checkpoint[3], checkpoint[4] }
-
-        rprint(id, "Teleported to checkpoint " .. index .. "!")
-        return false
-    end
-
-    if cmd == "checkpointreset" then
         local player = players[id]
-        if not player or not player.started then
-            rprint(id, "You haven't started the course yet!")
-            return false
-        end
-
-        if player.current_checkpoint then
-            player.spawn_target = {
-                player.current_checkpoint[1],
-                player.current_checkpoint[2],
-                player.current_checkpoint[3],
-                player.current_checkpoint[4]
-            }
-            execute_command("kill " .. id)
-            rprint(id, "Respawning at last checkpoint...")
+        local checkpoint = player.current_checkpoint
+        if checkpoint then
+            local x, y, z, r = checkpoint[1], checkpoint[2], checkpoint[3], checkpoint[4]
+            teleportPlayer(dyn, x, y, z, r)
+            rprint(id, "You have been reset to your last checkpoint.")
         else
-            rprint(id, "No checkpoint reached yet! Use /treset to restart.")
+            rprint(id, "No checkpoint reached yet. Use hardreset to start over.")
         end
-        return false
-    end
-
-    if cmd == "runreset" then
-        local player = players[id]
-        if not player then return false end
-
-        player.spawn_target = {
-            map_cfg.start.spawn[1],
-            map_cfg.start.spawn[2],
-            map_cfg.start.spawn[3],
-            map_cfg.start.spawn[4]
-        }
-        execute_command("kill " .. id)
-        rprint(id, "Respawning at the beginning...")
-        return false
-    end
-
-    if cmd == "hardreset" then
-        local player = players[id]
-        if not player then return false end
-
-        -- Reset all current run stats:
-        player.started = false
-        player.finished = false
-        player.start_time = 0
-        player.completion_time = 0
-        player.checkpoint_index = 0
-        player.current_checkpoint = nil
-        player.deaths = 0
-
-        -- Respawn at start line:
-        player.spawn_target = {
-            map_cfg.start.spawn[1],
-            map_cfg.start.spawn[2],
-            map_cfg.start.spawn[3],
-            map_cfg.start.spawn[4]
-        }
-        execute_command("kill " .. id)
-
-        rprint(id, "Your stats have been reset. Back to the start line!")
-        return false
-    end
-
-    if cmd == "getposition" then
-        local dyn = get_dynamic_player(id)
-        if dyn == 0 then
-            rprint(id, "You must be spawned to use this command.")
-            return false
-        end
-
-        local x, y, z = read_vector3d(dyn + 0x5C)
-        local cam_x = read_float(dyn + 0x230)
-        local cam_y = read_float(dyn + 0x234)
-        local yaw = atan2(cam_y, cam_x)
-        local out = string.format("Position: %.2f, %.2f, %.2f, %.4f", x, y, z, yaw)
-        rprint(id, out); cprint(out)
-        return false
-    end
-
-    if cmd == "statistics" then
-        local player = players[id]
-        if not player then return false end
-
-        local name = player.name
+    elseif cmd == "stats" then -- shows top 5 players for this map only
         local map = current_game_stats.map
-        local global_stats = all_time_stats.global.players[name]
-        local map_stats = all_time_stats.maps[map] and all_time_stats.maps[map].players[name]
-
-        if global_stats then
-            rprint(id, formatMessage("Global: Best %s | Avg %s | Completions: %d",
-                formatTime(global_stats.best_time_seconds),
-                formatTime(global_stats.avg_time_seconds),
-                global_stats.completions))
-        else
-            rprint(id, "No global stats recorded for " .. name)
+        if not map or not all_time_stats.maps[map] then
+            rprint(id, "No stats available for this map.")
+            return false
         end
-
-        if map_stats then
-            rprint(id, formatMessage("%s: Best %s | Avg %s | Completions: %d",
-                map,
-                formatTime(map_stats.best_time_seconds),
-                formatTime(map_stats.avg_time_seconds),
-                map_stats.completions))
-        else
-            rprint(id, formatMessage("%s: No stats yet", map))
+        local map_stats = all_time_stats.maps[map].players
+        local ranking = {}
+        for name, data in pairs(map_stats) do
+            table_insert(ranking, { name = name, best_time = data.best_time_seconds, completions = data.completions })
         end
-
-        return false
+        table_sort(ranking, function(a, b)
+            return a.best_time < b.best_time
+        end)
+        rprint(id, "Top 5 players for map: " .. map)
+        for i = 1, math.min(5, #ranking) do
+            local p = ranking[i]
+            rprint(id, string_format("%d. %s - %s (%d completions)", i, p.name, formatTime(p.best_time), p.completions))
+        end
     end
 
-    if cmd == "leaderboard" then
-        local map = current_game_stats.map
-        if all_time_stats.maps[map] then
-            rprint(id, formatMessage("All-Time Best Times on %s:", map))
-            local map_players = {}
-            for pname, stats in pairs(all_time_stats.maps[map].players) do
-                table_insert(map_players, { name = pname, best_time = stats.best_time_seconds })
-            end
-            table_sort(map_players, function(a, b) return a.best_time < b.best_time end)
-            for i = 1, math.min(5, #map_players) do
-                rprint(id, formatMessage("%d. %s - %s", i, map_players[i].name,
-                    formatTime(map_players[i].best_time)))
-            end
-        else
-            rprint(id, formatMessage("No records yet for %s", map))
-        end
-        return false
-    end
-
-    if cmd == "rankings" then
-        rprint(id, "Current Parkour Rankings:")
-        for i, player in ipairs(current_game_stats.rankings) do
-            rprint(id, formatMessage("%d. %s - Completions: %d, Best: %s",
-                i, player.name, player.completions, formatTime(player.best_time)))
-        end
-        return false
-    end
+    return false
 end
 
 function OnScriptUnload()
