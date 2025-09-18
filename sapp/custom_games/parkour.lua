@@ -14,7 +14,7 @@ DESCRIPTION:      Halo SAPP/Lua parkour plugin.
 REQUIREMENTS:     Install to the same directory as sapp.dll
                   - Lua JSON Parser:  http://regex.info/blog/lua/json
 
-Copyright (c) 2023-2025 Jericho Crosby (Chalwk)
+Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
