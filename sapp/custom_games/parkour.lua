@@ -71,14 +71,10 @@ local CONFIG = {
             -- Starting line (straight line between the two points):
             start = {
                 -- Point A (line marker)
-                -0.80,
-                -9.93,
-                .30,
+                -0.80, -9.93, .30,
 
                 -- Point B (line marker)
-                0.30,
-                -9.93,
-                0.30,
+                0.30, -9.93, 0.30,
 
                 -- Spawn position + yaw (x,y,z,radians):
                 spawn = { -0.36, -10.01, 0.30, 1.5639 } -- facing north
