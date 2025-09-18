@@ -2,7 +2,7 @@
 
 ## How to Connect
 
-* 🔗 **IP Address:** jericraft.net:2309
+* 🔗 **IP Address:** jericraft.net:2310
 * **Client:** Halo Custom Edition
 
 ---
