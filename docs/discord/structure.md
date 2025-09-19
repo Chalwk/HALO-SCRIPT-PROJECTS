@@ -12,7 +12,7 @@
     * 〔🚪〕arrivals-departures
         * Tracks member joins and leaves.
 
-* ◉ KNOWLEDGE BASE
+* ◉ KNOWLEDGE BASE (forums)
     * 〔👾〕code-snippets
         * Handy code snippets for SAPP and Phasor scripting.
     * 〔🛠️〕resources (forum)
@@ -31,7 +31,7 @@
 * ◉ SOCIAL
     * 〔💬〕chatter-box
         * General discussion about Halo and the HSP community.
-    * 〔🏆〕script-showcase
+    * 〔🏆〕showcase
         * Highlight scripts you've written or customized from HSP.
 
 * ◉ HSP SERVERS
@@ -39,14 +39,15 @@
         * Announcements and updates for HSP servers.
     * 〔📚〕list
         * Details about official HSP Halo PC servers.
-    *  divide-and-conquer _(only users with @HSP SERVERS can see this)_
-    *  gun-game _(only users with @HSP SERVERS can see this)_
-    *  kill-confirmed _(only users with @HSP SERVERS can see this)_
-    *  melee-attack _(only users with @HSP SERVERS can see this)_
-    *  one-in-the-chamber _(only users with @HSP SERVERS can see this)_
-    *  rooster-ctf _(only users with @HSP SERVERS can see this)_
-    *  snipers-dream-team _(only users with @HSP SERVERS can see this)_
-    *  tag _(only users with @HSP SERVERS can see this)_
+    * divide-and-conquer _(only users with @HSP SERVERS can see this)_
+    * gun-game _(only users with @HSP SERVERS can see this)_
+    * kill-confirmed _(only users with @HSP SERVERS can see this)_
+    * melee-attack _(only users with @HSP SERVERS can see this)_
+    * one-in-the-chamber _(only users with @HSP SERVERS can see this)_
+    * parkour _(only users with @HSP SERVERS can see this)_
+    * rooster-ctf _(only users with @HSP SERVERS can see this)_
+    * snipers-dream-team _(only users with @HSP SERVERS can see this)_
+    * tag _(only users with @HSP SERVERS can see this)_
     * uber-racing _(only users with @HSP SERVERS can see this)_
     * zombies _(only users with @HSP SERVERS can see this)_
 
@@ -57,9 +58,9 @@
         * Voice chat for live gameplay or server sessions.
 
 * ◉ COUNCIL CHAMBERS (hidden to the public - admin channels)
-    * 〔🔒〕watchtower
+    * 〔🛡️〕watchtower
         * Admin logs, moderation notes, and server oversight.
-    * 〔🔒〕halo_cmd_log
+    * 〔⌘〕halo_cmd_log
         * Halo Server command logs (real-time)
     * 〔🎤〕Court's Echo
         * Private staff voice channel for discussions and planning.
