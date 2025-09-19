@@ -6,7 +6,7 @@ DESCRIPTION:      Provides custom spawn point handling for players based on map 
                   - Caches map-specific spawn points to optimize performance.
                   - Prevents players from spawning on occupied points.
                   - Actively monitors and clears abandoned spawn points.
-                  - Retries spawn placement if no valid point is available.
+                  - Retries spawn placement indefinitely if no valid point is available.
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -51,17 +51,17 @@ api_version = '1.12.0.0'
 
 local table_insert, table_remove = table.insert, table.remove
 local math_random, math_sqrt, math_cos, math_sin = math.random, math.sqrt, math.cos, math.sin
-
 local pairs, ipairs = pairs, ipairs
 local get_var, player_alive = get_var, player_alive
 local read_dword, read_float = read_dword, read_float
 local read_vector3d, write_vector3d = read_vector3d, write_vector3d
 local get_dynamic_player, get_object_memory = get_dynamic_player, get_object_memory
 
-local spawns = {}        -- Cached spawn points per map
-local active_spawns = {} -- Currently occupied spawn points
-local current_map = nil  -- Current map name
-local is_ffa = false     -- Free-for-all mode flag
+local spawns = {}           -- Cached spawn points per map
+local active_spawns = {}    -- Currently occupied spawn points
+local waiting_to_spawn = {} -- Players waiting for a spawn
+local current_map = nil     -- Current map name
+local is_ffa = false        -- Free-for-all mode flag
 
 -- Teleports player to specified coordinates and rotation
 local function teleportPlayer(dyn_player, x, y, z, r)
@@ -85,6 +85,13 @@ local function getPos(dyn_player)
     end
 
     return x, y, z + 0.65 - (0.3 * crouch)
+end
+
+local function setRespawnTime(id, time)
+    local player = get_player(id)
+    if player ~= 0 then
+        write_dword(player + 0x2C, time * 33)
+    end
 end
 
 -- Caches spawn points for current map
@@ -127,7 +134,8 @@ local function getSpawnPoint(team)
     local valid_spawns = {}
     for _, spawn in ipairs(available_spawns) do
         local is_occupied = false
-        for _, active in pairs(active_spawns) do
+        for i = 1, #active_spawns do
+            local active = active_spawns[i]
             if active[1] == spawn[1] and active[2] == spawn[2] and active[3] == spawn[3] then
                 is_occupied = true
                 break
@@ -155,21 +163,28 @@ local function trySpawn(id)
         local x, y, z, r = spawn_point[1], spawn_point[2], spawn_point[3], spawn_point[4]
         table_insert(active_spawns, { x, y, z, id })
         teleportPlayer(dyn_player, x, y, z, r)
+        setRespawnTime(id, 0)
+        waiting_to_spawn[id] = nil
         return true
-    end
-
-    return false
-end
-
-function OnPreSpawn(id)
-    if not trySpawn(id) then
-        -- No spawn available, retry every second
-        timer(1000, "RetrySpawn", id)
+    else
+        waiting_to_spawn[id] = true
+        setRespawnTime(id, 0.1)
+        return false
     end
 end
 
--- Clears abandoned spawn points
-function CheckSpawns()
+function OnDeath(id)
+    trySpawn(id)
+end
+
+function OnSpawn(id)
+    waiting_to_spawn[id] = nil
+end
+
+function UpdateSpawnPoints()
+    if not spawns[current_map] or #spawns[current_map] == 0 then return false end
+
+    -- Clear abandoned spawn points
     for i = #active_spawns, 1, -1 do
         local spawn = active_spawns[i]
         local player_id = spawn[4]
@@ -181,14 +196,10 @@ function CheckSpawns()
             if dyn_player ~= 0 then
                 local x, y, z = getPos(dyn_player)
                 if x then
-                    -- Calculate distance from spawn point
                     local dx = spawn[1] - x
                     local dy = spawn[2] - y
                     local dz = spawn[3] - z
-                    local distance = math_sqrt(dx * dx + dy * dy + dz * dz)
-
-                    -- Clear if player moved away
-                    if distance > 1.0 then
+                    if math_sqrt(dx * dx + dy * dy + dz * dz) > 1.0 then
                         table_remove(active_spawns, i)
                     end
                 end
@@ -196,26 +207,33 @@ function CheckSpawns()
         end
     end
 
-    return true
-end
+    -- retry spawning waiting players
+    for id, _ in pairs(waiting_to_spawn) do
+        trySpawn(id)
+    end
 
-function OnScriptLoad()
-    register_callback(cb['EVENT_GAME_END'], 'OnEnd')
-    register_callback(cb['EVENT_GAME_START'], 'OnStart')
-    register_callback(cb['EVENT_PRESPAWN'], 'OnPreSpawn')
-    OnStart() -- just in case the script is loaded mid-game
+    return true -- loop timer
 end
 
 function OnStart()
     if get_var(0, '$gt') ~= 'n/a' then
         cacheSpawns()
-        active_spawns = {}
-        timer(1000, "CheckSpawns")
+        OnEnd()
+        timer(1000, "UpdateSpawnPoints")
     end
 end
 
-function RetrySpawn(id) return not trySpawn(id) end
+function OnEnd()
+    active_spawns = {}
+    waiting_to_spawn = {}
+end
 
-function OnEnd() active_spawns = {} end
+function OnScriptLoad()
+    register_callback(cb['EVENT_DIE'], 'OnDeath')
+    register_callback(cb['EVENT_SPAWN'], 'OnSpawn')
+    register_callback(cb['EVENT_GAME_END'], 'OnEnd')
+    register_callback(cb['EVENT_GAME_START'], 'OnStart')
+    OnStart()
+end
 
 function OnScriptUnload() end
