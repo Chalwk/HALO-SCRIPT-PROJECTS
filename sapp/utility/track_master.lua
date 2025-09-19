@@ -15,7 +15,7 @@ FEATURES:           - Tracks player lap times and validates laps (minimum time +
                     - Provides in-game commands:
                         * stats          - Show your personal best on current map
                         * top            - Display top N all-time laps for current map
-                        * topoverall     - Display top overall players across all maps
+                        * global         - Display top overall players across all maps
                     - Exports lap records to JSON and optional text file
                     - Automatic saving and exporting on game end or script unload
                     - Configurable options:
