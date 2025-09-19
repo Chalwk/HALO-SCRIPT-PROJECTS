@@ -16,6 +16,9 @@ LICENSE:          MIT License
 
 -- CONFIG start ----------------------------------------------------------
 local MAPS = {
+
+    -- Format: map_name = { team_name = { {x, y, z, rotation}, ... }, ... }
+
     ['training_jump'] = {
         red = {
             { -0.77, -39.56, 0.00, 1.3374 },
