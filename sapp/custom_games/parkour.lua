@@ -79,7 +79,7 @@ local CONFIG = {
             checkpoints = {
                 { -0.01, -20.90, 0.50, 1.5682 },
                 { -0.01, 3.10,   0.20, 1.5682 },
-                { -0.01, 25.42,  2.00, 1.5717 },
+                { -0.01, 25.42,  2.00, 1.5717 }
             }
         },
 
@@ -404,6 +404,43 @@ local function loadStats()
     stats = readJSON(stats_file, {})
 end
 
+local function showStats(id)
+    local map = map_cfg.map
+
+    if not stats[map] then
+        local msg = "No stats available for this map."
+        (id and rprint or say_all)(id or msg, id and msg or nil)
+        return false
+    end
+
+    -- Decide how to output (private vs broadcast)
+    local output = function(str)
+        if id then rprint(id, str) else say_all(str) end
+    end
+
+    -- Build ranking table
+    local ranking = {}
+    for name, data in pairs(stats[map].players) do
+        table_insert(ranking, { name = name, best_time = data.best_time_seconds, completions = data.completions })
+    end
+
+    -- Sort by best time (ascending)
+    table_sort(ranking, function(a, b) return a.best_time < b.best_time end)
+
+    -- Header
+    output("Top 5 players for map: " .. map)
+
+    -- Show up to 5 players
+    if #ranking == 0 then
+        output("No completions recorded yet.")
+    else
+        for i = 1, math.min(5, #ranking) do
+            local p = ranking[i]
+            output(string_format("%d. %s - %s (%d completions)", i, p.name, formatTime(p.best_time), p.completions))
+        end
+    end
+end
+
 function OnScriptLoad()
     for command_name, data in pairs(CONFIG.COMMANDS) do
         local aliases = data[1]
@@ -467,6 +504,7 @@ function OnStart()
     end
 
     registerCallbacks(true)
+    execute_command('msg_prefix ""')
 
     timer(1000, "AnchorCheckpoints")
 end
@@ -474,6 +512,7 @@ end
 function OnEnd()
     game_over = true
     saveStats()
+    showStats()
 end
 
 function OnJoin(id)
@@ -697,26 +736,7 @@ function OnCommand(id, command)
             rprint(id, "No checkpoint reached yet. Use hardreset to start over.")
         end
     elseif cmd == "stats" then -- shows top 5 players for this map only
-        local map = map_cfg.map
-        if not stats[map] then
-            rprint(id, "No stats available for this map.")
-            return false
-        end
-
-        local ranking = {}
-        for name, data in pairs(stats[map].players) do
-            table_insert(ranking, { name = name, best_time = data.best_time_seconds, completions = data.completions })
-        end
-
-        table_sort(ranking, function(a, b)
-            return a.best_time < b.best_time
-        end)
-
-        rprint(id, "Top 5 players for map: " .. map)
-        for i = 1, math.min(5, #ranking) do
-            local p = ranking[i]
-            rprint(id, string_format("%d. %s - %s (%d completions)", i, p.name, formatTime(p.best_time), p.completions))
-        end
+        showStats(id)
     end
 
     return false
