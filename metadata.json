@@ -658,6 +658,12 @@
       "description": "Allows players to select and customize weapon loadouts with configurable weapons, ammo counts, and grenades that persist between respawns.",
       "filename": "custom_loadouts.lua"
     },
+    "custom_spawns": {
+      "title": "Custom Spawns",
+      "shortDescription": "Custom player spawn point system",
+      "description": "Manages player spawn points per map and team, supports FFA mode, prevents overlapping spawns, caches spawn data for performance, and retries spawning if no valid point is available.",
+      "filename": "custom_spawns.lua"
+    },
     "custom_vehicle_spawner": {
       "title": "Custom Vehicle Spawner",
       "shortDescription": "Persistent vehicle management and respawn system",
