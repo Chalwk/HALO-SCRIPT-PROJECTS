@@ -238,6 +238,10 @@ local function setRespawnTime(id)
     end
 end
 
+local function setSpeed(id)
+    execute_command("s " .. id .. " " .. map_cfg.running_speed)
+end
+
 local function spawnObject(x, y, z, meta_id)
     return spawn_object('', '', x, y, z, 0, meta_id)
 end
@@ -254,6 +258,15 @@ local function hasCommandPermission(id, command_data)
     if player_level >= level_required then return true end
     rprint(id, "You do not have permission to use this command")
     return false
+end
+
+local function announceReset(player, resetType)
+    local id, name = player.id, player.name
+    for i = 1,16 do
+        if player_present(i) and i ~= id then
+            rprint(i, formatMessage("%s has performed a %s reset!", name, resetType))
+        end
+    end
 end
 
 local function getPosition(id)
@@ -283,9 +296,11 @@ local function hardReset(id, finished)
     player.spawn_target = nil
     player.deaths = 0
     player.prev_tick_pos = nil
-    if finished then return end -- don't kill player if they finished
-    execute_command('kill ' .. id)
-    rprint(id, "Your course progress has been reset to the start line.")
+    if not finished then
+        announceReset(player, "hard")
+        execute_command('kill ' .. id)
+        rprint(id, "Your course progress has been reset to the start line.")
+    end
 end
 
 local function teleportPlayer(dyn_player, x, y, z, r)
@@ -556,7 +571,7 @@ function OnPreSpawn(id)
 end
 
 function OnSpawn(id)
-    execute_command("s " .. id .. " " .. map_cfg.running_speed)
+    setSpeed(id)
 end
 
 function OnDeath(id)
@@ -663,7 +678,6 @@ function OnTick()
                 updateStats(player, player.completion_time)
 
                 rprint(id, "Course completed in " .. formatTime(player.completion_time) .. "!")
-                rprint(id, "Type /hardreset to start over.")
                 hardReset(id, true)
             else
                 rprint(id, "You missed some checkpoints! (" .. cur_index .. "/" .. max .. ")")
@@ -695,6 +709,7 @@ function OnTick()
 
                     -- Update previous position for respawning
                     player.current_checkpoint = { checkpoint[1], checkpoint[2], checkpoint[3], checkpoint[4] }
+                    setSpeed(id)
                     break
                 end
             end
@@ -731,6 +746,8 @@ function OnCommand(id, command)
         if checkpoint then
             local x, y, z, r = checkpoint[1], checkpoint[2], checkpoint[3], checkpoint[4]
             teleportPlayer(dyn, x, y, z, r)
+            announceReset(player, "soft")
+            setSpeed(id)
             rprint(id, "You have been reset to your last checkpoint.")
         else
             rprint(id, "No checkpoint reached yet. Use hardreset to start over.")
