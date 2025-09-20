@@ -459,14 +459,19 @@ local function loadStats()
     stats = readJSON(stats_file, {})
 end
 
-local function showStats(id)
+local function showStats(player)
     local map = map_cfg.map
 
-    local send = id and function(msg) rprint(id, msg) end or sendPublic
+    local send = player and function(msg) rprint(player.id, msg) end or sendPublic
 
     if not stats[map] then
         send("No records for this map yet.")
         return false
+    end
+
+    -- If this is a specific player, show their personal best first
+    if player and player.best_time and player.best_time ~= math_huge then
+        send("Your Fastest Time: " .. formatTime(player.best_time))
     end
 
     -- Build ranking table
@@ -479,7 +484,7 @@ local function showStats(id)
     table_sort(ranking, function(a, b) return a.best_time < b.best_time end)
 
     -- Header
-    send("Top 5 players for map: " .. map)
+    send("Top 5 players for " .. map)
 
     -- Show up to 5 players
     if #ranking == 0 then
@@ -834,7 +839,7 @@ function OnCommand(id, command)
             rprint(id, "No checkpoint reached yet. Use hardreset to start over.")
         end
     elseif cmd == "stats" then -- shows top 5 players for this map only
-        showStats(id)
+        showStats(player)
     end
 
     return false
