@@ -25,7 +25,7 @@ FEATURES:           - Tracks player lap times and validates laps (minimum time +
                         * driver-only laps
                         * final leaderboard display
 
-LAST UPDATED:     20/9/2025
+LAST UPDATED:     21/9/2025
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
