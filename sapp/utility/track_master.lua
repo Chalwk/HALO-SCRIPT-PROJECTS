@@ -2,35 +2,41 @@
 ===============================================================================
 SCRIPT NAME:      track_master.lua
 DESCRIPTION:      Advanced racing tracker and leaderboard system for Halo SAPP.
-FEATURES:           - Tracks player lap times and validates laps (minimum time + driver seat)
-                    - Records personal bests per player and all-time map records
-                    - Maintains detailed per-map player statistics:
-                        * laps completed
-                        * best lap
-                        * average lap
-                    - Calculates global rankings across all maps with point-based scoring
-                    - Announces in-game:
-                        * New personal bests
-                        * New map records
-                    - Provides in-game commands:
-                        * stats          - Show your personal best on current map
-                        * top            - Display top N all-time laps for current map
-                        * global         - Display top overall players across all maps
-                    - Exports lap records to JSON and optional text file
-                    - Automatic saving and exporting on game end or script unload
-                    - Configurable options:
-                        * top list size
-                        * minimum lap time
-                        * export files
-                        * driver-only laps
-                        * final leaderboard display
+FEATURES:         - Tracks player lap times and validates laps (minimum time + driver seat)
+                  - Records personal bests per player and all-time map records
+                  - Maintains detailed per-map player statistics:
+                      * laps completed
+                      * best lap
+                      * average lap
+                  - Calculates global rankings across all maps using a weighted point system:
+                      * MAP_RECORD_WEIGHT: points awarded for holding a map record
+                      * GLOBAL_RECORD_WEIGHT: bonus points for holding the global best lap
+                      * PERFORMANCE_WEIGHT: points for performance relative to the map record
+                      * TOP_FINISH_THRESHOLD: counts near-record laps as top finishes
+                      * Participation penalty: players with few maps played may have adjusted points
+                      * Tiebreakers: map records > global record > top finishes
+                  - Announces in-game:
+                      * New personal bests
+                      * New map records
+                  - Provides in-game commands:
+                      * stats          - Show your personal best on current map
+                      * top            - Display top N all-time laps for current map
+                      * global         - Display top overall players across all maps
+                  - Exports lap records to JSON and optional text file
+                  - Automatic saving and exporting on game end or script unload
+                  - Configurable options:
+                      * top list size
+                      * minimum lap time
+                      * export files
+                      * driver-only laps
+                      * final leaderboard display
 
 LAST UPDATED:     21/9/2025
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-=====================================================================================
+===============================================================================
 ]]
 
 -- Configuration -------------------------------------------

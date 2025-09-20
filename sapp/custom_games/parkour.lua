@@ -1,42 +1,35 @@
 --[[
-===============================================================================
-SCRIPT NAME:      track_master.lua
-DESCRIPTION:      Advanced racing tracker and leaderboard system for Halo SAPP.
-FEATURES:         - Tracks player lap times and validates laps (minimum time + driver seat)
-                  - Records personal bests per player and all-time map records
-                  - Maintains detailed per-map player statistics:
-                      * laps completed
-                      * best lap
-                      * average lap
-                  - Calculates global rankings across all maps using a weighted point system:
-                      * MAP_RECORD_WEIGHT: points awarded for holding a map record
-                      * GLOBAL_RECORD_WEIGHT: bonus points for holding the global best lap
-                      * PERFORMANCE_WEIGHT: points for performance relative to the map record
-                      * TOP_FINISH_THRESHOLD: counts near-record laps as top finishes
-                      * Participation penalty: players with few maps played may have adjusted points
-                      * Tiebreakers: map records > global record > top finishes
-                  - Announces in-game:
-                      * New personal bests
-                      * New map records
-                  - Provides in-game commands:
-                      * stats          - Show your personal best on current map
-                      * top            - Display top N all-time laps for current map
-                      * global         - Display top overall players across all maps
-                  - Exports lap records to JSON and optional text file
-                  - Automatic saving and exporting on game end or script unload
-                  - Configurable options:
-                      * top list size
-                      * minimum lap time
-                      * export files
-                      * driver-only laps
-                      * final leaderboard display
+=====================================================================================
+SCRIPT NAME:      parkour.lua
+DESCRIPTION:      Halo SAPP/Lua parkour plugin.
+                  - Allows players to run custom parkour courses on maps.
+                  - Tracks checkpoints, start/finish lines, and player progression.
+                  - Supports in-order or free checkpoint completion.
+                  - Records player statistics (best times, averages, completions) globally and per map.
+                  - Provides commands for teleporting to checkpoints, resetting runs, and viewing leaderboards.
+                  - Handles respawning at checkpoints, death limits, and course restarts.
+                  - Includes optional visual aids (flags and oddball markers) for starts, finishes, and checkpoints.
+                  - Fully configurable per map via the CONFIG table.
+
+CONFIGURATION:    spawn_flags: Set to true to spawn flag poles at start/finish lines
+                  spawn_checkpoint_markers: Set to true to spawn visual markers at checkpoints
+                  restart_after: Number of deaths after which player is reset to start
+                  respawn_time: Set the respawn timer (seconds), set nil to disable
+                  running_speed: Player speed while running the course
+                  start: Coordinates for start line and spawn point (x, y, z, yaw)
+                  finish: Coordinates for finish line (x, y, z)
+                  in_order: If true, checkpoints must be crossed in order
+                  checkpoints: List of checkpoint positions and yaw (x, y, z, yaw)
+
+REQUIREMENTS:     Install to the same directory as sapp.dll
+                  - Lua JSON Parser:  http://regex.info/blog/lua/json
 
 LAST UPDATED:     21/9/2025
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
-===============================================================================
+=====================================================================================
 ]]
 
 -- CONFIG start -----------------------------------------------------------
