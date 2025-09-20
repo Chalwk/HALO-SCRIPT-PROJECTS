@@ -13,29 +13,43 @@
 
 ### Key Features
 
-* **Checkpoint System:** Players progress through designated checkpoints. Courses can be completed **in order** or **freely**, depending on map settings.
-* **Death Limit & Respawn:** If a player dies too many times, their run resets automatically. Players respawn at the **last checkpoint** reached.
-* **Timed Runs:** Completion times are tracked for personal bests, map records, and global rankings.
-* **Visual Aids:** Start/finish lines and checkpoint markers help guide players through the course.
-* **Adjustable Speed:** Running speed can be configured for each map to ensure smooth parkour flow.
+* **Checkpoint System:** Players progress through designated checkpoints.
+* **Death Limit & Respawn:** If a player dies too many times, their run resets automatically. Players respawn at the **last checkpoint reached**.
+* **Timed Runs:** Completion times are tracked for personal bests, map records, and averages. Top 5 rankings are displayed per map.
+* **Visual Aids:** Start/finish lines and checkpoint markers (flags and oddballs) help guide players.
+* **Adjustable Speed:** Running speed varies per map.
+* **Anti-Camping:** Players cannot linger on checkpoints without progressing, or they will be reset.
+* **Persistent Stats:** Player and map stats are saved and persist across games.
 
 ---
 
 ## Maps
 
-`EV_Jump`
+| Map Name        | Description                                                                         |
+|-----------------|-------------------------------------------------------------------------------------|
+| `EV_jump`       | Standard EV Jump course with 10 checkpoints, in-order progression.                  |
+| `training_jump` | Short training map with 3 checkpoints, in-order progression, slightly faster speed. |
 
 ---
 
 ## Commands
 
-| Command         | Alias       | Permission | Description                                   |
-|-----------------|-------------|------------|-----------------------------------------------|
-| checkpoint      | cp          | 4          | Teleport to a specific checkpoint             |
-| getposition     | getrot      | 4          | View your current position and rotation       |
-| checkpointreset | reset       | -1         | Respawn at the last checkpoint                |
-| runreset        | runreset    | -1         | Restart the run from the start line           |
-| hardreset       | hardreset   | -1         | Reset all progress for the current run        |
-| statistics      | stats, top5 | -1         | View your personal stats and completion times |
-| leaderboard     | leaderboard | -1         | View all-time best times on this map          |
-| rankings        | current     | -1         | View current game rankings                    |
+| Command         | Alias     | Permission | Description                                               |
+|-----------------|-----------|------------|-----------------------------------------------------------|
+| get_position    | getpos    | 4          | Show your current position and rotation                   |
+| goto_checkpoint | goto      | 4          | Teleport to a specific checkpoint                         |
+| hard_reset      | hardreset | -1         | Reset all progress and start from the beginning           |
+| soft_reset      | softreset | -1         | Respawn at your last checkpoint                           |
+| stats           | stats     | -1         | Show top 5 players for the current map and your best time |
+
+---
+
+## Player Progression Notes
+
+* **Course Start:** Cross the start line to begin the run. Timer starts automatically.
+* **Checkpoints:** Approach a checkpoint to claim it.
+* **Finish Line:** Cross the finish line after reaching all checkpoints to complete the run.
+* **Death Tracking:** Players are reset after reaching 10 deaths.
+* **Anti-Camp:** Standing in the same spot at a checkpoint too long triggers a reset warning, followed by a course reset if ignored.
+
+---
