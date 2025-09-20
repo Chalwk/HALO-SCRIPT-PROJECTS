@@ -100,7 +100,8 @@ local json = loadfile('json.lua')()
 local math_floor, math_huge, math_abs = math.floor, math.huge, math.abs
 local table_insert, table_sort = table.insert, table.sort
 local string_format = string.format
-local os_time = os.time
+local os_clock = os.clock
+local os_start_time = os_clock()
 
 local read_bit, read_string = read_bit, read_string
 local read_dword, write_dword = read_dword, write_dword
@@ -112,8 +113,8 @@ local get_var, player_present, register_callback, say_all, rprint =
 local get_dynamic_player, get_player, player_alive =
     get_dynamic_player, get_player, player_alive
 
-local base_tag_table = 0x40440000
-local tag_entry_size, tag_data_offset, bit_check_offset, bit_index = 0x20, 0x14, 0x308, 3
+local BASE_TAG_TABLE = 0x40440000
+local TAG_ENTRY_SIZE, TAG_DATA_OFFSET, BIT_CHECK_OFFSET, BIT_INDEX = 0x20, 0x14, 0x308, 3
 
 local map_cfg, game_over, stats_file
 local stats, players, oddballs, alias_to_command = {}, {}, {}, {}
@@ -159,11 +160,13 @@ local function parseArgs(input)
 end
 
 local function formatTime(seconds)
-    if seconds == 0 or seconds == math_huge then return "00:00.00" end
-    local total_hundredths = math_floor(seconds * 100 + 0.5)
-    local minutes = math_floor(total_hundredths / 6000)
-    local remaining_hundredths = total_hundredths % 6000
-    return string_format("%02d:%02d.%02d", minutes, math_floor(remaining_hundredths / 100), remaining_hundredths % 100)
+    if seconds == 0 or seconds == math_huge then return "00:00.000" end
+    local total_milliseconds = math_floor(seconds * 1000 + 0.5)
+    local minutes = math_floor(total_milliseconds / 60000)
+    local remaining_ms = total_milliseconds % 60000
+    local secs = math_floor(remaining_ms / 1000)
+    local ms = remaining_ms % 1000
+    return string_format("%02d:%02d.%03d", minutes, secs, ms)
 end
 
 local function readJSON(file_path, default)
@@ -194,16 +197,16 @@ local function getConfigPath()
 end
 
 local function getFlagAndOddballData()
-    local tag_array = read_dword(base_tag_table)
-    local tag_count = read_dword(base_tag_table + 0xC)
+    local tag_array = read_dword(BASE_TAG_TABLE)
+    local tag_count = read_dword(BASE_TAG_TABLE + 0xC)
     local flag_id, flag_name, oddball_id, oddball_name
 
     for i = 0, tag_count - 1 do
-        local tag = tag_array + tag_entry_size * i
+        local tag = tag_array + TAG_ENTRY_SIZE * i
         local tag_class = read_dword(tag)
         if tag_class == 0x77656170 then
-            local tag_data = read_dword(tag + tag_data_offset)
-            if read_bit(tag_data + bit_check_offset, bit_index) == 1 then
+            local tag_data = read_dword(tag + TAG_DATA_OFFSET)
+            if read_bit(tag_data + BIT_CHECK_OFFSET, BIT_INDEX) == 1 then
                 local item_type = read_byte(tag_data + 2)
                 local meta_id = read_dword(tag + 0xC)
                 local tag_name = read_string(read_dword(tag + 0x10))
@@ -522,6 +525,7 @@ function OnStart()
         execute_command("disable_object '" .. oddball_name .. "'")
     end
 
+    os_start_time = os_clock() -- just in case (keep timing consistent)
     map_cfg = cfg
     map_cfg.map = map
     game_over = false
@@ -590,7 +594,9 @@ function OnSpawn(id)
     local player = players[id]
     if not player then return end
 
-    players[id].protected = player.started and os_time() + CONFIG.SPAWN_PROTECTION_TIME or nil
+    local now = os_clock() - os_start_time
+
+    players[id].protected = player.started and now + CONFIG.SPAWN_PROTECTION_TIME or nil
     setSpeed(id)
 end
 
@@ -645,7 +651,7 @@ end
 function OnTick()
     if game_over then return end
 
-    local now = os.time()
+    local now = os_clock() - os_start_time -- ensure time is synced
 
     for id, player in pairs(players) do
         local dyn_player = validatePlayer(id)
