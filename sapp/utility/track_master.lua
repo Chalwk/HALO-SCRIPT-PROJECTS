@@ -478,15 +478,12 @@ function OnCommand(id, command)
     if id == 0 then return true end
 
     local args = parseArgs(command)
+    if #args == 0 then return false end
 
-    -- Top results for the current map
     if args[1] == CONFIG.MAP_TOP_COMMAND then
         showTopPlayers(id)
         return false
-    end
-
-    -- Player's personal best for the current map
-    if args[1] == CONFIG.STATS_COMMAND then
+    elseif args[1] == CONFIG.STATS_COMMAND then
         local map_data = stats[current_map]
         if map_data and map_data.players and map_data.players[players[id].name] then
             local best = map_data.players[players[id].name].best
@@ -495,9 +492,7 @@ function OnCommand(id, command)
             rprint(id, "You have no recorded laps on this map yet.")
         end
         return false
-    end
-
-    if args[1] == CONFIG.GLOBAL_TOP_COMMAND then
+    elseif args[1] == CONFIG.GLOBAL_TOP_COMMAND then
         local count = tonumber(args[2]) or CONFIG.TOP_LIST_SIZE
         if count < 1 then count = CONFIG.TOP_LIST_SIZE end
         showGlobalStats(id, count)
