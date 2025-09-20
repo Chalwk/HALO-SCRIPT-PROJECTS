@@ -121,10 +121,6 @@ local TAG_ENTRY_SIZE, TAG_DATA_OFFSET, BIT_CHECK_OFFSET, BIT_INDEX = 0x20, 0x14,
 local map_cfg, game_over, stats_file
 local stats, players, oddballs, alias_to_command = {}, {}, {}, {}
 
-local function getTime()
-    return os_clock() - os_start_time
-end
-
 local sapp_events = {
     [cb['EVENT_TICK']] = 'OnTick',
     [cb['EVENT_DIE']] = 'OnDeath',
@@ -136,6 +132,19 @@ local sapp_events = {
     [cb['EVENT_PRESPAWN']] = 'OnPreSpawn',
     [cb['EVENT_DAMAGE_APPLICATION']] = 'SpawnProtection'
 }
+
+local NEW_PLAYER = {
+    started = false,
+    finished = false,
+    start_time = 0,
+    completion_time = 0,
+    deaths = 0,
+    checkpoint_index = 0
+}
+
+local function getTime()
+    return os_clock() - os_start_time
+end
 
 local function registerCallbacks(enable)
     for event, callback in pairs(sapp_events) do
@@ -149,6 +158,14 @@ end
 
 local function formatMessage(message, ...)
     return select('#', ...) > 0 and message:format(...) or message
+end
+
+local function sendPublicExclude(id, message)
+    for i = 1, 16 do
+        if player_present(i) and i ~= id then
+            rprint(i, message)
+        end
+    end
 end
 
 local function sendPublic(message)
@@ -202,6 +219,12 @@ local function getConfigPath()
     return read_string(read_dword(sig_scan('68??????008D54245468') + 0x1))
 end
 
+local function getPlayerStats(map, name)
+    local mapStats = stats[map]
+    local playerStats = mapStats and mapStats.players[name]
+    return playerStats
+end
+
 local function getFlagAndOddballData()
     local tag_array = read_dword(BASE_TAG_TABLE)
     local tag_count = read_dword(BASE_TAG_TABLE + 0xC)
@@ -247,10 +270,10 @@ local function atan2(y, x)
     return math.atan(y / x) + ((x < 0) and math.pi or 0)
 end
 
-local function setRespawnTime(id)
-    local player = get_player(id)
-    if player ~= 0 then
-        write_dword(player + 0x2C, map_cfg.respawn_time * 33)
+local function setRespawnTime(player)
+    local static_player = get_player(player.id)
+    if static_player ~= 0 then
+        write_dword(static_player + 0x2C, map_cfg.respawn_time * 33)
     end
 end
 
@@ -278,15 +301,6 @@ local function hasCommandPermission(id, command_data)
     return false
 end
 
-local function announceReset(player, resetType)
-    local id, name = player.id, player.name
-    for i = 1, 16 do
-        if player_present(i) and i ~= id then
-            rprint(i, formatMessage("%s has performed a %s reset!", name, resetType))
-        end
-    end
-end
-
 local function getPosition(id)
     local dyn = get_dynamic_player(id)
     if not player_alive(id) or dyn == 0 then
@@ -309,8 +323,7 @@ local function resetAntiCamp(player)
     player.camp_checkpoint = nil
 end
 
-local function hardReset(id, finished)
-    local player = players[id]
+local function hardReset(player, finished)
     player.started = false
     player.finished = false
     player.start_time = 0
@@ -318,12 +331,11 @@ local function hardReset(id, finished)
     player.checkpoint_index = 0
     player.current_checkpoint = nil
     player.deaths = 0
-    player.prev_tick_pos = nil
+    player.prev_pos = nil
     resetAntiCamp(player)
     if not finished then
-        announceReset(player, "hard")
-        execute_command('kill ' .. id)
-        rprint(id, "Your course progress has been reset to the start line.")
+        execute_command('kill ' .. player.id)
+        rprint(player.id, "Your course progress has been reset to the start line.")
     end
 end
 
@@ -568,18 +580,14 @@ function OnJoin(id)
     local name = get_var(id, '$name')
     local map = map_cfg.map
 
-    players[id] = {
-        id = id,
-        name = name,
-        started = false,
-        finished = false,
-        start_time = 0,
-        completion_time = 0,
-        best_time = stats[map] and stats[map].players[name] and stats[map].players[name].best_time_seconds or math_huge,
-        completions = stats[map] and stats[map].players[name] and stats[map].players[name].completions or 0,
-        deaths = 0,
-        checkpoint_index = 0
-    }
+    players[id] = NEW_PLAYER
+    players[id].id = id
+    players[id].name = name
+
+    local playerStats = getPlayerStats(map, name)
+
+    players[id].best_time = playerStats and playerStats.best_time_seconds or math_huge
+    players[id].completions = playerStats and playerStats.completions or 0
 end
 
 function OnQuit(id)
@@ -614,12 +622,12 @@ function OnDeath(id)
 
     -- Restart course if too many deaths
     if player.deaths >= map_cfg.restart_after then
-        hardReset(id)
+        hardReset(player)
     else
         rprint(id, "You have " .. (map_cfg.restart_after - player.deaths) .. " more deaths before restarting.")
     end
 
-    setRespawnTime(id)
+    setRespawnTime(player)
 end
 
 function AnchorCheckpoints()
@@ -669,17 +677,17 @@ function OnTick()
         end
 
         -- Store previous position for line crossing detection
-        local prev_tick_pos = player.prev_tick_pos
-        player.prev_tick_pos = { x, y, z }
+        local prev_pos = player.prev_pos
+        player.prev_pos = { x, y, z }
 
         -- Skip if we don't have a previous position
-        if not prev_tick_pos then goto continue end
+        if not prev_pos then goto continue end
 
         local cur_index = player.checkpoint_index
         local max = #map_cfg.checkpoints
 
         -- Check if player is crossing the start line
-        if not player.started and not player.finished and isCrossingLine(x, y, z, "start", prev_tick_pos) then
+        if not player.started and not player.finished and isCrossingLine(x, y, z, "start", prev_pos) then
             player.started = true
             player.finished = false
             player.start_time = elapsed_game_time
@@ -691,7 +699,7 @@ function OnTick()
         end
 
         -- Check if player is crossing the finish line
-        if player.started and not player.finished and isCrossingLine(x, y, z, "finish", prev_tick_pos) then
+        if player.started and not player.finished and isCrossingLine(x, y, z, "finish", prev_pos) then
             -- Make sure all checkpoints were passed
             if cur_index >= max then
                 player.finished = true
@@ -701,7 +709,7 @@ function OnTick()
                 updateStats(player, player.completion_time)
 
                 rprint(id, "Course completed in " .. formatTime(player.completion_time) .. "!")
-                -- Removed the hardReset call here to prevent immediate reset
+                hardReset(player, true)
             else
                 rprint(id, "You missed some checkpoints! (" .. cur_index .. "/" .. max .. ")")
             end
@@ -726,7 +734,7 @@ function OnTick()
                     if player.camp_checkpoint == near_index and player.camp_start then
                         local elapsed = elapsed_game_time - player.camp_start
                         if elapsed >= CONFIG.ANTI_CAMP_SECONDS then
-                            hardReset(id)
+                            hardReset(player)
                             goto continue
                         elseif elapsed >= CONFIG.ANTI_CAMP_SECONDS / 2 and not player.camp_warned then
                             rprint(id, "Move away soon or you'll be reset!")
@@ -785,13 +793,12 @@ function OnCommand(id, command)
     if not hasCommandPermission(id, command_data) then return false end
 
     local cmd = command_data.command
+    local player = players[id]
+    if not player then return true end
 
     if cmd == "get_position" then
         getPosition(id)
     elseif cmd == "goto_checkpoint" then
-        local player = players[id]
-        if not player then return false end
-
         if not args[2] then
             rprint(id, "Usage: /goto <checkpoint_index>")
             return false
@@ -813,19 +820,19 @@ function OnCommand(id, command)
 
         rprint(id, string.format("Teleported to checkpoint %d/%d.", index, #map_cfg.checkpoint_precomputed))
     elseif cmd == "hard_reset" then -- start over
-        hardReset(id)
+        hardReset(player)
+        sendPublicExclude(id, player.name .. " performed a hard-reset")
     elseif cmd == "soft_reset" then -- reset to checkpoint
         if not player_alive(id) then
             rprint(id, "You must be alive to use this command.")
             return false
         end
-        local player = players[id]
         local cp = player.current_checkpoint
         if cp then
             teleportPlayer(id, cp.x, cp.y, cp.z, cp.yaw)
-            announceReset(player, "soft")
             setSpeed(id)
             rprint(id, "You have been reset to your last checkpoint.")
+            sendPublicExclude(id, player.name .. " performed a soft-reset")
         else
             rprint(id, "No checkpoint reached yet. Use hardreset to start over.")
         end
