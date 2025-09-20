@@ -42,6 +42,7 @@ local CONFIG = {
 
     COMMANDS = {
         get_position = { { "getpos" }, 4 },
+        goto_checkpoint = { { "goto" }, 4 }, -- 4 = required level
         hard_reset = { { "hardreset" }, -1 },
         soft_reset = { { "softreset" }, -1 },
         stats = { { "stats" }, -1 },
@@ -91,6 +92,9 @@ local CONFIG = {
 -- CONFIG end --------------------------------------------------------------
 
 api_version = '1.12.0.0'
+
+local ANTI_CAMP_RADIUS = CONFIG.ANTI_CAMP_RADIUS * CONFIG.ANTI_CAMP_RADIUS
+local CLAIM_RADIUS = CONFIG.CLAIM_RADIUS * CONFIG.CLAIM_RADIUS
 
 local json = loadfile('json.lua')()
 local math_floor, math_huge, math_abs = math.floor, math.huge, math.abs
@@ -304,7 +308,6 @@ local function hardReset(id, finished)
     player.completion_time = 0
     player.checkpoint_index = 0
     player.current_checkpoint = nil
-    player.spawn_target = nil
     player.deaths = 0
     player.prev_tick_pos = nil
     resetAntiCamp(player)
@@ -323,16 +326,51 @@ local function teleportPlayer(id, x, y, z, r)
     write_vector3d(dyn_player + 0x74, math.cos(r), math.sin(r), 0)
 end
 
+local function precomputeLineData()
+    map_cfg.start_line = {
+        A = { map_cfg.start[1], map_cfg.start[2], map_cfg.start[3] },
+        B = { map_cfg.start[4], map_cfg.start[5], map_cfg.start[6] },
+        dx = map_cfg.start[4] - map_cfg.start[1],
+        dy = map_cfg.start[5] - map_cfg.start[2],
+        dz = map_cfg.start[6] - map_cfg.start[3],
+        length_sq = (map_cfg.start[4] - map_cfg.start[1]) ^ 2 +
+            (map_cfg.start[5] - map_cfg.start[2]) ^ 2 +
+            (map_cfg.start[6] - map_cfg.start[3]) ^ 2
+    }
+
+    map_cfg.finish_line = {
+        A = { map_cfg.finish[1], map_cfg.finish[2], map_cfg.finish[3] },
+        B = { map_cfg.finish[4], map_cfg.finish[5], map_cfg.finish[6] },
+        dx = map_cfg.finish[4] - map_cfg.finish[1],
+        dy = map_cfg.finish[5] - map_cfg.finish[2],
+        dz = map_cfg.finish[6] - map_cfg.finish[3],
+        length_sq = (map_cfg.finish[4] - map_cfg.finish[1]) ^ 2 +
+            (map_cfg.finish[5] - map_cfg.finish[2]) ^ 2 +
+            (map_cfg.finish[6] - map_cfg.finish[3]) ^ 2
+    }
+end
+
+local function precomputeCheckpointData()
+    map_cfg.checkpoint_precomputed = {}
+    for i, checkpoint in ipairs(map_cfg.checkpoints) do
+        map_cfg.checkpoint_precomputed[i] = {
+            x = checkpoint[1],
+            y = checkpoint[2],
+            z = checkpoint[3],
+            yaw = checkpoint[4]
+        }
+    end
+end
+
 -- Check if player crossed the line segment from lineA to lineB between previous and current positions
-local function isCrossingLine(px, py, pz, lineA, lineB, prevPos)
+local function isCrossingLine(px, py, pz, line_type, prevPos)
     if not prevPos then return false end
 
-    -- Extract line points
-    local Ax, Ay, Az = lineA[1], lineA[2], lineA[3]
-    local Bx, By, Bz = lineB[1], lineB[2], lineB[3]
+    local line = (line_type == "start") and map_cfg.start_line or map_cfg.finish_line
+    local Ax, Ay, Az = unpack(line.A)
 
-    -- Calculate line vector
-    local Lx, Ly, Lz = Bx - Ax, By - Ay, Bz - Az
+    -- Use precomputed values
+    local Lx, Ly, Lz = line.dx, line.dy, line.dz
 
     -- Calculate vector from line point A to current and previous positions (XY only)
     local Vx, Vy = px - Ax, py - Ay
@@ -345,7 +383,8 @@ local function isCrossingLine(px, py, pz, lineA, lineB, prevPos)
     -- Check if the signs of the Z components are different
     if crossCurrentZ * crossPreviousZ < 0 then
         -- Additional check to ensure the crossing is within the line segment
-        local t = ((px - Ax) * Lx + (py - Ay) * Ly + (pz - Az) * Lz) / (Lx * Lx + Ly * Ly + Lz * Lz)
+        -- Use precomputed length_sq
+        local t = ((px - Ax) * Lx + (py - Ay) * Ly + (pz - Az) * Lz) / line.length_sq
         return t >= 0 and t <= 1
     end
 
@@ -487,6 +526,9 @@ function OnStart()
     map_cfg.map = map
     game_over = false
 
+    precomputeLineData()
+    precomputeCheckpointData()
+
     -- Initialize map stats if needed
     if not stats[map] then
         stats[map] = {
@@ -538,13 +580,10 @@ function OnPreSpawn(id)
     if game_over then return end
 
     local player = players[id]
-    if not player or not player.spawn_target then return end
-
-    local x, y, z, r = unpack(player.spawn_target)
-    teleportPlayer(id, x, y, z, r)
-
-    -- Clear spawn target so we don't teleport again
-    player.spawn_target = nil
+    local cp = player and player.current_checkpoint
+    if cp then
+        teleportPlayer(id, cp[1], cp[2], cp[3], cp[4])
+    end
 end
 
 function OnSpawn(id)
@@ -567,15 +606,6 @@ function OnDeath(id)
     if player.deaths >= map_cfg.restart_after then
         hardReset(id)
     else
-        -- Always respawn at last checkpoint if available
-        if player.current_checkpoint then
-            player.spawn_target = {
-                player.current_checkpoint[1],
-                player.current_checkpoint[2],
-                player.current_checkpoint[3],
-                player.current_checkpoint[4]
-            }
-        end
         rprint(id, "You have " .. (map_cfg.restart_after - player.deaths) .. " more deaths before restarting.")
     end
 
@@ -616,8 +646,6 @@ function OnTick()
     if game_over then return end
 
     local now = os.time()
-    local ANTI_CAMP_RADIUS = CONFIG.ANTI_CAMP_RADIUS
-    local CLAIM_RADIUS = CONFIG.CLAIM_RADIUS
 
     for id, player in pairs(players) do
         local dyn_player = validatePlayer(id)
@@ -641,23 +669,19 @@ function OnTick()
         local max = #map_cfg.checkpoints
 
         -- Check if player is crossing the start line
-        if not player.started and isCrossingLine(x, y, z,
-                { map_cfg.start[1], map_cfg.start[2], map_cfg.start[3] },
-                { map_cfg.start[4], map_cfg.start[5], map_cfg.start[6] },
-                prev_tick_pos) then
+        if not player.started and not player.finished and isCrossingLine(x, y, z, "start", prev_tick_pos) then
             player.started = true
             player.finished = false
             player.start_time = now
             player.checkpoint_index = 0
             player.deaths = 0
             rprint(id, "Course started! Good luck!")
+
+            goto continue
         end
 
         -- Check if player is crossing the finish line
-        if player.started and not player.finished and isCrossingLine(x, y, z,
-                { map_cfg.finish[1], map_cfg.finish[2], map_cfg.finish[3] },
-                { map_cfg.finish[4], map_cfg.finish[5], map_cfg.finish[6] },
-                prev_tick_pos) then
+        if player.started and not player.finished and isCrossingLine(x, y, z, "finish", prev_tick_pos) then
             -- Make sure all checkpoints were passed
             if cur_index >= max then
                 player.finished = true
@@ -667,10 +691,12 @@ function OnTick()
                 updateStats(player, player.completion_time)
 
                 rprint(id, "Course completed in " .. formatTime(player.completion_time) .. "!")
-                hardReset(id, true)
+                -- Removed the hardReset call here to prevent immediate reset
             else
                 rprint(id, "You missed some checkpoints! (" .. cur_index .. "/" .. max .. ")")
             end
+
+            goto continue
         end
 
         -- Check if player is near a checkpoint and handle camping + claims
@@ -678,8 +704,8 @@ function OnTick()
             if CONFIG.ANTI_CAMP then
                 -- First: anti-camping check across ALL checkpoints
                 local near_index = nil
-                for i, checkpoint in ipairs(map_cfg.checkpoints) do
-                    if distanceSq(x, y, z, checkpoint[1], checkpoint[2], checkpoint[3]) <= ANTI_CAMP_RADIUS then
+                for i, checkpoint in ipairs(map_cfg.checkpoint_precomputed) do
+                    if distanceSq(x, y, z, checkpoint.x, checkpoint.y, checkpoint.z) <= ANTI_CAMP_RADIUS then
                         near_index = i
                         break
                     end
@@ -709,7 +735,7 @@ function OnTick()
             end
 
             -- Second: try to claim only eligible checkpoints
-            for i, checkpoint in ipairs(map_cfg.checkpoints) do
+            for i, checkpoint in ipairs(map_cfg.checkpoint_precomputed) do
                 local can_claim = false
                 if map_cfg.in_order then
                     can_claim = (i == cur_index + 1)
@@ -717,13 +743,13 @@ function OnTick()
                     can_claim = (i > cur_index)
                 end
 
-                if can_claim and distanceSq(x, y, z, checkpoint[1], checkpoint[2], checkpoint[3]) <= CLAIM_RADIUS then
+                if can_claim and distanceSq(x, y, z, checkpoint.x, checkpoint.y, checkpoint.z) <= CLAIM_RADIUS then
                     player.checkpoint_index = i
                     local elapsed = now - player.start_time
                     rprint(id, string_format("Checkpoint %d/%d reached! Total time: %s", i, max, formatTime(elapsed)))
 
                     -- Update respawn position for pre-spawn teleport
-                    player.current_checkpoint = { checkpoint[1], checkpoint[2], checkpoint[3], checkpoint[4] }
+                    player.current_checkpoint = { checkpoint.x, checkpoint.y, checkpoint.z, checkpoint.yaw }
                     setSpeed(id)
 
                     -- reset any camp tracking when legitimately claiming a checkpoint
@@ -752,6 +778,30 @@ function OnCommand(id, command)
 
     if cmd == "get_position" then
         getPosition(id)
+    elseif cmd == "goto_checkpoint" then
+        local player = players[id]
+        if not player then return false end
+
+        if not args[2] then
+            rprint(id, "Usage: /goto <checkpoint_index>")
+            return false
+        end
+
+        local index = tonumber(args[2])
+        if not index or index < 1 or index > #map_cfg.checkpoint_precomputed then
+            rprint(id, "Invalid checkpoint index. Must be between 1 and " .. #map_cfg.checkpoint_precomputed)
+            return false
+        end
+
+        local checkpoint = map_cfg.checkpoint_precomputed[index]
+        teleportPlayer(id, checkpoint.x, checkpoint.y, checkpoint.z, checkpoint.yaw)
+
+        player.checkpoint_index = index
+        player.current_checkpoint = { checkpoint.x, checkpoint.y, checkpoint.z, checkpoint.yaw }
+        resetAntiCamp(player)
+        setSpeed(id)
+
+        rprint(id, string.format("Teleported to checkpoint %d/%d.", index, #map_cfg.checkpoint_precomputed))
     elseif cmd == "hard_reset" then -- start over
         hardReset(id)
     elseif cmd == "soft_reset" then -- reset to checkpoint
@@ -760,10 +810,9 @@ function OnCommand(id, command)
             return false
         end
         local player = players[id]
-        local checkpoint = player.current_checkpoint
-        if checkpoint then
-            local x, y, z, r = checkpoint[1], checkpoint[2], checkpoint[3], checkpoint[4]
-            teleportPlayer(id, x, y, z, r)
+        local cp = player.current_checkpoint
+        if cp then
+            teleportPlayer(id, cp.x, cp.y, cp.z, cp.yaw)
             announceReset(player, "soft")
             setSpeed(id)
             rprint(id, "You have been reset to your last checkpoint.")
