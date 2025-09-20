@@ -34,6 +34,10 @@ LICENSE:          MIT License
 local CONFIG = {
     DATABASE_FILE = './parkour_results.json',
 
+    -- seconds of invulnerability after spawning
+    -- Only applies when respawn at a checkpoint
+    SPAWN_PROTECTION_TIME = 3,
+
     -- Format: {internal_command = {table_of_aliases, permission_level}}
     -- -1 = public, 1-4 = admin
     COMMANDS = {
@@ -174,7 +178,8 @@ local sapp_events = {
     [cb['EVENT_SPAWN']] = 'OnSpawn',
     [cb['EVENT_GAME_END']] = 'OnEnd',
     [cb['EVENT_COMMAND']] = 'OnCommand',
-    [cb['EVENT_PRESPAWN']] = 'OnPreSpawn'
+    [cb['EVENT_PRESPAWN']] = 'OnPreSpawn',
+    [cb['EVENT_DAMAGE_APPLICATION']] = 'SpawnProtection'
 }
 
 local function registerCallbacks(enable)
@@ -230,6 +235,11 @@ local function getPos(dyn_player)
     return x, y, z + 0.65 - (0.3 * crouch)
 end
 
+local function getProtectedPlayer(id)
+    local player = players[tonumber(id)]
+    return player and player.protected ~= nil and player.started
+end
+
 local function setRespawnTime(id)
     if not map_cfg.respawn_time then return end
     local player = get_player(id)
@@ -262,7 +272,7 @@ end
 
 local function announceReset(player, resetType)
     local id, name = player.id, player.name
-    for i = 1,16 do
+    for i = 1, 16 do
         if player_present(i) and i ~= id then
             rprint(i, formatMessage("%s has performed a %s reset!", name, resetType))
         end
@@ -571,6 +581,8 @@ function OnPreSpawn(id)
 end
 
 function OnSpawn(id)
+    local now = os_time()
+    players[id].protected = now + CONFIG.SPAWN_PROTECTION_TIME
     setSpeed(id)
 end
 
@@ -640,6 +652,12 @@ function OnTick()
 
         local x, y, z = getPos(dyn_player)
         if not x then goto continue end
+
+        if player.started and player.protected ~= nil then
+            if now >= player.protected then
+                player.protected = nil
+            end
+        end
 
         -- Store previous position for line crossing detection
         local prev_tick_pos = player.prev_tick_pos
@@ -757,6 +775,11 @@ function OnCommand(id, command)
     end
 
     return false
+end
+
+function SpawnProtection(victimId, causerId)
+    local player = getProtectedPlayer(victimId)
+    if player and player_alive(causerId) then return false end
 end
 
 function OnScriptUnload()
