@@ -581,8 +581,11 @@ function OnPreSpawn(id)
 end
 
 function OnSpawn(id)
-    local now = os_time()
-    players[id].protected = now + CONFIG.SPAWN_PROTECTION_TIME
+    local player = players[id]
+    if not player then return end
+
+    players[id].protected = player.started and os_time() + CONFIG.SPAWN_PROTECTION_TIME or nil
+
     setSpeed(id)
 end
 
