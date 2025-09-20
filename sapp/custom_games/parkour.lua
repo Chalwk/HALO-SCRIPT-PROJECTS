@@ -133,15 +133,6 @@ local sapp_events = {
     [cb['EVENT_DAMAGE_APPLICATION']] = 'SpawnProtection'
 }
 
-local NEW_PLAYER = {
-    started = false,
-    finished = false,
-    start_time = 0,
-    completion_time = 0,
-    deaths = 0,
-    checkpoint_index = 0
-}
-
 local function getTime()
     return os_clock() - os_start_time
 end
@@ -219,8 +210,8 @@ local function getConfigPath()
     return read_string(read_dword(sig_scan('68??????008D54245468') + 0x1))
 end
 
-local function getPlayerStats(map, name)
-    local mapStats = stats[map]
+local function getPlayerStats(name)
+    local mapStats = stats[map_cfg.map]
     local playerStats = mapStats and mapStats.players[name]
     return playerStats
 end
@@ -578,16 +569,20 @@ end
 
 function OnJoin(id)
     local name = get_var(id, '$name')
-    local map = map_cfg.map
+    local playerStats = getPlayerStats(name)
 
-    players[id] = NEW_PLAYER
-    players[id].id = id
-    players[id].name = name
-
-    local playerStats = getPlayerStats(map, name)
-
-    players[id].best_time = playerStats and playerStats.best_time_seconds or math_huge
-    players[id].completions = playerStats and playerStats.completions or 0
+    players[id] = {
+        id = id,
+        name = name,
+        started = false,
+        finished = false,
+        start_time = 0,
+        completion_time = 0,
+        deaths = 0,
+        checkpoint_index = 0,
+        best_time = playerStats and playerStats.best_time_seconds or math_huge,
+        completions = playerStats and playerStats.completions or 0
+    }
 end
 
 function OnQuit(id)
