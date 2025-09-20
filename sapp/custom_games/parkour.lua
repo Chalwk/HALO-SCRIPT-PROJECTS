@@ -33,13 +33,13 @@ LICENSE:          MIT License
 -- CONFIG start -----------------------------------------------------------
 local CONFIG = {
     DATABASE_FILE = './parkour_results.json',
+    CLAIM_RADIUS = 1.0,        -- Radius to claim a checkpoint
+    SPAWN_PROTECTION_TIME = 3, -- Seconds of invulnerability after spawning
+    ANTI_CAMP = true,          -- Enable checkpoint anti camping
+    ANTI_CAMP_SECONDS = 6,     -- Seconds allowed to camp at a checkpoint
+    ANTI_CAMP_RADIUS = 1.5,    -- Radius to consider "camping" at a checkpoint
+    MSG_PREFIX = "**SAPP**",   -- Some functions temporarily change the message msg_prefix; this restores it.
 
-    -- seconds of invulnerability after spawning
-    -- Only applies when respawn at a checkpoint
-    SPAWN_PROTECTION_TIME = 3,
-
-    -- Format: {internal_command = {table_of_aliases, permission_level}}
-    -- -1 = public, 1-4 = admin
     COMMANDS = {
         get_position = { { "getpos" }, 4 },
         hard_reset = { { "hardreset" }, -1 },
@@ -86,8 +86,6 @@ local CONFIG = {
                 { -0.01, 25.42,  2.00, 1.5717 }
             }
         },
-
-        -- more maps here:
     }
 }
 -- CONFIG end --------------------------------------------------------------
@@ -95,80 +93,26 @@ local CONFIG = {
 api_version = '1.12.0.0'
 
 local json = loadfile('json.lua')()
-
-local os_time = os.time
-local math_floor, math_huge, math_sqrt = math.floor, math.huge, math.sqrt
+local math_floor, math_huge = math.floor, math.huge
 local table_insert, table_sort = table.insert, table.sort
 local string_format = string.format
+local os_time = os.time
 
+local read_bit, read_string = read_bit, read_string
+local read_dword, write_dword = read_dword, write_dword
+local read_byte, read_float, read_vector3d, write_float, write_vector3d =
+    read_byte, read_float, read_vector3d, write_float, write_vector3d
+local get_object_memory, spawn_object = get_object_memory, spawn_object
 local get_var, player_present, register_callback, say_all, rprint =
     get_var, player_present, register_callback, say_all, rprint
-
-local get_dynamic_player, get_player, player_alive, read_dword =
-    get_dynamic_player, get_player, player_alive, read_dword
+local get_dynamic_player, get_player, player_alive =
+    get_dynamic_player, get_player, player_alive
 
 local base_tag_table = 0x40440000
 local tag_entry_size, tag_data_offset, bit_check_offset, bit_index = 0x20, 0x14, 0x308, 3
 
-local function formatMessage(message, ...)
-    if select('#', ...) > 0 then return message:format(...) end
-    return message
-end
-
-local function atan2(y, x)
-    return math.atan(y / x) + ((x < 0) and math.pi or 0)
-end
-
-local function getConfigPath()
-    return read_string(read_dword(sig_scan('68??????008D54245468') + 0x1))
-end
-
-local function parseArgs(input)
-    local result = {}
-    for substring in input:gmatch("([^%s]+)") do
-        result[#result + 1] = substring
-    end
-    return result
-end
-
-local function formatTime(seconds)
-    if seconds == 0 or seconds == math_huge then return "00:00.00" end
-
-    local total_hundredths = math_floor(seconds * 100 + 0.5)
-    local minutes = math_floor(total_hundredths / 6000)
-    local remaining_hundredths = total_hundredths % 6000
-    local secs = math_floor(remaining_hundredths / 100)
-    local hundredths = remaining_hundredths % 100
-
-    return string_format("%02d:%02d.%02d", minutes, secs, hundredths)
-end
-
-local function readJSON(file_path, default)
-    local file = io.open(file_path, "r")
-    if not file then return default end
-    local content = file:read("*a")
-    file:close()
-    if content == "" then return default end
-    local success, data = pcall(json.decode, json, content)
-    return success and data or default
-end
-
-local function writeJSON(file_path, data)
-    local file = io.open(file_path, "w")
-    if not file then return false end
-    file:write(json:encode(data))
-    file:close()
-    return true
-end
-
--- Parkour-specific code
-local map_cfg
-local game_over
-local stats_file
-local stats = {}
-local players = {}
-local oddballs = {}
-local alias_to_command = {}
+local map_cfg, game_over, stats_file
+local stats, players, oddballs, alias_to_command = {}, {}, {}, {}
 
 local sapp_events = {
     [cb['EVENT_TICK']] = 'OnTick',
@@ -192,12 +136,63 @@ local function registerCallbacks(enable)
     end
 end
 
+local function formatMessage(message, ...)
+    return select('#', ...) > 0 and message:format(...) or message
+end
+
+local function sendPublic(message)
+    execute_command('msg_prefix ""')
+    say_all(message)
+    execute_command('msg_prefix "' .. CONFIG.MSG_PREFIX .. '"')
+end
+
+local function parseArgs(input)
+    local result = {}
+    for substring in input:gmatch("([^%s]+)") do
+        result[#result + 1] = substring
+    end
+    return result
+end
+
+local function formatTime(seconds)
+    if seconds == 0 or seconds == math_huge then return "00:00.00" end
+    local total_hundredths = math_floor(seconds * 100 + 0.5)
+    local minutes = math_floor(total_hundredths / 6000)
+    local remaining_hundredths = total_hundredths % 6000
+    return string_format("%02d:%02d.%02d", minutes, math_floor(remaining_hundredths / 100), remaining_hundredths % 100)
+end
+
+local function readJSON(file_path, default)
+    local file = io.open(file_path, "r")
+    if not file then return default end
+    local content = file:read("*a")
+    file:close()
+    if content == "" then return default end
+    local success, data = pcall(json.decode, json, content)
+    return success and data or default
+end
+
+local function writeJSON(file_path, data)
+    local file = io.open(file_path, "w")
+    if not file then return false end
+    file:write(json:encode(data))
+    file:close()
+    return true
+end
+
+local function distanceSq(x1, y1, z1, x2, y2, z2)
+    local dx, dy, dz = x2 - x1, y2 - y1, z2 - z1
+    return dx * dx + dy * dy + dz * dz
+end
+
+local function getConfigPath()
+    return read_string(read_dword(sig_scan('68??????008D54245468') + 0x1))
+end
+
 local function getFlagAndOddballData()
     local tag_array = read_dword(base_tag_table)
     local tag_count = read_dword(base_tag_table + 0xC)
-
-    local flag_id, flag_name
-    local oddball_id, oddball_name
+    local flag_id, flag_name, oddball_id, oddball_name
 
     for i = 0, tag_count - 1 do
         local tag = tag_array + tag_entry_size * i
@@ -235,16 +230,15 @@ local function getPos(dyn_player)
     return x, y, z + 0.65 - (0.3 * crouch)
 end
 
-local function getProtectedPlayer(id)
-    local player = players[tonumber(id)]
-    return player and player.protected ~= nil and player.started
+local function atan2(y, x)
+    return math.atan(y / x) + ((x < 0) and math.pi or 0)
 end
 
 local function setRespawnTime(id)
     if not map_cfg.respawn_time then return end
     local player = get_player(id)
     if player ~= 0 then
-        write_dword(player + 0x2C, map_cfg.respawn_time)
+        write_dword(player + 0x2C, map_cfg.respawn_time * 33)
     end
 end
 
@@ -258,13 +252,15 @@ end
 
 local function validatePlayer(id)
     local dyn_player = get_dynamic_player(id)
-    return player_present(id) and player_alive(id) and dyn_player ~= 0
+    if player_present(id) and player_alive(id) and dyn_player ~= 0 then
+        return dyn_player
+    end
+    return nil
 end
 
 local function hasCommandPermission(id, command_data)
     local level_required = command_data.level
     local player_level = tonumber(get_var(id, "$lvl"))
-
     if player_level >= level_required then return true end
     rprint(id, "You do not have permission to use this command")
     return false
@@ -295,6 +291,12 @@ local function getPosition(id)
     rprint(id, out); cprint(out)
 end
 
+local function resetAntiCamp(player)
+    player.camp_start = nil
+    player.camp_warned = nil
+    player.camp_checkpoint = nil
+end
+
 local function hardReset(id, finished)
     local player = players[id]
     player.started = false
@@ -306,6 +308,7 @@ local function hardReset(id, finished)
     player.spawn_target = nil
     player.deaths = 0
     player.prev_tick_pos = nil
+    resetAntiCamp(player)
     if not finished then
         announceReset(player, "hard")
         execute_command('kill ' .. id)
@@ -313,23 +316,18 @@ local function hardReset(id, finished)
     end
 end
 
-local function teleportPlayer(dyn_player, x, y, z, r)
+local function teleportPlayer(id, x, y, z, r)
+    local dyn_player = get_dynamic_player(id)
+    if dyn_player == 0 then return end
+
     write_vector3d(dyn_player + 0x5C, x, y, z)
+
     if r then
         write_vector3d(dyn_player + 0x74, math.cos(r), math.sin(r), 0)
     end
 end
 
-local function distance(x1, y1, z1, x2, y2, z2)
-    local dx, dy, dz = x2 - x1, y2 - y1, z2 - z1
-    return math_sqrt(dx * dx + dy * dy + dz * dz)
-end
-
-local function isNearPoint(px, py, pz, point, radius)
-    return distance(px, py, pz, point[1], point[2], point[3]) <= radius
-end
-
--- Improved line crossing detection
+-- Check if player crossed the line segment from lineA to lineB between previous and current positions
 local function isCrossingLine(px, py, pz, lineA, lineB, prevPos)
     if not prevPos then return false end
 
@@ -340,36 +338,19 @@ local function isCrossingLine(px, py, pz, lineA, lineB, prevPos)
     -- Calculate line vector
     local Lx, Ly, Lz = Bx - Ax, By - Ay, Bz - Az
 
-    -- Calculate vector from line point A to current position
-    local Vx, Vy, Vz = px - Ax, py - Ay, pz - Az
+    -- Calculate vector from line point A to current and previous positions (XY only)
+    local Vx, Vy = px - Ax, py - Ay
+    local Px, Py = prevPos[1] - Ax, prevPos[2] - Ay
 
-    -- Calculate vector from line point A to previous position
-    local Px, Py, Pz = prevPos[1] - Ax, prevPos[2] - Ay, prevPos[3] - Az
-
-    -- Calculate cross products
-    local crossCurrent = {
-        x = Ly * Vz - Lz * Vy,
-        y = Lz * Vx - Lx * Vz,
-        z = Lx * Vy - Ly * Vx
-    }
-
-    local crossPrevious = {
-        x = Ly * Pz - Lz * Py,
-        y = Lz * Px - Lx * Pz,
-        z = Lx * Py - Ly * Px
-    }
+    -- Calculate Z component of cross products
+    local crossCurrentZ = Lx * Vy - Ly * Vx
+    local crossPreviousZ = Lx * Py - Ly * Px
 
     -- Check if the signs of the Z components are different
-    -- This indicates the player crossed the line
-    if crossCurrent.z * crossPrevious.z < 0 then
+    if crossCurrentZ * crossPreviousZ < 0 then
         -- Additional check to ensure the crossing is within the line segment
-        -- Project the current position onto the line
         local t = ((px - Ax) * Lx + (py - Ay) * Ly + (pz - Az) * Lz) / (Lx * Lx + Ly * Ly + Lz * Lz)
-
-        -- If t is between 0 and 1, the crossing point is within the line segment
-        if t >= 0 and t <= 1 then
-            return true
-        end
+        return t >= 0 and t <= 1
     end
 
     return false
@@ -402,13 +383,13 @@ local function updateStats(player, completionTime)
     -- Update personal best
     if completionTime < player_stats.best_time_seconds then
         player_stats.best_time_seconds = completionTime
-        say_all(formatMessage("New personal best for %s: %s", name, formatTime(completionTime)))
+        sendPublic(formatMessage("New personal best for %s: %s", name, formatTime(completionTime)))
     end
 
     -- Update map record
     if completionTime < map_stats.best_time.time then
         map_stats.best_time = { time = completionTime, player = name }
-        say_all(formatMessage("New map record by %s: %s!", name, formatTime(completionTime)))
+        sendPublic(formatMessage("New map record by %s: %s!", name, formatTime(completionTime)))
     end
 
     -- Update averages
@@ -432,15 +413,11 @@ end
 local function showStats(id)
     local map = map_cfg.map
 
-    if not stats[map] then
-        local msg = "No stats available for this map."
-        (id and rprint or say_all)(id or msg, id and msg or nil)
-        return false
-    end
+    local send = id and function(msg) rprint(id, msg) end or sendPublic
 
-    -- Decide how to output (private vs broadcast)
-    local output = function(str)
-        if id then rprint(id, str) else say_all(str) end
+    if not stats[map] then
+        send("No records for this map yet.")
+        return false
     end
 
     -- Build ranking table
@@ -453,27 +430,26 @@ local function showStats(id)
     table_sort(ranking, function(a, b) return a.best_time < b.best_time end)
 
     -- Header
-    output("Top 5 players for map: " .. map)
+    send("Top 5 players for map: " .. map)
 
     -- Show up to 5 players
     if #ranking == 0 then
-        output("No completions recorded yet.")
+        send("No completions recorded yet.")
     else
         for i = 1, math.min(5, #ranking) do
             local p = ranking[i]
-            output(string_format("%d. %s - %s (%d completions)", i, p.name, formatTime(p.best_time), p.completions))
+            send(string_format("%d. %s - %s (%d completions)", i, p.name, formatTime(p.best_time), p.completions))
         end
     end
 end
 
 function OnScriptLoad()
     for command_name, data in pairs(CONFIG.COMMANDS) do
-        local aliases = data[1]
-        local permission_level = data[2]
-        for _, alias in ipairs(aliases) do
-            alias_to_command[alias] = { command = command_name, level = permission_level }
+        for _, alias in ipairs(data[1]) do
+            alias_to_command[alias] = { command = command_name, level = data[2] }
         end
     end
+
     register_callback(cb['EVENT_GAME_START'], 'OnStart')
 
     local config_path = getConfigPath()
@@ -554,9 +530,7 @@ function OnJoin(id)
         best_time = stats[map] and stats[map].players[name] and stats[map].players[name].best_time_seconds or math_huge,
         completions = stats[map] and stats[map].players[name] and stats[map].players[name].completions or 0,
         deaths = 0,
-        checkpoint_index = 0,
-        current_checkpoint = nil,
-        prev_tick_pos = nil
+        checkpoint_index = 0
     }
 end
 
@@ -570,11 +544,8 @@ function OnPreSpawn(id)
     local player = players[id]
     if not player or not player.spawn_target then return end
 
-    local dyn = get_dynamic_player(id)
-    if dyn == 0 then return end
-
     local x, y, z, r = unpack(player.spawn_target)
-    teleportPlayer(dyn, x, y, z, r)
+    teleportPlayer(id, x, y, z, r)
 
     -- Clear spawn target so we don't teleport again
     player.spawn_target = nil
@@ -585,7 +556,6 @@ function OnSpawn(id)
     if not player then return end
 
     players[id].protected = player.started and os_time() + CONFIG.SPAWN_PROTECTION_TIME or nil
-
     setSpeed(id)
 end
 
@@ -599,13 +569,7 @@ function OnDeath(id)
 
     -- Restart course if too many deaths
     if player.deaths >= map_cfg.restart_after then
-        player.started = false
-        player.finished = false
-        player.checkpoint_index = 0
-        player.spawn_target = nil
-        player.current_checkpoint = nil
-        player.deaths = 0
-        rprint(id, "You have been reset to the start line.")
+        hardReset(id)
     else
         -- Always respawn at last checkpoint if available
         if player.current_checkpoint then
@@ -647,19 +611,19 @@ end
 function OnTick()
     if game_over then return end
 
-    local now = os_time()
+    local now = os.time()
+    local ANTI_CAMP_RADIUS = CONFIG.ANTI_CAMP_RADIUS
+    local CLAIM_RADIUS = CONFIG.CLAIM_RADIUS
 
     for id, player in pairs(players) do
-        local dyn_player = get_dynamic_player(id)
-        if not validatePlayer(id) or not dyn_player then goto continue end
+        local dyn_player = validatePlayer(id)
+        if not dyn_player then goto continue end
 
         local x, y, z = getPos(dyn_player)
         if not x then goto continue end
 
-        if player.started and player.protected ~= nil then
-            if now >= player.protected then
-                player.protected = nil
-            end
+        if player.started and player.protected ~= nil and now >= player.protected then
+            player.protected = nil
         end
 
         -- Store previous position for line crossing detection
@@ -705,32 +669,62 @@ function OnTick()
             end
         end
 
-        -- Check if player is near a checkpoint
+        -- Check if player is near a checkpoint and handle camping + claims
         if player.started and not player.finished then
+            if CONFIG.ANTI_CAMP then
+                -- First: anti-camping check across ALL checkpoints
+                local near_index = nil
+                for i, checkpoint in ipairs(map_cfg.checkpoints) do
+                    if distanceSq(x, y, z, checkpoint[1], checkpoint[2], checkpoint[3]) <= ANTI_CAMP_RADIUS then
+                        near_index = i
+                        break
+                    end
+                end
+
+                if near_index then
+                    -- standing on some checkpoint (any checkpoint)
+                    if player.camp_checkpoint == near_index and player.camp_start then
+                        local elapsed = now - player.camp_start
+                        if elapsed >= CONFIG.ANTI_CAMP_SECONDS then
+                            hardReset(id)
+                            goto continue
+                        elseif elapsed >= CONFIG.ANTI_CAMP_SECONDS / 2 and not player.camp_warned then
+                            rprint(id, "Move away soon or you'll be reset!")
+                            player.camp_warned = true
+                        end
+                    else
+                        -- start fresh timer for this checkpoint
+                        player.camp_checkpoint = near_index
+                        player.camp_start = now
+                        player.camp_warned = nil -- reset warning for new camp
+                    end
+                else
+                    -- not near any checkpoint, clear camp info
+                    resetAntiCamp(player)
+                end
+            end
+
+            -- Second: try to claim only eligible checkpoints
             for i, checkpoint in ipairs(map_cfg.checkpoints) do
-                -- determine whether this checkpoint is eligible to be claimed
                 local can_claim = false
                 if map_cfg.in_order then
-                    -- must be exactly the next checkpoint in sequence
                     can_claim = (i == cur_index + 1)
                 else
-                    -- allow any checkpoint higher than current
                     can_claim = (i > cur_index)
                 end
 
-                if can_claim and isNearPoint(x, y, z, checkpoint, 1.0) then
+                if can_claim and distanceSq(x, y, z, checkpoint[1], checkpoint[2], checkpoint[3]) <= CLAIM_RADIUS then
                     player.checkpoint_index = i
-
                     local elapsed = now - player.start_time
-                    rprint(id, string_format(
-                        "Checkpoint %d/%d reached! Total time: %s",
-                        i, max,
-                        formatTime(elapsed)
-                    ))
+                    rprint(id, string_format("Checkpoint %d/%d reached! Total time: %s", i, max, formatTime(elapsed)))
 
-                    -- Update previous position for respawning
+                    -- Update respawn position for pre-spawn teleport
                     player.current_checkpoint = { checkpoint[1], checkpoint[2], checkpoint[3], checkpoint[4] }
                     setSpeed(id)
+
+                    -- reset any camp tracking when legitimately claiming a checkpoint
+                    resetAntiCamp(player)
+
                     break
                 end
             end
@@ -757,8 +751,7 @@ function OnCommand(id, command)
     elseif cmd == "hard_reset" then -- start over
         hardReset(id)
     elseif cmd == "soft_reset" then -- reset to checkpoint
-        local dyn = get_dynamic_player(id)
-        if dyn == 0 then
+        if not player_alive(id) then
             rprint(id, "You must be alive to use this command.")
             return false
         end
@@ -766,7 +759,7 @@ function OnCommand(id, command)
         local checkpoint = player.current_checkpoint
         if checkpoint then
             local x, y, z, r = checkpoint[1], checkpoint[2], checkpoint[3], checkpoint[4]
-            teleportPlayer(dyn, x, y, z, r)
+            teleportPlayer(id, x, y, z, r)
             announceReset(player, "soft")
             setSpeed(id)
             rprint(id, "You have been reset to your last checkpoint.")
@@ -781,8 +774,10 @@ function OnCommand(id, command)
 end
 
 function SpawnProtection(victimId, causerId)
-    local player = getProtectedPlayer(victimId)
-    if player and player_alive(causerId) then return false end
+    local player = players[tonumber(victimId)]
+    if player and player.protected ~= nil and player.started and player_alive(causerId) then
+        return false
+    end
 end
 
 function OnScriptUnload()
