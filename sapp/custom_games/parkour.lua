@@ -100,6 +100,8 @@ local json = loadfile('json.lua')()
 local math_floor, math_huge, math_abs = math.floor, math.huge, math.abs
 local table_insert, table_sort = table.insert, table.sort
 local string_format = string.format
+
+local elapsed_game_time
 local os_clock = os.clock
 local os_start_time = os_clock()
 
@@ -118,6 +120,10 @@ local TAG_ENTRY_SIZE, TAG_DATA_OFFSET, BIT_CHECK_OFFSET, BIT_INDEX = 0x20, 0x14,
 
 local map_cfg, game_over, stats_file
 local stats, players, oddballs, alias_to_command = {}, {}, {}, {}
+
+local function getTime()
+    return os_clock() - os_start_time
+end
 
 local sapp_events = {
     [cb['EVENT_TICK']] = 'OnTick',
@@ -594,9 +600,7 @@ function OnSpawn(id)
     local player = players[id]
     if not player then return end
 
-    local now = os_clock() - os_start_time
-
-    players[id].protected = player.started and now + CONFIG.SPAWN_PROTECTION_TIME or nil
+    players[id].protected = player.started and elapsed_game_time + CONFIG.SPAWN_PROTECTION_TIME or nil
     setSpeed(id)
 end
 
@@ -651,7 +655,7 @@ end
 function OnTick()
     if game_over then return end
 
-    local now = os_clock() - os_start_time -- ensure time is synced
+    elapsed_game_time = getTime()
 
     for id, player in pairs(players) do
         local dyn_player = validatePlayer(id)
@@ -660,7 +664,7 @@ function OnTick()
         local x, y, z = getPos(dyn_player)
         if not x then goto continue end
 
-        if player.started and player.protected ~= nil and now >= player.protected then
+        if player.started and player.protected ~= nil and elapsed_game_time >= player.protected then
             player.protected = nil
         end
 
@@ -678,7 +682,7 @@ function OnTick()
         if not player.started and not player.finished and isCrossingLine(x, y, z, "start", prev_tick_pos) then
             player.started = true
             player.finished = false
-            player.start_time = now
+            player.start_time = elapsed_game_time
             player.checkpoint_index = 0
             player.deaths = 0
             rprint(id, "Course started! Good luck!")
@@ -691,7 +695,7 @@ function OnTick()
             -- Make sure all checkpoints were passed
             if cur_index >= max then
                 player.finished = true
-                player.completion_time = now - player.start_time
+                player.completion_time = elapsed_game_time - player.start_time
 
                 -- Update stats
                 updateStats(player, player.completion_time)
@@ -720,7 +724,7 @@ function OnTick()
                 if near_index then
                     -- standing on some checkpoint (any checkpoint)
                     if player.camp_checkpoint == near_index and player.camp_start then
-                        local elapsed = now - player.camp_start
+                        local elapsed = elapsed_game_time - player.camp_start
                         if elapsed >= CONFIG.ANTI_CAMP_SECONDS then
                             hardReset(id)
                             goto continue
@@ -731,7 +735,7 @@ function OnTick()
                     else
                         -- start fresh timer for this checkpoint
                         player.camp_checkpoint = near_index
-                        player.camp_start = now
+                        player.camp_start = elapsed_game_time
                         player.camp_warned = nil -- reset warning for new camp
                     end
                 else
@@ -751,7 +755,7 @@ function OnTick()
 
                 if can_claim and distanceSq(x, y, z, checkpoint.x, checkpoint.y, checkpoint.z) <= CLAIM_RADIUS then
                     player.checkpoint_index = i
-                    local elapsed = now - player.start_time
+                    local elapsed = elapsed_game_time - player.start_time
                     rprint(id, string_format("Checkpoint %d/%d reached! Total time: %s", i, max, formatTime(elapsed)))
 
                     -- Update respawn position for pre-spawn teleport
