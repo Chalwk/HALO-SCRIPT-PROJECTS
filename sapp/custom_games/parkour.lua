@@ -52,7 +52,7 @@ local CONFIG = {
             spawn_flags = true,
             spawn_checkpoint_markers = true,
             restart_after = 10,
-            respawn_time = 0,
+            respawn_time = 1,
             running_speed = 1.4,
             start = { -0.80, -9.93, .30, 0.30, -9.93, 0.30 },
             finish = { 50.19, 259.27, -18.62, 52.79, 259.27, -18.62 },
@@ -75,7 +75,7 @@ local CONFIG = {
             spawn_flags = true,
             spawn_checkpoint_markers = true,
             restart_after = 10,
-            respawn_time = 0,
+            respawn_time = 1,
             running_speed = 1.57,
             start = { -0.89, -37.80, 0.00, 0.87, -37.80, 0.00 },
             finish = { -0.71, 41.11, 0.00, 0.69, 41.08, 0.00 },
@@ -93,7 +93,7 @@ local CONFIG = {
 api_version = '1.12.0.0'
 
 local json = loadfile('json.lua')()
-local math_floor, math_huge = math.floor, math.huge
+local math_floor, math_huge, math_abs = math.floor, math.huge, math.abs
 local table_insert, table_sort = table.insert, table.sort
 local string_format = string.format
 local os_time = os.time
@@ -235,7 +235,6 @@ local function atan2(y, x)
 end
 
 local function setRespawnTime(id)
-    if not map_cfg.respawn_time then return end
     local player = get_player(id)
     if player ~= 0 then
         write_dword(player + 0x2C, map_cfg.respawn_time * 33)
@@ -277,7 +276,7 @@ end
 
 local function getPosition(id)
     local dyn = get_dynamic_player(id)
-    if dyn == 0 then
+    if not player_alive(id) or dyn == 0 then
         rprint(id, "You must be alive to use this command.")
         return
     end
@@ -321,10 +320,7 @@ local function teleportPlayer(id, x, y, z, r)
     if dyn_player == 0 then return end
 
     write_vector3d(dyn_player + 0x5C, x, y, z)
-
-    if r then
-        write_vector3d(dyn_player + 0x74, math.cos(r), math.sin(r), 0)
-    end
+    write_vector3d(dyn_player + 0x74, math.cos(r), math.sin(r), 0)
 end
 
 -- Check if player crossed the line segment from lineA to lineB between previous and current positions
@@ -593,15 +589,23 @@ function AnchorCheckpoints()
         local object = get_object_memory(object_id)
         if object == 0 then goto continue end
 
-        -- update position, velocity, yaw, pitch and roll
-        write_vector3d(object + 0x5C, pos.x, pos.y, pos.z)
+        -- Only update if the object has moved significantly
+        local x = read_float(object + 0x5C)
+        local y = read_float(object + 0x60)
+        local z = read_float(object + 0x64)
 
-        write_float(object + 0x68, 0) -- x vel
-        write_float(object + 0x6C, 0) -- y vel
-        write_float(object + 0x70, 0) -- z vel
-        write_float(object + 0x90, 0) -- yaw
-        write_float(object + 0x8C, 0) -- pitch
-        write_float(object + 0x94, 0) -- roll
+        -- Check if position has changed beyond a small threshold
+        if math_abs(x - pos.x) > 0.01 or
+            math_abs(y - pos.y) > 0.01 or
+            math_abs(z - pos.z) > 0.01 then
+            write_vector3d(object + 0x5C, pos.x, pos.y, pos.z)
+            write_float(object + 0x68, 0) -- x velocity
+            write_float(object + 0x6C, 0) -- y velocity
+            write_float(object + 0x70, 0) -- z velocity
+            write_float(object + 0x90, 0) -- yaw
+            write_float(object + 0x8C, 0) -- pitch
+            write_float(object + 0x94, 0) -- roll
+        end
 
         ::continue::
     end
