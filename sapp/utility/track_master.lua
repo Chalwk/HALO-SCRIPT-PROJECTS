@@ -104,14 +104,14 @@ local function getConfigPath()
     return read_string(read_dword(sig_scan('68??????008D54245468') + 0x1))
 end
 
-local function formatTime(seconds)
-    if seconds == 0 or seconds == math_huge then return "00:00.00" end
-    local total_hundredths = math_floor(seconds * 100 + 0.5)
+local function formatTime(lap_time)
+    if lap_time == 0 or lap_time == math_huge then return "00:00.000" end
+    local total_hundredths = math_floor(lap_time * 100 + 0.5)
     local minutes = math_floor(total_hundredths / 6000)
     local remaining_hundredths = total_hundredths % 6000
     local secs = math_floor(remaining_hundredths / 100)
     local hundredths = remaining_hundredths % 100
-    return string_format("%02d:%02d.%02d", minutes, secs, hundredths)
+    return string_format("%02d:%02d.%03d", minutes, secs, hundredths)
 end
 
 local function readJSON(default)
@@ -180,7 +180,7 @@ local function saveStats()
     end
 end
 
-local function inVehicleAsDriver(id)
+local function considerOccupant(id)
     if not CONFIG.DRIVER_REQUIRED then return true end
 
     local dyn_player = get_dynamic_player(id)
@@ -193,10 +193,6 @@ local function inVehicleAsDriver(id)
     if vehicle_object == 0 then return false end
 
     return read_word(dyn_player + 0x2F0) == 0 -- driver seat
-end
-
-local function validateLapTime(lap_time)
-    return lap_time >= CONFIG.MIN_LAP_TIME
 end
 
 local function getLapTicks(address)
@@ -252,18 +248,6 @@ local function updatePlayerStats(player, lapTime)
     elseif is_personal_best then
         sendPublic(formatMessage("New personal best for %s: %s", name, formatTime(lapTime)))
     end
-end
-
-local function processLapTime(player, lap_time)
-    player.laps = player.laps + 1
-    player.previous_time = lap_time
-    updatePlayerStats(player, lap_time)
-end
-
-local function shouldProcessPlayer(id)
-    return player_present(id) and player_alive(id) and
-        get_player(id) ~= 0 and get_dynamic_player(id) ~= 0 and
-        inVehicleAsDriver(id)
 end
 
 local function parseArgs(input)
@@ -414,18 +398,22 @@ local function showGlobalStats(id, n)
     ::continue::
 end
 
-function OnTick()
-    for id, player in pairs(players) do
-        if not shouldProcessPlayer(id) then goto continue end
-        local static_player = get_player(id)
-        local lap_ticks = getLapTicks(static_player + 0xC4)
-        local lap_time = roundToHundredths(lap_ticks * tick_rate)
-        if lap_time > 0 and lap_time ~= player.previous_time and validateLapTime(lap_time) then
-            processLapTime(player, lap_time)
-        end
-        player.previous_time = lap_time
-        ::continue::
+function OnScore(id)
+    if not considerOccupant(id) then goto continue end
+
+    local player = players[id]
+    if not player or not player_alive(id) then goto continue end
+
+    local static_player = get_player(id)
+    local lap_ticks = getLapTicks(static_player + 0xC4)
+    local lap_time = roundToHundredths(lap_ticks * tick_rate)
+
+    if lap_time >= CONFIG.MIN_LAP_TIME then
+        player.laps = tonumber(get_var(id, '$score'))
+        updatePlayerStats(player, lap_time)
     end
+
+    ::continue::
 end
 
 function OnStart()
@@ -494,7 +482,7 @@ function OnScriptLoad()
     txt_export_file = config_path .. "\\sapp\\" .. CONFIG.TEXT_EXPORT_FILE
 
     register_callback(cb['EVENT_JOIN'], 'OnJoin')
-    register_callback(cb['EVENT_TICK'], 'OnTick')
+    register_callback(cb['EVENT_SCORE'], 'OnScore')
     register_callback(cb['EVENT_LEAVE'], 'OnQuit')
     register_callback(cb['EVENT_GAME_END'], 'OnEnd')
     register_callback(cb['EVENT_COMMAND'], 'OnCommand')
