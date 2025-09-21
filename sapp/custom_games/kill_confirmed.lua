@@ -4,7 +4,7 @@ SCRIPT NAME:      kill_confirmed.lua
 DESCRIPTION:      Team-based objective mode where players must collect enemy dog tags
                   to score points, inspired by Call of Duty's Kill Confirmed.
 
-LAST UPDATED:     16/09/2025
+LAST UPDATED:     21/09/2025
 
 Copyright (c) 2020-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
