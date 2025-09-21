@@ -48,10 +48,10 @@ local CONFIG = {
     -- Commands:
     STATS_COMMAND = "stats",       -- Command to show player's personal best lap (current map)
     MAP_TOP_COMMAND = "top",       -- Command to show top 5 global best laps (current map)
-    GLOBAL_TOP_COMMAND = "global", -- Command to show top overall players (all maps)
+    GLOBAL_TOP_COMMAND = "global", -- Command to show top 5 overall players (all maps)
 
     -- Settings:
-    TOP_LIST_SIZE = 5,         -- Number of top laps to display (applies to top command and game end)
+    LIST_SIZE = 5,             -- Number of top laps to display (applies to top command and game end)
     MIN_LAP_TIME = 10.0,       -- Minimum valid lap time in seconds
     EXPORT_LAP_RECORDS = true, -- Export lap records to a text file
     DRIVER_REQUIRED = true,    -- Only count laps if the player is the driver of the vehicle
@@ -280,12 +280,11 @@ local function showTopPlayers(id)
     local map_best_laps = {}
 
     if not map_data then
-        send("No lap records for this map yet.")
+        send("No records for this map yet.")
         goto continue
     end
 
-    send("All-Time Best Laps on " .. current_map .. ":")
-
+    send("Top players for " .. current_map .. ":")
     for player_name, player_stats in pairs(map_data.players) do
         table_insert(map_best_laps, {
             name = player_name,
@@ -295,7 +294,7 @@ local function showTopPlayers(id)
 
     table.sort(map_best_laps, function(a, b) return a.best_lap < b.best_lap end)
 
-    for i = 1, math_min(CONFIG.TOP_LIST_SIZE, #map_best_laps) do
+    for i = 1, math_min(CONFIG.LIST_SIZE, #map_best_laps) do
         local entry = map_best_laps[i]
         send(string.format("%d. %s - %s", i, entry.name, formatTime(entry.best_lap)))
     end
@@ -405,27 +404,19 @@ local function showGlobalStats(id, n)
     local send = id and function(msg) rprint(id, msg) end or sendPublic
 
     if #top_players == 0 then
-        send("No overall records yet.")
+        send("No records yet.")
         goto continue
     end
 
-    send("All-Time Best Racers (must have at least one map record):")
-
-    -- Show global best lap if available
-    if global_best_lap.time < math_huge then
-        send(string.format("Global Best Lap: %s by %s on %s",
-            formatTime(global_best_lap.time),
-            global_best_lap.player,
-            global_best_lap.map))
-    end
-
+    send("Top overall players:")
     for i, player in ipairs(top_players) do
         local record_word = pluralize(player.map_records, "record")
         local map_word = pluralize(player.maps_played, "map")
         local global_indicator = player.has_global_record and " [GLOBAL RECORD]" or ""
 
         send(string.format("%d. %s%s [%dpts, %d %s in %d %s]",
-            i, player.name, global_indicator, player.points, player.map_records, record_word,
+            i, player.name, global_indicator, player.points,
+            player.map_records, record_word,
             player.maps_played, map_word))
     end
 
@@ -464,7 +455,7 @@ function OnEnd()
         showTopPlayers() -- show top for current map only
         return
     end
-    showGlobalStats(nil, CONFIG.TOP_LIST_SIZE) -- show top overall players (all maps)
+    showGlobalStats(nil, CONFIG.LIST_SIZE) -- show top overall players (all maps)
 end
 
 function OnJoin(id)
@@ -499,8 +490,8 @@ function OnCommand(id, command)
         end
         return false
     elseif args[1] == CONFIG.GLOBAL_TOP_COMMAND then
-        local count = tonumber(args[2]) or CONFIG.TOP_LIST_SIZE
-        if count < 1 then count = CONFIG.TOP_LIST_SIZE end
+        local count = tonumber(args[2]) or CONFIG.LIST_SIZE
+        if count < 1 then count = CONFIG.LIST_SIZE end
         showGlobalStats(id, count)
         return false
     end

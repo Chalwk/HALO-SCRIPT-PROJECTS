@@ -461,17 +461,11 @@ end
 
 local function showStats(player)
     local map = map_cfg.map
-
     local send = player and function(msg) rprint(player.id, msg) end or sendPublic
 
     if not stats[map] then
         send("No records for this map yet.")
         return false
-    end
-
-    -- If this is a specific player, show their personal best first
-    if player and player.best_time and player.best_time ~= math_huge then
-        send("Your Fastest Time: " .. formatTime(player.best_time))
     end
 
     -- Build ranking table
@@ -486,13 +480,30 @@ local function showStats(player)
     -- Header
     send("Top 5 players for " .. map)
 
-    -- Show up to 5 players
     if #ranking == 0 then
         send("No completions recorded yet.")
-    else
-        for i = 1, math.min(5, #ranking) do
-            local p = ranking[i]
-            send(string_format("%d. %s - %s (%d completions)", i, p.name, formatTime(p.best_time), p.completions))
+        return
+    end
+
+    local top5 = {}
+    for i = 1, math.min(5, #ranking) do
+        local p = ranking[i]
+        table_insert(top5, p)
+        send(string_format("%d. %s - %s (%d completions)", i, p.name, formatTime(p.best_time), p.completions))
+    end
+
+    -- Show personal best if player is not in top 5
+    if player and player.best_time and player.best_time ~= math_huge then
+        local inTop5 = false
+        for _, p in ipairs(top5) do
+            if p.name == player.name then
+                inTop5 = true
+                break
+            end
+        end
+
+        if not inTop5 then
+            send("Your Fastest Time: " .. formatTime(player.best_time))
         end
     end
 end
