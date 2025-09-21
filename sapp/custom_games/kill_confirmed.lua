@@ -36,7 +36,7 @@ api_version = "1.12.0.0"
 local tonumber, ipairs, table_remove = tonumber, ipairs, table.remove
 local get_var, say_all, execute_command = get_var, say_all, execute_command
 local get_dynamic_player, get_object_memory = get_dynamic_player, get_object_memory
-local read_dword, read_word, read_string = read_dword, read_word, read_string
+local read_dword, read_string = read_dword, read_string
 local read_vector3d, spawn_object, destroy_object = read_vector3d, spawn_object, destroy_object
 
 local BASE_TAG_TABLE = 0x40440000
