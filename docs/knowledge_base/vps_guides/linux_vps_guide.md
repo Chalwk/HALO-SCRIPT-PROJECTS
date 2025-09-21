@@ -34,9 +34,9 @@ This is a step-by-step tutorial for installing an **Ubuntu 22.04 LTS** VPS with 
 ### 1. Download and Prepare the Server Template
 
 1. Download:
-   * [HPC_Server.zip](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/download/ReadyToGo/HPC.Server.zip)
+   * [HPC_Server.zip](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/download/ReadyToGo/HPC_Server.zip)
    **or**
-   * [HCE_Server.zip](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/download/ReadyToGo/HCE.Server.zip)
+   * [HCE_Server.zip](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/download/ReadyToGo/HCE_Server.zip)
 2. Extract the ZIP file on your local computer using preferred extraction method. You should have a folder named `HPC_Server` or `HCE_Server`. Keep this handy for later.
 
 ---
@@ -440,7 +440,7 @@ Categories=Game;
 Make the desktop file executable:
 
 ```bash
-chmod +x /home/haloadmin/Desktop/run.desktop
+chmod +x /home/haloadmin/Desktop/all_in_one.desktop
 ```
 
 4. **Using the Shortcut:** You should now see a new icon on your VPS desktop. The first time you double-click it, you will likely be prompted by Wine to **install Mono**. Click "Install" and allow it to complete. Once installed, the server console window will open. Subsequent double-clicks will launch the server directly.
