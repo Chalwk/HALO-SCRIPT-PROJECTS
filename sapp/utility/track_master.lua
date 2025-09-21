@@ -395,10 +395,6 @@ local function getTopOverallPlayers(n)
     return result
 end
 
-local function pluralize(count, singular, plural)
-    return count == 1 and singular or (plural or singular .. "s")
-end
-
 local function showGlobalStats(id, n)
     local top_players = getTopOverallPlayers(n)
     local send = id and function(msg) rprint(id, msg) end or sendPublic
