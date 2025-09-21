@@ -410,14 +410,9 @@ local function showGlobalStats(id, n)
 
     send("Top overall players:")
     for i, player in ipairs(top_players) do
-        local record_word = pluralize(player.map_records, "record")
-        local map_word = pluralize(player.maps_played, "map")
         local global_indicator = player.has_global_record and " [GLOBAL RECORD]" or ""
-
-        send(string.format("%d. %s%s [%dpts, %d %s in %d %s]",
-            i, player.name, global_indicator, player.points,
-            player.map_records, record_word,
-            player.maps_played, map_word))
+        send(string.format("%d. %s%s [%dpts]",
+            i, player.name, global_indicator, player.points))
     end
 
     ::continue::
