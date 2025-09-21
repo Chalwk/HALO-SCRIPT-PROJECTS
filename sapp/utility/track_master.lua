@@ -16,8 +16,7 @@ FEATURES:         - Tracks player lap times and validates laps (minimum time + d
                       * Participation penalty: players with few maps played may have adjusted points
                       * Tiebreakers: map records > global record > top finishes
                   - Announces in-game:
-                      * New personal bests
-                      * New map records
+                      * New personal bests + New map records
                   - Provides in-game commands:
                       * stats          - Show your personal best on current map
                       * top            - Display top N all-time laps for current map
@@ -56,7 +55,7 @@ local CONFIG = {
     EXPORT_LAP_RECORDS = true, -- Export lap records to a text file
     DRIVER_REQUIRED = true,    -- Only count laps if the player is the driver of the vehicle
     SHOW_FINAL_TOP = true,     -- Show top results on game end
-    TOP_FINAL_GLOBAL = true,   -- Show global or current map results at game end (requires SHOW_FINAL_TOP = true)
+    TOP_FINAL_GLOBAL = true,   -- true = GLOBAL map results | false = CURRENT map results | This setting requires SHOW_FINAL_TOP = true
     MSG_PREFIX = "**SAPP**",   -- Some functions temporarily change the message msg_prefix; this restores it.
 
     -- Scoring weights
@@ -464,7 +463,7 @@ function OnCommand(id, command)
         local map_data = stats[current_map]
         if map_data and map_data.players and map_data.players[players[id].name] then
             local best = map_data.players[players[id].name].best
-            rprint(id, string_format("Your best lap on %s: %s", current_map, formatTime(best)))
+            rprint(id, string_format("Best time on %s: %s", current_map, formatTime(best)))
         else
             rprint(id, "You have no recorded laps on this map yet.")
         end
