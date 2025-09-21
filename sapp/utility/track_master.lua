@@ -55,7 +55,7 @@ local CONFIG = {
     EXPORT_LAP_RECORDS = true, -- Export lap records to a text file
     DRIVER_REQUIRED = true,    -- Only count laps if the player is the driver of the vehicle
     SHOW_FINAL_TOP = true,     -- Show top results on game end
-    TOP_FINAL_GLOBAL = true,   -- true = GLOBAL map results | false = CURRENT map results | This setting requires SHOW_FINAL_TOP = true
+    TOP_FINAL_GLOBAL = false,   -- true = GLOBAL map results | false = CURRENT map results | This setting requires SHOW_FINAL_TOP = true
     MSG_PREFIX = "**SAPP**",   -- Some functions temporarily change the message msg_prefix; this restores it.
 
     -- Scoring weights
