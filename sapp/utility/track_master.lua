@@ -208,6 +208,8 @@ local function updatePlayerStats(player, lapTime)
     local is_map_record = false
     --local is_global_record = false
 
+    local lap_count = tonumber(get_var(player.id, '$score'))
+
     -- Personal best
     if lapTime < (player.best_lap or math_huge) then
         player.best_lap = lapTime
@@ -229,13 +231,13 @@ local function updatePlayerStats(player, lapTime)
     -- Player stats for this map
     local player_stats = map_stats.players[name]
     if not player_stats then
-        player_stats = { best = lapTime, laps = 1, average = lapTime }
+        player_stats = { best = lapTime, laps = lap_count, average = lapTime }
         map_stats.players[name] = player_stats
     else
-        player_stats.laps = player_stats.laps + 1
+        -- Update lap count from the game's score system
+        player_stats.laps = lap_count
         player_stats.best = math_min(player_stats.best, lapTime)
-        player_stats.average = ((player_stats.average * (player_stats.laps - 1)) + lapTime) /
-            player_stats.laps
+        player_stats.average = ((player_stats.average * (lap_count - 1)) + lapTime) / lap_count
     end
 
     stats[current_map] = map_stats
@@ -409,7 +411,6 @@ function OnScore(id)
     local lap_time = roundToHundredths(lap_ticks * tick_rate)
 
     if lap_time >= CONFIG.MIN_LAP_TIME then
-        player.laps = tonumber(get_var(id, '$score'))
         updatePlayerStats(player, lap_time)
     end
 
@@ -439,8 +440,8 @@ end
 
 function OnJoin(id)
     players[id] = {
+        id = id,
         name = get_var(id, "$name"),
-        laps = 0,
         previous_time = 0,
         best_lap = math_huge
     }
