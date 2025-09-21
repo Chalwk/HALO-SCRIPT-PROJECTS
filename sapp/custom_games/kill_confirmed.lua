@@ -22,8 +22,7 @@ local CONFIRM_ALLY = "$name confirmed $killer's kill on $victim"
 local DENY = "$name denied $killer's kill"
 local SUICIDE = "$name committed SUICIDE!"
 local FRIENDLY_FIRE = "$name team-killed $victim!"
-local DOG_TAG_PATH = "weapons\\ball\\ball" -- The object tag path to represent a dog tag
-local SERVER_PREFIX = " "                  -- Prefix for server announcements
+local SERVER_PREFIX = " " -- Prefix for server announcements
 -- CONFIG ENDS --------------------------------------------------------------
 
 local players = {}
@@ -39,6 +38,9 @@ local get_var, say_all, execute_command = get_var, say_all, execute_command
 local get_dynamic_player, get_object_memory = get_dynamic_player, get_object_memory
 local read_dword, read_word, read_string = read_dword, read_word, read_string
 local read_vector3d, spawn_object, destroy_object = read_vector3d, spawn_object, destroy_object
+
+local BASE_TAG_TABLE = 0x40440000
+local TAG_ENTRY_SIZE, TAG_DATA_OFFSET, BIT_CHECK_OFFSET, BIT_INDEX = 0x20, 0x14, 0x308, 3
 
 local sapp_events = {
     [cb['EVENT_TICK']] = 'OnTick',
@@ -60,6 +62,31 @@ local function registerCallbacks(enable)
     end
 end
 
+local function getFlagAndOddballData()
+    local tag_array = read_dword(BASE_TAG_TABLE)
+    local tag_count = read_dword(BASE_TAG_TABLE + 0xC)
+    local oddball_id, oddball_name
+
+    for i = 0, tag_count - 1 do
+        local tag = tag_array + TAG_ENTRY_SIZE * i
+        local tag_class = read_dword(tag)
+        if tag_class == 0x77656170 then
+            local tag_data = read_dword(tag + TAG_DATA_OFFSET)
+            if read_bit(tag_data + BIT_CHECK_OFFSET, BIT_INDEX) == 1 then
+                local item_type = read_byte(tag_data + 2)
+                local meta_id = read_dword(tag + 0xC)
+                local tag_name = read_string(read_dword(tag + 0x10))
+                if item_type == 4 then
+                    oddball_id, oddball_name = meta_id, tag_name
+                    break
+                end
+            end
+        end
+    end
+
+    return oddball_id, oddball_name
+end
+
 local function fmt(msg, vars)
     return (msg:gsub("%$(%w+)", function(key)
         return vars[key] or ("$" .. key)
@@ -70,19 +97,6 @@ local function announce(msg, vars)
     execute_command('msg_prefix ""')
     say_all(fmt(msg, vars))
     execute_command('msg_prefix "' .. SERVER_PREFIX .. '"')
-end
-
-local function hasOddball(player_id, slot_index)
-    local dyn = get_dynamic_player(player_id)
-    if dyn == 0 then return nil end
-
-    local weapon_id = read_dword(dyn + 0x2F8 + (slot_index - 1) * 4)
-    local object_memory = get_object_memory(weapon_id)
-
-    if weapon_id == 0xFFFFFFFF or object_memory == 0 then return nil end
-    local object_path = read_string(read_dword(read_word(object_memory) * 32 + 0x40440038))
-
-    return object_path == DOG_TAG_PATH and object_memory or nil
 end
 
 local function updateScsore(player, points)
@@ -117,22 +131,22 @@ local function shouldDespawn(tag)
 end
 
 local function getPos(player_id)
-    local dyn = get_dynamic_player(player_id)
-    if dyn == 0 then return nil end
 
-    local crouch = read_float(dyn + 0x50C)
-    local vehicle_id = read_dword(dyn + 0x11C)
+    local dyn_player = get_dynamic_player(player_id)
+    if dyn_player == 0 then return end
+
+    local crouch = read_float(dyn_player + 0x50C)
+    local vehicle_id = read_dword(dyn_player + 0x11C)
     local vehicle_obj = get_object_memory(vehicle_id)
 
     local x, y, z
     if vehicle_id == 0xFFFFFFFF then
-        x, y, z = read_vector3d(dyn + 0x5C)
+        x, y, z = read_vector3d(dyn_player + 0x5C)
     elseif vehicle_obj ~= 0 then
         x, y, z = read_vector3d(vehicle_obj + 0x5C)
     end
 
-    local z_offset = (crouch == 0) and 0.65 or 0.35 * crouch
-    return x, y, z + z_offset
+    return x, y, z + 0.65 - (0.3 * crouch)
 end
 
 local function spawnDogTag(tag)
@@ -198,11 +212,6 @@ local function collectDogTag(player_id, object_memory)
     return false
 end
 
-local function getTag(class, path)
-    local tag = lookup_tag(class, path)
-    return tag ~= 0 and read_dword(tag + 0xC) or nil
-end
-
 function OnScriptLoad()
     register_callback(cb['EVENT_GAME_START'], "OnStart")
     OnStart()
@@ -213,9 +222,9 @@ function OnStart()
 
     game_active, players, dog_tags = true, {}, {}
 
-    dog_tag_id = getTag("weap", DOG_TAG_PATH)
+    dog_tag_id = getFlagAndOddballData()
     if dog_tag_id == nil then
-        cprint("Dog Tag '" .. DOG_TAG_PATH .. "' not found.", 10)
+        cprint("Dog Tag (oddball) not found on this map", 10)
         registerCallbacks(false)
         return
     end
@@ -306,8 +315,13 @@ end
 function OnWeaponPickup(player_id, slot_index, weapon_type)
     if not game_active or tonumber(weapon_type) ~= 1 then return true end
 
-    local object_memory = hasOddball(player_id, slot_index)
-    if not object_memory then return end
+    local dyn = get_dynamic_player(player_id)
+    if dyn == 0 then return end
+
+    local weapon_id = read_dword(dyn + 0x2F8 + (slot_index - 1) * 4)
+    local object_memory = get_object_memory(weapon_id)
+
+    if weapon_id == 0xFFFFFFFF or object_memory == 0 then return nil end
 
     collectDogTag(player_id, object_memory)
 end
