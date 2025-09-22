@@ -1,24 +1,7 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      melee_attack.lua
-DESCRIPTION:      Brutal melee-only combat mode featuring:
-                  - Forced melee weapon loadouts
-                  - Instant-kill skull attacks
-                  - Restricted weapon pickups
-                  - Fast-paced close-quarters combat
-
-KEY FEATURES:
-                 - Exclusive melee combat system
-                 - One-hit kill mechanics
-                 - Comprehensive weapon restrictions
-                 - Instant respawns
-                 - Balanced gameplay environment
-
-CONFIGURATION OPTIONS:
-                 - Adjustable score limit
-                 - Customizable respawn timer
-                 - Weapon/vehicle blacklist
-                 - Equipment restrictions
+DESCRIPTION:      Brutal melee-only combat mode
 
 Copyright (c) 2023-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -26,141 +9,129 @@ LICENSE:          MIT License
 =====================================================================================
 ]]
 
---- Configuration
-local score_limit = 50
-local respawn_time = 0
-
---- Game objects to restrict
-local game_objects = {
-    'eqip\\powerups\\health pack',
-    'eqip\\powerups\\over shield',
-    'eqip\\powerups\\active camouflage',
-    'eqip\\weapons\\frag grenade\\frag grenade',
-    'eqip\\weapons\\plasma grenade\\plasma grenade',
-    'vehi\\vehicles\\ghost\\ghost_mp',
-    'vehi\\vehicles\\rwarthog\\rwarthog',
-    'vehi\\vehicles\\banshee\\banshee_mp',
-    'vehi\\vehicles\\warthog\\mp_warthog',
-    'vehi\\vehicles\\scorpion\\scorpion_mp',
-    'vehi\\vehicles\\c gun turret\\c gun turret_mp',
-    'weap\\weapons\\flag\\flag',
-    'weap\\weapons\\pistol\\pistol',
-    'weap\\weapons\\shotgun\\shotgun',
-    'weap\\weapons\\needler\\mp_needler',
-    'weap\\weapons\\flamethrower\\flamethrower',
-    'weap\\weapons\\plasma rifle\\plasma rifle',
-    'weap\\weapons\\sniper rifle\\sniper rifle',
-    'weap\\weapons\\plasma pistol\\plasma pistol',
-    'weap\\weapons\\plasma_cannon\\plasma_cannon',
-    'weap\\weapons\\assault rifle\\assault rifle',
-    'weap\\weapons\\rocket launcher\\rocket launcher'
-}
+--- CONFIG start ---------------------
+local SCORELIMIT = 50
+local RESPAWN_TIME = 0
+--- CONFIG end -----------------------
 
 api_version = '1.12.0.0'
 
 -- Precomputed values
-local objects = {}
-local players = {}
-local oddball_tag
-local respawn_ticks = respawn_time * 33
+local oddballs = {}
+local oddball_meta_id
+local respawn_ticks = RESPAWN_TIME * 33
 
-local function get_tag_address(class, name)
-    local tag = lookup_tag(class, name)
-    return tag ~= 0 and read_dword(tag + 0xC) or nil
-end
+local BASE_TAG_TABLE = 0x40440000
+local TAG_ENTRY_SIZE, TAG_DATA_OFFSET, BIT_CHECK_OFFSET, BIT_INDEX = 0x20, 0x14, 0x308, 3
 
-local function init_restricted_objects()
-    for _, path in ipairs(game_objects) do
-        local class, name = path:match('^(%a+)\\(.+)$')
-        local tag = get_tag_address(class, name)
-        if tag then objects[tag] = true end
+local sapp_events = {
+    [cb['EVENT_DIE']] = 'OnDeath',
+    [cb['EVENT_LEAVE']] = 'OnQuit',
+    [cb['EVENT_SPAWN']] = 'OnSpawn',
+    [cb['EVENT_WEAPON_DROP']] = 'OnWeaponDrop',
+}
+
+local function registerCallbacks(enable)
+    for event, callback in pairs(sapp_events) do
+        if enable then
+            register_callback(event, callback)
+        else
+            unregister_callback(event)
+        end
     end
 end
 
-local function delete_drone(id)
-    local player = players[id]
-    if player and player.drone then
-        destroy_object(player.drone)
-        player.drone = nil
+local function setMapObjects()
+    local tag_array = read_dword(BASE_TAG_TABLE)
+    local tag_count = read_dword(BASE_TAG_TABLE + 0xC)
+
+    local oddball_id
+    for i = 0, tag_count - 1 do
+        local tag = tag_array + TAG_ENTRY_SIZE * i
+        local class = read_dword(tag)
+        if class == 0x77656170 or class == 0x76656869 or class == 1701931376 then
+            local tag_data = read_dword(tag + TAG_DATA_OFFSET)
+            local name_ptr = read_dword(tag + 0x10)
+            local tag_name = (name_ptr ~= 0) and read_string(name_ptr) or "<no-name>"
+            if tag_data ~= 0 then
+                if read_bit(tag_data + BIT_CHECK_OFFSET, BIT_INDEX) == 1 then
+                    local item_type = read_byte(tag_data + 2)
+                    if item_type == 4 and not oddball_id then
+                        oddball_id = read_dword(tag + 0xC)
+                        goto continue
+                    end
+                end
+                ::continue::
+                execute_command("disable_object '" .. tag_name .. "'")
+            end
+        end
+    end
+
+    return oddball_id
+end
+
+local function delete_weap(id)
+    if oddballs[id] then
+        destroy_object(oddballs[id])
     end
 end
 
 function OnStart()
     if get_var(0, '$gt') == 'n/a' then return end
 
-    execute_command('scorelimit ' .. score_limit)
-    oddball_tag = get_tag_address('weap', 'weapons\\ball\\ball')
-    objects = {}
-    init_restricted_objects()
+    oddballs = {}
+
+    execute_command('scorelimit ' .. SCORELIMIT)
+    oddball_meta_id = setMapObjects()
+
+    if not oddball_meta_id then
+        registerCallbacks(false)
+        error('Failed to find oddball meta ID')
+    end
 
     for i = 1, 16 do
         if player_present(i) then
-            OnJoin(i)
+            OnSpawn(i)
         end
     end
-end
 
-function OnJoin(id)
-    players[id] = { assign = false, drone = nil }
+    registerCallbacks(true)
 end
 
 function OnQuit(id)
-    delete_drone(id)
-    players[id] = nil
+    delete_weap(id)
+    oddballs[id] = nil
 end
 
 function OnSpawn(id)
-    local player = players[id]
-    if player then
-        player.assign = true
+    if not oddballs[id] then
+        oddballs[id] = spawn_object('', '', 0, 0, -9999, 0, oddball_meta_id)
     end
-end
 
-function OnTick()
-    for id, player in pairs(players) do
-        if player and player.assign then
-            local dyn = get_dynamic_player(id)
-            if dyn ~= 0 and player_alive(id) then
-                player.assign = false
-                execute_command('wdel ' .. id)
-                player.drone = spawn_object('', '', 0, 0, -9999, 0, oddball_tag)
-                assign_weapon(player.drone, id)
-            end
-        end
-    end
+    execute_command('wdel ' .. id)
+    assign_weapon(oddballs[id], id)
 end
 
 function OnWeaponDrop(id)
-    delete_drone(id)
-    local player = players[id]
-    if player then
-        player.assign = true
-    end
+    local weap = oddballs[id]
+    if weap then assign_weapon(weap, id) end
 end
 
 function OnDeath(victim, killer)
-    victim = tonumber(victim)
-    if killer == 0 or killer == -1 then return end
-
-    local player = get_player(victim)
-    if player ~= 0 then
-        write_dword(player + 0x2C, respawn_ticks)
+    if tonumber(killer) > 0 then
+        local player = get_player(tonumber(victim))
+        if player ~= 0 then
+            write_dword(player + 0x2C, respawn_ticks)
+        end
     end
-end
-
-function OnObjectSpawn(_, object_id)
-    if objects[object_id] then return false end
 end
 
 function OnScriptLoad()
     register_callback(cb.EVENT_DIE, 'OnDeath')
-    register_callback(cb.EVENT_TICK, 'OnTick')
-    register_callback(cb.EVENT_JOIN, 'OnJoin')
     register_callback(cb.EVENT_LEAVE, 'OnQuit')
     register_callback(cb.EVENT_SPAWN, 'OnSpawn')
     register_callback(cb.EVENT_GAME_START, 'OnStart')
     register_callback(cb.EVENT_WEAPON_DROP, 'OnWeaponDrop')
-    register_callback(cb.EVENT_OBJECT_SPAWN, 'OnObjectSpawn')
 
     OnStart()
 end
