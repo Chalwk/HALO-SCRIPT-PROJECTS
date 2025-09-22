@@ -5,7 +5,7 @@ DESCRIPTION:      Advanced server logging system that replaces SAPP's default lo
                   Tracks player activity, game events, and admin commands with
                   customizable verbosity.
 
-LAST UPDATED:     22/09/2025
+LAST UPDATED:     22/9/2025
 
 Copyright (c) 2024-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -368,36 +368,36 @@ end
 
 function OnQuit(id)
     local player = players[id]
-    if player then
-        local data = getQuitJoinData(id, true)
-        log("OnQuit", data)
-        players[id] = nil
-    end
+    if not player then return end
+
+    local data = getQuitJoinData(id, true)
+    log("OnQuit", data)
+    players[id] = nil
 end
 
 function OnSpawn(id)
     local player = players[id]
-    if player then
-        player.last_damage = 0
-        player.switched = nil
-        log("OnSpawn", { ["$name"] = player.name })
-    end
+    if not player then return end
+
+    player.last_damage = 0
+    player.switched = nil
+    log("OnSpawn", { ["$name"] = player.name })
 end
 
 function OnSwitch(id)
     local player = players[id]
-    if player then
-        player.team = get_var(id, '$team')
-        player.switched = true
-        log("OnSwitch", { ["$name"] = player.name, ["$team"] = player.team })
-    end
+    if not player then return end
+
+    player.team = get_var(id, '$team')
+    player.switched = true
+    log("OnSwitch", { ["$name"] = player.name, ["$team"] = player.team })
 end
 
 function OnWarp(id)
     local player = players[id]
-    if player then
-        log("OnWarp", { ["$name"] = player.name })
-    end
+    if not player then return end
+
+    log("OnWarp", { ["$name"] = player.name })
 end
 
 function OnReset()
@@ -406,29 +406,29 @@ end
 
 function OnLogin(id)
     local player = players[id]
-    if player then
-        log("OnLogin", { ["$name"] = player.name })
-    end
+    if not player then return end
+
+    log("OnLogin", { ["$name"] = player.name })
 end
 
 function OnSnap(id)
     local player = players[id]
-    if player then
-        log("OnSnap", { ["$name"] = player.name })
-    end
+    if not player then return end
+
+    log("OnSnap", { ["$name"] = player.name })
 end
 
 function OnCommand(id, command, environment)
     local player = players[id]
-    if player then
-        local cmd = command:match("^(%S+)")
-        log("OnCommand", {
-            ["$type"] = command_type[environment],
-            ["$name"] = player.name,
-            ["$id"] = id,
-            ["$cmd"] = cmd
-        })
-    end
+    if not player then return true end
+
+    local cmd = command:match("^(%S+)")
+    log("OnCommand", {
+        ["$type"] = command_type[environment],
+        ["$name"] = player.name,
+        ["$id"] = id,
+        ["$cmd"] = cmd
+    })
 end
 
 function OnChat(id, message, environment)

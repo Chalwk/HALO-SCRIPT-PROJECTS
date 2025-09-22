@@ -6,7 +6,7 @@ DESCRIPTION:      On-demand vehicle spawning system with:
                   - Automatic player entry
                   - Multi-map support
 
-LAST UPDATED:     16/9/2025
+LAST UPDATED:     22/9/2025
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -18,8 +18,8 @@ LICENSE:          MIT License
 
 local ANNOUNCEMENTS = true        -- Perioically announce available vehicles (set to false to disable)
 local ANNOUNCEMENT_INTERVAL = 180 -- Time (in seconds) between announcements
-local DESPAWN_DELAY_SECONDS = 30  -- Time (in seconds) before a spawned vehicle despawns
-local COOLDOWN_PERIOD = 5         -- Cooldown time (seconds) between vehicle spawns per player
+local DESPAWN_DELAY_SECONDS = 7   -- Time (in seconds) before a spawned vehicle despawns
+local COOLDOWN_PERIOD = 7         -- Cooldown time (seconds) between vehicle spawns per player
 
 -- DEFAULT_TAGS: Fallback vehicle definitions used when a map isn't listed in CUSTOM_TAGS
 -- Format: ["keyword"] = "tag_path"

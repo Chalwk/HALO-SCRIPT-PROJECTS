@@ -30,7 +30,7 @@ FEATURES:         - Tracks player lap times and validates laps (minimum time + d
                       * driver-only laps
                       * final leaderboard display
 
-LAST UPDATED:     21/9/2025
+LAST UPDATED:     22/9/2025
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -420,8 +420,6 @@ function OnStart()
     if get_var(0, '$gt') ~= 'race' then return end
     current_map = get_var(0, "$map")
     players = {}
-    stats = readJSON(stats)
-
     for i = 1, 16 do
         if player_present(i) then OnJoin(i) end
     end
@@ -480,6 +478,8 @@ function OnScriptLoad()
     local config_path = getConfigPath()
     stats_file = config_path .. "\\sapp\\" .. CONFIG.STATS_FILE
     txt_export_file = config_path .. "\\sapp\\" .. CONFIG.TEXT_EXPORT_FILE
+
+    stats = readJSON(stats)
 
     register_callback(cb['EVENT_JOIN'], 'OnJoin')
     register_callback(cb['EVENT_SCORE'], 'OnScore')
