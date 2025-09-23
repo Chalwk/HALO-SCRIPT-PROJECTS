@@ -116,7 +116,6 @@ local function changeScoreLimit(quitFlag)
     end
 end
 
-
 function OnStart()
     local game_type = get_var(0, '$gt')
     if game_type == 'n/a' then return end
