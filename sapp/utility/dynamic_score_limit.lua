@@ -104,7 +104,8 @@ local function changeScoreLimit(quitFlag)
     local player_count = tonumber(get_var(0, '$pn'))
     player_count = quitFlag and player_count - 1 or player_count
 
-    for _, limit_data in ipairs(score_table) do
+    for i = 1, #score_table - 1 do
+        local limit_data = score_table[i]
         local min, max, limit = unpack(limit_data)
         if player_count >= min and player_count <= max and limit ~= current_limit then
             current_limit = limit
@@ -114,6 +115,7 @@ local function changeScoreLimit(quitFlag)
         end
     end
 end
+
 
 function OnStart()
     local game_type = get_var(0, '$gt')
