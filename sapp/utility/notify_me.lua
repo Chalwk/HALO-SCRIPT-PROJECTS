@@ -14,7 +14,7 @@ FEATURES:
                   - First blood detection
                   - Detailed death cause reporting
 
-LAST UPDATED:     22/09/2025
+LAST UPDATED:     23/09/2025
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -24,9 +24,8 @@ LICENSE:          MIT License
 
 -- Configuration starts here -----------------------------------------------------------------------
 local CONFIG = {
-    TIMESTAMP_FORMAT = '!%a %d %b %Y %H:%M:%S',
-
-    SAPP_COLORS = {
+    -- Console output colors (SAPP color codes)
+    CONSOLE_COLORS = {
         black = 0,
         blue = 1,
         green = 2,
@@ -45,167 +44,73 @@ local CONFIG = {
         orange = 15
     },
 
-    LOGO = {
-        enabled = true,
-        text = {
-            { "================================================================================", 'green' },
-            { "$timeStamp",                                                                       'yellow' },
-            { "",                                                                                 'black' },
-            { "     '||'  '||'     |     '||'       ..|''||           ..|'''.| '||''''|  ",       'red' },
-            { "      ||    ||     |||     ||       .|'    ||        .|'     '   ||  .    ",       'red' },
-            { "      ||''''||    |  ||    ||       ||      ||       ||          ||''|    ",       'red' },
-            { "      ||    ||   .''''|.   ||       '|.     ||       '|.      .  ||       ",       'red' },
-            { "     .||.  .||. .|.  .||. .||.....|  ''|...|'         ''|....'  .||.....| ",       'red' },
-            { "               ->-<->-<->-<->-<->-<->-<->-<->-<->-<->-<->-<->-<->-",               'gray' },
-            { "                             $serverName",                                         'green' },
-            { "               ->-<->-<->-<->-<->-<->-<->-<->-<->-<->-<->-<->-<->-",               'gray' },
-            { "",                                                                                 'black' },
-            { "================================================================================", 'green' }
+    --
+    -- Event type -> color mapping
+    --
+    EVENT_COLORS = {
+        OnStart = "green",
+        OnEnd = "red",
+        OnJoin = "light_green",
+        OnQuit = "light_red",
+        OnSpawn = "white",
+        OnSwitch = "yellow",
+        OnWarp = "purple",
+        OnReset = "orange",
+        OnLogin = "cyan",
+        OnSnap = "pink",
+        OnCommand = "light_blue",
+        OnChat = "light_gray",
+        OnScore = "light_yellow",
+        OnDeath = "red"
+    },
+
+    --
+    -- Event message templates | Format: { "Message", notify? }
+    --
+
+    EVENTS = {
+        OnStart = { "[START] New game on $map - $mode", true },
+        OnEnd = { "[END] Game ended", true },
+        OnJoin = { "[JOIN] $name ($id) | $ip | $hash | Pirated: $pirated | $total/16", true },
+        OnQuit = { "[QUIT] $name ($id) | $ip | $hash | Pirated: $pirated | $total/16", true },
+        OnSpawn = { "[SPAWN] $name spawned", false },
+        OnSwitch = { "[SWITCH] $name switched to $team", false },
+        OnWarp = { "[WARP] $name warped", false },
+        OnReset = { "[RESET] Map reset: $map / $mode", false },
+        OnLogin = { "[LOGIN] $name logged in", false },
+        OnSnap = { "[SNAP] $name snapped", true },
+        OnCommand = { "[$type CMD] $name ($id): $cmd", true },
+        OnChat = { "[$type MSG] $name ($id): $msg", true },
+
+        -- Score Type: 1 = CTF, 2 = Team Race, 3 = FFA Race, 4 = Team Slayer, 5 = FFA Slayer
+        OnScore = {
+            [1] = { "[CTF SCORE] $name | $team team | Reds: $redScore Blues: $blueScore | Limit: $scorelimit", false },
+            [2] = { "[TEAM RACE SCORE] $name | $team team | $lap_time | Team Laps: $totalTeamLaps/$scorelimit", false },
+            [3] = { "[FFA RACE SCORE] $name | Lap: $lap_time | Laps: $score/$scorelimit", false },
+            [4] = { "[TEAM SLAYER SCORE] $name | $team team | Reds: $redScore | Blues: $blueScore | Limit: $scorelimit", false },
+            [5] = { "[FFA SCORE] $name | $score/$scorelimit", false }
+        },
+
+        -- Death Type:  1 = first blood, 2 = from the grave,
+        --              3 = run over, 4 = killed, 5 = suicide,
+        --              6 = betrayed, 7 = squashed, 8 = fall,
+        --              9 = server, 10 = died
+        OnDeath = {
+            [1] = { "$killerName drew first blood on $victimName", true },
+            [2] = { "$victimName was killed from the grave by $killerName", true },
+            [3] = { "$victimName was run over by $killerName", true },
+            [4] = { "$victimName was killed by $killerName", true },
+            [5] = { "$victimName committed suicide", true },
+            [6] = { "$victimName was betrayed by $killerName", true },
+            [7] = { "$victimName was squashed by a vehicle", true },
+            [8] = { "$victimName fell to their death", true },
+            [9] = { "$victimName was killed by the server", true },
+            [10] = { "$victimName died", true }
         }
     },
 
-    EVENTS = {
-        ["OnStart"] = {
-            enabled = true,
-            log = "A new game has started on $map - $mode",
-            color = 'green'
-        },
-        ["OnEnd"] = {
-            enabled = true,
-            log = "The game has ended.",
-            color = 'red'
-        },
-        ["OnJoin"] = {
-            enabled = true,
-            log = "$name\nHash: $hash\nIP: $ip\nID: $id\nLevel: $lvl\nPirated: $pirated\n",
-            color = 'green'
-        },
-        ["OnQuit"] = {
-            enabled = true,
-            log = "$name\nHash: $hash\nIP: $ip\nID: $id\nLevel: $lvl",
-            color = 'red'
-        },
-        ["OnSpawn"] = {
-            enabled = true,
-            log = "$name spawned",
-            color = 'light_yellow'
-        },
-        ["OnSwitch"] = {
-            enabled = true,
-            log = "$name switched teams. New team: [$team]",
-            color = 'light_yellow'
-        },
-        ["OnWarp"] = {
-            enabled = true,
-            log = "$name is warping",
-            color = 'light_yellow'
-        },
-        ["OnReset"] = {
-            enabled = true,
-            log = "The map [$map / $mode] has been reset.",
-            color = 'light_yellow'
-        },
-        ["OnLogin"] = {
-            enabled = true,
-            log = "$name logged in",
-            color = 'light_yellow'
-        },
-        ["OnSnap"] = {
-            enabled = true,
-            log = "$name snapped",
-            color = 'light_yellow'
-        },
-        ["OnCommand"] = {
-            enabled = true,
-            log = "[$type CMD] $name ($id): $cmd",
-            color = 'light_yellow'
-        },
-        ["OnChat"] = {
-            enabled = true,
-            log = "[$type MSG] $name ($id): $msg",
-            color = 'light_yellow'
-        },
-        ['OnScore'] = {
-            [1] = { -- CTF
-                enabled = false,
-                log = '[SCORE] $name captured the flag for the $team team! Red: $redScore, Blue: $blueScore',
-                color = 'yellow'
-            },
-            [2] = { -- Team Race
-                enabled = false,
-                log =
-                '[SCORE] $name completed a lap for $team! Lap Time: $lap_time, Team Laps: $totalTeamLaps',
-                color = 'yellow'
-            },
-            [3] = { -- FFA Race
-                enabled = false,
-                log = '[SCORE] $name finished a lap. Lap Time: $lap_time, Total Laps: $score',
-                color = 'yellow'
-            },
-            [4] = { -- Team Slayer
-                enabled = false,
-                log = '[SCORE] $name scored for $team team! Red: $redScore, Blue: $blueScore',
-                color = 'yellow'
-            },
-            [5] = { -- FFA Slayer
-                enabled = false,
-                log = '[SCORE] $name scored! Current Score: $score',
-                color = 'yellow'
-            }
-        },
-        ["OnDeath"] = {
-            [1] = { -- first blood
-                enabled = true,
-                log = "$killerName drew first blood on $victimName",
-                color = 'green'
-            },
-            [2] = { -- killed from the grave
-                enabled = true,
-                log = "$victimName was killed from the grave by $killerName",
-                color = 'green'
-            },
-            [3] = { -- vehicle kill
-                enabled = true,
-                log = "$victimName was run over by $killerName",
-                color = 'green'
-            },
-            [4] = { -- pvp
-                enabled = true,
-                log = "$victimName was killed by $killerName",
-                color = 'green'
-            },
-            [5] = { -- suicide
-                enabled = true,
-                log = "$victimName committed suicide",
-                color = 'green'
-            },
-            [6] = { -- betrayal
-                enabled = true,
-                log = "$victimName was betrayed by $killerName",
-                color = 'green'
-            },
-            [7] = { -- squashed by a vehicle
-                enabled = true,
-                log = "$victimName was squashed by a vehicle",
-                color = 'green'
-            },
-            [8] = { -- fall damage
-                enabled = true,
-                log = "$victimName fell to their death",
-                color = 'green'
-            },
-            [9] = { -- killed by the server
-                enabled = true,
-                log = "$victimName was killed by the server",
-                color = 'green'
-            },
-            [10] = { -- unknown death
-                enabled = true,
-                log = "$victimName died",
-                color = 'green'
-            }
-        }
-    },
+    -- Known CD-key hashes from pirated/cracked Halo copies.
+    -- Used to flag players with "$pirated = YES".
     KNOWN_PIRATED_HASHES = {
         ['388e89e69b4cc08b3441f25959f74103'] = true,
         ['81f9c914b3402c2702a12dc1405247ee'] = true,
@@ -238,6 +143,29 @@ local CONFIG = {
         ['50bbef5ebf4e0393016d129a545bd09d'] = true,
         ['a77ee0be91bd38a0635b65991bc4b686'] = true,
         ['3126fab3615a94119d5fe9eead1e88c1'] = true,
+    },
+
+    --
+    -- Logo settings
+    --
+
+    LOGO = {
+        true, -- set to false to disable logo
+        {
+            { "================================================================================", 'green' },
+            { "$timeStamp",                                                                       'yellow' },
+            { "",                                                                                 'black' },
+            { "     '||'  '||'     |     '||'       ..|''||           ..|'''.| '||''''|  ",       'red' },
+            { "      ||    ||     |||     ||       .|'    ||        .|'     '   ||  .    ",       'red' },
+            { "      ||''''||    |  ||    ||       ||      ||       ||          ||''|    ",       'red' },
+            { "      ||    ||   .''''|.   ||       '|.     ||       '|.      .  ||       ",       'red' },
+            { "     .||.  .||. .|.  .||. .||.....|  ''|...|'         ''|....'  .||.....| ",       'red' },
+            { "               ->-<->-<->-<->-<->-<->-<->-<->-<->-<->-<->-<->-<->-",               'gray' },
+            { "                             $serverName",                                         'green' },
+            { "               ->-<->-<->-<->-<->-<->-<->-<->-<->-<->-<->-<->-<->-",               'gray' },
+            { "",                                                                                 'black' },
+            { "================================================================================", 'green' }
+        }
     }
 }
 
@@ -246,121 +174,37 @@ api_version = '1.12.0.0'
 -- Configuration ends here -----------------------------------------------------------------------
 
 local players = {}
-local date = os.date
-local ffa, falling, distance, first_blood
-
-local tick_rate = 1 / 30
+local tick_rate = 1 / 30 -- for race lap times
 local score_limit
 local gametype_base
-local current_gametype, mode, map
+local gametype, mode, map
+local ffa, falling, distance, first_blood
 
-local chat_type = { [0] = "GLOBAL", [1] = "TEAM", [2] = "VEHICLE", [3] = "UNKNOWN" }
-local command_type = { [0] = "RCON", [1] = "CONSOLE", [2] = "CHAT", [3] = "UNKNOWN" }
+local command_type = {
+    [0] = "RCON",
+    [1] = "CONSOLE",
+    [2] = "CHAT",
+    [3] = "UNKNOWN",
+}
 
-local tonumber, ipairs = tonumber, ipairs
-local string_char, string_format, table_concat = string.char, string.format, table.concat
+local chat_type = {
+    [0] = "GLOBAL",
+    [1] = "TEAM",
+    [2] = "VEHICLE",
+    [3] = "UNKNOWN",
+}
+
+local os_date = os.date
+local tonumber = tonumber
+local string_format, string_char, table_concat = string.format, string.char, table.concat
 local math_huge, math_floor = math.huge, math.floor
+local read_byte, read_dword = read_byte, read_dword
 local get_var, player_present, player_alive = get_var, player_present, player_alive
-local read_byte, read_dword, cprint, timer = read_byte, read_dword, cprint, timer
 
 local get_dynamic_player = get_dynamic_player
 
-function OnScriptLoad()
-    gametype_base = read_dword(sig_scan("B9360000008BF3BF78545F00") + 0x8)
-
-    register_callback(cb['EVENT_CHAT'], 'OnChat')
-    register_callback(cb['EVENT_COMMAND'], 'OnCommand')
-    register_callback(cb['EVENT_DIE'], 'OnDeath')
-    register_callback(cb['EVENT_SCORE'], 'OnScore')
-    register_callback(cb['EVENT_DAMAGE_APPLICATION'], 'OnDamage')
-    register_callback(cb['EVENT_JOIN'], 'OnJoin')
-    register_callback(cb['EVENT_LEAVE'], 'OnQuit')
-    register_callback(cb['EVENT_GAME_END'], 'OnEnd')
-    register_callback(cb['EVENT_GAME_START'], 'OnStart')
-    register_callback(cb['EVENT_SNAP'], 'OnSnap')
-    register_callback(cb['EVENT_SPAWN'], 'OnSpawn')
-    register_callback(cb['EVENT_LOGIN'], 'OnLogin')
-    register_callback(cb['EVENT_MAP_RESET'], "OnReset")
-    register_callback(cb['EVENT_TEAM_SWITCH'], 'OnSwitch')
-
-    OnStart()
-    timer(50, "DisplayASCIIArt")
-end
-
-local function parseTemplate(template, args)
-    return (template:gsub("($[%w_]+)", function(placeholder)
-        return args[placeholder] or placeholder
-    end))
-end
-
-local function isPirated(hash)
-    return CONFIG.KNOWN_PIRATED_HASHES[hash] and 'YES' or 'NO'
-end
-
-local function getQuitJoinData(id, quit)
-    local total = tonumber(get_var(0, '$pn'))
-    total = (quit and total - 1) or total
-
-    return {
-        ["$total"] = total,
-        ["$name"] = players[id].name,
-        ["$ip"] = players[id].ip,
-        ["$hash"] = players[id].hash,
-        ["$id"] = players[id].id,
-        ["$lvl"] = players[id].level,
-        ["$ping"] = get_var(id, "$ping"),
-        ["$pirated"] = isPirated(players[id].hash)
-    }
-end
-
-local function newPlayer(id)
-    return {
-        level = tonumber(get_var(id, '$lvl')),
-        id = id,
-        last_damage = 0,
-        switched = false,
-        ip = get_var(id, '$ip'),
-        name = get_var(id, '$name'),
-        team = get_var(id, '$team'),
-        hash = get_var(id, '$hash')
-    }
-end
-
-local function isCommand(str)
-    return str:sub(1, 1) == "/" or str:sub(1, 1) == "\\"
-end
-
-local function inVehicle(id)
-    local dyn_player = get_dynamic_player(id)
-    if dyn_player == 0 then return false end
-    return read_dword(dyn_player + 0x11C) ~= 0xFFFFFFFF
-end
-
-local function getColor(colorString)
-    return CONFIG.SAPP_COLORS[colorString]
-end
-
-local function log(eventName, args)
-    local event = CONFIG.EVENTS[eventName]
-    if not event or not event.enabled then return end
-
-    local msg = parseTemplate(event.log, args)
-    cprint(msg, getColor(event.color))
-end
-
-local function notifyDeathOrScore(args, source)
-    local category = CONFIG.EVENTS[source]
-    local event_type = args["$event_type"]
-    local event = category and category[event_type]
-    if not event or not event.enabled then return end
-
-    local msg = parseTemplate(event.log, args)
-    cprint(msg, getColor(event.color))
-end
-
-local function getTag(class, name)
-    local tag = lookup_tag(class, name)
-    return tag ~= 0 and read_dword(tag + 0xC) or nil
+local function getColor(color)
+    return CONFIG.CONSOLE_COLORS[color] or CONFIG.CONSOLE_COLORS.white
 end
 
 local function readWideString(Address, Length)
@@ -375,23 +219,104 @@ local function readWideString(Address, Length)
     return table_concat(byte_table)
 end
 
+
 local function getServerName()
     local network_struct = read_dword(sig_scan("F3ABA1????????BA????????C740??????????E8????????668B0D") + 3)
     return readWideString(network_struct + 0x8, 0x42)
+end
+
+local function formatLog(log, args)
+    return (log:gsub("($[%w_]+)", function(placeholder)
+        return args[placeholder] or placeholder
+    end))
+end
+
+local function getEvent(event_name, ...)
+    local args = { ... }
+    if next(args) then
+        return CONFIG.EVENTS[event_name][args[1]]
+    else
+        return CONFIG.EVENTS[event_name]
+    end
+end
+
+local function log(event_name, args)
+    local event = getEvent(event_name, args and args.event_type)
+    if not event or not event[2] then return end
+
+    local formatted = formatLog(event[1], args)
+
+    -- Get color for this event type
+    local event_color = CONFIG.EVENT_COLORS[event_name] or "white"
+    local color_value = getColor(event_color)
+
+    -- Output to console with color
+    cprint(formatted, color_value)
+end
+
+local function getTag(class, name)
+    local tag = lookup_tag(class, name)
+    return tag ~= 0 and read_dword(tag + 0xC) or nil
+end
+
+local function getTeamPlay()
+    return ffa and "FFA" or "Team Play"
 end
 
 local function getscorelimit()
     return read_byte(gametype_base + 0x58)
 end
 
+local function isPirated(hash)
+    return CONFIG.KNOWN_PIRATED_HASHES[hash] and 'YES' or 'NO'
+end
+
+local function getPlayerData(player, quit)
+    local total = tonumber(get_var(0, '$pn'))
+    total = (quit and total - 1) or total
+
+    return {
+        ["$total"] = total,
+        ["$name"] = player.name,
+        ["$ip"] = player.ip,
+        ["$hash"] = player.hash,
+        ["$id"] = player.id,
+        ["$lvl"] = player.level(),
+        ["$ping"] = get_var(player.id, "$ping"),
+        ["$pirated"] = isPirated(player.hash)
+    }
+end
+
+local function newPlayer(id)
+    return {
+        id = id,
+        last_damage = 0,
+        switched = false,
+        ip = get_var(id, '$ip'),
+        name = get_var(id, '$name'),
+        team = get_var(id, '$team'),
+        hash = get_var(id, '$hash'),
+        level = function() -- dynamically get level (can change mid-game)
+            return tonumber(get_var(id, '$lvl'))
+        end
+    }
+end
+
 local function formatTime(lap_time)
-    if lap_time == 0 or lap_time == math_huge then return "00:00.000" end
-    local total_hundredths = math_floor(lap_time * 100 + 0.5)
-    local minutes = math_floor(total_hundredths / 6000)
-    local remaining_hundredths = total_hundredths % 6000
-    local secs = math_floor(remaining_hundredths / 100)
-    local hundredths = remaining_hundredths % 100
-    return string_format("%02d:%02d.%03d", minutes, secs, hundredths)
+    if gametype ~= "race" then return nil end
+    if lap_time == 0 or lap_time == math_huge then
+        return "00:00.000"
+    end
+
+    local total_ms = math_floor(lap_time * 1000 + 0.5)
+
+    local minutes = math_floor(total_ms / 60000)
+    total_ms = total_ms - minutes * 60000
+
+    local seconds = math_floor(total_ms / 1000)
+    local millis = total_ms - seconds * 1000
+
+    return string_format("%02d:%02d.%03d", minutes, seconds, millis)
 end
 
 local function roundToHundredths(num)
@@ -403,118 +328,150 @@ local function getLapTicks(address)
     return read_word(address)
 end
 
+local function isCommand(str)
+    return str:sub(1, 1) == "/" or str:sub(1, 1) == "\\"
+end
+
+local function inVehicle(id)
+    local dyn_player = get_dynamic_player(id)
+    if dyn_player == 0 then return false end
+    return read_dword(dyn_player + 0x11C) ~= 0xFFFFFFFF
+end
+
 function DisplayASCIIArt()
     local logo = CONFIG.LOGO
-    if not logo.enabled then return end
+    if not logo[1] then return end
 
-    for _, line in ipairs(logo.text) do
+    for _, line in ipairs(logo[2]) do
         local message, color = line[1], getColor(line[2])
         if message then
-            message = message:gsub("$timeStamp", date(CONFIG.TIMESTAMP_FORMAT))
+            message = message:gsub("$timeStamp", os_date('!%a %d %b %Y %H:%M:%S'))
                 :gsub("$serverName", getServerName())
             cprint(message, color)
         end
     end
 end
 
-function OnStart()
-    current_gametype = get_var(0, "$gt")
-    if current_gametype == "n/a" then return end
+function OnStart(notifyFlag)
+    gametype = get_var(0, "$gt")
+    if gametype == 'n/a' then return end
+
+    DisplayASCIIArt()
 
     players = {}
     first_blood = true
-    ffa = (get_var(0, '$ffa') == '1')
-    map = get_var(0, '$map')
-    mode = get_var(0, '$mode')
+    ffa = get_var(0, '$ffa') == '1'
+    mode = get_var(0, "$mode")
+    map = get_var(0, "$map")
     falling = getTag('jpt!', 'globals\\falling')
     distance = getTag('jpt!', 'globals\\distance')
     score_limit = getscorelimit()
 
-    log("OnStart", { ["$map"] = map, ["$mode"] = mode })
+    if not notifyFlag or notifyFlag == 0 then
+        log("OnStart", {
+            ["$map"] = map,
+            ["$mode"] = mode,
+            ["$gt"] = gametype,
+            ["$ffa"] = getTeamPlay()
+        })
+    end
 
     for i = 1, 16 do
         if player_present(i) then
-            OnJoin(i)
+            OnJoin(i, notifyFlag)
         end
     end
 end
 
 function OnEnd()
-    log("OnEnd", { ["$map"] = map, ["$mode"] = mode })
+    log("OnEnd", {
+        ["$map"] = map,
+        ["$mode"] = mode,
+        ["$gt"] = gametype,
+        ["$ffa"] = getTeamPlay()
+    })
 end
 
-function OnJoin(id)
+function OnJoin(id, notifyFlag)
     players[id] = newPlayer(id)
-    log("OnJoin", getQuitJoinData(id))
+
+    if not notifyFlag or notifyFlag == 0 then
+        log("OnJoin", getPlayerData(players[id]))
+    end
 end
 
 function OnQuit(id)
     local player = players[id]
-    if player then
-        local data = getQuitJoinData(id, true)
-        log("OnQuit", data)
-        players[id] = nil
-    end
+    if not player then return end
+
+    log("OnQuit", getPlayerData(player, true))
+    players[id] = nil
 end
 
 function OnSpawn(id)
     local player = players[id]
-    if player then
-        player.last_damage = 0
-        player.switched = nil
-        log("OnSpawn", { ["$name"] = player.name })
-    end
+    if not player then return end
+
+    player.last_damage = 0
+    player.switched = nil
+    log("OnSpawn", { ["$name"] = player.name })
 end
 
 function OnSwitch(id)
     local player = players[id]
-    if player then
-        player.team = get_var(id, '$team')
-        player.switched = true
-        log("OnSwitch", { ["$name"] = player.name, ["$team"] = player.team })
-    end
+    if not player then return end
+
+    player.team = get_var(id, '$team')
+    player.switched = true
+    log("OnSwitch", { ["$name"] = player.name, ["$team"] = player.team })
 end
 
 function OnWarp(id)
     local player = players[id]
-    if player then
-        log("OnWarp", { ["$name"] = player.name })
-    end
+    if not player then return end
+
+    log("OnWarp", { ["$name"] = player.name })
 end
 
 function OnReset()
-    log("OnReset", { ["$map"] = map, ["$mode"] = mode })
+    log("OnReset", {
+        ["$map"] = map,
+        ["$mode"] = mode,
+        ["$gt"] = gametype,
+        ["$ffa"] = getTeamPlay()
+    })
 end
 
 function OnLogin(id)
     local player = players[id]
-    if player then
-        log("OnLogin", { ["$name"] = player.name })
-    end
+    if not player then return end
+
+    log("OnLogin", { ["$name"] = player.name })
 end
 
 function OnSnap(id)
     local player = players[id]
-    if player then
-        log("OnSnap", { ["$name"] = player.name })
-    end
+    if not player then return end
+
+    log("OnSnap", { ["$name"] = player.name })
 end
 
 function OnCommand(id, command, environment)
     local player = players[id]
-    if player then
-        local cmd = command:match("^(%S+)")
-        log("OnCommand", {
-            ["$type"] = command_type[environment],
-            ["$name"] = player.name,
-            ["$id"] = id,
-            ["$cmd"] = cmd
-        })
-    end
+    if not player then return true end
+
+    log("OnCommand", {
+        ["$lvl"] = player.level(),
+        ["$name"] = player.name,
+        ["$id"] = tostring(id),
+        ["$type"] = command_type[environment],
+        ["$cmd"] = command
+    })
 end
 
 function OnChat(id, message, environment)
     local player = players[id]
+
     if player and not isCommand(message) then
         log("OnChat", {
             ["$type"] = chat_type[environment],
@@ -533,32 +490,30 @@ function OnScore(id)
         ctf = 1,
         race = not ffa and 2 or 3,
         slayer = not ffa and 4 or 5
-    })[current_gametype]
+    })[gametype]
 
-    local event_cfg = CONFIG.EVENTS["OnScore"][event_type]
-    if not event_cfg or not event_cfg.enabled then return end
-
+    local score = get_var(id, "$score")
     local blue_score = get_var(0, "$bluescore")
     local red_score = get_var(0, "$redscore")
 
     local lap_time = 0
-    if current_gametype == "race" then
+    if gametype == "race" then
         local static_player = get_player(id)
         local lap_ticks = getLapTicks(static_player + 0xC4)
         lap_time = roundToHundredths(lap_ticks * tick_rate)
     end
 
-    notifyDeathOrScore({
-        ["$event_type"] = event_type,
+    log("OnScore", {
+        event_type = event_type,
         ["$lap_time"] = formatTime(lap_time),
         ["$totalTeamLaps"] = player.team == "red" and red_score or blue_score,
-        ["$score"] = get_var(id, "$score"),
+        ["$score"] = score,
         ["$name"] = player.name,
         ["$team"] = player.team or "FFA",
         ["$redScore"] = red_score,
         ["$blueScore"] = blue_score,
-        ["$maxLaps"] = score_limit
-    }, "OnScore")
+        ["$scorelimit"] = score_limit
+    })
 end
 
 function OnDamage(victimIndex, _, metaId)
@@ -603,11 +558,32 @@ function OnDeath(victimIndex, killerIndex)
         end
     end
 
-    notifyDeathOrScore({
-        ["$event_type"] = event_type,
+    log("OnDeath", {
+        event_type = event_type,
         ["$killerName"] = killer_data and killer_data.name or "",
         ["$victimName"] = victim_data.name
-    }, "OnDeath")
+    })
+end
+
+function OnScriptLoad()
+    gametype_base = read_dword(sig_scan("B9360000008BF3BF78545F00") + 0x8)
+
+    register_callback(cb['EVENT_CHAT'], 'OnChat')
+    register_callback(cb['EVENT_COMMAND'], 'OnCommand')
+    register_callback(cb['EVENT_DIE'], 'OnDeath')
+    register_callback(cb['EVENT_SCORE'], 'OnScore')
+    register_callback(cb['EVENT_DAMAGE_APPLICATION'], 'OnDamage')
+    register_callback(cb['EVENT_JOIN'], 'OnJoin')
+    register_callback(cb['EVENT_LEAVE'], 'OnQuit')
+    register_callback(cb['EVENT_GAME_END'], 'OnEnd')
+    register_callback(cb['EVENT_GAME_START'], 'OnStart')
+    register_callback(cb['EVENT_SNAP'], 'OnSnap')
+    register_callback(cb['EVENT_SPAWN'], 'OnSpawn')
+    register_callback(cb['EVENT_LOGIN'], 'OnLogin')
+    register_callback(cb['EVENT_MAP_RESET'], "OnReset")
+    register_callback(cb['EVENT_TEAM_SWITCH'], 'OnSwitch')
+
+    OnStart(1) -- in case script is loaded mid-game
 end
 
 function OnScriptUnload() end
