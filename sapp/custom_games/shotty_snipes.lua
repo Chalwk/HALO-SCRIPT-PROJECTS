@@ -1,18 +1,7 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      shotty_snipes.lua
-DESCRIPTION:      Competitive shotgun/sniper rifle gameplay featuring:
-                  - Forced weapon loadouts (shotgun + sniper rifle)
-                  - All other weapons and vehicles disabled
-                  - Configurable gameplay options:
-                    * Infinite ammo
-                    * Bottomless clips
-                  - Automatic weapon reassignment on spawn
-
-GAMEPLAY RULES:
-                  - Players spawn with both weapons
-                  - Equipment (grenades/powerups) remains available
-                  - Vehicles are automatically disabled
+DESCRIPTION:      Shotgun/sniper rifle gameplay
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -20,55 +9,44 @@ LICENSE:          MIT License
 =====================================================================================
 ]]
 
+-- CONFIG start -------------------------------------------------------
+
+-- Set to false to disable infinite ammo:
+local BOTTOMLESS_CLIP = true
+
+-- Set to false to disable infinite ammo:
+local INFINITE_AMMO = true
+
+-- Items in this list will have disabled interaction (except shotgun and sniper rifle)
+-- Remove an item to enable it.
+local BLOCK_ITEMS = {
+	'powerups\\health pack',
+	'powerups\\over shield',
+	'powerups\\active camouflage',
+
+	'weapons\\frag grenade\\frag grenade',
+	'weapons\\plasma grenade\\plasma grenade',
+
+	'weapons\\pistol\\pistol',
+	'weapons\\needler\\mp_needler',
+	'weapons\\flamethrower\\flamethrower',
+	'weapons\\plasma rifle\\plasma rifle',
+	'weapons\\plasma_cannon\\plasma_cannon',
+	'weapons\\assault rifle\\assault rifle',
+	'weapons\\plasma pistol\\plasma pistol',
+	'weapons\\rocket launcher\\rocket launcher',
+
+	'vehicles\\ghost\\ghost_mp',
+	'vehicles\\rwarthog\\rwarthog',
+	'vehicles\\banshee\\banshee_mp',
+	'vehicles\\warthog\\mp_warthog',
+	'vehicles\\scorpion\\scorpion_mp',
+	'vehicles\\c gun turret\\c gun turret_mp'
+}
+-- CONFIG end ---------------------------------------------------------
+
 api_version = '1.12.0.0'
 
--- Configuration table for the Shotty-Snipes script
-local config = {
-
-    -- Enable or disable infinite ammo
-    infinite_ammo = true,
-
-    -- Enable or disable bottomless clip
-    bottomless_clip = true,
-
-    -- List of equipment that can be used in the game
-    equipment = {
-        -- Example equipment (currently commented out):
-        -- { 'eqip', 'powerups\\health pack' },
-        -- { 'eqip', 'powerups\\over shield' },
-        -- { 'eqip', 'powerups\\active camouflage' },
-        -- { 'eqip', 'weapons\\frag grenade\\frag grenade' },
-        -- { 'eqip', 'weapons\\plasma grenade\\plasma grenade' },
-    },
-
-    -- List of weapons that can be used in the game
-    weapons = {
-        -- Example weapons (currently commented out):
-        -- { 'weap', 'weapons\\shotgun\\shotgun' },
-        -- { 'weap', 'weapons\\sniper rifle\\sniper rifle' },
-        { 'weap', 'weapons\\pistol\\pistol' },
-        { 'weap', 'weapons\\needler\\mp_needler' },
-        { 'weap', 'weapons\\flamethrower\\flamethrower' },
-        { 'weap', 'weapons\\plasma rifle\\plasma rifle' },
-        { 'weap', 'weapons\\plasma_cannon\\plasma_cannon' },
-        { 'weap', 'weapons\\assault rifle\\assault rifle' },
-        { 'weap', 'weapons\\plasma pistol\\plasma pistol' },
-        { 'weap', 'weapons\\rocket launcher\\rocket launcher' },
-    },
-
-    -- List of vehicles that can be used in the game
-    vehicles = {
-        { 'vehi', 'vehicles\\ghost\\ghost_mp' },
-        { 'vehi', 'vehicles\\rwarthog\\rwarthog' },
-        { 'vehi', 'vehicles\\banshee\\banshee_mp' },
-        { 'vehi', 'vehicles\\warthog\\mp_warthog' },
-        { 'vehi', 'vehicles\\scorpion\\scorpion_mp' },
-        { 'vehi', 'vehicles\\c gun turret\\c gun turret_mp' }
-    }
-}
-
-local objects = {}
-local players = {}
 local shotgun, sniper
 
 local function getTag(class, name)
@@ -76,78 +54,47 @@ local function getTag(class, name)
     return tag ~= 0 and read_dword(tag + 0xC) or nil
 end
 
-local function tagsToID()
-    local t = {}
-    for _, tag in ipairs(config.weapons) do
-        local class, name = tag[1], tag[2]
-        local meta_id = getTag(class, name)
-        t[meta_id] = meta_id and true or nil
+local function ManageMapObjects(enable)
+    local cmd = enable and 'enable_object' or 'disable_object'
+    for i = 1, #BLOCK_ITEMS do
+        local tag_name = BLOCK_ITEMS[i]
+        execute_command(cmd .. " '" .. tag_name .. "'")
     end
-    objects = t
 end
 
-local function initializeGame()
-    objects, players = {}, {}
-    tagsToID()
+function OnStart()
     sniper = getTag('weap', 'weapons\\sniper rifle\\sniper rifle')
     shotgun = getTag('weap', 'weapons\\shotgun\\shotgun')
-    for i = 1, 16 do
-        if player_present(i) then
-            onPlayerJoin(i)
-        end
-    end
+    ManageMapObjects()
 end
 
-local function updateAmmo(id)
-    if config.infinite_ammo then
+function OnEnd()
+    ManageMapObjects(true)
+end
+
+function UpdateAmmo(id)
+    if INFINITE_AMMO then
         execute_command('ammo ' .. id .. ' 999 5')
     end
-    if config.bottomless_clip then
+    if BOTTOMLESS_CLIP then
         execute_command('mag ' .. id .. ' 999 5')
     end
 end
 
-function onPlayerJoin(id)
-    players[id] = false
-end
-
-function onPlayerSpawn(id)
-    players[id] = true
-end
-
-function onPlayerQuit(id)
-    players[id] = nil
-end
-
-function onObjectSpawn(id, meta_id)
-    if id == 0 and objects[meta_id] then
-        return false
-    end
-end
-
-function onTick()
-    for id, assign in pairs(players) do
-        if player_alive(id) and assign and shotgun and sniper then
-            players[id] = false
-            execute_command('wdel ' .. id)
-            assign_weapon(spawn_object('', '', 0, 0, 0, 0, sniper), id)
-            assign_weapon(spawn_object('', '', 0, 0, 0, 0, shotgun), id)
-            updateAmmo(id)
-        end
-    end
+function OnSpawn(id)
+    execute_command('wdel ' .. id)
+    assign_weapon(spawn_object('', '', 0, 0, 0, 0, sniper), id)
+    assign_weapon(spawn_object('', '', 0, 0, 0, 0, shotgun), id)
 end
 
 function OnScriptLoad()
-    register_callback(cb['EVENT_JOIN'], 'onPlayerJoin')
-    register_callback(cb['EVENT_TICK'], 'onTick')
-    register_callback(cb['EVENT_LEAVE'], 'onPlayerQuit')
-    register_callback(cb['EVENT_SPAWN'], 'onPlayerSpawn')
-    register_callback(cb['EVENT_ALIVE'], 'updateAmmo')
-    register_callback(cb['EVENT_GAME_START'], 'initializeGame')
-    register_callback(cb['EVENT_OBJECT_SPAWN'], 'onObjectSpawn')
-    initializeGame()
+    register_callback(cb['EVENT_SPAWN'], 'OnSpawn')
+    register_callback(cb['EVENT_GAME_END'], 'OnEnd')
+    register_callback(cb['EVENT_ALIVE'], 'UpdateAmmo')
+    register_callback(cb['EVENT_GAME_START'], 'OnStart')
+    OnStart()
 end
 
 function OnScriptUnload()
-    -- N/A
+    ManageMapObjects(true)
 end
