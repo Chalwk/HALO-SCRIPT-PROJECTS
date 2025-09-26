@@ -20,28 +20,28 @@ local INFINITE_AMMO = true
 -- Items in this list will have disabled interaction (except shotgun and sniper rifle)
 -- Remove an item to enable it.
 local BLOCK_ITEMS = {
-	'powerups\\health pack',
-	'powerups\\over shield',
-	'powerups\\active camouflage',
+    'powerups\\health pack',
+    'powerups\\over shield',
+    'powerups\\active camouflage',
 
-	'weapons\\frag grenade\\frag grenade',
-	'weapons\\plasma grenade\\plasma grenade',
+    'weapons\\frag grenade\\frag grenade',
+    'weapons\\plasma grenade\\plasma grenade',
 
-	'weapons\\pistol\\pistol',
-	'weapons\\needler\\mp_needler',
-	'weapons\\flamethrower\\flamethrower',
-	'weapons\\plasma rifle\\plasma rifle',
-	'weapons\\plasma_cannon\\plasma_cannon',
-	'weapons\\assault rifle\\assault rifle',
-	'weapons\\plasma pistol\\plasma pistol',
-	'weapons\\rocket launcher\\rocket launcher',
+    'weapons\\pistol\\pistol',
+    'weapons\\needler\\mp_needler',
+    'weapons\\flamethrower\\flamethrower',
+    'weapons\\plasma rifle\\plasma rifle',
+    'weapons\\plasma_cannon\\plasma_cannon',
+    'weapons\\assault rifle\\assault rifle',
+    'weapons\\plasma pistol\\plasma pistol',
+    'weapons\\rocket launcher\\rocket launcher',
 
-	'vehicles\\ghost\\ghost_mp',
-	'vehicles\\rwarthog\\rwarthog',
-	'vehicles\\banshee\\banshee_mp',
-	'vehicles\\warthog\\mp_warthog',
-	'vehicles\\scorpion\\scorpion_mp',
-	'vehicles\\c gun turret\\c gun turret_mp'
+    'vehicles\\ghost\\ghost_mp',
+    'vehicles\\rwarthog\\rwarthog',
+    'vehicles\\banshee\\banshee_mp',
+    'vehicles\\warthog\\mp_warthog',
+    'vehicles\\scorpion\\scorpion_mp',
+    'vehicles\\c gun turret\\c gun turret_mp'
 }
 -- CONFIG end ---------------------------------------------------------
 
