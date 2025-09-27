@@ -72,7 +72,7 @@ local CONFIG = {
         { 'rank',    -1 }, -- Check your or another player's rank
         { 'ranks',   -1 }, -- List all available ranks
         { 'top',     -1 }, -- Show leaderboard
-        { 'setrank', 4 },  -- Admin command to set player rank (level 4 only)
+        { 'setrank', 4 }   -- Admin command to set player rank (level 4 only)
     },
 
     -- Rank definitions: { "Rank Name", { grade1_threshold, grade2_threshold, ... } }
@@ -113,7 +113,7 @@ local CONFIG = {
 
         -- Consecutive spree kills: triggered at specific kill counts
         spree                 = {
-            [5] = { 5, '+5 %s (Spree)' },
+            [5]  = { 5, '+5 %s (Spree)' },
             [10] = { 10, '+10 %s (Spree)' },
             [15] = { 15, '+15 %s (Spree)' },
             [20] = { 20, '+20 %s (Spree)' },
@@ -122,20 +122,28 @@ local CONFIG = {
             [35] = { 35, '+35 %s (Spree)' },
             [40] = { 40, '+40 %s (Spree)' },
             [45] = { 45, '+45 %s (Spree)' },
-            [50] = { 50, '+50 %s (Spree)' },
+            [50] = { 50, '+50 %s (Spree)' }
         },
 
         -- Multi-kill: rapid consecutive kills without dying
         multi_kill            = {
-            [2] = { 8, '+8 %s (multi-kill)' },
-            [3] = { 10, '+10 %s (multi-kill)' },
-            [4] = { 12, '+12 %s (multi-kill)' },
-            [5] = { 14, '+14 %s (multi-kill)' },
-            [6] = { 16, '+16 %s (multi-kill)' },
-            [7] = { 18, '+18 %s (multi-kill)' },
-            [8] = { 20, '+20 %s (multi-kill)' },
-            [9] = { 23, '+23 %s (multi-kill)' },
-            [10] = { 25, '+25 %s (multi-kill)' },
+            [2]  = { 8, '+8 %s (multi-kill)' },
+            [3]  = { 10, '+10 %s (multi-kill)' },
+            [4]  = { 12, '+12 %s (multi-kill)' },
+            [5]  = { 14, '+14 %s (multi-kill)' },
+            [6]  = { 16, '+16 %s (multi-kill)' },
+            [7]  = { 18, '+18 %s (multi-kill)' },
+            [8]  = { 20, '+20 %s (multi-kill)' },
+            [9]  = { 23, '+23 %s (multi-kill)' },
+            [10] = { 25, '+25 %s (multi-kill)' }
+        },
+
+        game_score            = {
+            [1] = { 10, '+10 %s (CTF Score)' },
+            [2] = { 10, '+10 %s (Team Race Score)' },
+            [3] = { 10, '+10 %s (FFA Race Score)' },
+            [4] = { 10, '+10 %s (Slayer Score)' },
+            [5] = { 10, '+10 %s (Team Slayer Score)' }
         },
 
         -- Damage Events: Credit rewards based on damage source
@@ -203,7 +211,7 @@ local CONFIG = {
             { 'weapons\\plasma pistol\\melee',                            4,  '+4 %s (Plasma Pistol)' },
             { 'weapons\\assault rifle\\melee',                            4,  '+4 %s (Assault Rifle)' },
             { 'weapons\\rocket launcher\\melee',                          10, '+10 %s (Rocket Launcher)' },
-            { 'weapons\\plasma_cannon\\effects\\plasma_cannon_melee',     10, '+10 %s (Plasma Cannon)' },
+            { 'weapons\\plasma_cannon\\effects\\plasma_cannon_melee',     10, '+10 %s (Plasma Cannon)' }
         }
     }
 }
@@ -227,7 +235,7 @@ local players = {}
 local damage_meta_ids = {}
 local collision_meta_id = nil
 local vehicle_meta_ids = {}
-local ffa, falling, distance, first_blood
+local ffa, falling, distance, first_blood, game_type
 
 local io_open = io.open
 local pcall = pcall
@@ -715,6 +723,7 @@ function OnScriptLoad()
     register_callback(cb['EVENT_JOIN'], 'OnJoin')
     register_callback(cb['EVENT_LEAVE'], 'OnQuit')
     register_callback(cb['EVENT_SPAWN'], 'OnSpawn')
+    register_callback(cb['EVENT_SCORE'], 'OnScore')
     register_callback(cb['EVENT_GAME_END'], 'OnEnd')
     register_callback(cb['EVENT_TEAM_SWITCH'], 'OnSwitch')
     register_callback(cb['EVENT_COMMAND'], 'OnCommand')
@@ -725,7 +734,9 @@ function OnScriptLoad()
 end
 
 function OnStart()
-    if get_var(0, '$gt') == 'n/a' then return end
+    game_type = get_var(0, '$gt')
+    if game_type == 'n/a' then return end
+
     initializeDamageSystem()
     first_blood = true
     ffa = get_var(0, '$ffa') == '1'
@@ -779,6 +790,24 @@ function OnSwitch(id)
     if players[id] then
         players[id].switched = true
         players[id].team = get_var(id, '$team')
+    end
+end
+
+function OnScore(id)
+    if players[id] then
+        -- Map game types to game_score index
+        local score_index = ({
+            ctf = 1,
+            race = not ffa and 2 or 3,
+            slayer = not ffa and 4 or 5,
+        })[game_type]
+
+        if not score_index then return end
+
+        local score_data = CONFIG.CREDITS.game_score[score_index]
+        if not score_data then return end
+
+        awardCredits(players[id], score_data[1], score_data[2])
     end
 end
 
