@@ -33,6 +33,8 @@ LICENSE:          MIT License
 =====================================================================================
 ]]
 
+-- todo: rewrite this garbage
+
 api_version = "1.12.0.0"
 
 -- Script Settings
