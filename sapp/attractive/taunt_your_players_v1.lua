@@ -101,7 +101,7 @@ function OnEnd()
             local kills = tonumber(get_var(i, "$kills"))
             local msg = END_MESSAGES[kills]
             if msg then
-                rprint(i, formatMessage(msg, i))
+                rprint(i, msg)
             end
         end
     end
