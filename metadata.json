@@ -228,6 +228,12 @@
       "description": "Assigns configurable random names to players based on name categories. Maintains unique name assignments during gameplay sessions.",
       "filename": "random_name.lua"
     },
+    "rank_system": {
+      "title": "Rank System",
+      "shortDescription": "Advanced ranking and progression system with persistent stats and leaderboards.",
+      "description": "Tracks player performance, awards credits for actions, and manages a multi-tier rank and grade system. Supports credit bonuses, penalties, leaderboards, and admin rank management. Stats persist across restarts using a JSON database. Highly configurable with adjustable ranks, thresholds, and credit events.",
+      "filename": "rank_system.lua"
+    },
     "rcon_chat": {
       "title": "RCON Chat Redirect",
       "shortDescription": "Redirects chat messages to RCON console",
