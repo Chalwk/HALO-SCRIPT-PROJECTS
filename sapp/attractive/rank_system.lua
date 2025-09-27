@@ -657,7 +657,7 @@ local function processPlayerDeath(victim_id, killer_id)
     end
 end
 
-local function getTopPlayers(limit)
+local function getTopPlayers()
     local all_players = {}
 
     -- Pre-allocate table to avoid resizing
@@ -880,7 +880,7 @@ function OnCommand(id, command)
         return false
     elseif cmd == 'top' then
         local limit = tonumber(args[2]) or 5
-        local top_players = getTopPlayers(limit)
+        local top_players = getTopPlayers()
 
         if #top_players == 0 then
             send(id, "No players found.")
