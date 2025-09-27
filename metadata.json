@@ -335,7 +335,7 @@
       "shortDescription": "Send player taunts",
       "description": "Displays funny or provocative messages to players in-game.",
       "filename": "taunt_your_players.lua"
-    }
+    },
     "tea_bagging": {
       "title": "Tea Bagging Detection",
       "shortDescription": "Automatically detects and announces tea-bagging behavior",
