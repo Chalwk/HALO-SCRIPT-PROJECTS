@@ -71,6 +71,7 @@ compatible with many scripts and still sees use in some legacy setups.
 | **Attractive**   | [Capture The Flag](./sapp/attractive/capture_the_flag.lua)            |
 |                  | [Custom Teleports](./sapp/attractive/custom_teleports.lua)            |
 |                  | [Deployable Mines](./sapp/attractive/deployable_mines.lua)            |
+|                  | [Rank System](./sapp/attractive/rank_system.lua)                      |
 |                  | [Sprint System](./sapp/attractive/sprint_system.lua)                  |
 |                  | [Tactical Insertion](./sapp/attractive/tactical_insertion.lua)        |
 |                  | [Tea Bagging](./sapp/attractive/tea_bagging.lua)                      |
