@@ -438,7 +438,6 @@ end
 local function initializeDamageSystem()
     damage_meta_ids, vehicle_meta_ids, collision_meta_id = {}, {}, nil
 
-    -- Single pass initialization
     for _, tag_data in ipairs(CONFIG.CREDITS.damage_tags) do
         if type(tag_data) == 'table' and #tag_data >= 2 then
             local meta_id = getTag('jpt!', tag_data[1])
@@ -451,7 +450,6 @@ local function initializeDamageSystem()
         end
     end
 
-    -- Use direct assignment instead of separate lookups
     collision_meta_id = getTag('jpt!', CONFIG.CREDITS.damage_tags.collision)
 
     local vehicles = CONFIG.CREDITS.damage_tags.vehicles
@@ -568,9 +566,8 @@ local function processPlayerDeath(victim_id, killer_id)
     local killer_data = players[killer_id]
     local last_damage = victim_data.last_damage
 
-    -- Reset victim's last damage
-    victim_data.last_damage = nil
-    victim_data.headshot = nil
+    -- Reset victim's last damage/headshot
+    victim_data.last_damage = nil; victim_data.headshot = nil
 
     -- Track last killer for revenge/avenge
     victim_data.last_killer = killer_id
@@ -660,7 +657,7 @@ end
 local function getTopPlayers()
     local all_players = {}
 
-    -- Pre-allocate table to avoid resizing
+    -- Pre-allocated table for performance reasons
     for name, stats in pairs(stats_db) do
         if (stats.kills or 0) > 0 or (stats.deaths or 0) > 0 then
             all_players[#all_players + 1] = {
@@ -671,7 +668,7 @@ local function getTopPlayers()
         end
     end
 
-    -- Use more efficient sort with pre-calculated scores
+    -- Sort with pre-calculated scores
     table.sort(all_players, function(a, b)
         return a.score > b.score
     end)
@@ -792,7 +789,7 @@ function OnCommand(id, command)
 
     local cmd = args[1]:lower()
 
-    -- Fast command lookup
+    -- Command lookup
     local required_level = COMMAND_LOOKUP[cmd]
     if not required_level then return true end
 
