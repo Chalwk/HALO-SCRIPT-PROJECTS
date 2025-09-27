@@ -1,6 +1,6 @@
 --[[
 =====================================================================================
-SCRIPT NAME:      taunt_your_players_v1.lua
+SCRIPT NAME:      taunt_your_players.lua
 DESCRIPTION:      Sends humorous taunts to players during gameplay, with fully
                   customizable messages and event triggers.
 

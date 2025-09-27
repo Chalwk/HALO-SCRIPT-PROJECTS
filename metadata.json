@@ -324,18 +324,12 @@
       "description": "Displays humorous taunting messages to players at game end based on their kill count. Ranges from gentle ribbing for poor performance to backhanded compliments for better scores.",
       "filename": "taunt_on_end_messages.lua"
     },
-    "taunt_your_players_v1": {
-      "title": "Player Taunts V1",
+    "taunt_your_players": {
+      "title": "Taunt Your players",
       "shortDescription": "Send player taunts",
       "description": "Displays funny or provocative messages to players in-game.",
-      "filename": "taunt_your_players_v1.lua"
-    },
-    "taunt_your_players_v2": {
-      "title": "Player Taunts V2",
-      "shortDescription": "Advanced taunt system with customizable messages",
-      "description": "Enhanced version featuring fully configurable taunt messages with variables, message alignment options, and organized kill-based responses. Supports multiple messages per kill threshold and excludes suicides/vehicle deaths from triggering taunts.",
-      "filename": "taunt_your_players_v2.lua"
-    },
+      "filename": "taunt_your_players.lua"
+    }
     "tea_bagging": {
       "title": "Tea Bagging Detection",
       "shortDescription": "Automatically detects and announces tea-bagging behavior",
