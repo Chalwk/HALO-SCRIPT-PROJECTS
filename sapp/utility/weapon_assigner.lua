@@ -18,23 +18,43 @@ LICENSE:          MIT License
 -- Configuration start --------------------------------------------------------
 -- Weapon tag definitions: Maps friendly names to actual Halo tag paths
 -- Add new weapons here using the format: friendly_name = 'tag\\path\\to\\weapon'
+-- Weapon tag definitions: Maps friendly names to actual Halo tag paths
+-- Add new weapons here using the format: friendly_name = 'tag\\path\\to\\weapon'
 local weapon_tags = {
-    assault_rifle   = 'weapons\\assault rifle\\assault rifle',
-    flamethrower    = 'weapons\\flamethrower\\flamethrower',
-    gravity_rifle   = 'weapons\\gravity rifle\\gravity rifle',
-    needler         = 'weapons\\needler\\mp_needler',
-    pistol          = 'weapons\\pistol\\pistol',
-    plasma_cannon   = 'weapons\\plasma_cannon\\plasma_cannon',
-    plasma_pistol   = 'weapons\\plasma pistol\\plasma pistol',
-    plasma_rifle    = 'weapons\\plasma rifle\\plasma rifle',
-    rocket_launcher = 'weapons\\rocket launcher\\rocket launcher',
-    shotgun         = 'weapons\\shotgun\\shotgun',
-    sniper          = 'weapons\\sniper rifle\\sniper rifle'
+    -- stock weapon tags
+    assault_rifle        = 'weapons\\assault rifle\\assault rifle',
+    flamethrower         = 'weapons\\flamethrower\\flamethrower',
+    gravity_rifle        = 'weapons\\gravity rifle\\gravity rifle',
+    needler              = 'weapons\\needler\\mp_needler',
+    pistol               = 'weapons\\pistol\\pistol',
+    plasma_cannon        = 'weapons\\plasma_cannon\\plasma_cannon',
+    plasma_pistol        = 'weapons\\plasma pistol\\plasma pistol',
+    plasma_rifle         = 'weapons\\plasma rifle\\plasma rifle',
+    rocket_launcher      = 'weapons\\rocket launcher\\rocket launcher',
+    shotgun              = 'weapons\\shotgun\\shotgun',
+    sniper               = 'weapons\\sniper rifle\\sniper rifle',
+
+    -- rev_sanctuary_cavebeta
+    rev_assault_rifle    = 'revolution\\weapons\\assault rifle\\revolution assault rifle',
+    rev_battle_rifle     = 'revolution\\weapons\\battle rifle\\battle_rifle',
+    rev_carbine          = 'revolution\\weapons\\carbine\\carbine',
+    rev_grenade_launcher = 'revolution\\weapons\\grenade launcher\\nade_launcher',
+    rev_needler          = 'revolution\\weapons\\needler\\needler',
+    rev_pistol           = 'revolution\\weapons\\pistol\\rev pistol',
+    rev_plasma_cannon    = 'revolution\\weapons\\plasma cannon\\plasma_cannon',
+    rev_plasma_pistol    = 'revolution\\weapons\\plasma pistol\\plasma pistol',
+    rev_plasma_rifle     = 'revolution\\weapons\\plasma rifle\\plasma rifle',
+    rev_rocket_launcher  = 'revolution\\weapons\\rocket launcher\\rocket launcher',
+    rev_shotgun          = 'revolution\\weapons\\shotgun\\revolution shotgun',
+    rev_smg              = 'revolution\\weapons\\smg\\smg',
+    rev_sniper           = 'revolution\\weapons\\sniper\\revolution sniper',
+
+    -- ivory_tower_final
+    ivory_sniper         = 'weapons\\sniper rifle\\cyclotron sniper rifle',
 }
 
 -- Format: maps[map_name][game_mode][team] = { { weapon1, weapon2, weapon3, weapon4 }, { frag_grenades, plasma_grenades } }
 local maps = {
-    -- EXAMPLE MAPS
     ['destiny'] = {
         ['MOSH_PIT_FFA_SLAYER'] = {
             ffa = { { 'pistol', 'sniper' }, { 1, 1 } }
@@ -44,6 +64,23 @@ local maps = {
         ['MOSH_PIT_CTF'] = {
             red = { { 'pistol', 'sniper' }, { 1, 1 } },
             blue = { { 'pistol', 'sniper' }, { 1, 1 } }
+        }
+    },
+    ['immure'] = {
+        ['MOSH_PIT_CTF'] = {
+            red = { { 'pistol', 'sniper' }, { 1, 1 } },
+            blue = { { 'pistol', 'sniper' }, { 1, 1 } }
+        }
+    },
+    ['ivory_tower_final'] = {
+        ['MOSH_PIT_FFA_SLAYER'] = {
+            ffa = { { 'pistol', 'ivory_sniper' }, { 1, 1 } }
+        }
+    },
+    ['rev_sanctuary_cavebeta'] = {
+        ['MOSH_PIT_TEAM_SLAYER'] = {
+            red = { { 'rev_battle_rifle', 'rev_shotgun', 'rev_pistol', 'rev_rocket_launcher' }, { 2, 1 } },
+            blue = { { 'rev_carbine', 'rev_sniper', 'rev_smg', 'rev_plasma_rifle' }, { 1, 2 } }
         }
     }
 }
@@ -100,6 +137,8 @@ local function initialize()
 end
 
 function OnSpawn(id)
+    if not player_alive(id) then return end -- just in case
+
     local team = is_ffa and 'ffa' or get_var(id, '$team')
     local loadout = current_loadout[team]
     if not loadout then return end
