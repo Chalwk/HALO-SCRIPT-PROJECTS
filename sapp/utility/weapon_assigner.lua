@@ -36,24 +36,6 @@ local weapon_tags = {
 -- Add grenade counts per team for each map and game mode
 -- Format: frags = number, plasmas = number
 local maps = {
-
-    default = {
-        red = {
-            weapons = { 'pistol', 'assault_rifle' },
-            grenades = { frags = 1, plasmas = 1 }
-        },
-        blue = {
-            weapons = { 'pistol', 'assault_rifle' },
-            grenades = { frags = 1, plasmas = 1 }
-        },
-        ffa = {
-            weapons = { 'pistol', 'sniper' },
-            grenades = { frags = 1, plasmas = 1 }
-        }
-    },
-
-    -- EXAMPLE MAPS:
-
     ['destiny'] = {
         ['MOSH_PIT_CTF'] = {
             red = {
@@ -130,7 +112,7 @@ local function initialize()
     current_loadout = {}
     local config = maps[map_name]
 
-    local mode_config = config[game_mode] or config.default
+    local mode_config = config and config[game_mode]
     if not mode_config then
         cprint("Weapon Assigner: No configuration found for map '"
             .. map_name .. "' and mode '"
@@ -142,9 +124,16 @@ local function initialize()
         current_loadout[team] = { weapons = {}, grenades = loadout.grenades }
 
         for _, weapon_name in ipairs(loadout.weapons) do
-            local tag_id = getTagID(weapon_name)
+            -- Look up the actual tag path from the weapon_tags table
+            local tag_path = weapon_tags[weapon_name]
+            if not tag_path then
+                cprint("Weapon Assigner: Weapon '" .. weapon_name .. "' not found in weapon_tags table", 12)
+                return false
+            end
+
+            local tag_id = getTagID(tag_path)
             if not tag_id then
-                cprint("Weapon Assigner: Invalid weapon '" .. weapon_name .. "' for team " .. team, 12)
+                cprint("Weapon Assigner: Invalid weapon tag '" .. tag_path .. "' for weapon '" .. weapon_name .. "'", 12)
                 return false
             end
             table_insert(current_loadout[team].weapons, tag_id)
