@@ -45,13 +45,7 @@ local maps = {
             red = { { 'pistol', 'sniper' }, { 1, 1 } },
             blue = { { 'pistol', 'sniper' }, { 1, 1 } }
         }
-    },
-    ['rev_sanctuary_cavebeta'] = {
-        ['MOSH_PIT_TEAM_SLAYER'] = {
-            red = { { 'pistol', 'sniper' }, { 1, 1 } },
-            blue = { { 'pistol', 'sniper' }, { 1, 1 } }
-        }
-    },
+    }
 }
 -- Configuration end ----------------------------------------------------------
 
