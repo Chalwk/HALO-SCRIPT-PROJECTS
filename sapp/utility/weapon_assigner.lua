@@ -32,46 +32,84 @@ local weapon_tags = {
     gravity_rifle = 'weapons\\gravity rifle\\gravity rifle'
 }
 
--- Map and game mode configuration:
--- Format: ['map_name'] = {
---     ['game_mode'] = {
---         team_name = { 'weapon1', 'weapon2', ... },
---         ...
---     },
---     ...
--- }
---
--- Key points:
--- - Use 'default' for fallback configuration when specific game mode isn't defined
--- - Teams: 'red', 'blue', 'ffa' (for free-for-all modes)
--- - Weapon names must match keys in the weapon_tags table above
--- - First 2 weapons are equipped immediately, others are added to inventory
+-- Grenade configuration
+-- Add grenade counts per team for each map and game mode
+-- Format: frags = number, plasmas = number
 local maps = {
-    ['bloodgulch'] = {
-        ['default'] = {
-            red = { 'pistol', 'assault_rifle' },
-            blue = { 'pistol', 'assault_rifle' },
-            ffa = { 'pistol', 'shotgun' }
+
+    default = {
+        red = {
+            weapons = { 'pistol', 'assault_rifle' },
+            grenades = { frags = 1, plasmas = 1 }
         },
-        ['ctf'] = {
-            red = { 'pistol', 'sniper', 'rocket_launcher' },
-            blue = { 'pistol', 'plasma_rifle', 'flamethrower' }
+        blue = {
+            weapons = { 'pistol', 'assault_rifle' },
+            grenades = { frags = 1, plasmas = 1 }
         },
-        ['custom_gamemode'] = {
-            red = { 'pistol', 'pistol', 'pistol' },
-            blue = { 'pistol', 'pistol', 'pistol' }
+        ffa = {
+            weapons = { 'pistol', 'sniper' },
+            grenades = { frags = 1, plasmas = 1 }
         }
-        -- Add more game mode/types here (stock or custom)
     },
 
-    -- Add more maps here following the same format
-    -- ['map_name'] = {
-    --     ['game_mode'] = {
-    --         red = { 'weapon1', 'weapon2' },
-    --         blue = { 'weapon1', 'weapon2' },
-    --         ffa = { 'weapon1', 'weapon2' }
-    --     }
-    -- }
+    -- EXAMPLE MAPS:
+
+    ['destiny'] = {
+        ['MOSH_PIT_CTF'] = {
+            red = {
+                weapons = { 'pistol', 'sniper' },
+                grenades = { frags = 1, plasmas = 1 }
+            },
+            blue = {
+                weapons = { 'pistol', 'sniper' },
+                grenades = { frags = 1, plasmas = 1 }
+            }
+        },
+        ['MOSH_PIT_TEAM_SLAYER'] = {
+            red = {
+                weapons = { 'pistol', 'sniper' },
+                grenades = { frags = 1, plasmas = 1 }
+            },
+            blue = {
+                weapons = { 'pistol', 'sniper' },
+                grenades = { frags = 1, plasmas = 1 }
+            }
+        },
+        ['MOSH_PIT_FFA_SLAYER'] = {
+            ffa = {
+                weapons = { 'pistol', 'sniper' },
+                grenades = { frags = 1, plasmas = 1 }
+            }
+        },
+    },
+    ['graveyard'] = {
+        ['MOSH_PIT_CTF'] = {
+            red = {
+                weapons = { 'pistol', 'sniper' },
+                grenades = { frags = 1, plasmas = 1 }
+            },
+            blue = {
+                weapons = { 'pistol', 'sniper' },
+                grenades = { frags = 1, plasmas = 1 }
+            }
+        },
+        ['MOSH_PIT_TEAM_SLAYER'] = {
+            red = {
+                weapons = { 'pistol', 'sniper' },
+                grenades = { frags = 1, plasmas = 1 }
+            },
+            blue = {
+                weapons = { 'pistol', 'sniper' },
+                grenades = { frags = 1, plasmas = 1 }
+            }
+        },
+        ['MOSH_PIT_FFA_SLAYER'] = {
+            ffa = {
+                weapons = { 'pistol', 'sniper' },
+                grenades = { frags = 1, plasmas = 1 }
+            }
+        },
+    }
 }
 -- Configuration end ----------------------------------------------------------
 
@@ -83,33 +121,33 @@ local map_name, game_mode, is_ffa
 local table_insert = table.insert
 local pairs, ipairs = pairs, ipairs
 
-local function getTagID(weapon_name)
-    local tag_path = weapon_tags[weapon_name]
-    if not tag_path then return nil end
-
+local function getTagID(tag_path)
     local tag = lookup_tag('weap', tag_path)
     return tag ~= 0 and read_dword(tag + 0xC) or nil
 end
 
 local function initialize()
     current_loadout = {}
-    local config = maps[map_name] or {}
+    local config = maps[map_name]
 
     local mode_config = config[game_mode] or config.default
     if not mode_config then
-        cprint("Weapon Assigner: No configuration found for map '" .. map_name .. "'", 12)
+        cprint("Weapon Assigner: No configuration found for map '"
+            .. map_name .. "' and mode '"
+            .. game_mode .. "'", 12)
         return false
     end
 
-    for team, weapons in pairs(mode_config) do
-        current_loadout[team] = {}
-        for _, weapon_name in ipairs(weapons) do
+    for team, loadout in pairs(mode_config) do
+        current_loadout[team] = { weapons = {}, grenades = loadout.grenades }
+
+        for _, weapon_name in ipairs(loadout.weapons) do
             local tag_id = getTagID(weapon_name)
             if not tag_id then
                 cprint("Weapon Assigner: Invalid weapon '" .. weapon_name .. "' for team " .. team, 12)
                 return false
             end
-            table_insert(current_loadout[team], tag_id)
+            table_insert(current_loadout[team].weapons, tag_id)
         end
     end
 
@@ -118,13 +156,12 @@ end
 
 function OnSpawn(id)
     local team = is_ffa and 'ffa' or get_var(id, '$team')
-    local weapons = current_loadout[team] or current_loadout.default
-
-    if not weapons then return end
+    local loadout = current_loadout[team]
+    if not loadout then return end
 
     execute_command("wdel " .. id)
 
-    for i, tag_id in ipairs(weapons) do
+    for i, tag_id in ipairs(loadout.weapons) do
         if i <= 4 then
             local weapon = spawn_object('', '', 0, 0, 0, 0, tag_id)
             if i <= 2 then
@@ -134,6 +171,10 @@ function OnSpawn(id)
             end
         end
     end
+
+    local grenades = loadout.grenades
+    execute_command('nades ' .. id .. ' ' .. grenades.frags .. ' 1')
+    execute_command('nades ' .. id .. ' ' .. grenades.plasmas .. ' 2')
 end
 
 function OnStart()
