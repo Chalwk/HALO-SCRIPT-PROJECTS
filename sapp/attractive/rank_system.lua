@@ -12,6 +12,8 @@ FEATURES:
                  - Admin commands for rank management and player tracking
                  - Leaderboard system with KDR-based scoring
                  - Optimized performance with precomputed data structures
+                 - Command cooldown system to prevent spam
+                 - Games played tracking for player statistics
 
 RANK SYSTEM DETAILS:
                  - Players progress through ranks by earning credits from kills and special events
@@ -44,12 +46,13 @@ CONFIGURATION:
                  - Credit values for all damage types and events
                  - Command permissions and currency symbol
                  - Database save timing and event triggers
+                 - Command cooldown duration
 
 REQUIREMENTS:   Install to the same directory as sapp.dll
                  - Lua JSON Parser: http://regex.info/blog/lua/json
                  - This scirpt ONLY works on maps with stock tag addresses
 
-LAST UPDATED:     28/9/2025
+LAST UPDATED:     29/9/2025
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -66,6 +69,9 @@ local CONFIG = {
 
     -- Symbol displayed in credit messages
     SYMBOL = 'cR',
+
+    -- Command cooldown in seconds (prevents command spam)
+    COOLDOWN = 3,
 
     -- Commands and required permission levels (-1 = all players, 1-4 = admin levels)
     COMMANDS = {
@@ -93,19 +99,23 @@ local CONFIG = {
         { "General",          { [1] = 47000, [2] = 48000, [3] = 49000, [4] = 50000 } }
     },
 
+    ----------------------------------------------
     -- Credit rewards/penalties for in-game events
+    ----------------------------------------------
+
+    -- NOTES:     1. Set to 0 to disable a credit event.
+    --            2. %s will be replaced with currency symbol.
+
     CREDITS = {
 
-        -- Bonus Events: { credit_amount, "display_message" } - %s will be replaced with currency symbol
-
-        -- Bonus Events
-        head_shot             = { 1, '+1 %s (Headshot)' },          -- Headshot bonus
+        -- Bonus Events: { credit_amount, "display_message" }
+        head_shot             = { 1, '+1 %s (Headshot)' },
         revenge               = { 1, '+1 %s (Revenge)' },           -- Revenge bonus (killed someone who recently killed you)
         avenge                = { 1, '+1 %s (Avenge)' },            -- Avenge bonus (killed someone who recently killed a teammate)
         reload_this           = { 1, '+1 %s (Reload This!)' },      -- Kill a player while they are reloading
         close_call            = { 2, '+2 %s (Close Call)' },        -- Shield fully depleted + health <= 30%
-        server                = { 0, '+0 %s (Server)' },
-        guardians             = { -5, '-5 %s (Guardians)' },        -- Killed by guardians (both players die at the same time)
+        server                = { 0, '+0 %s (Server)' },            -- Killed by the server
+        guardians             = { -5, '-5 %s (Guardians)' },        -- Killed by guardians (both players die at the same time or unknown death type)
         suicide               = { -10, '-10 %s (Suicide)' },
         betrayal              = { -15, '-15 %s (Betrayal)' },       -- Team kill in non-FFA
         killed_from_the_grave = { 5, '+5 %s (Killed From Grave)' }, -- Kill after dying
@@ -239,6 +249,9 @@ local collision_meta_id = nil
 local vehicle_meta_ids = {}
 local ffa, falling, distance, first_blood, game_type
 
+-- Command cooldown tracking
+local command_cooldowns = {}
+
 local io_open = io.open
 local pcall = pcall
 local ipairs = ipairs
@@ -247,6 +260,7 @@ local type = type
 local table_sort = table.sort
 local tonumber, tostring, string_format = tonumber, tostring, string.format
 local math_floor, math_min = math.floor, math.min
+local os_time = os.time
 
 local get_var = get_var
 local read_dword = read_dword
@@ -373,6 +387,7 @@ local function initializePlayer(id)
             credits = default_rank[2][1],
             kills = 0,
             deaths = 0,
+            games_played = 0
         }
     end
 
@@ -716,11 +731,12 @@ local function formatRankInfo(player_name, player_stats, show_progression)
     local credits = player_stats.credits
     local kills = player_stats.kills or 0
     local deaths = player_stats.deaths or 0
+    local games_played = player_stats.games_played or 0
     local kdr = calculateKDR(kills, deaths)
 
     local lines = {
         string_format("%s: %s (Grade %d) - %d %s", player_name, rank, grade, credits, CONFIG.SYMBOL),
-        string_format("Kills: %d | Deaths: %d | KDR: %.2f", kills, deaths, kdr)
+        string_format("Kills: %d | Deaths: %d | KDR: %.2f | Games: %d", kills, deaths, kdr, games_played)
     }
 
     if show_progression then
@@ -770,6 +786,21 @@ local function getTopPlayers()
     end)
 
     return all_players
+end
+
+local function isOnCooldown(id, command)
+    local key = id .. "_" .. command
+    local current_time = os_time()
+
+    if command_cooldowns[key] then
+        local time_since_last_use = current_time - command_cooldowns[key]
+        if time_since_last_use < CONFIG.COOLDOWN then
+            return true, CONFIG.COOLDOWN - time_since_last_use
+        end
+    end
+
+    command_cooldowns[key] = current_time
+    return false, 0
 end
 
 function OnScriptLoad()
@@ -839,6 +870,13 @@ function OnStart()
 end
 
 function OnEnd()
+    -- Increment games played for all players
+    for _, player in pairs(players) do
+        if player then
+            player.stats.games_played = (player.stats.games_played or 0) + 1
+        end
+    end
+
     if CONFIG.UPDATE['game_end'] then
         saveStatsDB()
     end
@@ -922,6 +960,13 @@ function OnCommand(id, command)
     -- Check permission level
     if not hasPermission(id, required_level) then
         send(id, "Insufficient permission level for this command.")
+        return false
+    end
+
+    -- Check command cooldown
+    local on_cooldown, time_left = isOnCooldown(id, cmd)
+    if on_cooldown then
+        send(id, string_format("Command on cooldown. Please wait %d seconds.", time_left))
         return false
     end
 
@@ -1017,7 +1062,7 @@ function OnCommand(id, command)
             local player = top_players[i]
             local kdr = calculateKDR(player.stats.kills, player.stats.deaths)
             send(id, string_format(
-                "%d. %s: %s G%d | %d credits | KDR: %.2f (%d/%d)",
+                "%d. %s: %s G%d | %d credits | KDR: %.2f (%d/%d) | Games: %d",
                 i,
                 player.name,
                 player.stats.rank,
@@ -1025,7 +1070,8 @@ function OnCommand(id, command)
                 player.stats.credits,
                 kdr,
                 player.stats.kills,
-                player.stats.deaths
+                player.stats.deaths,
+                player.stats.games_played or 0
             ))
         end
         return false
