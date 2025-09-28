@@ -36,31 +36,22 @@ local weapon_tags = {
 local maps = {
     -- EXAMPLE MAPS
     ['destiny'] = {
-        ['MOSH_PIT_CTF'] = {
-            red = { { 'pistol', 'sniper' }, { 1, 1 } },
-            blue = { { 'pistol', 'sniper' }, { 1, 1 } },
-        },
-        ['MOSH_PIT_TEAM_SLAYER'] = {
-            red = { { 'pistol', 'sniper' }, { 1, 1 } },
-            blue = { { 'pistol', 'sniper' }, { 1, 1 } },
-        },
         ['MOSH_PIT_FFA_SLAYER'] = {
-            ffa = { { 'pistol', 'sniper' }, { 1, 1 } },
-        },
+            ffa = { { 'pistol', 'sniper' }, { 1, 1 } }
+        }
     },
     ['graveyard'] = {
         ['MOSH_PIT_CTF'] = {
             red = { { 'pistol', 'sniper' }, { 1, 1 } },
-            blue = { { 'pistol', 'sniper' }, { 1, 1 } },
-        },
+            blue = { { 'pistol', 'sniper' }, { 1, 1 } }
+        }
+    },
+    ['rev_sanctuary_cavebeta'] = {
         ['MOSH_PIT_TEAM_SLAYER'] = {
             red = { { 'pistol', 'sniper' }, { 1, 1 } },
-            blue = { { 'pistol', 'sniper' }, { 1, 1 } },
-        },
-        ['MOSH_PIT_FFA_SLAYER'] = {
-            ffa = { { 'pistol', 'sniper' }, { 1, 1 } },
-        },
-    }
+            blue = { { 'pistol', 'sniper' }, { 1, 1 } }
+        }
+    },
 }
 -- Configuration end ----------------------------------------------------------
 
