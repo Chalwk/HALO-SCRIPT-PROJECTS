@@ -64,9 +64,6 @@ LICENSE:          MIT License
 
 local CONFIG = {
 
-    -- When to save player stats to database
-    UPDATE = { ['game_end'] = true, ['player_quit'] = false, ['script_unload'] = true },
-
     -- Symbol displayed in credit messages
     SYMBOL = 'cR',
 
@@ -877,9 +874,7 @@ function OnEnd()
         end
     end
 
-    if CONFIG.UPDATE['game_end'] then
-        saveStatsDB()
-    end
+    saveStatsDB()
 end
 
 function OnJoin(id)
@@ -896,9 +891,6 @@ end
 
 function OnQuit(id)
     players[id] = nil
-    if CONFIG.UPDATE['player_quit'] then
-        saveStatsDB()
-    end
 end
 
 function OnDamage(victim_id, _, meta_id, _, hitstring)
@@ -1081,7 +1073,5 @@ function OnCommand(id, command)
 end
 
 function OnScriptUnload()
-    if CONFIG.UPDATE['script_unload'] then
-        saveStatsDB()
-    end
+    saveStatsDB()
 end
