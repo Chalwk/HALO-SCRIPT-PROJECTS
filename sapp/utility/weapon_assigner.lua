@@ -7,7 +7,7 @@ DESCRIPTION:      Custom weapon assignment system that automatically gives playe
                   - Team-specific weapon sets (Red, Blue, FFA)
                   - Supports both stock and custom game modes
 
-LAST UPDATED:     22/08/2025
+LAST UPDATED:     28/08/2025
 
 Copyright (c) 2024-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -83,7 +83,7 @@ local map_name, game_mode, is_ffa
 local table_insert = table.insert
 local pairs, ipairs = pairs, ipairs
 
-local function resolve_weapon_tag(weapon_name)
+local function getTagID(weapon_name)
     local tag_path = weapon_tags[weapon_name]
     if not tag_path then return nil end
 
@@ -91,7 +91,7 @@ local function resolve_weapon_tag(weapon_name)
     return tag ~= 0 and read_dword(tag + 0xC) or nil
 end
 
-local function initialize_loadout()
+local function initialize()
     current_loadout = {}
     local config = maps[map_name] or {}
 
@@ -104,7 +104,7 @@ local function initialize_loadout()
     for team, weapons in pairs(mode_config) do
         current_loadout[team] = {}
         for _, weapon_name in ipairs(weapons) do
-            local tag_id = resolve_weapon_tag(weapon_name)
+            local tag_id = getTagID(weapon_name)
             if not tag_id then
                 cprint("Weapon Assigner: Invalid weapon '" .. weapon_name .. "' for team " .. team, 12)
                 return false
@@ -126,7 +126,6 @@ function OnSpawn(id)
 
     for i, tag_id in ipairs(weapons) do
         if i <= 4 then
-            print(i, tag_id)
             local weapon = spawn_object('', '', 0, 0, 0, 0, tag_id)
             if i <= 2 then
                 assign_weapon(weapon, id)
@@ -142,12 +141,10 @@ function OnStart()
 
     map_name, game_mode, is_ffa = get_var(0, '$map'), get_var(0, '$mode'), get_var(0, '$ffa') == '1'
 
-    if initialize_loadout() then
+    if initialize() then
         register_callback(cb['EVENT_SPAWN'], 'OnSpawn')
-        cprint("Weapon Assigner: Loadout initialized for " .. map_name, 10)
     else
         unregister_callback(cb['EVENT_SPAWN'])
-        cprint("Weapon Assigner: Using default game weapons", 10)
     end
 end
 
