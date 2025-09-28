@@ -50,4 +50,4 @@ The server features an advanced ranking system where players earn credits for in
 
 ## Maps
 
-`destiny`, `graveyard`, `ivory_tower_final`, `immure`
+`destiny`, `graveyard`, `grove_final`, `immure`, `ivory_tower_final`
