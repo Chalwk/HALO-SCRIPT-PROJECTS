@@ -13,7 +13,6 @@ FEATURES:
                  - Leaderboard system with KDR-based scoring
                  - Optimized performance with precomputed data structures
                  - Command cooldown system to prevent spam
-                 - Games played tracking for player statistics
 
 RANK SYSTEM DETAILS:
                  - Players progress through ranks by earning credits from kills and special events
@@ -1047,7 +1046,7 @@ function OnCommand(id, command)
             local player = top_players[i]
             local kdr = calculateKDR(player.stats.kills, player.stats.deaths)
             send(id, string_format(
-                "%d. %s: %s G%d | %d credits | KDR: %.2f (%d/%d) | Games: %d",
+                "%d. %s: %s G%d | %d credits | KDR: %.2f (%d/%d)",
                 i,
                 player.name,
                 player.stats.rank,
