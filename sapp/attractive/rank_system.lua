@@ -138,6 +138,7 @@ local CONFIG = {
             [10] = { 25, '+25 %s (multi-kill)' }
         },
 
+        -- Scoring (Flag Capture, Team Race, FFA Race, Slayer, Team Slayer)
         game_score            = {
             [1] = { 10, '+10 %s (CTF Score)' },
             [2] = { 10, '+10 %s (Team Race Score)' },
@@ -150,19 +151,19 @@ local CONFIG = {
         damage_tags           = {
 
             -- Distance/Falling: Environmental damage types
-            falling   = { -3, '-3 %s (Fall)' },
-            distance  = { -3, '-3 %s (Distance)' },
+            falling = { -3, '-3 %s (Fall)' },
+            distance = { -3, '-3 %s (Distance)' },
 
             -- Vehicle collision: Reference to tag for collision damage
             collision = 'globals\\vehicle_collision',
 
             -- Vehicle squash rewards: { vehicle_tag_path, { credit_amount, "display_message" } }
-            vehicles  = {
-                ['vehicles\\ghost\\ghost_mp']               = { 5, '+5 %s (GHOST)' },
-                ['vehicles\\rwarthog\\rwarthog']            = { 6, '+6 %s (R-Hog)' },
-                ['vehicles\\warthog\\mp_warthog']           = { 7, '+7 %s (Warthog)' },
-                ['vehicles\\banshee\\banshee_mp']           = { 8, '+8 %s (Banshee)' },
-                ['vehicles\\scorpion\\scorpion_mp']         = { 10, '+10 %s (Tank)' },
+            vehicles = {
+                ['vehicles\\ghost\\ghost_mp'] = { 5, '+5 %s (GHOST)' },
+                ['vehicles\\rwarthog\\rwarthog'] = { 6, '+6 %s (R-Hog)' },
+                ['vehicles\\warthog\\mp_warthog'] = { 7, '+7 %s (Warthog)' },
+                ['vehicles\\banshee\\banshee_mp'] = { 8, '+8 %s (Banshee)' },
+                ['vehicles\\scorpion\\scorpion_mp'] = { 10, '+10 %s (Tank)' },
                 ['vehicles\\c gun turret\\c gun turret_mp'] = { 1000, '+1000 %s (Turret)' }
             },
 
@@ -178,6 +179,7 @@ local CONFIG = {
             { 'vehicles\\banshee\\banshee bolt',                          7,  '+7 %s (Banshee)' },
             { 'vehicles\\scorpion\\shell explosion',                      10, '+10 %s (Tank Shell)' },
             { 'vehicles\\banshee\\mp_fuel rod explosion',                 10, '+10 %s (Fuel Rod)' },
+            { 'vehicles\\doozy\\bullet',                                  5,  '+5 %s (Doozy)' }, -- grove_final
 
             -- Weapons Damage
             { 'weapons\\pistol\\bullet',                                  5,  '+5 %s (Pistol)' },
@@ -589,10 +591,10 @@ local function processPlayerDeath(victim_id, killer_id)
 
     -- Server kill (falling, distance, etc.)
     if killer_id == -1 and not victim_data.switched then
-        if last_damage == falling then
-            awardCredits(victim_data, CONFIG.CREDITS.falling[1], CONFIG.CREDITS.falling[2])
-        elseif last_damage == distance then
-            awardCredits(victim_data, CONFIG.CREDITS.distance[1], CONFIG.CREDITS.distance[2])
+        if falling and last_damage == falling then
+            awardCredits(victim_data, CONFIG.CREDITS.damage_tags.falling[1], CONFIG.CREDITS.damage_tags.falling[2])
+        elseif distance and last_damage == distance then
+            awardCredits(victim_data, CONFIG.CREDITS.damage_tags.distance[1], CONFIG.CREDITS.damage_tags.distance[2])
         else
             awardCredits(victim_data, CONFIG.CREDITS.server[1], CONFIG.CREDITS.server[2])
         end
@@ -660,6 +662,92 @@ local function processPlayerDeath(victim_id, killer_id)
             end
         end
     end
+end
+
+local function getRankProgressionInfo(player_stats)
+    local current_credits = player_stats.credits
+    local current_rank = player_stats.rank
+    local current_grade = player_stats.grade
+
+    -- Find current rank index
+    local current_rank_index = RANK_LOOKUP[current_rank] or 1
+
+    -- Check if player can progress within current rank
+    local current_rank_data = CONFIG.RANKS[current_rank_index]
+    local next_grade = current_grade + 1
+
+    if current_rank_data[2][next_grade] then
+        -- Next grade in current rank
+        local credits_needed = current_rank_data[2][next_grade] - current_credits
+        return {
+            type = "grade",
+            rank = current_rank,
+            grade = next_grade,
+            credits_needed = credits_needed,
+            total_credits = current_rank_data[2][next_grade]
+        }
+    else
+        -- Next rank
+        local next_rank_index = current_rank_index + 1
+        if CONFIG.RANKS[next_rank_index] then
+            local next_rank_data = CONFIG.RANKS[next_rank_index]
+            local credits_needed = next_rank_data[2][1] - current_credits
+            return {
+                type = "rank",
+                rank = next_rank_data[1],
+                grade = 1,
+                credits_needed = credits_needed,
+                total_credits = next_rank_data[2][1]
+            }
+        else
+            -- Max rank achieved
+            return {
+                type = "max",
+                rank = current_rank,
+                grade = current_grade
+            }
+        end
+    end
+end
+
+local function formatRankInfo(player_name, player_stats, show_progression)
+    local rank = player_stats.rank
+    local grade = player_stats.grade
+    local credits = player_stats.credits
+    local kills = player_stats.kills or 0
+    local deaths = player_stats.deaths or 0
+    local kdr = calculateKDR(kills, deaths)
+
+    local lines = {
+        string_format("%s: %s (Grade %d) - %d %s", player_name, rank, grade, credits, CONFIG.SYMBOL),
+        string_format("Kills: %d | Deaths: %d | KDR: %.2f", kills, deaths, kdr)
+    }
+
+    if show_progression then
+        local progression = getRankProgressionInfo(player_stats)
+
+        if progression.type == "grade" then
+            table.insert(lines, string_format(
+                "Next: %s Grade %d (need %d more %s)",
+                progression.rank,
+                progression.grade,
+                progression.credits_needed,
+                CONFIG.SYMBOL
+            ))
+        elseif progression.type == "rank" then
+            table.insert(lines, string_format(
+                "Next: %s Grade %d (need %d more %s)",
+                progression.rank,
+                progression.grade,
+                progression.credits_needed,
+                CONFIG.SYMBOL
+            ))
+        else
+            table.insert(lines, "You have reached the highest rank!")
+        end
+    end
+
+    return lines
 end
 
 local function getTopPlayers()
@@ -742,6 +830,7 @@ function OnStart()
     ffa = get_var(0, '$ffa') == '1'
     falling = getTag('jpt!', 'globals\\falling')
     distance = getTag('jpt!', 'globals\\distance')
+
     for i = 1, 16 do
         if player_present(i) then
             OnJoin(i)
@@ -757,6 +846,14 @@ end
 
 function OnJoin(id)
     players[id] = initializePlayer(id)
+    -- Show rank information when player joins
+    local player = players[id]
+    if player and player.stats then
+        local lines = formatRankInfo(player.name, player.stats, true)
+        for _, line in ipairs(lines) do
+            rprint(id, line)
+        end
+    end
 end
 
 function OnQuit(id)
@@ -843,15 +940,16 @@ function OnCommand(id, command)
             end
         end
 
-        local rank = player.stats.rank
-        local grade = player.stats.grade
-        local credits = player.stats.credits
-        local kills = player.stats.kills or 0
-        local deaths = player.stats.deaths or 0
-        local kdr = calculateKDR(kills, deaths)
+        if not player then
+            send(id, "Player data not available")
+            return false
+        end
 
-        send(id, string_format("%s: %s (grade %d) (%d credits)", player.name, rank, grade, credits))
-        send(id, string_format("Kills: %d | Deaths: %d | KDR: %.2f", kills, deaths, kdr))
+        local lines = formatRankInfo(player.name, player.stats, true)
+        for _, line in ipairs(lines) do
+            send(id, line)
+        end
+
         return false
     elseif cmd == 'setrank' then
         if #args < 4 then
