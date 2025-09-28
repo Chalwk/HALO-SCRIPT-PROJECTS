@@ -383,8 +383,7 @@ local function initializePlayer(id)
             grade = 1,
             credits = default_rank[2][1],
             kills = 0,
-            deaths = 0,
-            games_played = 0
+            deaths = 0
         }
     end
 
@@ -728,12 +727,11 @@ local function formatRankInfo(player_name, player_stats, show_progression)
     local credits = player_stats.credits
     local kills = player_stats.kills or 0
     local deaths = player_stats.deaths or 0
-    local games_played = player_stats.games_played or 0
     local kdr = calculateKDR(kills, deaths)
 
     local lines = {
         string_format("%s: %s (Grade %d) - %d %s", player_name, rank, grade, credits, CONFIG.SYMBOL),
-        string_format("Kills: %d | Deaths: %d | KDR: %.2f | Games: %d", kills, deaths, kdr, games_played)
+        string_format("Kills: %d | Deaths: %d | KDR: %.2f", kills, deaths, kdr)
     }
 
     if show_progression then
@@ -867,13 +865,6 @@ function OnStart()
 end
 
 function OnEnd()
-    -- Increment games played for all players
-    for _, player in pairs(players) do
-        if player then
-            player.stats.games_played = (player.stats.games_played or 0) + 1
-        end
-    end
-
     saveStatsDB()
 end
 
@@ -1048,6 +1039,8 @@ function OnCommand(id, command)
             return false
         end
 
+        if limit > 15 then limit = 15 end
+
         send(id, string_format("=== TOP %d PLAYERS ===", math_min(limit, #top_players)))
 
         for i = 1, math_min(limit, #top_players) do
@@ -1062,8 +1055,7 @@ function OnCommand(id, command)
                 player.stats.credits,
                 kdr,
                 player.stats.kills,
-                player.stats.deaths,
-                player.stats.games_played or 0
+                player.stats.deaths
             ))
         end
         return false
