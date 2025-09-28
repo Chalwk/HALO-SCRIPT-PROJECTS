@@ -19,77 +19,46 @@ LICENSE:          MIT License
 -- Weapon tag definitions: Maps friendly names to actual Halo tag paths
 -- Add new weapons here using the format: friendly_name = 'tag\\path\\to\\weapon'
 local weapon_tags = {
-    pistol = 'weapons\\pistol\\pistol',
-    sniper = 'weapons\\sniper rifle\\sniper rifle',
-    plasma_cannon = 'weapons\\plasma_cannon\\plasma_cannon',
+    assault_rifle   = 'weapons\\assault rifle\\assault rifle',
+    flamethrower    = 'weapons\\flamethrower\\flamethrower',
+    gravity_rifle   = 'weapons\\gravity rifle\\gravity rifle',
+    needler         = 'weapons\\needler\\mp_needler',
+    pistol          = 'weapons\\pistol\\pistol',
+    plasma_cannon   = 'weapons\\plasma_cannon\\plasma_cannon',
+    plasma_pistol   = 'weapons\\plasma pistol\\plasma pistol',
+    plasma_rifle    = 'weapons\\plasma rifle\\plasma rifle',
     rocket_launcher = 'weapons\\rocket launcher\\rocket launcher',
-    plasma_pistol = 'weapons\\plasma pistol\\plasma pistol',
-    plasma_rifle = 'weapons\\plasma rifle\\plasma rifle',
-    assault_rifle = 'weapons\\assault rifle\\assault rifle',
-    flamethrower = 'weapons\\flamethrower\\flamethrower',
-    needler = 'weapons\\needler\\mp_needler',
-    shotgun = 'weapons\\shotgun\\shotgun',
-    gravity_rifle = 'weapons\\gravity rifle\\gravity rifle'
+    shotgun         = 'weapons\\shotgun\\shotgun',
+    sniper          = 'weapons\\sniper rifle\\sniper rifle'
 }
 
--- Grenade configuration
--- Add grenade counts per team for each map and game mode
--- Format: frags = number, plasmas = number
+-- Format: maps[map_name][game_mode][team] = { { weapon1, weapon2, weapon3, weapon4 }, { frag_grenades, plasma_grenades } }
 local maps = {
+    -- EXAMPLE MAPS
     ['destiny'] = {
         ['MOSH_PIT_CTF'] = {
-            red = {
-                weapons = { 'pistol', 'sniper' },
-                grenades = { frags = 1, plasmas = 1 }
-            },
-            blue = {
-                weapons = { 'pistol', 'sniper' },
-                grenades = { frags = 1, plasmas = 1 }
-            }
+            red = { { 'pistol', 'sniper' }, { 1, 1 } },
+            blue = { { 'pistol', 'sniper' }, { 1, 1 } },
         },
         ['MOSH_PIT_TEAM_SLAYER'] = {
-            red = {
-                weapons = { 'pistol', 'sniper' },
-                grenades = { frags = 1, plasmas = 1 }
-            },
-            blue = {
-                weapons = { 'pistol', 'sniper' },
-                grenades = { frags = 1, plasmas = 1 }
-            }
+            red = { { 'pistol', 'sniper' }, { 1, 1 } },
+            blue = { { 'pistol', 'sniper' }, { 1, 1 } },
         },
         ['MOSH_PIT_FFA_SLAYER'] = {
-            ffa = {
-                weapons = { 'pistol', 'sniper' },
-                grenades = { frags = 1, plasmas = 1 }
-            }
+            ffa = { { 'pistol', 'sniper' }, { 1, 1 } },
         },
     },
     ['graveyard'] = {
         ['MOSH_PIT_CTF'] = {
-            red = {
-                weapons = { 'pistol', 'sniper' },
-                grenades = { frags = 1, plasmas = 1 }
-            },
-            blue = {
-                weapons = { 'pistol', 'sniper' },
-                grenades = { frags = 1, plasmas = 1 }
-            }
+            red = { { 'pistol', 'sniper' }, { 1, 1 } },
+            blue = { { 'pistol', 'sniper' }, { 1, 1 } },
         },
         ['MOSH_PIT_TEAM_SLAYER'] = {
-            red = {
-                weapons = { 'pistol', 'sniper' },
-                grenades = { frags = 1, plasmas = 1 }
-            },
-            blue = {
-                weapons = { 'pistol', 'sniper' },
-                grenades = { frags = 1, plasmas = 1 }
-            }
+            red = { { 'pistol', 'sniper' }, { 1, 1 } },
+            blue = { { 'pistol', 'sniper' }, { 1, 1 } },
         },
         ['MOSH_PIT_FFA_SLAYER'] = {
-            ffa = {
-                weapons = { 'pistol', 'sniper' },
-                grenades = { frags = 1, plasmas = 1 }
-            }
+            ffa = { { 'pistol', 'sniper' }, { 1, 1 } },
         },
     }
 }
@@ -121,10 +90,12 @@ local function initialize()
     end
 
     for team, loadout in pairs(mode_config) do
-        current_loadout[team] = { weapons = {}, grenades = loadout.grenades }
+        local weapons = loadout[1]
+        local grenades = loadout[2]
 
-        for _, weapon_name in ipairs(loadout.weapons) do
-            -- Look up the actual tag path from the weapon_tags table
+        current_loadout[team] = { weapons = {}, grenades = { frags = grenades[1], plasmas = grenades[2] } }
+
+        for _, weapon_name in ipairs(weapons) do
             local tag_path = weapon_tags[weapon_name]
             if not tag_path then
                 cprint("Weapon Assigner: Weapon '" .. weapon_name .. "' not found in weapon_tags table", 12)
