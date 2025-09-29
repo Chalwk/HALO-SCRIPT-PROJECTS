@@ -730,7 +730,7 @@ local function formatRankInfo(player_name, player_stats, show_progression)
 
     local lines = {
         string_format("%s: %s (Grade %d) - %d %s", player_name, rank, grade, credits, CONFIG.SYMBOL),
-        string_format("Kills: %d | Deaths: %d | KDR: %.2f", kills, deaths, kdr)
+        string_format("KDR: %.2f (%d/%d)", kdr, kills, deaths)
     }
 
     if show_progression then
