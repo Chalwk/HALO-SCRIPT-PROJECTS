@@ -71,6 +71,7 @@ local CONFIG = {
 
     -- Whether to display top players on game end
     SHOW_STATS_ON_END = true,
+    STATS_LIMIT = 5,
 
     -- Commands and required permission levels (-1 = all players, 1-4 = admin levels)
     COMMANDS = {
@@ -921,7 +922,7 @@ end
 function OnEnd()
     saveStatsDB()
     if CONFIG.SHOW_STATS_ON_END then
-        displayTopPlayers(5, nil, true)
+        displayTopPlayers(CONFIG.STATS_LIMIT, nil, true)
     end
 end
 
