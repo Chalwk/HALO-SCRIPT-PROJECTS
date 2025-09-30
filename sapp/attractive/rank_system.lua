@@ -69,6 +69,9 @@ local CONFIG = {
     -- Command cooldown in seconds (prevents command spam)
     COOLDOWN = 3,
 
+    -- Whether to display top players on game end
+    SHOW_STATS_ON_END = true,
+
     -- Commands and required permission levels (-1 = all players, 1-4 = admin levels)
     COMMANDS = {
         { 'rank',    -1 }, -- Check your or another player's rank
@@ -320,13 +323,18 @@ local function hasPermission(id, required_level)
     return tonumber(get_var(id, '$lvl')) >= required_level
 end
 
-local function send(id, msg, exclude)
+local function send(id, msg, exclude, all_players)
     if id == 0 then return cprint(msg) end
     if exclude then
         for i, _ in pairs(players) do
             if i ~= id then
-                send(i, msg)
+                rprint(i, msg)
             end
+        end
+        return
+    elseif all_players then
+        for i, _ in pairs(players) do
+            rprint(i, msg)
         end
         return
     end
@@ -787,6 +795,48 @@ local function getTopPlayers()
     return all_players
 end
 
+local function displayTopPlayers(limit, recipient_id, is_broadcast)
+    local top_players = getTopPlayers()
+
+    if #top_players == 0 then
+        if not is_broadcast then
+            send(recipient_id, "No players found.")
+        end
+        return
+    end
+
+    local display_limit = math_min(limit, #top_players)
+    local header = string_format("=== TOP %d PLAYERS ===", display_limit)
+
+    if is_broadcast then
+        send(nil, header, nil, true)
+    else
+        send(recipient_id, header)
+    end
+
+    for i = 1, display_limit do
+        local player = top_players[i]
+        local kdr = calculateKDR(player.stats.kills, player.stats.deaths)
+        local msg = string_format(
+            "%d. %s: %s G%d | %d credits | KDR: %.2f (%d/%d)",
+            i,
+            player.name,
+            player.stats.rank,
+            player.stats.grade,
+            player.stats.credits,
+            kdr,
+            player.stats.kills,
+            player.stats.deaths
+        )
+
+        if is_broadcast then
+            send(nil, msg, nil, true)
+        else
+            send(recipient_id, msg)
+        end
+    end
+end
+
 local function isOnCooldown(id, command)
     local key = id .. "_" .. command
     local current_time = os_time()
@@ -870,11 +920,13 @@ end
 
 function OnEnd()
     saveStatsDB()
+    if CONFIG.SHOW_STATS_ON_END then
+        displayTopPlayers(5, nil, true)
+    end
 end
 
 function OnJoin(id)
     players[id] = initializePlayer(id)
-    -- Show rank information when player joins
     local player = players[id]
     if player and player.stats then
         local lines = formatRankInfo(player.name, player.stats, true)
@@ -1036,32 +1088,8 @@ function OnCommand(id, command)
         return false
     elseif cmd == 'top' then
         local limit = tonumber(args[2]) or 5
-        local top_players = getTopPlayers()
-
-        if #top_players == 0 then
-            send(id, "No players found.")
-            return false
-        end
-
         if limit > 15 then limit = 15 end
-
-        send(id, string_format("=== TOP %d PLAYERS ===", math_min(limit, #top_players)))
-
-        for i = 1, math_min(limit, #top_players) do
-            local player = top_players[i]
-            local kdr = calculateKDR(player.stats.kills, player.stats.deaths)
-            send(id, string_format(
-                "%d. %s: %s G%d | %d credits | KDR: %.2f (%d/%d)",
-                i,
-                player.name,
-                player.stats.rank,
-                player.stats.grade,
-                player.stats.credits,
-                kdr,
-                player.stats.kills,
-                player.stats.deaths
-            ))
-        end
+        displayTopPlayers(limit, id)
         return false
     end
 
