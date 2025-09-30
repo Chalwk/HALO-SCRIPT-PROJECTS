@@ -103,21 +103,20 @@ local CONFIG = {
     --            2. %s will be replaced with currency symbol.
 
     CREDITS = {
-
         -- Bonus Events: { credit_amount, "display_message" }
-        head_shot             = { 1, '+1 %s (Headshot)' },
-        revenge               = { 1, '+1 %s (Revenge)' },           -- Revenge bonus (killed someone who recently killed you)
-        avenge                = { 1, '+1 %s (Avenge)' },            -- Avenge bonus (killed someone who recently killed a teammate)
-        reload_this           = { 1, '+1 %s (Reload This!)' },      -- Kill a player while they are reloading
-        close_call            = { 2, '+2 %s (Close Call)' },        -- Shield fully depleted + health <= 30%
-        server                = { 0, '+0 %s (Server)' },            -- Killed by the server
-        guardians             = { -5, '-5 %s (Guardians)' },        -- Killed by guardians (both players die at the same time or unknown death type)
-        suicide               = { -10, '-10 %s (Suicide)' },
-        betrayal              = { -15, '-15 %s (Betrayal)' },       -- Team kill in non-FFA
-        killed_from_the_grave = { 5, '+5 %s (Killed From Grave)' }, -- Kill after dying
-        first_blood           = { 30, '+30 %s (First Blood)' },     -- First kill of the match
+        head_shot             = { 3, '+3 %s (Headshot)' },
+        revenge               = { 5, '+5 %s (Revenge)' },
+        avenge                = { 4, '+4 %s (Avenge)' },
+        reload_this           = { 2, '+2 %s (Reload This!)' },
+        close_call            = { 5, '+5 %s (Close Call)' },
+        server                = { 0, '+0 %s (Server)' },
+        guardians             = { -3, '-3 %s (Guardians)' },
+        suicide               = { -5, '-5 %s (Suicide)' },
+        betrayal              = { -8, '-8 %s (Betrayal)' },
+        killed_from_the_grave = { 8, '+8 %s (Killed From Grave)' },
+        first_blood           = { 15, '+15 %s (First Blood)' },
 
-        -- Consecutive spree kills: triggered at specific kill counts
+        -- Consecutive spree kills
         spree                 = {
             [5]  = { 5, '+5 %s (Spree)' },
             [10] = { 10, '+10 %s (Spree)' },
@@ -131,95 +130,90 @@ local CONFIG = {
             [50] = { 50, '+50 %s (Spree)' }
         },
 
-        -- Multi-kill: rapid consecutive kills without dying
+        -- Multi-kill: rapid consecutive kills
         multi_kill            = {
-            [2]  = { 8, '+8 %s (multi-kill)' },
-            [3]  = { 10, '+10 %s (multi-kill)' },
-            [4]  = { 12, '+12 %s (multi-kill)' },
-            [5]  = { 14, '+14 %s (multi-kill)' },
-            [6]  = { 16, '+16 %s (multi-kill)' },
-            [7]  = { 18, '+18 %s (multi-kill)' },
-            [8]  = { 20, '+20 %s (multi-kill)' },
-            [9]  = { 23, '+23 %s (multi-kill)' },
-            [10] = { 25, '+25 %s (multi-kill)' }
+            [2]  = { 5, '+5 %s (Double Kill)' },
+            [3]  = { 8, '+8 %s (Triple Kill)' },
+            [4]  = { 12, '+12 %s (Multi-Kill)' },
+            [5]  = { 15, '+15 %s (Multi-Kill)' },
+            [6]  = { 18, '+18 %s (Multi-Kill)' },
+            [7]  = { 22, '+22 %s (Multi-Kill)' },
+            [8]  = { 25, '+25 %s (Multi-Kill)' },
+            [9]  = { 30, '+30 %s (Multi-Kill)' },
+            [10] = { 35, '+35 %s (Ultra Kill)' }
         },
 
-        -- Scoring (Flag Capture, Team Race, FFA Race, Slayer, Team Slayer)
+        -- Game scoring events
         game_score            = {
-            [1] = { 10, '+10 %s (CTF Score)' },
-            [2] = { 10, '+10 %s (Team Race Score)' },
-            [3] = { 10, '+10 %s (FFA Race Score)' },
-            [4] = { 10, '+10 %s (Slayer Score)' },
-            [5] = { 10, '+10 %s (Team Slayer Score)' }
+            [1] = { 5, '+5 %s (CTF Score)' },
+            [2] = { 5, '+5 %s (Team Race Score)' },
+            [3] = { 5, '+5 %s (FFA Race Score)' },
+            [4] = { 5, '+5 %s (Slayer Score)' },
+            [5] = { 5, '+5 %s (Team Slayer Score)' }
         },
 
-        -- Damage Events: Credit rewards based on damage source
+        -- Damage Events
         damage_tags           = {
-
-            -- Distance/Falling: Environmental damage types
-            falling = { -3, '-3 %s (Fall)' },
-            distance = { -3, '-3 %s (Distance)' },
-
-            -- Vehicle collision: Reference to tag for collision damage
+            falling = { -2, '-2 %s (Fall)' },
+            distance = { -2, '-2 %s (Distance)' },
             collision = 'globals\\vehicle_collision',
 
-            -- Vehicle squash rewards: { vehicle_tag_path, { credit_amount, "display_message" } }
+            -- Vehicle squash rewards
             vehicles = {
-                ['vehicles\\ghost\\ghost_mp'] = { 5, '+5 %s (GHOST)' },
-                ['vehicles\\rwarthog\\rwarthog'] = { 6, '+6 %s (R-Hog)' },
-                ['vehicles\\warthog\\mp_warthog'] = { 7, '+7 %s (Warthog)' },
-                ['vehicles\\banshee\\banshee_mp'] = { 8, '+8 %s (Banshee)' },
-                ['vehicles\\scorpion\\scorpion_mp'] = { 10, '+10 %s (Tank)' },
-                ['vehicles\\c gun turret\\c gun turret_mp'] = { 1000, '+1000 %s (Turret)' }
+                ['vehicles\\ghost\\ghost_mp'] = { 4, '+4 %s (Ghost)' },
+                ['vehicles\\rwarthog\\rwarthog'] = { 5, '+5 %s (R-Hog)' },
+                ['vehicles\\warthog\\mp_warthog'] = { 6, '+6 %s (Warthog)' },
+                ['vehicles\\banshee\\banshee_mp'] = { 7, '+7 %s (Banshee)' },
+                ['vehicles\\scorpion\\scorpion_mp'] = { 8, '+8 %s (Tank)' },
+                ['vehicles\\c gun turret\\c gun turret_mp'] = { 10, '+10 %s (Turret)' }
             },
 
             --------
-            -- Weapon damage rewards: { damage_tag_path, credit_amount, "display_message" }
+            -- Weapon damage rewards
             --------
-
             -- Vehicles Damage
-            { 'vehicles\\ghost\\ghost bolt',                              7,  '+7 %s (Ghost)' },
-            { 'vehicles\\scorpion\\bullet',                               6,  '+6 %s (Tank)' },
-            { 'vehicles\\warthog\\bullet',                                6,  '+6 %s (Warthog)' },
-            { 'vehicles\\c gun turret\\mp bolt',                          7,  '+7 %s (Turret)' },
-            { 'vehicles\\banshee\\banshee bolt',                          7,  '+7 %s (Banshee)' },
-            { 'vehicles\\scorpion\\shell explosion',                      10, '+10 %s (Tank Shell)' },
-            { 'vehicles\\banshee\\mp_fuel rod explosion',                 10, '+10 %s (Fuel Rod)' },
-            { 'vehicles\\doozy\\bullet',                                  5,  '+5 %s (Doozy)' }, -- grove_final
+            { 'vehicles\\ghost\\ghost bolt',                              5, '+5 %s (Ghost)' },
+            { 'vehicles\\scorpion\\bullet',                               4, '+4 %s (Tank)' },
+            { 'vehicles\\warthog\\bullet',                                4, '+4 %s (Warthog)' },
+            { 'vehicles\\c gun turret\\mp bolt',                          5, '+5 %s (Turret)' },
+            { 'vehicles\\banshee\\banshee bolt',                          5, '+5 %s (Banshee)' },
+            { 'vehicles\\scorpion\\shell explosion',                      8, '+8 %s (Tank Shell)' },
+            { 'vehicles\\banshee\\mp_fuel rod explosion',                 8, '+8 %s (Fuel Rod)' },
+            { 'vehicles\\doozy\\bullet',                                  3, '+3 %s (Doozy)' },
 
             -- Weapons Damage
-            { 'weapons\\pistol\\bullet',                                  5,  '+5 %s (Pistol)' },
-            { 'weapons\\shotgun\\pellet',                                 6,  '+6 %s (Shotgun)' },
-            { 'weapons\\plasma rifle\\bolt',                              4,  '+4 %s (Plasma Rifle)' },
-            { 'weapons\\needler\\explosion',                              8,  '+8 %s (Needler)' },
-            { 'weapons\\plasma pistol\\bolt',                             4,  '+4 %s (Plasma Pistol)' },
-            { 'weapons\\assault rifle\\bullet',                           5,  '+5 %s (Assault Rifle)' },
-            { 'weapons\\needler\\impact damage',                          4,  '+4 %s (Needler)' },
-            { 'weapons\\flamethrower\\explosion',                         5,  '+5 %s (Flamethrower)' },
-            { 'weapons\\flamethrower\\burning',                           5,  '+5 %s (Flamethrower)' },
-            { 'weapons\\flamethrower\\impact damage',                     5,  '+5 %s (Flamethrower)' },
-            { 'weapons\\rocket launcher\\explosion',                      8,  '+8 %s (Rocket Launcher)' },
-            { 'weapons\\needler\\detonation damage',                      3,  '+3 %s (Needler)' },
-            { 'weapons\\plasma rifle\\charged bolt',                      4,  '+4 %s (Plasma Rifle)' },
-            { 'weapons\\sniper rifle\\sniper bullet',                     6,  '+6 %s (Sniper Rifle)' },
-            { 'weapons\\plasma_cannon\\effects\\plasma_cannon_explosion', 8,  '+8 %s (Plasma Cannon)' },
-            { 'weapons\\frag grenade\\explosion',                         8,  '+8 %s (Frag)' },
-            { 'weapons\\plasma grenade\\attached',                        7,  '+7 %s (Plasma Grenade)' },
-            { 'weapons\\plasma grenade\\explosion',                       5,  '+5 %s (Plasma Grenade)' },
+            { 'weapons\\pistol\\bullet',                                  3, '+3 %s (Pistol)' },
+            { 'weapons\\shotgun\\pellet',                                 4, '+4 %s (Shotgun)' },
+            { 'weapons\\plasma rifle\\bolt',                              2, '+2 %s (Plasma Rifle)' },
+            { 'weapons\\needler\\explosion',                              5, '+5 %s (Needler)' },
+            { 'weapons\\plasma pistol\\bolt',                             2, '+2 %s (Plasma Pistol)' },
+            { 'weapons\\assault rifle\\bullet',                           3, '+3 %s (Assault Rifle)' },
+            { 'weapons\\needler\\impact damage',                          2, '+2 %s (Needler)' },
+            { 'weapons\\flamethrower\\explosion',                         4, '+4 %s (Flamethrower)' },
+            { 'weapons\\flamethrower\\burning',                           4, '+4 %s (Flamethrower)' },
+            { 'weapons\\flamethrower\\impact damage',                     4, '+4 %s (Flamethrower)' },
+            { 'weapons\\rocket launcher\\explosion',                      6, '+6 %s (Rocket Launcher)' },
+            { 'weapons\\needler\\detonation damage',                      2, '+2 %s (Needler)' },
+            { 'weapons\\plasma rifle\\charged bolt',                      3, '+3 %s (Plasma Rifle)' },
+            { 'weapons\\sniper rifle\\sniper bullet',                     5, '+5 %s (Sniper Rifle)' },
+            { 'weapons\\plasma_cannon\\effects\\plasma_cannon_explosion', 6, '+6 %s (Plasma Cannon)' },
+            { 'weapons\\frag grenade\\explosion',                         5, '+5 %s (Frag)' },
+            { 'weapons\\plasma grenade\\attached',                        5, '+5 %s (Plasma Grenade)' },
+            { 'weapons\\plasma grenade\\explosion',                       3, '+3 %s (Plasma Grenade)' },
 
             -- Melee
-            { 'weapons\\flag\\melee',                                     5,  '+5 %s (Flag)' },
-            { 'weapons\\ball\\melee',                                     5,  '+5 %s (Ball)' },
-            { 'weapons\\pistol\\melee',                                   4,  '+4 %s (Pistol)' },
-            { 'weapons\\needler\\melee',                                  4,  '+4 %s (Needler)' },
-            { 'weapons\\shotgun\\melee',                                  5,  '+5 %s (Shotgun)' },
-            { 'weapons\\flamethrower\\melee',                             5,  '+5 %s (Flamethrower)' },
-            { 'weapons\\sniper rifle\\melee',                             5,  '+5 %s (Sniper Rifle)' },
-            { 'weapons\\plasma rifle\\melee',                             4,  '+4 %s (Plasma Rifle)' },
-            { 'weapons\\plasma pistol\\melee',                            4,  '+4 %s (Plasma Pistol)' },
-            { 'weapons\\assault rifle\\melee',                            4,  '+4 %s (Assault Rifle)' },
-            { 'weapons\\rocket launcher\\melee',                          10, '+10 %s (Rocket Launcher)' },
-            { 'weapons\\plasma_cannon\\effects\\plasma_cannon_melee',     10, '+10 %s (Plasma Cannon)' }
+            { 'weapons\\flag\\melee',                                     3, '+3 %s (Flag)' },
+            { 'weapons\\ball\\melee',                                     3, '+3 %s (Ball)' },
+            { 'weapons\\pistol\\melee',                                   2, '+2 %s (Pistol)' },
+            { 'weapons\\needler\\melee',                                  2, '+2 %s (Needler)' },
+            { 'weapons\\shotgun\\melee',                                  3, '+3 %s (Shotgun)' },
+            { 'weapons\\flamethrower\\melee',                             3, '+3 %s (Flamethrower)' },
+            { 'weapons\\sniper rifle\\melee',                             3, '+3 %s (Sniper Rifle)' },
+            { 'weapons\\plasma rifle\\melee',                             2, '+2 %s (Plasma Rifle)' },
+            { 'weapons\\plasma pistol\\melee',                            2, '+2 %s (Plasma Pistol)' },
+            { 'weapons\\assault rifle\\melee',                            2, '+2 %s (Assault Rifle)' },
+            { 'weapons\\rocket launcher\\melee',                          5, '+5 %s (Rocket Launcher)' },
+            { 'weapons\\plasma_cannon\\effects\\plasma_cannon_melee',     5, '+5 %s (Plasma Cannon)' }
         }
     }
 }
@@ -326,8 +320,16 @@ local function hasPermission(id, required_level)
     return tonumber(get_var(id, '$lvl')) >= required_level
 end
 
-local function send(id, msg)
+local function send(id, msg, exclude)
     if id == 0 then return cprint(msg) end
+    if exclude then
+        for i, _ in pairs(players) do
+            if i ~= id then
+                send(i, msg)
+            end
+        end
+        return
+    end
     rprint(id, msg)
 end
 
@@ -402,6 +404,7 @@ local function updatePlayerRank(player)
     local old_rank = player.stats.rank
     local old_grade = player.stats.grade
     local credits = player.stats.credits
+    local id = player.id
 
     -- Binary search for the appropriate threshold
     local low, high = 1, #SORTED_THRESHOLDS
@@ -438,9 +441,11 @@ local function updatePlayerRank(player)
         local new_index = RANK_LOOKUP[new_rank]
 
         if new_index > old_index or (new_index == old_index and new_grade > old_grade) then
-            send(player.id, string_format("Rank Up: %s Grade %d", new_rank, new_grade))
+            send(id, string_format("Rank Up: %s Grade %d", new_rank, new_grade))
+            send(id, string_format("%s has ranked up to %s Grade %d!", player.name, new_rank, new_grade), true)
         else
-            send(player.id, string_format("Rank Down: %s Grade %d", new_rank, new_grade))
+            send(id, string_format("Rank Down: %s Grade %d", new_rank, new_grade))
+            send(id, string_format("%s has been demoted to %s Grade %d!", player.name, new_rank, new_grade), true)
         end
     end
 end
