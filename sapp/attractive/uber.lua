@@ -157,10 +157,10 @@ local function loadVehicleConfig()
     end)
 
     if not success or not vehicles then
-        cprint("[UBER] Failed to load uber_vehicles.lua.", 10)
-        cprint("[UBER] Download the file from:", 10)
-        cprint("https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/sapp/libraries/uber_vehicles.lua", 10)
-        cprint("[UBER] Using default vehicle settings", 10)
+        cprint("[UBER] Failed to load uber_vehicles.lua.", 12)
+        cprint("[UBER] Download the file from:", 12)
+        cprint("https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/sapp/libraries/uber_vehicles.lua", 12)
+        cprint("[UBER] Using default vehicle settings", 12)
         return DEFAULT_VEHICLE_SETTINGS
     end
     return vehicles
