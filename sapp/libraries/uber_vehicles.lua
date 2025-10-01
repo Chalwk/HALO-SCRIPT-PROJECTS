@@ -73,6 +73,19 @@ return {
         [2] = 'gunner'
     }, true, 'H3 Warthog', { 0, 2, 1 } },
 
+    -- [h3]_sandtrap
+    { 'halo3\\vehicles\\mongoose\\mongoose', {
+        [0] = 'driver',
+        [1] = 'passenger'
+    }, true, 'Mongoose', { 0, 1 } },
+
+    -- [h3]_sandtrap
+    { 'halo3\\vehicles\\warthog\\mp_warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'H2 Warthog', { 0, 2, 1 } },
+
     -- [FBI]bloodgulch
     { 'h2\\objects\\vehicles\\warthog\\warthog', {
         [0] = 'driver',

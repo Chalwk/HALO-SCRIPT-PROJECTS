@@ -36,6 +36,10 @@ local DEFAULT_TAGS = {
 --  - keyword: What players type in chat to spawn the vehicle
 --  - tag_path: The internal path to the vehicle tag name
 local CUSTOM_TAGS = {
+    ["[h3]_sandtrap"] = {
+        ["hog"] = "halo3\\vehicles\\warthog\\mp_warthog",
+        ["mon"] = "halo3\\vehicles\\mongoose\\mongoose",
+    },
     ["bc_raceway_final_mp"] = {
         ["hog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_green",   -- green
         ["hog2"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_blue",   -- blue
