@@ -63,6 +63,7 @@ local function ManageMapObjects(enable)
 end
 
 function OnStart()
+    if get_var(0, '$gt') == 'n/a' then return end
     sniper = getTag('weap', 'weapons\\sniper rifle\\sniper rifle')
     shotgun = getTag('weap', 'weapons\\shotgun\\shotgun')
     ManageMapObjects()
@@ -92,7 +93,7 @@ function OnScriptLoad()
     register_callback(cb['EVENT_GAME_END'], 'OnEnd')
     register_callback(cb['EVENT_ALIVE'], 'UpdateAmmo')
     register_callback(cb['EVENT_GAME_START'], 'OnStart')
-    OnStart()
+    OnStart() -- in case script is loaded mid-game
 end
 
 function OnScriptUnload()
