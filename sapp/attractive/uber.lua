@@ -4,6 +4,15 @@ SCRIPT NAME:      uber.lua
 DESCRIPTION:      Team-based vehicle transport system that allows players to join
                   teammates' vehicles via chat command or crouch action.
 
+EXTERNAL DEPENDENCY:
+                 - This script requires the 'uber_vehicles.lua' library file to be
+                   placed in your server root directory (same location as sapp.dll
+                   and strings.dll).
+                 - Download from:
+                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/sapp/libraries/uber_vehicles.lua
+                 - Without this file, the script will use default (stock/vanilla) vehicles,
+                   and may not work on custom maps.
+
 KEY FEATURES:
                  - Configurable vehicle whitelist with seat priority
                  - Smart seat assignment based on insertion order
@@ -24,7 +33,7 @@ CONFIGURATION OPTIONS:
                  - Accept/reject command customization
                  - Call radius configuration
 
-LAST UPDATED:     2/10/2025
+LAST UPDATED:     21/9/2025
 
 Copyright (c) 2020-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -80,9 +89,24 @@ local MESSAGES = {
     vehicle_no_driver = "Vehicle has no driver",
     ejection_cancelled = "Driver entered, ejection cancelled"
 }
+-------------------------------------------------
+-- DO NOT TOUCH UNLESS YOU KNOW WHAT YOU'RE DOING
+-------------------------------------------------
+local DEFAULT_VEHICLE_SETTINGS = {
+    { 'vehicles\\warthog\\mp_warthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner',
+    }, true, 'Chain Gun Hog', { 0, 2, 1 } },
+    { 'vehicles\\rwarthog\\rwarthog', {
+        [0] = 'driver',
+        [1] = 'passenger',
+        [2] = 'gunner'
+    }, true, 'Rocket Hog', { 0, 2, 1 } },
+}
+-- CONFIG END -------------------------------------------------------------
 
 local VEHICLES = {}
--- CONFIG END -------------------------------------------------------------
 
 api_version = '1.12.0.0'
 
@@ -133,8 +157,8 @@ local function loadVehicleConfig()
     end)
 
     if not success or not vehicles then
-        error("Failed to load uber_vehicles.lua. Make sure the file exists and is valid.")
-        return
+        cprint("[UBER] Failed to load uber_vehicles.lua. Using default vehicle settings", 10)
+        return DEFAULT_VEHICLE_SETTINGS
     end
     return vehicles
 end
@@ -511,7 +535,6 @@ end
 
 local function initialize()
     VEHICLES = loadVehicleConfig()
-    if not VEHICLES then return nil end
 
     map_name = get_var(0, '$map')
     if not vehicle_meta_cache[map_name] then -- not cached yet
@@ -557,10 +580,9 @@ function OnStart()
         cprint('[Uber] Only runs on team-based games', 12)
         cprint('====================================', 12)
         return
-    elseif not initialize() then
-        registerCallbacks(false)
-        return
     end
+
+    initialize()
 
     for i = 1, 16 do
         if player_present(i) then
