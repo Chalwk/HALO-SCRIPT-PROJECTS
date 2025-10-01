@@ -29,6 +29,10 @@ local SCORE_LIMIT = 25
 -- Items in this list will have disabled interaction (except pistol and sniper rifle)
 -- Remove an item to enable it.
 local BLOCK_ITEMS = {
+    'powerups\\health pack',
+    'powerups\\over shield',
+    'powerups\\active camouflage',
+
     'weapons\\frag grenade\\frag grenade',
     'weapons\\plasma grenade\\plasma grenade',
 
