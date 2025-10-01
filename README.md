@@ -131,6 +131,7 @@ Have an idea for a new feature or script?
 - [Liberty](https://discord.gg/3J2Zppghz5) - [Discord](https://discord.gg/3J2Zppghz5)
 - [Reclaimers](https://c20.reclaimers.net/) - [Discord](https://discord.reclaimers.net/)
 - [Realworld CE](https://www.realworldce.com/)
+- [Old School Halo (OSH)](https://discord.gg/5gvn6T6vXe) - [Discord](https://discord.gg/5gvn6T6vXe)
 
 ---
 
