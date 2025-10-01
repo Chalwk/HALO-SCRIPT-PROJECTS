@@ -9,6 +9,8 @@
         * HSP roles, hierarchy, and reaction roles explained.
     * 〔👋〕introductions
         * Say hi and introduce yourself to the community.
+    * 〔🌐〕communities
+        * Links to other Halo communities.
     * 〔🚪〕arrivals-departures
         * Tracks member joins and leaves.
 
@@ -43,6 +45,7 @@
     * gun-game _(only users with @HSP SERVERS can see this)_
     * kill-confirmed _(only users with @HSP SERVERS can see this)_
     * melee-attack _(only users with @HSP SERVERS can see this)_
+    * mosh-pit _(only users with @HSP SERVERS can see this)_
     * one-in-the-chamber _(only users with @HSP SERVERS can see this)_
     * parkour _(only users with @HSP SERVERS can see this)_
     * rooster-ctf _(only users with @HSP SERVERS can see this)_
