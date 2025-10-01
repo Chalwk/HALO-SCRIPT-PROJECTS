@@ -6,206 +6,118 @@ DESCRIPTION:      Tactical SWAT game mode featuring:
                   - Restricted weapon loadout (pistol + sniper rifle)
                   - Competitive 25-kill victory condition (configurable)
 
-GAMEPLAY RULES:
-                  - Only headshots deal damage (instant kill)
-                  - All other weapons and vehicles disabled
-                  - Powerups (camo/overshield) remain available
-                  - Players spawn with designated loadout
-
-CONFIGURATION:
-                  - Toggle infinite ammo/bottomless clips
-                  - Enable/disable grenades
-                  - Adjust score limit
-                  - Customize weapon restrictions
-
-Copyright (c) 2022 Jericho Crosby (Chalwk)
+Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
 ]]
 
+-- CONFIG start -------------------------------------------------------
+
+-- Set to false to disable infinite ammo:
+local INFINITE_AMMO = true
+
+-- Set to false to disable bottomless clip:
+local BOTTOMLESS_CLIP = true
+
+-- Set to false to enable grenades:
+local DISABLE_GRENADES = true
+
+-- Set the default score limit:
+local SCORE_LIMIT = 25
+
+-- Items in this list will have disabled interaction (except pistol and sniper rifle)
+-- Remove an item to enable it.
+local BLOCK_ITEMS = {
+    'weapons\\frag grenade\\frag grenade',
+    'weapons\\plasma grenade\\plasma grenade',
+
+    'weapons\\shotgun\\shotgun',
+    'weapons\\needler\\mp_needler',
+    'weapons\\flamethrower\\flamethrower',
+    'weapons\\plasma rifle\\plasma rifle',
+    'weapons\\plasma_cannon\\plasma_cannon',
+    'weapons\\assault rifle\\assault rifle',
+    'weapons\\plasma pistol\\plasma pistol',
+    'weapons\\rocket launcher\\rocket launcher',
+
+    'vehicles\\ghost\\ghost_mp',
+    'vehicles\\rwarthog\\rwarthog',
+    'vehicles\\banshee\\banshee_mp',
+    'vehicles\\warthog\\mp_warthog',
+    'vehicles\\scorpion\\scorpion_mp',
+    'vehicles\\c gun turret\\c gun turret_mp'
+}
+-- CONFIG end ---------------------------------------------------------
+
 api_version = '1.12.0.0'
 
-local tags = {
-
-    -------------------
-    -- config starts --
-    -------------------
-
-    -- Set to false to disable infinite ammo:
-    --
-    infinite_ammo = true,
-
-    -- Set to false to disable bottomless clip:
-    --
-    bottomless_clip = true,
-
-    -- Set to false to enable grenades:
-    --
-    disable_grenades = true,
-
-    -- Set the default score limit:
-    --
-    scorelimit = 25,
-
-    -----------------------------------------------------------------------------
-    -- E Q U I P M E N T:
-    -- Remove the -- in front of the following lines to disable equipment spawning:
-
-    --{ 'eqip', 'powerups\\health pack' },
-    --{ 'eqip', 'powerups\\over shield' },
-    --{ 'eqip', 'powerups\\active camouflage' },
-    { 'eqip', 'weapons\\frag grenade\\frag grenade' },
-    { 'eqip', 'weapons\\plasma grenade\\plasma grenade' },
-    -----------------------------------------------------------------------------
-
-
-    -----------------------------------------------------------------------------
-    -- W E A P O N S:
-
-    -- Add -- in front of the following lines to enable weapon spawning:
-
-    --{ 'weap', 'weapons\\sniper rifle\\sniper rifle' },
-    --{ 'weap', 'weapons\\pistol\\pistol' },
-    { 'weap', 'weapons\\shotgun\\shotgun' },
-    { 'weap', 'weapons\\needler\\mp_needler' },
-    { 'weap', 'weapons\\flamethrower\\flamethrower' },
-    { 'weap', 'weapons\\plasma rifle\\plasma rifle' },
-    { 'weap', 'weapons\\plasma_cannon\\plasma_cannon' },
-    { 'weap', 'weapons\\assault rifle\\assault rifle' },
-    { 'weap', 'weapons\\plasma pistol\\plasma pistol' },
-    { 'weap', 'weapons\\rocket launcher\\rocket launcher' },
-
-    -----------------------------------------------------------------------------
-    -- V E H I C L E S:
-    -- Add -- in front of the following lines to enable Vehicle spawning:
-    { 'vehi', 'vehicles\\ghost\\ghost_mp' },
-    { 'vehi', 'vehicles\\rwarthog\\rwarthog' },
-    { 'vehi', 'vehicles\\banshee\\banshee_mp' },
-    { 'vehi', 'vehicles\\warthog\\mp_warthog' },
-    { 'vehi', 'vehicles\\scorpion\\scorpion_mp' },
-    { 'vehi', 'vehicles\\c gun turret\\c gun turret_mp' }
-
-    -----------------
-    -- config ends --
-    -----------------
-}
-
--- Do not touch anything below this point, unless you know what you're doing!
-
-local objects = {}
-local players = {}
 local pistol, sniper
 
-function OnScriptLoad()
-
-    register_callback(cb['EVENT_JOIN'], 'OnJoin')
-    register_callback(cb['EVENT_TICK'], 'OnTick')
-    register_callback(cb['EVENT_LEAVE'], 'OnQuit')
-    register_callback(cb['EVENT_SPAWN'], 'OnSpawn')
-    register_callback(cb['EVENT_ALIVE'], 'UpdateAmmo')
-    register_callback(cb['EVENT_GAME_START'], 'OnStart')
-    register_callback(cb['EVENT_OBJECT_SPAWN'], 'OnObjectSpawn')
-    register_callback(cb['EVENT_DAMAGE_APPLICATION'], 'OnDamage')
-
-    OnStart()
+local function getTag(class, name)
+    local tag = lookup_tag(class, name)
+    return tag ~= 0 and read_dword(tag + 0xC) or nil
 end
 
-local function GetTag(Class, Name)
-    local Tag = lookup_tag(Class, Name)
-    return Tag ~= 0 and read_dword(Tag + 0xC) or nil
-end
-
-local function TagsToID()
-    local t = {}
-    for i = 1, #tags do
-        local class, name = tags[i][1], tags[i][2]
-        local meta_id = GetTag(class, name)
-        t[meta_id] = (meta_id and true) or nil
+local function ManageMapObjects(enable)
+    local cmd = enable and 'enable_object' or 'disable_object'
+    for i = 1, #BLOCK_ITEMS do
+        local tag_name = BLOCK_ITEMS[i]
+        execute_command(cmd .. " '" .. tag_name .. "'")
     end
-    objects = t
 end
 
 function OnStart()
-
-    if (get_var(0, '$gt') ~= 'n/a') then
-
-        objects, players = {}, {}
-        TagsToID()
-
-        pistol = GetTag('weap', 'weapons\\pistol\\pistol')
-        sniper = GetTag('weap', 'weapons\\sniper rifle\\sniper rifle')
-
-        execute_command('scorelimit ' .. tags.scorelimit)
-
-        for i = 1, 16 do
-            if player_present(i) then
-                OnJoin(i)
-            end
-        end
-    end
+    if get_var(0, '$gt') == 'n/a' then return end
+    pistol = getTag('weap', 'weapons\\pistol\\pistol')
+    sniper = getTag('weap', 'weapons\\sniper rifle\\sniper rifle')
+    execute_command('scorelimit ' .. SCORE_LIMIT)
+    ManageMapObjects()
 end
 
-function OnTick()
-    for i, assign in pairs(players) do
-
-        if (player_alive(i) and assign and pistol and sniper) then
-
-            players[i] = false
-
-            execute_command('wdel ' .. i)
-            assign_weapon(spawn_object('', '', 0, 0, 0, 0, sniper), i)
-            assign_weapon(spawn_object('', '', 0, 0, 0, 0, pistol), i)
-
-            UpdateAmmo(i)
-        end
-    end
-end
-
-function OnJoin(id)
-    players[id] = false
-end
-
-function OnSpawn(id)
-    players[id] = true
-end
-
-function OnQuit(id)
-    players[id] = nil
-end
-
-function OnDamage(victim, killer, _, damage, hitString)
-
-    killer = tonumber(victim)
-    victim = tonumber(killer)
-
-    local pvp = (killer > 0 and killer ~= victim)
-
-    if (pvp and hitString ~= 'head') then
-        return false
-    else
-        return true, damage * 100
-    end
-end
-
-function OnObjectSpawn(id, meta_id)
-    if (id == 0 and objects[meta_id]) then
-        return true
-    end
+function OnEnd()
+    ManageMapObjects(true)
 end
 
 function UpdateAmmo(id)
-    if (tags.infinite_ammo) then
+    if INFINITE_AMMO then
         execute_command('ammo ' .. id .. ' 999 5')
     end
-    if (tags.bottomless_clip) then
+    if BOTTOMLESS_CLIP then
         execute_command('mag ' .. id .. ' 999 5')
     end
-    if (tags.disable_grenades) then
+    if DISABLE_GRENADES then
         execute_command('nades ' .. id .. ' 0')
     end
 end
 
+function OnSpawn(id)
+    if pistol and sniper then
+        execute_command('wdel ' .. id)
+        assign_weapon(spawn_object('', '', 0, 0, 0, 0, pistol), id)
+        assign_weapon(spawn_object('', '', 0, 0, 0, 0, sniper), id)
+        UpdateAmmo(id)
+    end
+end
+
+function OnDamage(victim_id, killer_id, _, damage, hit_string)
+    killer_id = tonumber(killer_id)
+    victim_id = tonumber(victim_id)
+
+    if killer_id > 0 and killer_id ~= victim_id and hit_string == 'head' then
+        return true, damage * 100
+    end
+end
+
+function OnScriptLoad()
+    register_callback(cb['EVENT_SPAWN'], 'OnSpawn')
+    register_callback(cb['EVENT_GAME_END'], 'OnEnd')
+    register_callback(cb['EVENT_ALIVE'], 'UpdateAmmo')
+    register_callback(cb['EVENT_GAME_START'], 'OnStart')
+    register_callback(cb['EVENT_DAMAGE_APPLICATION'], 'OnDamage')
+    OnStart() -- in case script is loaded mid-game
+end
+
 function OnScriptUnload()
-    -- N/A
+    ManageMapObjects(true)
 end
