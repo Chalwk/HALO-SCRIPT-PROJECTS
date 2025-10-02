@@ -51,7 +51,7 @@ REQUIREMENTS:   Install to the same directory as sapp.dll
                  - Lua JSON Parser: http://regex.info/blog/lua/json
                  - This scirpt ONLY works on maps with stock tag addresses
 
-LAST UPDATED:     29/9/2025
+LAST UPDATED:     2/10/2025
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -108,116 +108,112 @@ local CONFIG = {
 
     CREDITS = {
         -- Bonus Events: { credit_amount, "display_message" }
-        head_shot             = { 3, '+3 %s (Headshot)' },
-        revenge               = { 5, '+5 %s (Revenge)' },
-        avenge                = { 4, '+4 %s (Avenge)' },
-        reload_this           = { 2, '+2 %s (Reload This!)' },
-        close_call            = { 5, '+5 %s (Close Call)' },
-        server                = { 0, '+0 %s (Server)' },
-        guardians             = { -3, '-3 %s (Guardians)' },
-        suicide               = { -5, '-5 %s (Suicide)' },
-        betrayal              = { -8, '-8 %s (Betrayal)' },
-        killed_from_the_grave = { 8, '+8 %s (Killed From Grave)' },
-        first_blood           = { 15, '+15 %s (First Blood)' },
+        head_shot = { 8, '+8 %s (Headshot)' },
+        revenge = { 12, '+12 %s (Revenge)' },
+        avenge = { 10, '+10 %s (Avenge)' },
+        reload_this = { 5, '+5 %s (Reload This!)' },
+        close_call = { 12, '+12 %s (Close Call)' },
+        server = { 0, '+0 %s (Server)' },
+        guardians = { -8, '-8 %s (Guardians)' },
+        suicide = { -12, '-12 %s (Suicide)' },
+        betrayal = { -20, '-20 %s (Betrayal)' },
+        killed_from_the_grave = { 20, '+20 %s (Killed From Grave)' },
+        first_blood = { 35, '+35 %s (First Blood)' },
 
         -- Consecutive spree kills
-        spree                 = {
-            [5]  = { 5, '+5 %s (Spree)' },
-            [10] = { 10, '+10 %s (Spree)' },
-            [15] = { 15, '+15 %s (Spree)' },
-            [20] = { 20, '+20 %s (Spree)' },
-            [25] = { 25, '+25 %s (Spree)' },
-            [30] = { 30, '+30 %s (Spree)' },
-            [35] = { 35, '+35 %s (Spree)' },
-            [40] = { 40, '+40 %s (Spree)' },
-            [45] = { 45, '+45 %s (Spree)' },
-            [50] = { 50, '+50 %s (Spree)' }
+        spree = {
+            [5]  = { 15, '+15 %s (Spree)' },
+            [10] = { 25, '+25 %s (Spree)' },
+            [15] = { 35, '+35 %s (Spree)' },
+            [20] = { 50, '+50 %s (Spree)' },
+            [25] = { 65, '+65 %s (Spree)' },
+            [30] = { 80, '+80 %s (Spree)' },
+            [35] = { 95, '+95 %s (Spree)' },
+            [40] = { 110, '+110 %s (Spree)' },
+            [45] = { 125, '+125 %s (Spree)' },
+            [50] = { 150, '+150 %s (Spree)' }
         },
 
         -- Multi-kill: rapid consecutive kills
-        multi_kill            = {
-            [2]  = { 5, '+5 %s (Double Kill)' },
-            [3]  = { 8, '+8 %s (Triple Kill)' },
-            [4]  = { 12, '+12 %s (Multi-Kill)' },
-            [5]  = { 15, '+15 %s (Multi-Kill)' },
-            [6]  = { 18, '+18 %s (Multi-Kill)' },
-            [7]  = { 22, '+22 %s (Multi-Kill)' },
-            [8]  = { 25, '+25 %s (Multi-Kill)' },
-            [9]  = { 30, '+30 %s (Multi-Kill)' },
-            [10] = { 35, '+35 %s (Ultra Kill)' }
+        multi_kill = {
+            [2]  = { 8, '+8 %s (Double Kill)' },
+            [3]  = { 15, '+15 %s (Triple Kill)' },
+            [4]  = { 25, '+25 %s (Multi-Kill)' },
+            [5]  = { 35, '+35 %s (Multi-Kill)' },
+            [6]  = { 45, '+45 %s (Multi-Kill)' },
+            [7]  = { 55, '+55 %s (Multi-Kill)' },
+            [8]  = { 65, '+65 %s (Multi-Kill)' },
+            [9]  = { 75, '+75 %s (Multi-Kill)' },
+            [10] = { 100, '+100 %s (Ultra Kill)' }
         },
 
         -- Game scoring events
-        game_score            = {
-            [1] = { 5, '+5 %s (CTF Score)' },
-            [2] = { 5, '+5 %s (Team Race Score)' },
-            [3] = { 5, '+5 %s (FFA Race Score)' },
-            [4] = { 5, '+5 %s (Slayer Score)' },
-            [5] = { 5, '+5 %s (Team Slayer Score)' }
+        game_score = {
+            [1] = { 150, '+150 %s (Flag Capture)' },
+            [2] = { 125, '+125 %s (Lap)' }, -- Team Race
+            [3] = { 100, '+100 %s (Lap)' }  -- FFA Race
         },
 
         -- Damage Events
-        damage_tags           = {
-            falling = { -2, '-2 %s (Fall)' },
-            distance = { -2, '-2 %s (Distance)' },
+        damage_tags = {
+            falling = { -5, '-5 %s (Fall)' },
+            distance = { -5, '-5 %s (Distance)' },
             collision = 'globals\\vehicle_collision',
 
             -- Vehicle squash rewards
             vehicles = {
-                ['vehicles\\ghost\\ghost_mp'] = { 4, '+4 %s (Ghost)' },
-                ['vehicles\\rwarthog\\rwarthog'] = { 5, '+5 %s (R-Hog)' },
-                ['vehicles\\warthog\\mp_warthog'] = { 6, '+6 %s (Warthog)' },
-                ['vehicles\\banshee\\banshee_mp'] = { 7, '+7 %s (Banshee)' },
-                ['vehicles\\scorpion\\scorpion_mp'] = { 8, '+8 %s (Tank)' },
-                ['vehicles\\c gun turret\\c gun turret_mp'] = { 10, '+10 %s (Turret)' }
+                ['vehicles\\ghost\\ghost_mp'] = { 15, '+15 %s (Ghost)' },
+                ['vehicles\\rwarthog\\rwarthog'] = { 20, '+20 %s (R-Hog)' },
+                ['vehicles\\warthog\\mp_warthog'] = { 25, '+25 %s (Warthog)' },
+                ['vehicles\\banshee\\banshee_mp'] = { 30, '+30 %s (Banshee)' },
+                ['vehicles\\scorpion\\scorpion_mp'] = { 35, '+35 %s (Tank)' },
+                ['vehicles\\c gun turret\\c gun turret_mp'] = { 40, '+40 %s (Turret)' }
             },
 
             --------
             -- Weapon damage rewards
             --------
             -- Vehicles Damage
-            { 'vehicles\\ghost\\ghost bolt',                              5, '+5 %s (Ghost)' },
-            { 'vehicles\\scorpion\\bullet',                               4, '+4 %s (Tank)' },
-            { 'vehicles\\warthog\\bullet',                                4, '+4 %s (Warthog)' },
-            { 'vehicles\\c gun turret\\mp bolt',                          5, '+5 %s (Turret)' },
-            { 'vehicles\\banshee\\banshee bolt',                          5, '+5 %s (Banshee)' },
-            { 'vehicles\\scorpion\\shell explosion',                      8, '+8 %s (Tank Shell)' },
-            { 'vehicles\\banshee\\mp_fuel rod explosion',                 8, '+8 %s (Fuel Rod)' },
-            { 'vehicles\\doozy\\bullet',                                  3, '+3 %s (Doozy)' },
-
+            { 'vehicles\\ghost\\ghost bolt',                              12, '+12 %s (Ghost)' },
+            { 'vehicles\\scorpion\\bullet',                               10, '+10 %s (Tank)' },
+            { 'vehicles\\warthog\\bullet',                                10, '+10 %s (Warthog)' },
+            { 'vehicles\\c gun turret\\mp bolt',                          12, '+12 %s (Turret)' },
+            { 'vehicles\\banshee\\banshee bolt',                          12, '+12 %s (Banshee)' },
+            { 'vehicles\\scorpion\\shell explosion',                      20, '+20 %s (Tank Shell)' },
+            { 'vehicles\\banshee\\mp_fuel rod explosion',                 20, '+20 %s (Fuel Rod)' },
+            { 'vehicles\\doozy\\bullet',                                  8,  '+8 %s (Doozy)' },
             -- Weapons Damage
-            { 'weapons\\pistol\\bullet',                                  3, '+3 %s (Pistol)' },
-            { 'weapons\\shotgun\\pellet',                                 4, '+4 %s (Shotgun)' },
-            { 'weapons\\plasma rifle\\bolt',                              2, '+2 %s (Plasma Rifle)' },
-            { 'weapons\\needler\\explosion',                              5, '+5 %s (Needler)' },
-            { 'weapons\\plasma pistol\\bolt',                             2, '+2 %s (Plasma Pistol)' },
-            { 'weapons\\assault rifle\\bullet',                           3, '+3 %s (Assault Rifle)' },
-            { 'weapons\\needler\\impact damage',                          2, '+2 %s (Needler)' },
-            { 'weapons\\flamethrower\\explosion',                         4, '+4 %s (Flamethrower)' },
-            { 'weapons\\flamethrower\\burning',                           4, '+4 %s (Flamethrower)' },
-            { 'weapons\\flamethrower\\impact damage',                     4, '+4 %s (Flamethrower)' },
-            { 'weapons\\rocket launcher\\explosion',                      6, '+6 %s (Rocket Launcher)' },
-            { 'weapons\\needler\\detonation damage',                      2, '+2 %s (Needler)' },
-            { 'weapons\\plasma rifle\\charged bolt',                      3, '+3 %s (Plasma Rifle)' },
-            { 'weapons\\sniper rifle\\sniper bullet',                     5, '+5 %s (Sniper Rifle)' },
-            { 'weapons\\plasma_cannon\\effects\\plasma_cannon_explosion', 6, '+6 %s (Plasma Cannon)' },
-            { 'weapons\\frag grenade\\explosion',                         5, '+5 %s (Frag)' },
-            { 'weapons\\plasma grenade\\attached',                        5, '+5 %s (Plasma Grenade)' },
-            { 'weapons\\plasma grenade\\explosion',                       3, '+3 %s (Plasma Grenade)' },
-
+            { 'weapons\\pistol\\bullet',                                  8,  '+8 %s (Pistol)' },
+            { 'weapons\\shotgun\\pellet',                                 12, '+12 %s (Shotgun)' },
+            { 'weapons\\plasma rifle\\bolt',                              6,  '+6 %s (Plasma Rifle)' },
+            { 'weapons\\needler\\explosion',                              15, '+15 %s (Needler)' },
+            { 'weapons\\plasma pistol\\bolt',                             6,  '+6 %s (Plasma Pistol)' },
+            { 'weapons\\assault rifle\\bullet',                           8,  '+8 %s (Assault Rifle)' },
+            { 'weapons\\needler\\impact damage',                          6,  '+6 %s (Needler)' },
+            { 'weapons\\flamethrower\\explosion',                         12, '+12 %s (Flamethrower)' },
+            { 'weapons\\flamethrower\\burning',                           12, '+12 %s (Flamethrower)' },
+            { 'weapons\\flamethrower\\impact damage',                     12, '+12 %s (Flamethrower)' },
+            { 'weapons\\rocket launcher\\explosion',                      18, '+18 %s (Rocket Launcher)' },
+            { 'weapons\\needler\\detonation damage',                      6,  '+6 %s (Needler)' },
+            { 'weapons\\plasma rifle\\charged bolt',                      8,  '+8 %s (Plasma Rifle)' },
+            { 'weapons\\sniper rifle\\sniper bullet',                     15, '+15 %s (Sniper Rifle)' },
+            { 'weapons\\plasma_cannon\\effects\\plasma_cannon_explosion', 18, '+18 %s (Plasma Cannon)' },
+            { 'weapons\\frag grenade\\explosion',                         15, '+15 %s (Frag)' },
+            { 'weapons\\plasma grenade\\attached',                        15, '+15 %s (Plasma Grenade)' },
+            { 'weapons\\plasma grenade\\explosion',                       10, '+10 %s (Plasma Grenade)' },
             -- Melee
-            { 'weapons\\flag\\melee',                                     3, '+3 %s (Flag)' },
-            { 'weapons\\ball\\melee',                                     3, '+3 %s (Ball)' },
-            { 'weapons\\pistol\\melee',                                   2, '+2 %s (Pistol)' },
-            { 'weapons\\needler\\melee',                                  2, '+2 %s (Needler)' },
-            { 'weapons\\shotgun\\melee',                                  3, '+3 %s (Shotgun)' },
-            { 'weapons\\flamethrower\\melee',                             3, '+3 %s (Flamethrower)' },
-            { 'weapons\\sniper rifle\\melee',                             3, '+3 %s (Sniper Rifle)' },
-            { 'weapons\\plasma rifle\\melee',                             2, '+2 %s (Plasma Rifle)' },
-            { 'weapons\\plasma pistol\\melee',                            2, '+2 %s (Plasma Pistol)' },
-            { 'weapons\\assault rifle\\melee',                            2, '+2 %s (Assault Rifle)' },
-            { 'weapons\\rocket launcher\\melee',                          5, '+5 %s (Rocket Launcher)' },
-            { 'weapons\\plasma_cannon\\effects\\plasma_cannon_melee',     5, '+5 %s (Plasma Cannon)' }
+            { 'weapons\\flag\\melee',                                     8,  '+8 %s (Flag)' },
+            { 'weapons\\ball\\melee',                                     8,  '+8 %s (Ball)' },
+            { 'weapons\\pistol\\melee',                                   6,  '+6 %s (Pistol)' },
+            { 'weapons\\needler\\melee',                                  6,  '+6 %s (Needler)' },
+            { 'weapons\\shotgun\\melee',                                  8,  '+8 %s (Shotgun)' },
+            { 'weapons\\flamethrower\\melee',                             8,  '+8 %s (Flamethrower)' },
+            { 'weapons\\sniper rifle\\melee',                             8,  '+8 %s (Sniper Rifle)' },
+            { 'weapons\\plasma rifle\\melee',                             6,  '+6 %s (Plasma Rifle)' },
+            { 'weapons\\plasma pistol\\melee',                            6,  '+6 %s (Plasma Pistol)' },
+            { 'weapons\\assault rifle\\melee',                            6,  '+6 %s (Assault Rifle)' },
+            { 'weapons\\rocket launcher\\melee',                          15, '+15 %s (Rocket Launcher)' },
+            { 'weapons\\plasma_cannon\\effects\\plasma_cannon_melee',     15, '+15 %s (Plasma Cannon)' }
         }
     }
 }
@@ -973,8 +969,7 @@ function OnScore(id)
         -- Map game types to game_score index
         local score_index = ({
             ctf = 1,
-            race = not ffa and 2 or 3,
-            slayer = not ffa and 4 or 5,
+            race = not ffa and 2 or 3
         })[game_type]
 
         if not score_index then return end
