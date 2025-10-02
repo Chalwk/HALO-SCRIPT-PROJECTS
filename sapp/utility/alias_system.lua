@@ -123,8 +123,8 @@ local function getConfigPath()
     return read_string(read_dword(sig_scan('68??????008D54245468') + 0x1))
 end
 
-local function send(id, msg, exclude, all_players)
-    if id == 0 then return cprint(msg) end
+local function send(id, msg)
+    if id == 0 or id == nil then return cprint(msg) end
     rprint(id, msg)
 end
 
