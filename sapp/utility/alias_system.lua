@@ -1,8 +1,17 @@
 --[[
 ===============================================================================
 SCRIPT NAME:      alias_system.lua
-DESCRIPTION:      ...
-                  - ...
+DESCRIPTION:      Advanced player alias tracking and lookup system.
+                  - Tracks player aliases by IP address and hash.
+                  - Provides commands to look up player aliases using various methods.
+                  - Detects and marks players using known pirated game copies.
+                  - Automatic database maintenance with stale record cleanup.
+                  - Configurable permission levels and command cooldowns.
+
+REQUIREMENTS:   Install to the same directory as sapp.dll
+                 - Lua JSON Parser: http://regex.info/blog/lua/json
+
+LAST UPDATED:     2/10/2025
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
