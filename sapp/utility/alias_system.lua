@@ -304,10 +304,7 @@ local function loadAliasesDB()
             return json:decode(content)
         end)
         if success and result then
-            aliases_db = {
-                ip_records = result.ip_records or {},
-                hash_records = result.hash_records or {}
-            }
+            aliases_db = { ip_records = result.ip_records or {}, hash_records = result.hash_records or {} }
             return true
         else
             cprint("[alias_system] Error parsing aliases database: " .. tostring(result), 12)
@@ -366,10 +363,7 @@ local function updatePlayerRecord(id)
 
     -- Update hash record
     if not aliases_db.hash_records[hash] then
-        aliases_db.hash_records[hash] = {
-            names = {},
-            last_seen = now
-        }
+        aliases_db.hash_records[hash] = { names = {}, last_seen = now }
     end
 
     aliases_db.hash_records[hash].names[name] = true
@@ -377,10 +371,7 @@ local function updatePlayerRecord(id)
 
     -- Update IP record
     if not aliases_db.ip_records[ip] then
-        aliases_db.ip_records[ip] = {
-            names = {},
-            last_seen = now
-        }
+        aliases_db.ip_records[ip] = { names = {}, last_seen = now }
     end
 
     aliases_db.ip_records[ip].names[name] = true
@@ -405,10 +396,10 @@ function OnScriptLoad()
         cprint("[alias_system] Warning: Could not load aliases database, starting with empty database", 12)
     end
 
+    register_callback(cb['EVENT_JOIN'], 'OnJoin')
     register_callback(cb['EVENT_GAME_END'], 'OnEnd')
     register_callback(cb["EVENT_COMMAND"], "OnCommand")
     register_callback(cb['EVENT_GAME_START'], 'OnStart')
-    register_callback(cb['EVENT_JOIN'], 'OnJoin')
 
     OnStart(true)
 
