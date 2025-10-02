@@ -8,12 +8,6 @@ DESCRIPTION:      Advanced player alias tracking and lookup system.
                   - Automatic database maintenance with stale record cleanup.
                   - Configurable permission levels and command cooldowns.
 
-COMMAND SYNTAX:
-    /hash_alias <player_id> [page]   - Lookup aliases for a player using their hash.
-    /ip_alias <player_id> [page]     - Lookup aliases for a player using their IP.
-    /hash_lookup <hash> [page]       - Directly lookup aliases by hash (manual input).
-    /ip_lookup <ip> [page]           - Directly lookup aliases by IP (manual input).
-
 REQUIREMENTS:   Install to the same directory as sapp.dll
                  - Lua JSON Parser: http://regex.info/blog/lua/json
 
@@ -145,7 +139,7 @@ local function parseAndValidateArgs(args, expected_type, command_name)
     return target, page
 end
 
-local function validatePlayerAndGetData(id, target_id)
+local function validatePlayerAndGetData(target_id)
     target_id = tonumber(target_id)
     if not target_id or not player_present(target_id) then
         return nil, "Invalid or offline player ID"
@@ -261,7 +255,7 @@ local function handlePlayerBasedLookup(id, args, record_type, command_name)
         return
     end
 
-    target_id, error_msg = validatePlayerAndGetData(id, target_id)
+    target_id, error_msg = validatePlayerAndGetData(target_id)
     if error_msg then
         send(id, error_msg)
         return
@@ -415,7 +409,6 @@ function OnScriptLoad()
     register_callback(cb["EVENT_COMMAND"], "OnCommand")
     register_callback(cb['EVENT_GAME_START'], 'OnStart')
     register_callback(cb['EVENT_JOIN'], 'OnJoin')
-    register_callback(cb['EVENT_LEAVE'], 'OnQuit')
 
     OnStart(true)
 
