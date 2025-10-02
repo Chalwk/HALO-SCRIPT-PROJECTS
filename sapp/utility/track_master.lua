@@ -2,6 +2,7 @@
 ===============================================================================
 SCRIPT NAME:      track_master.lua
 DESCRIPTION:      Advanced racing tracker and leaderboard system for Halo SAPP.
+
 FEATURES:         - Tracks player lap times and validates laps (minimum time + driver seat)
                   - Records personal bests per player and all-time map records
                   - Maintains detailed per-map player statistics:
@@ -30,7 +31,10 @@ FEATURES:         - Tracks player lap times and validates laps (minimum time + d
                       * driver-only laps
                       * final leaderboard display
 
-LAST UPDATED:     22/9/2025
+REQUIREMENTS:     Install to the same directory as sapp.dll
+                  - Lua JSON Parser:  http://regex.info/blog/lua/json
+
+LAST UPDATED:     2/10/2025
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -38,7 +42,7 @@ LICENSE:          MIT License
 ===============================================================================
 ]]
 
--- Configuration -------------------------------------------
+-- Config start ---------------------------------------------
 local CONFIG = {
     -- File names (in the SAPP config directory):
     STATS_FILE = "race_stats.json",
@@ -55,7 +59,7 @@ local CONFIG = {
     EXPORT_LAP_RECORDS = true, -- Export lap records to a text file
     DRIVER_REQUIRED = true,    -- Only count laps if the player is the driver of the vehicle
     SHOW_FINAL_TOP = true,     -- Show top results on game end
-    TOP_FINAL_GLOBAL = false,   -- true = GLOBAL map results | false = CURRENT map results | This setting requires SHOW_FINAL_TOP = true
+    TOP_FINAL_GLOBAL = false,  -- true = GLOBAL map results | false = CURRENT map results | This setting requires SHOW_FINAL_TOP = true
     MSG_PREFIX = "**SAPP**",   -- Some functions temporarily change the message msg_prefix; this restores it.
 
     -- Scoring weights

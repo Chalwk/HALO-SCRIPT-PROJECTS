@@ -24,7 +24,7 @@ CONFIGURATION:    spawn_flags: Set to true to spawn flag poles at start/finish l
 REQUIREMENTS:     Install to the same directory as sapp.dll
                   - Lua JSON Parser:  http://regex.info/blog/lua/json
 
-LAST UPDATED:     21/9/2025
+LAST UPDATED:     2/10/2025
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -842,7 +842,7 @@ function OnCommand(id, command)
         end
         local cp = player.current_checkpoint
         if cp then
-            teleportPlayer(id, cp.x, cp.y, cp.z, cp.yaw)
+            teleportPlayer(id, cp[1], cp[2], cp[3], cp[4])
             setSpeed(id)
             rprint(id, "You have been reset to your last checkpoint.")
             sendPublicExclude(id, player.name .. " performed a soft-reset")
