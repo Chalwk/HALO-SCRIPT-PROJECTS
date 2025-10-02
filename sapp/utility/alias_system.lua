@@ -110,13 +110,22 @@ local aliases_db = {}
 local DEFAULT_DB = { ip_records = {}, hash_records = {} }
 local command_cooldowns = {}
 
+local get_var = get_var
+local rprint = rprint
+
 local pcall = pcall
+local pairs, ipairs = pairs, ipairs
 local os_time = os.time
 local io_open = io.open
-local get_var = get_var
+local table_insert, table_concat, table_sort = table.insert, table.concat, table.sort
 
 local function getConfigPath()
     return read_string(read_dword(sig_scan('68??????008D54245468') + 0x1))
+end
+
+local function send(id, msg, exclude, all_players)
+    if id == 0 then return cprint(msg) end
+    rprint(id, msg)
 end
 
 local function parseAndValidateArgs(args, expected_type, command_name)
@@ -175,17 +184,17 @@ local function formatNamesList(names, max_per_row)
     local count = 0
 
     for name, _ in pairs(names) do
-        table.insert(current_row, name)
+        table_insert(current_row, name)
         count = count + 1
 
         if #current_row >= max_per_row then
-            table.insert(result, table.concat(current_row, ", "))
+            table_insert(result, table_concat(current_row, ", "))
             current_row = {}
         end
     end
 
     if #current_row > 0 then
-        table.insert(result, table.concat(current_row, ", "))
+        table_insert(result, table_concat(current_row, ", "))
     end
 
     return result, count
@@ -193,16 +202,16 @@ end
 
 local function showAliasesPage(id, record, target, record_type, page)
     if not record then
-        rprint(id, "No records found for: " .. target)
+        send(id, "No records found for: " .. target)
         return
     end
 
     local all_names = {}
     for name, _ in pairs(record.names) do
-        table.insert(all_names, name)
+        table_insert(all_names, name)
     end
 
-    table.sort(all_names)
+    table_sort(all_names)
 
     local total_names = #all_names
     local max_results = CONFIG.MAX_RESULTS
@@ -228,14 +237,14 @@ local function showAliasesPage(id, record, target, record_type, page)
     if record_type == "hash" and CONFIG.KNOWN_PIRATED_HASHES[target] then
         header = header .. " [PIRATED]"
     end
-    rprint(id, header)
+    send(id, header)
 
     for _, row in ipairs(formatted_rows) do
-        rprint(id, row)
+        send(id, row)
     end
 
     if total_pages > 1 then
-        rprint(id, "Use '" .. page + 1 .. "' as page parameter to see next page")
+        send(id, "Use '" .. page + 1 .. "' as page parameter to see next page")
     end
 end
 
@@ -248,7 +257,7 @@ local function handlePlayerBasedLookup(id, args, record_type, command_name)
 
     target_id, error_msg = validatePlayerAndGetData(id, target_id)
     if error_msg then
-        rprint(id, error_msg)
+        send(id, error_msg)
         return
     end
 
@@ -261,7 +270,7 @@ end
 local function handleDirectLookup(id, args, record_type, command_name)
     local target, page, error_msg = parseAndValidateArgs(args, record_type, command_name)
     if error_msg then
-        rprint(id, error_msg)
+        send(id, error_msg)
         return
     end
 
@@ -272,7 +281,7 @@ local function handleDirectLookup(id, args, record_type, command_name)
     end
 
     if error_msg then
-        rprint(id, error_msg)
+        send(id, error_msg)
         return
     end
 
@@ -301,7 +310,7 @@ local function loadAliasesDB()
             }
             return true
         else
-            print("[alias_system] Error parsing aliases database: " .. tostring(result))
+            cprint("[alias_system] Error parsing aliases database: " .. tostring(result), 12)
             aliases_db = DEFAULT_DB
             return false
         end
@@ -314,7 +323,7 @@ end
 local function saveAliasesDB()
     local f, err = io_open(db_directory, 'w')
     if not f then
-        print("[alias_system] Error opening aliases database for writing: " .. err)
+        cprint("[alias_system] Error opening aliases database for writing: " .. err, 12)
         return false
     end
 
@@ -323,7 +332,7 @@ local function saveAliasesDB()
     end)
 
     if not success then
-        print("[alias_system] Error encoding aliases database: " .. tostring(json_str))
+        cprint("[alias_system] Error encoding aliases database: " .. tostring(json_str), 12)
         f:close()
         return false
     end
@@ -384,7 +393,7 @@ function OnScriptLoad()
     end)
 
     if not success or not result then
-        error("[alias_system] Failed to load json.lua. Make sure the file exists and is valid.")
+        cprint("[alias_system] Failed to load json.lua. Make sure the file exists and is valid.", 12)
         return
     end
     json = result
@@ -393,7 +402,7 @@ function OnScriptLoad()
     db_directory = directory .. '\\sapp\\aliases.json'
 
     if not loadAliasesDB() then
-        print("[alias_system] Warning: Could not load aliases database, starting with empty database")
+        cprint("[alias_system] Warning: Could not load aliases database, starting with empty database", 12)
     end
 
     register_callback(cb['EVENT_GAME_END'], 'OnEnd')
@@ -432,7 +441,7 @@ function OnCommand(id, command)
 
     if CONFIG.COMMANDS[cmd] then
         if not hasPermission(id) then
-            rprint(id, "You do not have permission to use this command")
+            send(id, "You do not have permission to use this command")
         elseif isOnCooldown(id, cmd) then
             return false
         elseif cmd == 'hash_alias' then
