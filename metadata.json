@@ -539,7 +539,7 @@
       "filename": "aimbot_scores.lua"
     },
     "alias_system": {
-      "title": "Alias System",
+      "title": "Alias Sysstem",
       "shortDescription": "Tracks and manages player aliases by hash and IP with lookup commands.",
       "description": "Logs player name aliases tied to hash and IP. Admins can look up aliases with commands, view paginated results, and detect known pirated game hashes. Includes permission checks, cooldowns, and automatic cleanup of old records.",
       "filename": "alias_system.lua"
