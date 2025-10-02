@@ -6,7 +6,7 @@ DESCRIPTION:      Automated rotating message system that broadcasts:
                   - Multi-line messages with customizable intervals
                   - Optional console output for monitoring
 
-LAST UPDATED:     22/08/2025
+LAST UPDATED:     2/10/2025
 
 Copyright (c) 2024-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -43,6 +43,8 @@ function OnScriptLoad()
 end
 
 function BroadcastAnnouncement()
+    if not game_active then return false end
+
     local announcement = ANNOUNCEMENTS[index]
     execute_command('msg_prefix ""')
     for _, message in ipairs(announcement) do
@@ -52,7 +54,7 @@ function BroadcastAnnouncement()
     execute_command('msg_prefix "' .. PREFIX .. '"')
     index = (index % #ANNOUNCEMENTS) + 1
 
-    return game_active
+    return true
 end
 
 function OnStart()
