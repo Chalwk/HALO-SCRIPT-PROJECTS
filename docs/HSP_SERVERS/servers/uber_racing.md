@@ -36,27 +36,23 @@ across the finish line.
 
 ## Maps and Lap Numbers
 
-* `bc_raceway_final_mp` - 8 laps
-* `bloodgulch` - 10 laps
+* `Gauntlet_Race` - 10 laps
+* `mercury_falling` - 8 laps
+* `LostCove_Race` - 14 laps
+* `timberland` - 10 laps
 * `Camtrack-Arena-Race` - 16 laps
+* `hypothermia_race` - 10 laps
+* `Massacre_Mountain_Race` - 8 laps
+* `Mongoose_Point` - 16 laps
+* `tsce_multiplayerv1` - 6 laps
+* `hornets_nest` - 12 laps
+* `bc_raceway_final_mp` - 8 laps
+* `islandthunder_race` - 12 laps
 * `Cityscape-Adrenaline` - 10 laps
 * `cliffhanger` - 12 laps
-* `dangercanyon` - 10 laps
-* `Gauntlet_Race` - 10 laps
-* `gephyrophobia` - 6 laps
-* `hornets_nest` - 12 laps
-* `hypothermia_race` - 10 laps
-* `icefields` - 8 laps
-* `infinity` - 8 laps
-* `islandthunder_race` - 12 laps
-* `LostCove_Race` - 14 laps
-* `mercury_falling` - 8 laps
-* `Mongoose_Point` - 16 laps
-* `mystic_mod` - 10 laps
 * `New_Mombasa_Race_v2` - 6 laps
-* `sidewinder` - 8 laps
-* `timberland` - 10 laps
-* `tsce_multiplayerv1` - 8 laps
+* `mystic_mod` - 10 laps
+* `luigi_raceway` - 16 laps
 
 ---
 
