@@ -538,6 +538,12 @@
       "description": "Displays detailed player accuracy metrics with customizable filters. Features command-based targeting (/botscore [target] [mode]) with multiple viewing options (basic/detailed). Supports individual player checks (1-16), self-checks (me), and global views (all/*). Provides real-time accuracy data with optional respawn status indicators.",
       "filename": "aimbot_scores.lua"
     },
+    "alias_system": {
+      "title": "Alias System",
+      "shortDescription": "Tracks and manages player aliases by hash and IP with lookup commands.",
+      "description": "Logs player name aliases tied to hash and IP. Admins can look up aliases with commands, view paginated results, and detect known pirated game hashes. Includes permission checks, cooldowns, and automatic cleanup of old records.",
+      "filename": "alias_system.lua"
+    },
     "anti_aimbot": {
       "title": "Anti-Aimbot",
       "shortDescription": "Advanced aim-lock detection system",
