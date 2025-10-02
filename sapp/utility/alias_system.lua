@@ -8,6 +8,12 @@ DESCRIPTION:      Advanced player alias tracking and lookup system.
                   - Automatic database maintenance with stale record cleanup.
                   - Configurable permission levels and command cooldowns.
 
+COMMAND SYNTAX:
+    /hash_alias <player_id> [page]   - Lookup aliases for a player using their hash.
+    /ip_alias <player_id> [page]     - Lookup aliases for a player using their IP.
+    /hash_lookup <hash> [page]       - Directly lookup aliases by hash (manual input).
+    /ip_lookup <ip> [page]           - Directly lookup aliases by IP (manual input).
+
 REQUIREMENTS:   Install to the same directory as sapp.dll
                  - Lua JSON Parser: http://regex.info/blog/lua/json
 
@@ -33,7 +39,7 @@ local CONFIG = {
         ["hash_alias"] = true,
         ["ip_alias"] = true,
         ["hash_lookup"] = true,
-        ["ip_lookup"] = true,
+        ["ip_lookup"] = true
     },
 
     -- Command cooldown in seconds
@@ -43,7 +49,7 @@ local CONFIG = {
     UPDATE = {
         on_join = false, -- Save database when players join (can cause lag on busy servers)
         on_end = true,   -- Save database at game end (recommended)
-        stale = true,    -- Enable stale record cleanup (automatic maintenance)
+        stale = true     -- Enable stale record cleanup (automatic maintenance)
     },
 
     -- Enable automatic deletion of old records
