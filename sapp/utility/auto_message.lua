@@ -26,7 +26,7 @@ local ANNOUNCEMENTS = {
     { 'Other information here' },
 }
 
-local INTERVAL = 60      -- Interval in seconds
+local INTERVAL = 180     -- Interval in seconds
 local CONSOLE = false    -- Console output
 local PREFIX = '**HSP**' -- Message prefix
 local START_OVER = true  -- Restart from beginning of ANNOUNCEMENTS when a new game begins (false to disable)
