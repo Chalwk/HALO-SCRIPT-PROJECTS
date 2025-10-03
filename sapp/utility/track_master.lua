@@ -440,11 +440,16 @@ function OnEnd()
 end
 
 function OnJoin(id)
+    local player_name = get_var(id, "$name")
+    local best_lap = math_huge
+    if stats[current_map] and stats[current_map].players and stats[current_map].players[player_name] then
+        best_lap = stats[current_map].players[player_name].best
+    end
     players[id] = {
         id = id,
-        name = get_var(id, "$name"),
+        name = player_name,
         previous_time = 0,
-        best_lap = math_huge
+        best_lap = best_lap
     }
 end
 
