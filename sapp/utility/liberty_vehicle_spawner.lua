@@ -38,36 +38,40 @@ local DEFAULT_TAGS = {
 local CUSTOM_TAGS = {
     ["[h3]_sandtrap"] = {
         ["hog"] = "halo3\\vehicles\\warthog\\mp_warthog",
-        ["mon"] = "halo3\\vehicles\\mongoose\\mongoose",
+        ["mon"] = "halo3\\vehicles\\mongoose\\mongoose"
     },
     ["bc_raceway_final_mp"] = {
         ["hog"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_green",   -- green
         ["hog2"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_blue",   -- blue
         ["hog3"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi1", -- red and pink
         ["hog4"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi2", -- green and red
-        ["hog5"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi3", -- blue, red, green, pink
+        ["hog5"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi3"  -- blue, red, green, pink
     },
     ["Cityscape-Adrenaline"] = {
         ["hog"] = "vehicles\\g_warthog\\g_warthog",
-        ["rhog"] = "vehicles\\rwarthog\\boogerhawg",
+        ["rhog"] = "vehicles\\rwarthog\\boogerhawg"
     },
     ["hypothermia_race"] = {
-        ["hog"] = "vehicles\\g_warthog\\g_warthog",
+        ["hog"] = "vehicles\\g_warthog\\g_warthog"
     },
     ["Mongoose_Point"] = {
         ["hog"] = "vehicles\\m257_multvp\\m257_multvp"
     },
     ["mystic_mod"] = {
         ["hog"] = "vehicles\\puma\\puma_lt",
-        ["rhog"] = "vehicles\\puma\\rpuma_lt",
+        ["rhog"] = "vehicles\\puma\\rpuma_lt"
     },
     ["tsce_multiplayerv1"] = {
         ["hog"] = "cmt\\vehicles\\evolved_h1-spirit\\warthog\\_warthog_mp\\warthog_mp",
-        ["rhog"] = "cmt\\vehicles\\evolved_h1-spirit\\warthog\\_warthog_rocket\\warthog_rocket",
+        ["rhog"] = "cmt\\vehicles\\evolved_h1-spirit\\warthog\\_warthog_rocket\\warthog_rocket"
     },
     ["hornets_nest"] = {
         ["hog"] = "halo3\\vehicles\\warthog\\mp_warthog",
-        ["rhog"] = "halo3\\vehicles\\warthog\\rwarthog",
+        ["rhog"] = "halo3\\vehicles\\warthog\\rwarthog"
+    },
+    ["grove_final"] = {
+        ["hog"] = "vehicles\\warthog\\art_cwarthog",
+        ["rhog"] = "vehicles\\rwarthog\\art_rwarthog_shiny"
     },
 }
 
