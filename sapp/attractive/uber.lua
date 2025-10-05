@@ -537,8 +537,6 @@ local function processPendingRequests()
 end
 
 local function initialize()
-    VEHICLES = loadVehicleConfig()
-
     map_name = get_var(0, '$map')
     if not vehicle_meta_cache[map_name] then -- not cached yet
         vehicle_meta_cache[map_name] = {}
@@ -571,6 +569,7 @@ local function registerCallbacks(team_game)
 end
 
 function OnScriptLoad()
+    VEHICLES = loadVehicleConfig()
     register_callback(cb['EVENT_GAME_START'], 'OnStart')
     OnStart()
 end
