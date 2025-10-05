@@ -58,8 +58,6 @@ LICENSE:          MIT License
 =====================================================================================
 ]]
 
--- TODO: prevent interaction with items (including oddball) for zombies
-
 -- Configuration starts ---------------------------------------------------------------
 local CONFIG = {
     REQUIRED_PLAYERS = 2,
@@ -692,6 +690,7 @@ function OnDeath(victimId, killerId)
         send(nil, victim.name .. " died!")
     end
 
+    destroyweapon(victim)
     setRespawnTime(victim)
     victim.switched = nil
 end

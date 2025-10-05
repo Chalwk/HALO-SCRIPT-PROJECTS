@@ -43,8 +43,6 @@ LICENSE:          MIT License
 =====================================================================================
 ]]
 
--- TODO: prevent interaction with items (including oddball) for zombies
-
 -- Configuration starts ---------------------------------------------------------------
 local CONFIG = {
     REQUIRED_PLAYERS = 2,
