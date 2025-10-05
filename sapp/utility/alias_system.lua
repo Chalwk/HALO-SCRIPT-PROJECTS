@@ -10,11 +10,12 @@ DESCRIPTION:      Advanced player alias tracking and lookup system.
                   - Fuzzy search for names with partial matching.
 
 COMMAND SYNTAX:
-    /hash_alias <player_id> [page]      - Lookup aliases for a player using their hash.
-    /ip_alias <player_id> [page]        - Lookup aliases for a player using their IP.
-    /hash_lookup <hash> [page]          - Directly lookup aliases by hash (manual input).
-    /ip_lookup <ip> [page]              - Directly lookup aliases by IP (manual input).
-    /search_alias <partial_name> [page] - Fuzzy search for names containing text.
+    /alias hash <player_id> [page]      - Lookup aliases for a player using their hash.
+    /alias ip <player_id> [page]        - Lookup aliases for a player using their IP.
+    /alias hash_lookup <hash> [page]    - Directly lookup aliases by hash (manual input).
+    /alias ip_lookup <ip> [page]        - Directly lookup aliases by IP (manual input).
+    /alias search <partial_name> [page] - Fuzzy search for names containing text.
+    /alias help                         - Show command usage help.
 
 REQUIREMENTS:   Install to the same directory as sapp.dll
                  - Lua JSON Parser: http://regex.info/blog/lua/json
@@ -33,17 +34,17 @@ local CONFIG = {
     REQUIRED_PERMISSION_LEVEL = 4,
 
     -- Enable/disable specific commands
-    -- hash_alias:      Look up aliases by player ID (uses their hash)
-    -- ip_alias:        Look up aliases by player ID (uses their IP)
-    -- hash_lookup:     Direct hash lookup (manual hash input)
-    -- ip_lookup:       Direct IP lookup (manual IP input)
-    -- search_alias:    Fuzzy search for names containing text
+    -- hash:        Look up aliases by player ID (uses their hash)
+    -- ip:          Look up aliases by player ID (uses their IP)
+    -- hash_lookup: Direct hash lookup (manual hash input)
+    -- ip_lookup:   Direct IP lookup (manual IP input)
+    -- search:      Fuzzy search for names containing text
     COMMANDS = {
-        ["hash_alias"] = true,
-        ["ip_alias"] = true,
+        ["hash"] = true,
+        ["ip"] = true,
         ["hash_lookup"] = true,
         ["ip_lookup"] = true,
-        ["search_alias"] = true
+        ["search"] = true
     },
 
     -- Command cooldown in seconds
@@ -236,11 +237,11 @@ local function applyFilters(record_type, identifier, name)
 end
 
 local function parseAndValidateArgs(args, expected_type, command_name)
-    local target = args[2]
-    local page = tonumber(args[3])
+    local target = args[3]
+    local page = tonumber(args[4])
 
     if not target then
-        return nil, nil, "Usage: /" .. command_name .. " [" .. expected_type .. "] [optional page]"
+        return nil, nil, "Usage: /alias " .. command_name .. " [" .. expected_type .. "] [optional page]"
     end
 
     return target, page
@@ -496,12 +497,12 @@ local function handleFuzzySearch(id, args, command_name)
 
     -- Display results
     if total_matches == 0 then
-        send(id, "No names found containing: '" .. args[2] .. "'")
+        send(id, "No names found containing: '" .. args[3] .. "'")
         return
     end
 
     local header = "Page " .. page .. "/" .. total_pages ..
-        ". Found " .. total_matches .. " names containing '" .. args[2] .. "'"
+        ". Found " .. total_matches .. " names containing '" .. args[3] .. "'"
     send(id, header)
 
     -- Display names in rows
@@ -567,8 +568,18 @@ local function handleFuzzySearch(id, args, command_name)
     end
 
     if total_pages > 1 then
-        send(id, "Use '/search_alias \"" .. args[2] .. "\" " .. (page + 1) .. "' to see next page")
+        send(id, "Use '/alias search \"" .. args[3] .. "\" " .. (page + 1) .. "' to see next page")
     end
+end
+
+local function showHelp(id)
+    send(id, "=== Alias System Commands ===")
+    send(id, "/alias hash <player_id> [page]      - Lookup aliases by player hash")
+    send(id, "/alias ip <player_id> [page]        - Lookup aliases by player IP")
+    send(id, "/alias hash_lookup <hash> [page]    - Direct hash lookup")
+    send(id, "/alias ip_lookup <ip> [page]        - Direct IP lookup")
+    send(id, "/alias search <partial_name> [page] - Fuzzy search for names")
+    send(id, "/alias help                         - Show this help")
 end
 
 local function loadAliasesDB()
@@ -647,9 +658,7 @@ local function updatePlayerRecord(id)
     local ip = get_var(id, '$ip'):match('%d+.%d+.%d+.%d+')
 
     -- Apply filters - skip if IP or name should be ignored
-    if applyFilters("ip", ip, name) then
-        return
-    end
+    if applyFilters("ip", ip, name) then return end
 
     -- Update hash record
     if not aliases_db.hash_records[hash] then
@@ -721,21 +730,51 @@ function OnCommand(id, command)
 
     local cmd = args[1]:lower()
 
-    if CONFIG.COMMANDS[cmd] then
+    if cmd == "alias" then
         if not hasPermission(id) then
             send(id, "You do not have permission to use this command")
-        elseif isOnCooldown(id, cmd) then
             return false
-        elseif cmd == 'hash_alias' then
-            handlePlayerBasedLookup(id, args, "hash", "hash_alias")
-        elseif cmd == 'ip_alias' then
-            handlePlayerBasedLookup(id, args, "ip", "ip_alias")
-        elseif cmd == 'hash_lookup' then
-            handleDirectLookup(id, args, "hash", "hash_lookup")
-        elseif cmd == 'ip_lookup' then
-            handleDirectLookup(id, args, "ip", "ip_lookup")
-        elseif cmd == 'search_alias' then
-            handleFuzzySearch(id, args, "search_alias")
+        end
+
+        if isOnCooldown(id, "alias") then return false end
+
+        local subcommand = args[2] and args[2]:lower() or "help"
+
+        if subcommand == "help" then
+            showHelp(id)
+        elseif subcommand == "hash" then
+            if CONFIG.COMMANDS.hash then
+                handlePlayerBasedLookup(id, args, "hash", "hash")
+            else
+                send(id, "Hash lookup command is disabled")
+            end
+        elseif subcommand == "ip" then
+            if CONFIG.COMMANDS.ip then
+                handlePlayerBasedLookup(id, args, "ip", "ip")
+            else
+                send(id, "IP lookup command is disabled")
+            end
+        elseif subcommand == "hash_lookup" then
+            if CONFIG.COMMANDS.hash_lookup then
+                handleDirectLookup(id, args, "hash", "hash_lookup")
+            else
+                send(id, "Direct hash lookup command is disabled")
+            end
+        elseif subcommand == "ip_lookup" then
+            if CONFIG.COMMANDS.ip_lookup then
+                handleDirectLookup(id, args, "ip", "ip_lookup")
+            else
+                send(id, "Direct IP lookup command is disabled")
+            end
+        elseif subcommand == "search" then
+            if CONFIG.COMMANDS.search then
+                handleFuzzySearch(id, args, "search")
+            else
+                send(id, "Search command is disabled")
+            end
+        else
+            send(id, "Unknown subcommand: " .. subcommand)
+            showHelp(id)
         end
 
         return false
