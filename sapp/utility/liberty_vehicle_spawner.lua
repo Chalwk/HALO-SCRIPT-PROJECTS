@@ -47,14 +47,14 @@ local CUSTOM_TAGS = {
         ["hog4"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi2", -- green and red
         ["hog5"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi3"  -- blue, red, green, pink
     },
-    ["Cityscape-Adrenaline"] = {
+    ["cityscape-adrenaline"] = {
         ["hog"] = "vehicles\\g_warthog\\g_warthog",
         ["rhog"] = "vehicles\\rwarthog\\boogerhawg"
     },
     ["hypothermia_race"] = {
         ["hog"] = "vehicles\\g_warthog\\g_warthog"
     },
-    ["Mongoose_Point"] = {
+    ["mongoose_point"] = {
         ["hog"] = "vehicles\\m257_multvp\\m257_multvp"
     },
     ["mystic_mod"] = {
@@ -191,7 +191,16 @@ local function showKeyWords(id, keywords)
     rprint(id, keywords)
 end
 
+local function mapNamesToLower()
+    local custom_tags_lower = {}
+    for map, vehicles in pairs(CUSTOM_TAGS) do
+        custom_tags_lower[map:lower()] = vehicles
+    end
+    return custom_tags_lower
+end
+
 function OnScriptLoad()
+    CUSTOM_TAGS = mapNamesToLower()
     register_callback(cb["EVENT_GAME_START"], "OnStart")
     OnStart()
 end
@@ -199,7 +208,7 @@ end
 function OnStart()
     if get_var(0, "$gt") == "n/a" then return end
 
-    map_name = get_var(0, "$map")
+    map_name = get_var(0, "$map"):lower()
     active_vehicles = {}
 
     local cfg = CUSTOM_TAGS[map_name] or DEFAULT_TAGS
