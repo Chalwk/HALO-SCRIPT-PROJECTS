@@ -25,7 +25,6 @@ LICENSE:          MIT License
 =====================================================================================
 ]]
 
--- Configuration table for the Hunter-Prey script
 local HunterPrey = {
 
     -- Score limit for the game
@@ -70,7 +69,6 @@ local format = string.format
 
 api_version = '1.12.0.0'
 
--- Timer class
 function timer:new()
     local o = {}
     setmetatable(o, self)
@@ -116,18 +114,15 @@ function timer:get()
     return 0
 end
 
--- Utility function to get the tag address of an object
 local function GetTag(Class, Name)
     local tag = lookup_tag(Class, Name)
     return (tag ~= 0 and read_dword(tag + 0xC)) or nil
 end
 
--- Utility function to calculate the distance between two points
 local function GetDist(x1, y1, z1, x2, y2, z2)
     return math.sqrt((x1 - x2) ^ 2 + (y1 - y2) ^ 2 + (z1 - z2) ^ 2)
 end
 
--- Utility function to send a message to a player or all players
 local function Say(playerId, message)
     local prefix = HunterPrey.prefix
     if not playerId then
@@ -146,9 +141,6 @@ local function FormatTime(time)
     return format('%.3f', time)
 end
 
---- Checks if any player is currently holding the flag.
--- This function iterates through the players table and checks if any player is alive and holding the flag.
--- @return boolean True if any player is holding the flag, false otherwise.
 local function FlagHeld()
     for i, v in pairs(players) do
         local dyn = get_dynamic_player(i)
@@ -171,31 +163,18 @@ local function RegisterSAPPEvents(f)
     end
 end
 
---- Creates a new player object and sets its metatable.
--- This function initializes a new player object with the given properties and sets its metatable to the HunterPrey class.
--- @param o The table containing the player's properties.
--- @return The new player object with the HunterPrey metatable.
 function HunterPrey:NewPlayer(player)
     setmetatable(player, { __index = self })
     self.__index = self
     return player
 end
 
---- Spawns the flag at the predefined coordinates.
--- This function uses the coordinates stored in the HunterPrey object to spawn the flag object in the game.
--- It then stores the memory address of the spawned flag object.
 function HunterPrey:SpawnFlag()
     local x, y, z = self.fx, self.fy, self.fz
     local flag = spawn_object('', '', x, y, z, 0, self.meta)
     self.flag_object = get_object_memory(flag)
 end
 
---- Respawns the flag if it is not being held by any player.
--- This function checks if the flag is being held by any player. If not, it calculates the distance between the flag's current position and its spawn position.
--- If the distance is greater than 1 unit and there is no active respawn timer, it starts a respawn timer.
--- If the distance is greater than 1 unit and there is an active respawn timer, it checks the elapsed time.
--- When half the respawn time has passed, it announces the remaining time to all players.
--- When the respawn time has fully elapsed, it resets the flag's position to its spawn coordinates and announces the respawn to all players.
 function HunterPrey:RespawnFlag()
     if not FlagHeld() then
         local flag = self.flag_object
@@ -223,12 +202,6 @@ function HunterPrey:RespawnFlag()
     end
 end
 
---- Checks if the player is holding the flag and updates the game state accordingly.
--- This method iterates through the player's weapons to determine if they are holding the flag.
--- If the player is holding the flag, it starts or resumes the timer and updates the player's total time holding the flag.
--- It also announces to all players that the player has the flag and updates the player's score.
--- If the player is not holding the flag, it pauses the timer.
--- @param dyn The dynamic player object.
 function HunterPrey:CheckForFlag(dyn)
     for i = 0, 3 do
         local weapon = read_dword(dyn + 0x2F8 + 0x4 * i)
@@ -262,29 +235,22 @@ function HunterPrey:CheckForFlag(dyn)
     self.has_flag = nil
 end
 
--- Event Handlers
 function OnScriptLoad()
     register_callback(cb['EVENT_GAME_START'], 'OnStart')
     OnStart()
 end
 
---- Initializes the game state when the game starts.
--- This function checks the game type and whether it is a free-for-all (FFA) game.
--- If the game type is valid and it is an FFA game, it sets up the flag spawn and registers necessary event callbacks.
 function OnStart()
 
-    -- Get the current game type and check if it is a free-for-all game.
     local game_type = get_var(0, '$gt')
     local ffa = get_var(0, '$ffa') == '1'
     if game_type ~= 'n/a' and ffa then
         announce_respawn = false
 
-        -- Reference to the HunterPrey configuration.
         local hp = HunterPrey
         local map = get_var(0, '$map')
         local meta = GetTag('weap', 'weapons\\flag\\flag')
 
-        -- Check if the map settings and flag meta tag are valid.
         if hp.map_settings[map] and meta then
             hp.meta = meta
             hp.fx, hp.fy, hp.fz = unpack(hp.map_settings[map])
@@ -298,10 +264,6 @@ function OnStart()
     RegisterSAPPEvents(unregister_callback)
 end
 
---- Handles the game tick event.
--- This function iterates through all players and checks if they are alive and holding the flag.
--- If a player is holding the flag, it updates the game state accordingly.
--- It also handles the respawn logic for the flag if it is not being held by any player.
 function OnTick()
     for i, v in pairs(players) do
         local dyn = get_dynamic_player(i)
@@ -312,10 +274,6 @@ function OnTick()
     HunterPrey:RespawnFlag()
 end
 
---- Handles the event when a player joins the game.
--- This function initializes a new player object and adds it to the players table.
--- The player object includes the player's ID, total time holding the flag, a timer object, and the player's name.
--- @param playerId The ID of the player who joined the game.
 function OnJoin(playerId)
     players[playerId] = HunterPrey:NewPlayer({
         id = playerId,
@@ -325,36 +283,25 @@ function OnJoin(playerId)
     })
 end
 
---- Handles the event when a player dies.
--- This function pauses the player's timer and sets the player's flag holding status to nil.
--- @param playerId The ID of the player who died.
 function OnDeath(playerId)
     local player = players[playerId]
     player.timer:pause()
     player.has_flag = nil
 end
 
---- Handles the event when a player quits the game.
--- This function removes the player object from the players table.
--- @param playerId The ID of the player who quit the game.
 function OnQuit(playerId)
     players[playerId] = nil
 end
 
---- Handles the event when the game ends.
--- This function determines the top three players based on their total time holding the flag.
--- It announces the winners to all players and resets the players table.
 function OnEnd()
     local winners = {}
 
-    -- Collect players who have held the flag for more than 0 seconds.
     for _, v in pairs(players) do
         if v.total_time > 0 then
             table.insert(winners, v)
         end
     end
 
-    -- Sort the players based on their total time holding the flag in descending order.
     table.sort(winners, function(a, b)
         return a.total_time > b.total_time
     end)
@@ -364,7 +311,6 @@ function OnEnd()
         goto next
     end
 
-    -- Announce the top three players.
     for i = 1, 3 do
         local player = winners[i]
         if player then
@@ -377,10 +323,7 @@ function OnEnd()
 
     :: next ::
 
-    -- Reset the players table.
     players = {}
 end
 
-function OnScriptUnload()
-    -- N/A
-end
+function OnScriptUnload() end

@@ -50,7 +50,7 @@ CONFIGURATION:
         - GRENADES:               Number of frag/plasma grenades
         - HEALTH_REGEN:           Health regeneration rate (Last Man Standing only)
 
-LAST UPDATED: 16/09/2025
+LAST UPDATED: 6/10/2025
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -58,7 +58,7 @@ LICENSE:          MIT License
 =====================================================================================
 ]]
 
--- Configuration -----------------------------------------------------------------------
+-- Configuration starts ---------------------------------------------------------------
 local CONFIG = {
     REQUIRED_PLAYERS = 2,
     COUNTDOWN_DELAY = 5,
@@ -111,6 +111,7 @@ local CONFIG = {
         }
     }
 }
+-- Configuration ends ---------------------------------------------------------------
 
 api_version = '1.12.0.0'
 
@@ -120,7 +121,6 @@ local string_format = string.format
 local get_var, say_all = get_var, say_all
 local execute_command, player_present = execute_command, player_present
 
--- Game state and constants
 local game = {
     players = {},
     player_count = 0,
@@ -144,7 +144,6 @@ local TEAM_RED = 'red'
 local TEAM_BLUE = 'blue'
 local death_message_signature = "8B42348A8C28D500000084C9"
 
--- Event mapping
 local sapp_events = {
     [cb['EVENT_TICK']] = 'OnTick',
     [cb['EVENT_DIE']] = 'OnDeath',
@@ -158,7 +157,6 @@ local sapp_events = {
     [cb['EVENT_DAMAGE_APPLICATION']] = 'OnDamage'
 }
 
--- Helper functions
 local function registerCallbacks(team_game)
     for event, callback in pairs(sapp_events) do
         if team_game then
@@ -266,15 +264,13 @@ local function getAlphaZombieCount()
     return 1
 end
 
--- Player management
 local function createPlayer(id)
     return {
         id = id,
         name = get_var(id, '$name'),
         team = get_var(id, '$team'),
         zombie_type = nil,
-        drone = nil,
-        assign = false,
+        weapon = nil,
         is_last_man_standing = false,
         kills = 0,
         meta_id = nil,
@@ -298,10 +294,10 @@ local function applyPlayerAttributes(player, player_type)
     player.is_last_man_standing = (player_type == 'last_man_standing')
 end
 
-local function destroyDrone(victim)
-    if victim.drone then
-        destroy_object(victim.drone)
-        victim.drone = nil
+local function destroyweapon(player)
+    if player.weapon then
+        destroy_object(player.weapon)
+        player.weapon = nil
     end
 end
 
@@ -327,7 +323,6 @@ local function switchPlayerTeam(player, new_team, zombie_type)
     if new_team == TEAM_BLUE then
         player.zombie_type = zombie_type or 'standard_zombies'
         applyPlayerAttributes(player, player.zombie_type)
-        player.assign = true
         player.kills = 0
         if CONFIG.SHOW_ZOMBIE_TYPE_MESSAGES then
             if player.zombie_type == 'alpha_zombies' then
@@ -343,7 +338,7 @@ local function switchPlayerTeam(player, new_team, zombie_type)
         else
             applyPlayerAttributes(player, 'humans')
         end
-        destroyDrone(player)
+        destroyweapon(player)
         execute_command('wdel ' .. player.id)
     end
 end
@@ -504,6 +499,18 @@ local function checkTeams(victim, killer)
     return nil
 end
 
+local function getValidWeapon(player_weapon)
+    if not player_weapon then
+        return spawn_object('', '', 0, 0, -9999, 0, game.oddball)
+    end
+    local object = get_object_memory(player_weapon)
+    if object == 0 then
+        return spawn_object('', '', 0, 0, -9999, 0, game.oddball)
+    else
+        return player_weapon
+    end
+end
+
 local function getPlayerType(player)
     return player.zombie_type or
         (player.team == TEAM_RED and (player.is_last_man_standing and 'last_man_standing' or 'humans')) or
@@ -616,8 +623,9 @@ function OnJoin(id)
 end
 
 function OnQuit(id)
-    if game.players[id] then
-        destroyDrone(game.players[id])
+    local player = game.players[id]
+    if player then
+        destroyweapon(player)
         game.players[id] = nil
         game.player_count = game.player_count - 1
         updateTeamCounts()
@@ -682,7 +690,6 @@ function OnDeath(victimId, killerId)
         send(nil, victim.name .. " died!")
     end
 
-    destroyDrone(victim)
     setRespawnTime(victim)
     victim.switched = nil
 end
@@ -702,28 +709,10 @@ function OnTick()
                 execute_command('camo ' .. i .. ' 1')
             end
 
-            if player.team == TEAM_BLUE and player.assign then
-                player.assign = false
-                execute_command('wdel ' .. i)
-                player.drone = spawn_object('', '', 0, 0, 0, 0, game.oddball)
-                assign_weapon(player.drone, i)
-            end
-
             setNav(i)
 
             ::continue::
         end
-    end
-end
-
-function OnWeaponDrop(id)
-    if not game.started then return end
-
-    local player = game.players[id]
-    if player and player.drone then
-        destroy_object(player.drone)
-        player.drone = nil
-        player.assign = true
     end
 end
 
@@ -756,7 +745,24 @@ function OnSpawn(id)
     local player_type = getPlayerType(player)
     applyPlayerAttributes(player, player_type)
 
-    if player.team == TEAM_BLUE then player.assign = true end
+    if player.team == TEAM_BLUE then
+        player.weapon = getValidWeapon(player.weapon)
+
+        execute_command('wdel ' .. id)
+        assign_weapon(player.weapon, id)
+    end
+end
+
+function OnWeaponDrop(id)
+    if not game.started then return end
+
+    local player = game.players[id]
+    if not player then return end
+
+    if player.team == TEAM_BLUE then
+        player.weapon = getValidWeapon(player.weapon)
+        assign_weapon(player.weapon, id)
+    end
 end
 
 function OnCommand(id, command)

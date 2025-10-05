@@ -137,7 +137,6 @@ local game = {
     maxLevel = #CONFIG.WEAPON_LEVELS
 }
 
--- Localized Functions for Performance
 local os_time = os.time
 local get_var = get_var
 local player_present = player_present
@@ -150,7 +149,6 @@ local assign_weapon = assign_weapon
 local destroy_object = destroy_object
 local get_object_memory = get_object_memory
 
--- Utility Functions
 local function getTagId(class, path)
     local tag = lookup_tag(class, path)
     return tag ~= 0 and read_dword(tag + 0xC) or nil
@@ -226,7 +224,6 @@ local function assignWeapon(player)
     player.assign = false
 end
 
--- Event Handlers
 function OnScriptLoad()
     register_callback(cb['EVENT_JOIN'], "OnJoin")
     register_callback(cb['EVENT_DIE'], "OnDeath")

@@ -77,7 +77,6 @@ local game = {
     next_regen_check = 0
 }
 
--- Event mapping
 local sapp_events = {
     [cb['EVENT_TICK']] = 'OnTick',
     [cb['EVENT_DIE']] = 'OnDeath',
@@ -89,7 +88,6 @@ local sapp_events = {
     [cb['EVENT_DAMAGE_APPLICATION']] = 'OnDamage'
 }
 
--- Helper functions
 local function registerCallbacks(juggernaut_game)
     for event, callback in pairs(sapp_events) do
         if juggernaut_game then
@@ -100,7 +98,6 @@ local function registerCallbacks(juggernaut_game)
     end
 end
 
--- Player management
 local function createPlayer(id)
     return {
         id = id,

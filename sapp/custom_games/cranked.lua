@@ -152,7 +152,6 @@ local map
 
 api_version = '1.12.0.0'
 
---- Timer Class ---
 local Timer = {}
 Timer.__index = Timer
 
@@ -185,7 +184,6 @@ function Timer:getRemainingTime()
     return 0
 end
 
---- Player Class ---
 local Player = {}
 Player.__index = Player
 

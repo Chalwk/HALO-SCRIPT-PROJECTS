@@ -43,7 +43,7 @@ LICENSE:          MIT License
 =====================================================================================
 ]]
 
--- Configuration -----------------------------------------------------------------------
+-- Configuration starts ---------------------------------------------------------------
 local CONFIG = {
     REQUIRED_PLAYERS = 2,
     COUNTDOWN_DELAY = 5,
@@ -72,17 +72,16 @@ local CONFIG = {
         }
     }
 }
+-- Configuration ends ---------------------------------------------------------------
 
 api_version = '1.12.0.0'
 
--- Localize frequently used functions and variables
 local pairs, ipairs, table_insert = pairs, ipairs, table.insert
 local math_random, os_time, tonumber = math.random, os.time, tonumber
 local string_format = string.format
 local get_var, say_all = get_var, say_all
 local execute_command, player_present = execute_command, player_present
 
--- Game state and constants
 local game = {
     players = {},
     player_count = 0,
@@ -105,7 +104,6 @@ local TEAM_RED = 'red'
 local TEAM_BLUE = 'blue'
 local death_message_signature = "8B42348A8C28D500000084C9"
 
--- Event mapping
 local sapp_events = {
     [cb['EVENT_TICK']] = 'OnTick',
     [cb['EVENT_DIE']] = 'OnDeath',
@@ -118,7 +116,6 @@ local sapp_events = {
     [cb['EVENT_DAMAGE_APPLICATION']] = 'OnDamage'
 }
 
--- Helper functions
 local function registerCallbacks(team_game)
     for event, callback in pairs(sapp_events) do
         if team_game then
@@ -232,17 +229,16 @@ local function createPlayer(id)
         id = id,
         name = get_var(id, '$name'),
         team = get_var(id, '$team'),
-        drone = nil,
-        assign = false,
+        weapon = nil,
         meta_id = nil,
         switched = nil
     }
 end
 
-local function destroyDrone(victim)
-    if victim.drone then
-        destroy_object(victim.drone)
-        victim.drone = nil
+local function destroyweapon(player)
+    if player.weapon then
+        destroy_object(player.weapon)
+        player.weapon = nil
     end
 end
 
@@ -254,10 +250,8 @@ local function switchPlayerTeam(player, new_team)
     local attributes = CONFIG.ATTRIBUTES[new_team == TEAM_RED and 'humans' or 'zombies']
     execute_command("s " .. player.id .. " " .. attributes.SPEED)
 
-    if new_team == TEAM_BLUE then
-        player.assign = true
-    else
-        destroyDrone(player)
+    if new_team == TEAM_RED then
+        destroyweapon(player)
         execute_command('wdel ' .. player.id)
     end
 end
@@ -304,10 +298,6 @@ local function shuffleTeams()
 
         local attributes = CONFIG.ATTRIBUTES[desired_team == TEAM_RED and 'humans' or 'zombies']
         execute_command("s " .. id .. " " .. attributes.SPEED)
-
-        if desired_team == TEAM_BLUE then
-            game.players[id].assign = true
-        end
     end
 
     updateTeamCounts()
@@ -391,7 +381,18 @@ local function getDamageMultiplier(player)
     return CONFIG.ATTRIBUTES[team].DAMAGE_MULTIPLIER
 end
 
--- SAPP Events
+local function getValidWeapon(player_weapon)
+    if not player_weapon then
+        return spawn_object('', '', 0, 0, -9999, 0, game.oddball)
+    end
+    local object = get_object_memory(player_weapon)
+    if object == 0 then
+        return spawn_object('', '', 0, 0, -9999, 0, game.oddball)
+    else
+        return player_weapon
+    end
+end
+
 function OnScriptLoad()
     death_message_hook_enabled = SetupDeathMessageHook()
     register_callback(cb['EVENT_GAME_START'], 'OnStart')
@@ -453,7 +454,7 @@ end
 
 function OnQuit(id)
     if game.players[id] then
-        destroyDrone(game.players[id])
+        destroyweapon(game.players[id])
         game.players[id] = nil
         game.player_count = game.player_count - 1
         updateTeamCounts()
@@ -515,7 +516,7 @@ function OnDeath(victimId, killerId)
         send(victim.name .. " died!")
     end
 
-    destroyDrone(victim)
+    destroyweapon(victim)
     setRespawnTime(victim.id, victim.team)
     victim.switched = nil
 end
@@ -534,25 +535,38 @@ function OnTick()
                 execute_command('camo ' .. i .. ' 1')
             end
 
-            if player.team == TEAM_BLUE and player.assign then
-                player.assign = false
-                execute_command('wdel ' .. i)
-                player.drone = spawn_object('', '', 0, 0, 0, 0, game.oddball)
-                assign_weapon(player.drone, i)
-            end
-
             ::continue::
         end
     end
 end
 
+function OnSpawn(id)
+    if not game.started then return end
+
+    local player = game.players[id]
+    if not player then return end
+    player.meta_id = nil
+
+    local attributes = CONFIG.ATTRIBUTES[player.team == TEAM_RED and 'humans' or 'zombies']
+    execute_command("s " .. id .. " " .. attributes.SPEED)
+
+    if player.team == TEAM_BLUE then
+        player.weapon = getValidWeapon(player.weapon)
+
+        execute_command('wdel ' .. id)
+        assign_weapon(player.weapon, id)
+    end
+end
+
 function OnWeaponDrop(id)
     if not game.started then return end
+
     local player = game.players[id]
-    if player and player.drone then
-        destroy_object(player.drone)
-        player.drone = nil
-        player.assign = true
+    if not player then return end
+
+    if player.team == TEAM_BLUE then
+        player.weapon = getValidWeapon(player.weapon)
+        assign_weapon(player.weapon, id)
     end
 end
 
@@ -570,19 +584,6 @@ function OnDamage(victimId, killerId, metaId, damage)
     if isFriendlyFire(killer_data, victim_data) then return false end
 
     return true, damage * getDamageMultiplier(killer_data)
-end
-
-function OnSpawn(id)
-    if not game.started then return end
-
-    local player = game.players[id]
-    if not player then return end
-    player.meta_id = nil
-
-    local attributes = CONFIG.ATTRIBUTES[player.team == TEAM_RED and 'humans' or 'zombies']
-    execute_command("s " .. id .. " " .. attributes.SPEED)
-
-    if player.team == TEAM_BLUE then player.assign = true end
 end
 
 function OnCountdown()

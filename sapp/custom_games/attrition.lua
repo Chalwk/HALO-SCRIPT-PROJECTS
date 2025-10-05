@@ -74,10 +74,6 @@ function OnScriptLoad()
     OnStart()
 end
 
--- Returns the object meta id of the specified tag:
--- @class <string> - the tag class
--- @name <string> - the tag name
--- @return <number> - the object meta id
 local function getTag(class, name)
     local tag = lookup_tag(class, name)
     return (tag ~= 0 and read_dword(tag + 0xC)) or nil
@@ -85,7 +81,6 @@ end
 
 function OnStart()
     if (get_var(0, '$gt') ~= 'n/a') then
-
         players = {}
 
         local class, name = Attrition.orb_object[1], Attrition.orb_object[2]
@@ -116,19 +111,12 @@ function Attrition:newPos(x, y, z)
     }
 end
 
--- Pythagorean distance function:
--- @params <numbers> - player 1/2 x, y, z coordinates
--- @return <number> - distance between the two players
 local sqrt = math.sqrt
 local function getDistance(x1, y1, z1, x2, y2, z2)
     return sqrt((x1 - x2) ^ 2 + (y1 - y2) ^ 2 + (z1 - z2) ^ 2)
 end
 
--- Get the players position:
--- @id <number> - the player id
--- @return <number>, <number>, <number>, <number> - x, y, z, dynamic player address
 local function getPosition(id)
-
     local x, y, z
     local dyn = get_dynamic_player(id)
     if (dyn == 0) then
@@ -146,10 +134,7 @@ local function getPosition(id)
     return x, y, z, dyn
 end
 
--- Spawns an orb above the player's body:
---
 function Attrition:spawnOrb()
-
     local id = self.id
     local h = self.orb_height_offset
     local x, y, z = getPosition(id)
@@ -174,10 +159,7 @@ function Attrition:spawnOrb()
     rprint(id, 'Waiting to be revived...')
 end
 
--- Constructor for the player object:
--- @return <table> - the player object
 function Attrition:newPlayer(o)
-
     setmetatable(o, { __index = self })
     self.__index = self
 
@@ -188,44 +170,27 @@ function Attrition:newPlayer(o)
     return o
 end
 
--- Deducts a death from the player's death count:
--- @id <number> - the player id
 local function deductDeath(id)
     local deaths = tonumber(get_var(id, '$deaths'))
     execute_command('deaths ' .. id .. ' ' .. deaths - 1)
 end
-
--- Clears the players screen of any text:
--- @id <number> - the player id
 local function cls(id)
     for _ = 1, 25 do
         rprint(id, ' ')
     end
 end
 
--- Sends a message to all players:
--- @message <string> - the message to send.
 local function sayAll(message)
     execute_command('msg_prefix ""')
     say_all(message)
     execute_command('msg_prefix "' .. Attrition.prefix .. '"')
 end
 
--- Sends a private rcon message to a player:
--- @id <number> - the player id
--- @message <string> - the message to send.
 local function privateSay(id, message)
     rprint(id, message)
 end
 
--- This progress bar is used to indicate how long a player has to wait
--- before they can be revived.
--- @start <number> - the time the player died
--- @finish <number> - the time the player can be revived
--- @revival_time <number> - the time it takes to revive a player
--- @return <string> - the progress bar
 local function progressBar(start, finish, revival_time)
-
     local bar = ''
     local time_remaining = finish - start()
 
@@ -238,18 +203,13 @@ local function progressBar(start, finish, revival_time)
     return bar
 end
 
--- Revives a player:
--- @victim <table> - the player object
--- @orb <number> - the orb object id
 function Attrition:revive(victim, orb)
-
     local start = self.timer.start
     local finish = self.timer.finish
 
     local vic_id = victim.id
 
     if (start() >= finish) then
-
         self.timer = nil -- reset revive timer for team mate
 
         sayAll(self.name .. ' revived ' .. victim.name .. '!')
@@ -257,12 +217,12 @@ function Attrition:revive(victim, orb)
         -- Resets the players respawn time (causes instant respawn):
         write_dword(get_player(vic_id) + 0x2C, -1 * 33)
 
-        destroy_object(orb) -- destroy orb
+        destroy_object(orb)   -- destroy orb
 
-        victim.orb = {} -- reset orbs for downed player
+        victim.orb = {}       -- reset orbs for downed player
         victim.revived = true -- set revived flag for downed player
 
-        deductDeath(vic_id) -- deduct death from downed player (since they were revived)
+        deductDeath(vic_id)   -- deduct death from downed player (since they were revived)
         return
     end
 
@@ -278,11 +238,7 @@ function Attrition:revive(victim, orb)
     privateSay(vic_id, '|c[' .. bar .. ']')
 end
 
--- Updates the orb's position to the player's position:
--- @param object = orb object
--- @param x,y,z = player's x,y,z coordinates
 local function updateVectors(object, x, y, z)
-
     -- update orb x,y,z map coordinates:
     write_float(object + 0x5C, x)
     write_float(object + 0x60, y)
@@ -299,31 +255,22 @@ local function updateVectors(object, x, y, z)
     write_float(object + 0x94, 0) -- roll
 end
 
--- Checks if a player is attempting to revive a team mate:
--- If a team mate is downed, the player can revive them by holding the 'crouch' key, while standing over the orb.
 function Attrition:onTick()
-
     for i, victim in pairs(players) do
-
         if (not player_alive(i)) then
-
             -- Setting this to 0.1*33 will prevent the player from respawning:
             write_dword(get_player(i) + 0x2C, 0.1 * 33)
 
             for orb_id, orb in pairs(victim.orb) do
-
                 local object = get_object_memory(orb_id)
                 if (object ~= 0) then
-
                     orb.team = victim.team -- get the team of the downed player that this orb belongs to
 
                     local h = self.orb_height_offset
                     updateVectors(object, orb.x, orb.y, orb.z + h)
 
                     for j, teammate in pairs(players) do
-
                         if (i ~= j and player_alive(j)) then
-
                             local px, py, pz, dyn = getPosition(j)
                             if (not px) then
                                 goto next
@@ -358,8 +305,6 @@ function Attrition:onTick()
     end
 end
 
--- Called when a player joins the server.
--- Creates a new player object:
 function OnJoin(id)
     players[id] = Attrition:newPlayer({
         id = id,
@@ -368,10 +313,7 @@ function OnJoin(id)
     })
 end
 
--- Called when a player leaves the server.
--- Destroys the players orb (if they have one):
 function OnQuit(id)
-
     for object, _ in pairs(players[id].orb) do
         destroy_object(object)
     end
@@ -379,12 +321,7 @@ function OnQuit(id)
     players[id] = nil
 end
 
--- Called when a player dies:
--- Spawns an orb at the victims position.
--- @victim <number> - the player id of the victim
--- @killer <number> - the player id of the killer
 function OnDeath(victim, killer)
-
     victim = tonumber(victim)
     killer = tonumber(killer)
 
@@ -396,15 +333,10 @@ function OnDeath(victim, killer)
     end
 end
 
--- Unpacks the player object and write the x,y,z coordinates to the player's dynamic address.
--- @t <table> - Table containing the player's dynamic address and x,y,z coordinates.
 local function teleport(t)
     write_vector3d(unpack(t))
 end
 
--- Called when a player has spawned:
--- If the player has been revived, teleport them to their orb's position.
--- @id <number> - the player id
 function OnSpawn(id)
     local player = players[id]
     local dyn = get_dynamic_player(id)
@@ -414,8 +346,6 @@ function OnSpawn(id)
     end
 end
 
--- Called when a player switches teams:
--- @id <number> - the player id
 function OnSwitch(id)
     players[id].team = get_var(id, '$team')
 end
@@ -424,6 +354,4 @@ function OnTick()
     Attrition:onTick()
 end
 
-function OnScriptUnload()
-    -- N/A
-end
+function OnScriptUnload() end
