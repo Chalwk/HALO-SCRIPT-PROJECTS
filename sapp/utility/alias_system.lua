@@ -7,11 +7,19 @@ DESCRIPTION:      Advanced player alias tracking and lookup system.
                   - Detects and marks players using known pirated game copies.
                   - Automatic database maintenance with stale record cleanup.
                   - Configurable permission levels and command cooldowns.
+                  - Fuzzy search for names with partial matching.
+
+COMMAND SYNTAX:
+    /hash_alias <player_id> [page]      - Lookup aliases for a player using their hash.
+    /ip_alias <player_id> [page]        - Lookup aliases for a player using their IP.
+    /hash_lookup <hash> [page]          - Directly lookup aliases by hash (manual input).
+    /ip_lookup <ip> [page]              - Directly lookup aliases by IP (manual input).
+    /search_alias <partial_name> [page] - Fuzzy search for names containing text.
 
 REQUIREMENTS:   Install to the same directory as sapp.dll
                  - Lua JSON Parser: http://regex.info/blog/lua/json
 
-LAST UPDATED:     2/10/2025
+LAST UPDATED:     5/10/2025
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -29,11 +37,13 @@ local CONFIG = {
     -- ip_alias:        Look up aliases by player ID (uses their IP)
     -- hash_lookup:     Direct hash lookup (manual hash input)
     -- ip_lookup:       Direct IP lookup (manual IP input)
+    -- search_alias:    Fuzzy search for names containing text
     COMMANDS = {
         ["hash_alias"] = true,
         ["ip_alias"] = true,
         ["hash_lookup"] = true,
-        ["ip_lookup"] = true
+        ["ip_lookup"] = true,
+        ["search_alias"] = true
     },
 
     -- Command cooldown in seconds
@@ -60,6 +70,66 @@ local CONFIG = {
     -- Maximum number of names to display per line in the output
     -- Helps prevent console spam with long lists
     MAX_NAMES_PER_ROW = 5,
+
+    -- Fuzzy search settings
+    FUZZY_SEARCH = {
+        case_sensitive = false, -- Set to true for case-sensitive searches
+        min_search_length = 2,  -- Minimum characters required for search
+        max_results = 100       -- Maximum results to return (prevents lag)
+    },
+
+    -- Filtering settings
+    FILTERING = {
+        -----------------------------------------------------------------------
+        -- IP FILTERING
+        -----------------------------------------------------------------------
+        -- These IP patterns are ignored (not tracked or stored in the database).
+        -- Useful for filtering out local, shared, or temporary IPs (like LANs or localhost).
+        --
+        -- Pattern syntax:
+        --     *  matches any number of characters (wildcard)
+        --     ?  matches a single character
+        --
+        -- Examples:
+        --     "192.168.*"   ignores all 192.168.x.x addresses (typical LAN)
+        --     "10.*"        ignores all 10.x.x.x addresses (private network)
+        --     "127.0.0.1"   ignores localhost
+        --
+        -- You can add more patterns if needed.
+        -- For example, to ignore a VPN subnet: "172.16.*"
+        ignore_ips = {
+            "192.168.*",
+            "10.*",
+            "127.0.0.1"
+        },
+
+        -----------------------------------------------------------------------
+        -- NAME FILTERING
+        -----------------------------------------------------------------------
+        -- These name patterns are ignored and will not be stored or shown
+        -- in alias lookup results.
+        --
+        -- Use this to skip generic, temporary, or automated names such as
+        -- default client names, bot accounts, or placeholder names.
+        --
+        -- Pattern syntax:
+        --     *  matches any sequence of characters
+        --     ?  matches a single character
+        --
+        -- Examples:
+        --     "Player"     ignores exact name "Player"
+        --     "sapp*"      ignores any name beginning with "sapp" (e.g., sapp_bot)
+        --     "halo*"      ignores any name beginning with "halo"
+        --
+        -- You can add your own patterns here to exclude clan tags,
+        -- temporary accounts, or system bots, such as:
+        --     "[LNZ]*", "*test*", or "Guest?"
+        ignore_names = {
+            "Player",
+            "sapp*",
+            "halo*"
+        }
+    },
 
     -- Known pirated game hashes - players using these will be marked as [PIRATED]
     -- These are MD5 hashes of game executables from unauthorized copies
@@ -117,6 +187,7 @@ local pcall = pcall
 local pairs, ipairs = pairs, ipairs
 local os_time = os.time
 local io_open = io.open
+local string_lower, string_find = string.lower, string.find
 local table_insert, table_concat, table_sort = table.insert, table.concat, table.sort
 
 local function getConfigPath()
@@ -126,6 +197,43 @@ end
 local function send(id, msg)
     if id == 0 or id == nil then return cprint(msg) end
     rprint(id, msg)
+end
+
+-- Filtering functions
+local function matchesPattern(value, pattern)
+    -- Convert wildcard pattern to Lua pattern
+    local lua_pattern = pattern:gsub("%*", ".*"):gsub("%?", ".")
+    return value:match(lua_pattern) ~= nil
+end
+
+local function shouldIgnoreIP(ip)
+    for _, pattern in ipairs(CONFIG.FILTERING.ignore_ips) do
+        if matchesPattern(ip, pattern) then
+            return true
+        end
+    end
+    return false
+end
+
+local function shouldIgnoreName(name)
+    for _, pattern in ipairs(CONFIG.FILTERING.ignore_names) do
+        if matchesPattern(name, pattern) then
+            return true
+        end
+    end
+    return false
+end
+
+local function applyFilters(record_type, identifier, name)
+    if record_type == "ip" and shouldIgnoreIP(identifier) then
+        return true -- Skip this IP
+    end
+
+    if name and shouldIgnoreName(name) then
+        return true -- Skip this name
+    end
+
+    return false -- Don't skip
 end
 
 local function parseAndValidateArgs(args, expected_type, command_name)
@@ -289,6 +397,183 @@ local function handleDirectLookup(id, args, record_type, command_name)
     showAliasesPage(id, record, target, record_type, page)
 end
 
+-- Fuzzy search implementation
+local function handleFuzzySearch(id, args, command_name)
+    local search_term, page, error_msg = parseAndValidateArgs(args, "partial_name", command_name)
+    if error_msg then
+        send(id, error_msg)
+        return
+    end
+
+    -- Add safety check to ensure search_term is not nil
+    if not search_term then
+        send(id, "Search term cannot be empty")
+        return
+    end
+
+    -- Validate minimum search length
+    if #search_term < CONFIG.FUZZY_SEARCH.min_search_length then
+        send(id, "Search term must be at least " .. CONFIG.FUZZY_SEARCH.min_search_length .. " characters long")
+        return
+    end
+
+    -- Prepare search term (now we know search_term is not nil)
+    if not CONFIG.FUZZY_SEARCH.case_sensitive then
+        search_term = string_lower(search_term)
+    end
+
+    -- Collect all unique names from both IP and hash records
+    local all_unique_names = {}
+    local name_sources = {} -- Track which records contain each name
+
+    -- Search through IP records
+    for ip, record in pairs(aliases_db.ip_records) do
+        -- Skip filtered IPs
+        if not shouldIgnoreIP(ip) then
+            for name, _ in pairs(record.names) do
+                -- Skip filtered names
+                if not shouldIgnoreName(name) then
+                    local search_name = CONFIG.FUZZY_SEARCH.case_sensitive and name or string_lower(name)
+                    if string_find(search_name, search_term, 1, true) then -- true for plain search (no patterns)
+                        if not all_unique_names[name] then
+                            all_unique_names[name] = true
+                            name_sources[name] = { ips = {}, hashes = {} }
+                        end
+                        table_insert(name_sources[name].ips, ip)
+                    end
+                end
+            end
+        end
+    end
+
+    -- Search through hash records
+    for hash, record in pairs(aliases_db.hash_records) do
+        for name, _ in pairs(record.names) do
+            -- Skip filtered names
+            if not shouldIgnoreName(name) then
+                local search_name = CONFIG.FUZZY_SEARCH.case_sensitive and name or string_lower(name)
+                if string_find(search_name, search_term, 1, true) then
+                    if not all_unique_names[name] then
+                        all_unique_names[name] = true
+                        name_sources[name] = { ips = {}, hashes = {} }
+                    end
+                    table_insert(name_sources[name].hashes, hash)
+                end
+            end
+        end
+    end
+
+    -- Rest of the function remains the same...
+    -- Convert to sorted list
+    local matched_names = {}
+    for name, _ in pairs(all_unique_names) do
+        table_insert(matched_names, name)
+    end
+
+    table_sort(matched_names)
+
+    -- Apply maximum results limit
+    local total_matches = #matched_names
+    if total_matches > CONFIG.FUZZY_SEARCH.max_results then
+        send(id,
+            "Too many results (" ..
+            total_matches .. "). Showing first " .. CONFIG.FUZZY_SEARCH.max_results .. " matches.")
+        -- Truncate the results
+        while #matched_names > CONFIG.FUZZY_SEARCH.max_results do
+            table.remove(matched_names)
+        end
+        total_matches = CONFIG.FUZZY_SEARCH.max_results
+    end
+
+    -- Handle pagination
+    local max_results = CONFIG.MAX_RESULTS
+    local max_per_row = CONFIG.MAX_NAMES_PER_ROW
+    local total_pages = math.ceil(total_matches / max_results)
+
+    page = page or 1
+    if page < 1 then page = 1 end
+    if page > total_pages then page = total_pages end
+
+    local start_index = (page - 1) * max_results + 1
+    local end_index = math.min(start_index + max_results - 1, total_matches)
+
+    -- Display results
+    if total_matches == 0 then
+        send(id, "No names found containing: '" .. args[2] .. "'")
+        return
+    end
+
+    local header = "Page " .. page .. "/" .. total_pages ..
+        ". Found " .. total_matches .. " names containing '" .. args[2] .. "'"
+    send(id, header)
+
+    -- Display names in rows
+    local current_row = {}
+    local count = 0
+
+    for i = start_index, end_index do
+        local name = matched_names[i]
+        table_insert(current_row, name)
+        count = count + 1
+
+        if #current_row >= max_per_row then
+            send(id, table_concat(current_row, ", "))
+            current_row = {}
+        end
+    end
+
+    if #current_row > 0 then
+        send(id, table_concat(current_row, ", "))
+    end
+
+    -- Show detailed information for the first few results on page 1
+    if page == 1 and total_matches > 0 then
+        send(id, "--- Detailed info for first few matches ---")
+
+        local details_shown = 0
+        local max_details = 3 -- Show details for first 3 matches
+
+        for i = start_index, math.min(start_index + max_details - 1, end_index) do
+            local name = matched_names[i]
+            local sources = name_sources[name]
+
+            if sources and (#sources.ips > 0 or #sources.hashes > 0) then
+                send(id, "Name: " .. name)
+
+                if #sources.ips > 0 then
+                    send(id, "  Found in IP records: " .. #sources.ips .. " unique IPs")
+                end
+
+                if #sources.hashes > 0 then
+                    local pirated_count = 0
+                    for _, hash in ipairs(sources.hashes) do
+                        if CONFIG.KNOWN_PIRATED_HASHES[hash] then
+                            pirated_count = pirated_count + 1
+                        end
+                    end
+                    send(id, "  Found in hash records: " .. #sources.hashes .. " unique hashes")
+                    if pirated_count > 0 then
+                        send(id, "  [PIRATED COPIES DETECTED: " .. pirated_count .. "]")
+                    end
+                end
+
+                details_shown = details_shown + 1
+                if details_shown >= max_details then
+                    break
+                end
+            end
+        end
+
+        if total_matches > max_details then
+            send(id, "... and " .. (total_matches - max_details) .. " more matches")
+        end
+    end
+
+    if total_pages > 1 then
+        send(id, "Use '/search_alias \"" .. args[2] .. "\" " .. (page + 1) .. "' to see next page")
+    end
+end
+
 local function loadAliasesDB()
     local f = io_open(db_directory, 'r')
     if not f then
@@ -304,7 +589,10 @@ local function loadAliasesDB()
             return json:decode(content)
         end)
         if success and result then
-            aliases_db = { ip_records = result.ip_records or {}, hash_records = result.hash_records or {} }
+            aliases_db = {
+                ip_records = result.ip_records or {},
+                hash_records = result.hash_records or {}
+            }
             return true
         else
             cprint("[alias_system] Error parsing aliases database: " .. tostring(result), 12)
@@ -361,6 +649,11 @@ local function updatePlayerRecord(id)
     local hash = get_var(id, '$hash')
     local ip = get_var(id, '$ip'):match('%d+.%d+.%d+.%d+')
 
+    -- Apply filters - skip if IP or name should be ignored
+    if applyFilters("ip", ip, name) then
+        return
+    end
+
     -- Update hash record
     if not aliases_db.hash_records[hash] then
         aliases_db.hash_records[hash] = { names = {}, last_seen = now }
@@ -369,13 +662,15 @@ local function updatePlayerRecord(id)
     aliases_db.hash_records[hash].names[name] = true
     aliases_db.hash_records[hash].last_seen = now
 
-    -- Update IP record
-    if not aliases_db.ip_records[ip] then
-        aliases_db.ip_records[ip] = { names = {}, last_seen = now }
-    end
+    -- Update IP record (only if IP is not filtered)
+    if not shouldIgnoreIP(ip) then
+        if not aliases_db.ip_records[ip] then
+            aliases_db.ip_records[ip] = { names = {}, last_seen = now }
+        end
 
-    aliases_db.ip_records[ip].names[name] = true
-    aliases_db.ip_records[ip].last_seen = now
+        aliases_db.ip_records[ip].names[name] = true
+        aliases_db.ip_records[ip].last_seen = now
+    end
 end
 
 function OnScriptLoad()
@@ -442,6 +737,8 @@ function OnCommand(id, command)
             handleDirectLookup(id, args, "hash", "hash_lookup")
         elseif cmd == 'ip_lookup' then
             handleDirectLookup(id, args, "ip", "ip_lookup")
+        elseif cmd == 'search_alias' then
+            handleFuzzySearch(id, args, "search_alias")
         end
 
         return false
