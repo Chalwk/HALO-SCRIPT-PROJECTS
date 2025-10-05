@@ -199,7 +199,6 @@ local function send(id, msg)
     rprint(id, msg)
 end
 
--- Filtering functions
 local function matchesPattern(value, pattern)
     -- Convert wildcard pattern to Lua pattern
     local lua_pattern = pattern:gsub("%*", ".*"):gsub("%?", ".")
@@ -397,7 +396,6 @@ local function handleDirectLookup(id, args, record_type, command_name)
     showAliasesPage(id, record, target, record_type, page)
 end
 
--- Fuzzy search implementation
 local function handleFuzzySearch(id, args, command_name)
     local search_term, page, error_msg = parseAndValidateArgs(args, "partial_name", command_name)
     if error_msg then
@@ -463,7 +461,6 @@ local function handleFuzzySearch(id, args, command_name)
         end
     end
 
-    -- Rest of the function remains the same...
     -- Convert to sorted list
     local matched_names = {}
     for name, _ in pairs(all_unique_names) do
