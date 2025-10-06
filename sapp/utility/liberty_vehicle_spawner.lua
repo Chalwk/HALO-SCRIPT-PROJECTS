@@ -16,8 +16,6 @@ LICENSE:          MIT License
 
 -- CONFIG START ----------------------------------------------------------------
 
-local ANNOUNCEMENTS = true        -- Perioically announce available vehicles (set to false to disable)
-local ANNOUNCEMENT_INTERVAL = 180 -- Time (in seconds) between announcements
 local DESPAWN_DELAY_SECONDS = 7   -- Time (in seconds) before a spawned vehicle despawns
 local COOLDOWN_PERIOD = 7         -- Cooldown time (seconds) between vehicle spawns per player
 
@@ -74,14 +72,13 @@ local CUSTOM_TAGS = {
         ["rhog"] = "vehicles\\rwarthog\\art_rwarthog_shiny"
     },
 }
-
 -- CONFIG ENDS ----------------------------------------------------------------
 
 api_version = "1.12.0.0"
 
 local map_name
-local game_started
 local height_offset = 0.3
+local game_over
 local active_vehicles, vehicle_meta_cache, player_cooldowns = {}, {}, {}
 
 local os_time = os.time
@@ -98,6 +95,7 @@ local sapp_events = {
     [cb['EVENT_TICK']] = 'OnTick',
     [cb['EVENT_JOIN']] = 'OnJoin',
     [cb['EVENT_CHAT']] = 'OnChat',
+    [cb['EVENT_SPAWN']] = 'OnSpawn',
     [cb['EVENT_GAME_END']] = 'OnEnd',
 }
 
@@ -163,15 +161,6 @@ local function getPos(id)
     return x, y, z, yaw
 end
 
-local function getKeyWords()
-    local keywords = vehicle_meta_cache[map_name]
-    local message = ""
-    for keyword, _ in pairs(keywords) do
-        message = message .. " [" .. keyword .. "]"
-    end
-    return message
-end
-
 local function canSpawnVehicle(id)
     local now = os_time()
     local player_cooldown = player_cooldowns[id]
@@ -185,10 +174,9 @@ local function canSpawnVehicle(id)
     return true
 end
 
-local function showKeyWords(id, keywords)
-    keywords = keywords or getKeyWords()
+local function showKeyWords(id)
     rprint(id, "Type keywords in chat to spawn vehicles:")
-    rprint(id, keywords)
+    rprint(id, vehicle_meta_cache[map_name].hud)
 end
 
 local function mapNamesToLower()
@@ -204,9 +192,6 @@ function OnScriptLoad()
     register_callback(cb["EVENT_GAME_START"], "OnStart")
 
     OnStart()
-    if ANNOUNCEMENTS then
-        timer(ANNOUNCEMENT_INTERVAL * 1000, "AnnounceVehicles")
-    end
 end
 
 function OnStart()
@@ -217,7 +202,7 @@ function OnStart()
 
     local cfg = CUSTOM_TAGS[map_name] or DEFAULT_TAGS
     if not vehicle_meta_cache[map_name] then -- not cached yet
-        vehicle_meta_cache[map_name] = {}
+        vehicle_meta_cache[map_name] = {hud = ""}
         for keyword, tag_path in pairs(cfg) do
             local meta_id = getTag("vehi", tag_path)
             if not meta_id then
@@ -227,11 +212,12 @@ function OnStart()
                 return
             end
             vehicle_meta_cache[map_name][keyword] = meta_id
+            vehicle_meta_cache[map_name].hud = vehicle_meta_cache[map_name].hud .. " [" .. keyword .. "]"
         end
     end
 
-    game_started = true
     register_callbacks(true)
+    game_over = false
 
     for i = 1, 16 do
         if player_present(i) then
@@ -241,14 +227,15 @@ function OnStart()
 end
 
 function OnEnd()
-    game_started = false
+    game_over = true
     player_cooldowns = {}
 end
 
 function OnChat(id, message)
     local input = message:lower():gsub("^%s*(.-)%s*$", "%1")
-    local map_config = vehicle_meta_cache[map_name]
+    if game_over or input == "hud" then return end
 
+    local map_config = vehicle_meta_cache[map_name]
     for keyword, meta_id in pairs(map_config) do
         if input == keyword then
             if not canSpawnVehicle(id) then return false end
@@ -273,6 +260,7 @@ function OnChat(id, message)
 end
 
 function OnTick()
+    if game_over then return end
     local now = os_clock()
 
     -- Iterate through all active vehicles
@@ -302,20 +290,11 @@ end
 
 function OnJoin(id)
     player_cooldowns[id] = nil
-    showKeyWords(id)
 end
 
-function AnnounceVehicles()
-    if not game_started then return true end
-
-    local keywords = getKeyWords()
-    for i = 1, 16 do
-        if player_present(i) then
-            showKeyWords(i, keywords)
-        end
-    end
-
-    return true
+function OnSpawn(id)
+    if game_over then return end
+    showKeyWords(id)
 end
 
 function OnScriptUnload()
