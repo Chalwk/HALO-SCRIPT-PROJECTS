@@ -194,7 +194,6 @@ local function clean_kicked_players(now)
     end
 end
 
--- Event Handlers
 function OnScriptLoad()
     register_callback(cb['EVENT_TICK'], 'OnTick')
     register_callback(cb['EVENT_JOIN'], 'OnJoin')

@@ -7,7 +7,7 @@ DESCRIPTION:      Custom weapon assignment system that automatically gives playe
                   - Team-specific weapon sets (Red, Blue, FFA)
                   - Supports both stock and custom game modes
 
-LAST UPDATED:     28/08/2025
+LAST UPDATED:     7/10/2025
 
 Copyright (c) 2024-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -16,10 +16,6 @@ LICENSE:          MIT License
 ]]
 
 -- Configuration start --------------------------------------------------------
--- Weapon tag definitions: Maps friendly names to actual Halo tag paths
--- Add new weapons here using the format: friendly_name = 'tag\\path\\to\\weapon'
--- Weapon tag definitions: Maps friendly names to actual Halo tag paths
--- Add new weapons here using the format: friendly_name = 'tag\\path\\to\\weapon'
 local weapon_tags = {
     -- stock weapon tags
     assault_rifle        = 'weapons\\assault rifle\\assault rifle',

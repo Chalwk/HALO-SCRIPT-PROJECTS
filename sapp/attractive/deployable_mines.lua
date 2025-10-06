@@ -28,16 +28,6 @@ CONFIGURATION:
                   mine_object:         Mine model/type
                   vehicles:            Whitelist of deploy-capable vehicles
 
-VEHICLE SUPPORT:
-                  Ghost, Warthog (all variants), Banshee
-                  (Configurable in vehicles table)
-
-PERFORMANCE:
-                  - Optimized mine tracking
-                  - Efficient proximity detection
-                  - Minimal per-tick processing
-                  - Clean object cleanup
-
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE

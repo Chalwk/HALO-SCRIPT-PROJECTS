@@ -240,8 +240,6 @@ local function checkAFKStatus(player, current_time)
     return false
 end
 
---========================= EVENT CALLBACKS ==================================--
-
 function OnScriptLoad()
     register_callback(cb["EVENT_CHAT"], "OnChat")
     register_callback(cb["EVENT_TICK"], "OnTick")
