@@ -202,8 +202,11 @@ end
 function OnScriptLoad()
     CUSTOM_TAGS = mapNamesToLower()
     register_callback(cb["EVENT_GAME_START"], "OnStart")
-    timer(ANNOUNCEMENT_INTERVAL * 1000, "AnnounceVehicles")
+
     OnStart()
+    if ANNOUNCEMENTS then
+        timer(ANNOUNCEMENT_INTERVAL * 1000, "AnnounceVehicles")
+    end
 end
 
 function OnStart()
@@ -303,7 +306,7 @@ function OnJoin(id)
 end
 
 function AnnounceVehicles()
-    if not ANNOUNCEMENTS or not game_started then return true end
+    if not game_started then return true end
 
     local keywords = getKeyWords()
     for i = 1, 16 do
