@@ -2,9 +2,9 @@
 ===============================================================================
 SCRIPT NAME:      delay_skip.lua
 DESCRIPTION:      Prevents premature map skipping by enforcing:
-                  - A configurable minimum wait time before the 'skip' command
-                  - Level-based immunity for admins and staff
-                  - Feedback message for players attempting to skip too early
+                  - A configurable minimum wait time before skipping a map.
+                  - Level-based immunity for admins and staff.
+                  - Feedback message for players attempting to skip too early.
 
 Copyright (c) 2020-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
