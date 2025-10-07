@@ -1,21 +1,10 @@
 --[[
 ===============================================================================
 SCRIPT NAME:      command_spy.lua
-DESCRIPTION:      Monitors and logs admin commands with:
-                  - Real-time command execution alerts
-                  - Customizable admin notification levels
+DESCRIPTION:      Command execution alerts
+
+FEATURES:         - Customizable admin notification levels
                   - Sensitive command filtering
-
-FEATURES:
-                  - Blacklist for sensitive commands
-                  - Admin-level visibility controls
-                  - Optional console logging
-
-CONFIGURATION:    Adjust these settings:
-                  - spy_levels: Which admin levels receive alerts
-                  - blacklist: Commands to ignore
-                  - messages: Notification formats
-                  - log_to_console: Toggle console output
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -23,34 +12,27 @@ LICENSE:          MIT License
 ===============================================================================
 ]]
 
+-- Config start --------------------------------------------
+local NOTIFICATION = "[SPY] $name: $cmd"
+
 -- Admin levels allowed to see spy messages:
-local spy_levels = {
-    [1] = true,
-    [2] = true,
-    [3] = true,
+local SPY_LEVELS = {
+    [1] = false,
+    [2] = false,
+    [3] = false,
     [4] = true
 }
 
 -- Blacklisted commands that will not be monitored:
-local blacklist = {
-    "login",
-    "admin_add",
-    "sv_password",
-    "change_password",
-    "admin_change_pw",
-    "admin_add_manually"
+local BLACKLIST = {
+    ["login"] = true,
+    ["admin_add"] = true,
+    ["sv_password"] = true,
+    ["change_password"] = true,
+    ["admin_change_pw"] = true,
+    ["admin_add_manually"] = true
 }
-
--- Output message formats:
-local messages = {
-    spy_notify = "[SPY] $name: $cmd",
-    no_permission = "You do not have permission to use this command.",
-}
-
--- Log commands to console as well?
-local log_to_console = true
-
--- CONFIG ENDS -----------------------------------------------
+-- Config end ----------------------------------------------
 
 local players = {}
 
@@ -87,39 +69,25 @@ function OnQuit(id)
     players[id] = nil
 end
 
-local function hasSensitiveInfo(cmd)
+local function isBlacklisted(cmd)
     cmd = cmd:lower():match("^(%S+)")
-    for _, black_cmd in ipairs(blacklist) do
-        if cmd == black_cmd:lower() then
-            return true
-        end
-    end
-    return false
+    return BLACKLIST[cmd]
 end
 
 function OnCommand(id, command)
     if id > 0 then
-        if hasSensitiveInfo(command) then return end
+        if isBlacklisted(command) then return end
 
-        local player = players[id]
-        local name = player.name
-
-        -- Notify admins:
         for i = 1, 16 do
             if player_present(i) then
-                local a = players[i]
-                if a and spy_levels[a.level()] and i ~= id then
-                    local msg = messages.spy_notify
-                    msg = msg:gsub("$name", name)
+                local player = players[i]
+                if player and SPY_LEVELS[player.level()] and i ~= id then
+                    local msg = NOTIFICATION
+                    msg = msg:gsub("$name", players[id].name)
                     msg = msg:gsub("$cmd", command)
                     rprint(i, msg)
                 end
             end
-        end
-
-        -- Log to console:
-        if log_to_console then
-            cprint(string.format("[CommandSpy] %s used: %s", name, command))
         end
     end
 end
