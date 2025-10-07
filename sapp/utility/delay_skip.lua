@@ -2,18 +2,9 @@
 ===============================================================================
 SCRIPT NAME:      delay_skip.lua
 DESCRIPTION:      Prevents premature map skipping by enforcing:
-                  - Configurable minimum wait time
-                  - Clear countdown feedback
-                  - Simple chat command integration
-
-FEATURES:
-                  - Customizable delay duration
-                  - Player-friendly time reminders
-                  - Automatic game state tracking
-
-CONFIGURATION:    Adjust these settings:
-                  - skipDelay: Minimum wait time in seconds
-                  - skipDelayMessage: Custom countdown message
+                  - A configurable minimum wait time before the 'skip' command
+                  - Level-based immunity for admins and staff
+                  - Feedback message for players attempting to skip too early
 
 Copyright (c) 2020-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -21,52 +12,65 @@ LICENSE:          MIT License
 ===============================================================================
 ]]
 
--- Configuration section:
--- Minimum time players must wait before they can skip the map:
-local skipDelay = 300
+-- Config start --------------------------------------------------------
 
--- Configure the skip delay message template:
-local skipDelayMessage = 'Please wait %s %s before skipping the map.'
+-- Minimum delay (in seconds) before players are allowed to use 'skip'.
+-- For example, if SKIP_DELAY = 300, players must wait 5 minutes.
+local SKIP_DELAY = 300
 
--- Script API version:
+-- Message displayed when a player tries to skip too early.
+-- %s placeholders are replaced with the remaining time and plural suffix.
+local DELAY_MESSAGE = 'Please wait %s second%s before skipping the map.'
+
+-- Player levels that are immune to the skip delay restriction.
+-- Keys correspond to admin levels (1–4 = admins).
+local IMMUNE_LEVELS = {
+    [1] = true,
+    [2] = true,
+    [3] = true,
+    [4] = true
+}
+-- Config ends ---------------------------------------------------------
+
 api_version = "1.12.0.0"
 
--- Configuration ends here.
-
-local gameStartTime
-
-local function addPluralSuffix(n)
-    return (n > 1 and 's') or ''
-end
-
-local function getRemainingTime()
-    return math.ceil(gameStartTime + skipDelay - os.clock())
-end
-
+local start_time
 local format = string.format
+local os_time, math_ceil = os.time, math.ceil
+
+local function plural(n)
+    return n > 1 and 's' or ''
+end
+
+local function immune(id)
+    return IMMUNE_LEVELS[tonumber(get_var(id, '$lvl'))]
+end
 
 function OnScriptLoad()
-    register_callback(cb['EVENT_CHAT'], 'Skip')
+    register_callback(cb['EVENT_CHAT'], 'OnChat')
     register_callback(cb['EVENT_GAME_END'], 'OnEnd')
     register_callback(cb['EVENT_GAME_START'], 'OnStart')
 end
 
-function Skip(playerIndex, message)
-    if gameStartTime and message:lower() == 'skip' then
-        local remainingTime = getRemainingTime()
-        if remainingTime > 0 then
-            rprint(playerIndex, format(skipDelayMessage, remainingTime, addPluralSuffix(remainingTime)))
+function OnChat(id, msg)
+    if start_time and msg:lower() == 'skip' then
+        if immune(id) then return true end
+
+        local remaining = math_ceil(start_time + SKIP_DELAY - os_time())
+        if remaining > 0 then
+            rprint(id, format(DELAY_MESSAGE, remaining, plural(remaining)))
             return false
         end
     end
 end
 
 function OnStart()
-    gameStartTime = (get_var(0, '$gt') ~= 'n/a') and os.clock() or nil
+    if get_var(0, '$gt') == 'n/a' then return end
+    start_time = os_time()
 end
 
 function OnEnd()
-    gameStartTime = nil
+    start_time = nil
 end
 
 function OnScriptUnload() end
