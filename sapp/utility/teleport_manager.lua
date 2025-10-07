@@ -33,7 +33,7 @@ CONFIGURATION:
 REQUIREMENTS:     Install to the same directory as sapp.dll
                   - Lua JSON Parser:  http://regex.info/blog/lua/json
 
-Copyright (c) 2020-2025 Jericho Crosby (Chalwk)
+Copyright (c) 2020 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================

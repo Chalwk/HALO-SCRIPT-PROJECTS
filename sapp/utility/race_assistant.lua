@@ -4,27 +4,12 @@ SCRIPT NAME:      race_assistant.lua
 DESCRIPTION:      Enforces vehicle usage in race gametypes with configurable
                   penalties for violations.
 
-FEATURES:
-                  - Visual countdown warnings before penalty
+FEATURES:         - Visual countdown warnings before penalty
                   - Configurable grace periods for vehicle entry/re-entry
                   - Protected safe zones (map-configurable)
                   - Admin exemption system
                   - Multi-stage violation handling (warnings → kill/kick)
 
-CONFIGURATION:
-                  warnings:         Warnings before penalty (default: 2)
-                  initial_grace_period: Time to find first vehicle (default: 10s)
-                  exit_grace_period: Time to re-enter after exiting (default: 10s)
-                  driving_grace_period: Time driving to clear warnings (default: 10s)
-                  enable_safe_zones: Toggle safe zone protection (default: true)
-                  allow_exemptions:  Toggle admin exemptions (default: true)
-                  exempt_admin_levels: Configurable admin exemption levels
-                  punishment:       Penalty type (kill or kick)
-                  safe_zones:       Map-specific safe zones (x,y,z,radius)
-
-USAGE:
-                  No commands needed - works automatically during race gametypes.
-                  Configure settings in the RaceAssistant table at script top.
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -36,20 +21,20 @@ LICENSE:          MIT License
 -- CONFIGURATION
 ---------------------------------
 local RaceAssistant = {
-    warnings = 2,                   -- Warnings before penalty
-    initial_grace_period = 10,      -- Seconds to find first vehicle
-    exit_grace_period = 10,         -- Seconds to re-enter after exiting
-    driving_grace_period = 10,      -- Seconds driving to clear warnings
-    enable_safe_zones = true,       -- Allow safe zones
-    allow_exemptions = true,        -- Admins won't be punished
-    exempt_admin_levels = {         -- Configurable exemption levels.
+    warnings = 2,              -- Warnings before penalty
+    initial_grace_period = 10, -- Seconds to find first vehicle
+    exit_grace_period = 10,    -- Seconds to re-enter after exiting
+    driving_grace_period = 10, -- Seconds driving to clear warnings
+    enable_safe_zones = true,  -- Allow safe zones
+    allow_exemptions = true,   -- Admins won't be punished
+    exempt_admin_levels = {    -- Configurable exemption levels.
         [1] = false,
         [2] = false,
         [3] = true,
         [4] = true
     },
-    punishment = "kill",            -- kill or kick
-    safe_zones = {                  -- Map-specific safe zones {x, y, z, radius}
+    punishment = "kill", -- kill or kick
+    safe_zones = {       -- Map-specific safe zones {x, y, z, radius}
         -- Example: ["bloodgulch"] = {{0, 0, 0, 15}, {100, 100, 0, 10}}
     }
 }
@@ -74,10 +59,6 @@ function OnScriptLoad()
     register_callback(cb['EVENT_VEHICLE_ENTER'], 'OnEnter')
 
     OnStart()
-end
-
-function OnScriptUnload()
-    -- N/A
 end
 
 function OnStart()
@@ -162,7 +143,7 @@ local function in_safe_zone(playerId)
 
     for _, zone in ipairs(zones) do
         local zx, zy, zz, radius = unpack(zone)
-        local dist = math.sqrt((x - zx)^2 + (y - zy)^2 + (z - zz)^2)
+        local dist = math.sqrt((x - zx) ^ 2 + (y - zy) ^ 2 + (z - zz) ^ 2)
         if dist <= radius then return true end
     end
     return false
@@ -195,9 +176,9 @@ end
 
 local function proceed(playerId, playerData)
     return player_present(playerId)
-            and player_alive(playerId)
-            and not in_safe_zone(playerId)
-            and not playerData.exempt()
+        and player_alive(playerId)
+        and not in_safe_zone(playerId)
+        and not playerData.exempt()
 end
 
 function OnTick()
@@ -220,3 +201,5 @@ function OnTick()
         ::continue::
     end
 end
+
+function OnScriptUnload() end
