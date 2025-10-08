@@ -16,8 +16,8 @@ LICENSE:          MIT License
 
 -- CONFIG START ----------------------------------------------------------------
 
-local DESPAWN_DELAY_SECONDS = 7   -- Time (in seconds) before a spawned vehicle despawns
-local COOLDOWN_PERIOD = 7         -- Cooldown time (seconds) between vehicle spawns per player
+local DESPAWN_DELAY_SECONDS = 7 -- Time (in seconds) before a spawned vehicle despawns
+local COOLDOWN_PERIOD = 7       -- Cooldown time (seconds) between vehicle spawns per player
 
 -- DEFAULT_TAGS: Fallback vehicle definitions used when a map isn't listed in CUSTOM_TAGS
 -- Format: ["keyword"] = "tag_path"
@@ -202,7 +202,7 @@ function OnStart()
 
     local cfg = CUSTOM_TAGS[map_name] or DEFAULT_TAGS
     if not vehicle_meta_cache[map_name] then -- not cached yet
-        vehicle_meta_cache[map_name] = {hud = ""}
+        vehicle_meta_cache[map_name] = { hud = "" }
         for keyword, tag_path in pairs(cfg) do
             local meta_id = getTag("vehi", tag_path)
             if not meta_id then
