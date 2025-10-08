@@ -36,23 +36,27 @@ across the finish line.
 
 ## Maps and Lap Numbers
 
-* `Gauntlet_Race` - 10 laps
-* `mercury_falling` - 8 laps
-* `LostCove_Race` - 14 laps
-* `timberland` - 10 laps
-* `Camtrack-Arena-Race` - 16 laps
-* `hypothermia_race` - 10 laps
-* `Massacre_Mountain_Race` - 8 laps
-* `Mongoose_Point` - 16 laps
-* `tsce_multiplayerv1` - 6 laps
-* `hornets_nest` - 12 laps
-* `bc_raceway_final_mp` - 8 laps
-* `islandthunder_race` - 12 laps
-* `Cityscape-Adrenaline` - 10 laps
-* `cliffhanger` - 12 laps
-* `New_Mombasa_Race_v2` - 6 laps
-* `mystic_mod` - 10 laps
-* `luigi_raceway` - 16 laps
+- timberland - laps 10
+- [Gauntlet_Race](https://maps.halonet.net/maps/Gauntlet_Race.zip) - laps 10
+- [mercury_falling](https://maps.halonet.net/maps/mercury_falling.zip) - laps 8
+- [LostCove_Race](https://maps.halonet.net/maps/LostCove_Race.zip) - laps 8
+- [Camtrack-Arena-Race](https://maps.halonet.net/maps/Camtrack-Arena-Race.zip) - laps 16
+- [hypothermia_race](https://maps.halonet.net/maps/hypothermia_race.zip) - laps 10
+- [Massacre_Mountain_Race](https://maps.halonet.net/maps/Massacre_Mountain_Race.zip) - laps 8
+- [Mongoose_Point](https://maps.halonet.net/maps/Mongoose_Point.zip) - laps 16
+- [bc_raceway_final_mp](https://maps.halonet.net/maps/bc_raceway_final_mp.zip) - laps 8
+- [islandthunder_race](https://maps.halonet.net/maps/islandthunder_race.zip) - laps 12
+- [Cityscape-Adrenaline](https://maps.halonet.net/maps/Cityscape-Adrenaline.zip) - laps 10
+- [cliffhanger](https://maps.halonet.net/maps/cliffhanger.zip) - laps 12
+- [New_Mombasa_Race_v2](https://maps.halonet.net/maps/New_Mombasa_Race_v2.zip) - laps 6
+- [mystic_mod](https://maps.halonet.net/maps/mystic_mod.zip) - laps 10
+- [luigi_raceway](https://maps.halonet.net/maps/luigi_raceway.zip) - laps 16
+- [dessication_pb1](https://maps.halonet.net/maps/dessication_pb1.zip) - laps 12
+- [equinox_v2](https://maps.halonet.net/maps/equinox_v2.zip) - laps 8
+- [Nervous_King](https://maps.halonet.net/maps/Nervous_King.zip) - laps 6
+- [Prime_C3_Race](https://maps.halonet.net/maps/Prime_C3_Race.zip) - laps 10
+- [TLSstronghold](https://maps.halonet.net/maps/TLSstronghold.zip) - laps 14
+- [wpitest1_race](https://maps.halonet.net/maps/wpitest1_race.zip) - laps 14
 
 ---
 
