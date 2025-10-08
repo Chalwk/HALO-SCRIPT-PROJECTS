@@ -19,22 +19,40 @@ FEATURES:         - Tracks player lap times and validates laps (minimum time + d
                   - Announces in-game:
                       * New personal bests + New map records
                   - Provides in-game commands:
-                      * stats          - Show your personal best on current map
-                      * top            - Display top N all-time laps for current map
-                      * global         - Display top overall players across all maps
+                      * /stats [player|all]     - Show personal stats for current player, specific player, or all online players
+                      * /top [page]             - Display paginated top laps for current map (default page size: 10)
+                      * /global [page]          - Display paginated top overall players across all maps (default page size: 10)
                   - Exports lap records to JSON and optional text file
                   - Automatic saving and exporting on game end or script unload
                   - Configurable options:
-                      * top list size
+                      * pagination sizes
                       * minimum lap time
                       * export files
                       * driver-only laps
-                      * final leaderboard display
+                      * final leaderboard display (map or global)
+
+COMMAND SYNTAX:
+    /stats                    - Show your personal stats on current map
+    /stats [player_name]      - Show stats for specific player on current map
+    /stats [player_id]        - Show stats for player by ID on current map
+    /stats all                - Show stats for all online players on current map
+    /top                      - Show first page of top laps for current map
+    /top [page_number]        - Show specific page of top laps for current map
+    /global                   - Show first page of top overall players
+    /global [page_number]     - Show specific page of top overall players
+
+SCORING SYSTEM:
+    Global rankings are calculated using a weighted system:
+    - Map Record: +200 points per map record held
+    - Global Record: +300 bonus points for overall best lap
+    - Performance: Up to +50 points based on lap time relative to map record
+    - Top Finishes: Laps within 95% of record time count as top finishes (tiebreaker)
+    - Participation: Players with fewer than 3 maps played get 50% point penalty
 
 REQUIREMENTS:     Install to the same directory as sapp.dll
                   - Lua JSON Parser:  http://regex.info/blog/lua/json
 
-LAST UPDATED:     2/10/2025
+LAST UPDATED:     9/10/2025
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -61,6 +79,10 @@ local CONFIG = {
     SHOW_FINAL_TOP = true,     -- Show top results on game end
     TOP_FINAL_GLOBAL = false,  -- true = GLOBAL map results | false = CURRENT map results | This setting requires SHOW_FINAL_TOP = true
     MSG_PREFIX = "**SAPP**",   -- Some functions temporarily change the message msg_prefix; this restores it.
+
+    -- Pagination settings
+    TOP_PAGE_SIZE = 10,    -- Default results per page for /top command
+    GLOBAL_PAGE_SIZE = 10, -- Default results per page for /global command
 
     -- Scoring weights
     MAP_RECORD_WEIGHT = 200,    -- Points for holding a map record
@@ -263,17 +285,17 @@ local function parseArgs(input)
     return result
 end
 
-local function showTopPlayers(id)
+local function showTopPlayers(id, page)
     local send = id and function(msg) rprint(id, msg) end or sendPublic
     local map_data = stats[current_map]
     local map_best_laps = {}
 
     if not map_data then
         send("No records for this map yet.")
-        goto continue
+        return
     end
 
-    send("Top players for " .. current_map .. ":")
+    -- Collect all player best laps
     for player_name, player_stats in pairs(map_data.players) do
         table_insert(map_best_laps, {
             name = player_name,
@@ -281,14 +303,37 @@ local function showTopPlayers(id)
         })
     end
 
+    if #map_best_laps == 0 then
+        send("No records for this map yet.")
+        return
+    end
+
+    -- Sort by best lap time
     table.sort(map_best_laps, function(a, b) return a.best_lap < b.best_lap end)
 
-    for i = 1, math_min(CONFIG.LIST_SIZE, #map_best_laps) do
+    -- Pagination logic
+    local page_size = CONFIG.TOP_PAGE_SIZE
+    local total_entries = #map_best_laps
+    local total_pages = math.ceil(total_entries / page_size)
+
+    page = page or 1
+    if page < 1 then page = 1 end
+    if page > total_pages then page = total_pages end
+
+    local start_index = (page - 1) * page_size + 1
+    local end_index = math.min(start_index + page_size - 1, total_entries)
+
+    -- Display results
+    send(string.format("Top players for %s (Page %d/%d):", current_map, page, total_pages))
+
+    for i = start_index, end_index do
         local entry = map_best_laps[i]
         send(string.format("%d. %s - %s", i, entry.name, formatTime(entry.best_lap)))
     end
 
-    ::continue::
+    if total_pages > 1 then
+        send(string.format("Use '/top %d' to see next page", page + 1))
+    end
 end
 
 local function getTopOverallPlayers(n)
@@ -384,23 +429,91 @@ local function getTopOverallPlayers(n)
     return result
 end
 
-local function showGlobalStats(id, n)
-    local top_players = getTopOverallPlayers(n)
+local function showGlobalStats(id, page, page_size)
     local send = id and function(msg) rprint(id, msg) end or sendPublic
 
-    if #top_players == 0 then
+    -- Get all players (not limited by page size yet)
+    local all_players = getTopOverallPlayers(10000) -- Large number to get all players
+
+    if #all_players == 0 then
         send("No records yet.")
-        goto continue
+        return
     end
 
-    send("Top overall players:")
-    for i, player in ipairs(top_players) do
+    -- Pagination logic
+    page_size = page_size or CONFIG.GLOBAL_PAGE_SIZE
+    local total_entries = #all_players
+    local total_pages = math.ceil(total_entries / page_size)
+
+    page = page or 1
+    if page < 1 then page = 1 end
+    if page > total_pages then page = total_pages end
+
+    local start_index = (page - 1) * page_size + 1
+    local end_index = math.min(start_index + page_size - 1, total_entries)
+
+    -- Display results
+    send(string.format("Top overall players (Page %d/%d):", page, total_pages))
+
+    for i = start_index, end_index do
+        local player = all_players[i]
         local global_indicator = player.has_global_record and " [GLOBAL RECORD]" or ""
-        send(string.format("%d. %s%s [%dpts]",
-            i, player.name, global_indicator, player.points))
+        send(string.format("%d. %s%s [%dpts, %d records]",
+            i, player.name, global_indicator, player.points, player.map_records))
     end
 
-    ::continue::
+    if total_pages > 1 then
+        send(string.format("Use '/global %d' to see next page", page + 1))
+    end
+end
+
+local function showPlayerStats(id, target)
+    local send = function(msg) rprint(id, msg) end
+    local map_data = stats[current_map]
+
+    if not map_data or not map_data.players then
+        send("No records for this map yet.")
+        return
+    end
+
+    if target == "all" then
+        -- Show stats for all online players
+        send("Current map stats for all online players:")
+        for pid, player_data in pairs(players) do
+            if player_present(pid) then
+                local player_name = player_data.name
+                local player_stats = map_data.players[player_name]
+                if player_stats then
+                    send(string.format("%s: Best %s, Avg %s, Laps %d",
+                        player_name, formatTime(player_stats.best),
+                        formatTime(player_stats.average), player_stats.laps))
+                else
+                    send(string.format("%s: No laps recorded", player_name))
+                end
+            end
+        end
+    else
+        -- Show stats for specific player
+        local target_id = tonumber(target)
+        local player_name
+
+        if target_id and player_present(target_id) then
+            player_name = get_var(target_id, "$name")
+        else
+            -- Assume it's a player name
+            player_name = target
+        end
+
+        local player_stats = map_data.players[player_name]
+        if player_stats then
+            send(string.format("Stats for %s on %s:", player_name, current_map))
+            send(string.format("Best lap: %s", formatTime(player_stats.best)))
+            send(string.format("Average lap: %s", formatTime(player_stats.average)))
+            send(string.format("Laps completed: %d", player_stats.laps))
+        else
+            send(string.format("No records found for %s on %s", player_name, current_map))
+        end
+    end
 end
 
 function OnScore(id)
@@ -436,7 +549,7 @@ function OnEnd()
         showTopPlayers() -- show top for current map only
         return
     end
-    showGlobalStats(nil, CONFIG.LIST_SIZE) -- show top overall players (all maps)
+    showGlobalStats(nil, 1, CONFIG.LIST_SIZE) -- show top overall players (all maps)
 end
 
 function OnJoin(id)
@@ -464,21 +577,16 @@ function OnCommand(id, command)
     if #args == 0 then return false end
 
     if args[1] == CONFIG.MAP_TOP_COMMAND then
-        showTopPlayers(id)
+        local page = tonumber(args[2]) or 1
+        showTopPlayers(id, page)
         return false
     elseif args[1] == CONFIG.STATS_COMMAND then
-        local map_data = stats[current_map]
-        if map_data and map_data.players and map_data.players[players[id].name] then
-            local best = map_data.players[players[id].name].best
-            rprint(id, string_format("Best time on %s: %s", current_map, formatTime(best)))
-        else
-            rprint(id, "You have no recorded laps on this map yet.")
-        end
+        local target = args[2] or tostring(id) -- Default to current player if no target specified
+        showPlayerStats(id, target)
         return false
     elseif args[1] == CONFIG.GLOBAL_TOP_COMMAND then
-        local count = tonumber(args[2]) or CONFIG.LIST_SIZE
-        if count < 1 then count = CONFIG.LIST_SIZE end
-        showGlobalStats(id, count)
+        local page = tonumber(args[2]) or 1
+        showGlobalStats(id, page)
         return false
     end
 end
