@@ -95,29 +95,27 @@ local CONFIG = {
 api_version = '1.12.0.0'
 
 local io_open = io.open
-local string_format = string.format
-local math_floor, math_huge, math_min = math.floor, math.huge, math.min
+local tonumber, pcall, pairs, ipairs, select = tonumber, pcall, pairs, ipairs, select
 local table_insert, table_sort, table_concat = table.insert, table.sort, table.concat
+local math_floor, math_huge, math_min, math_ceil = math.floor, math.huge, math.min, math.ceil
 
-local stats_file, txt_export_file
-local get_var, player_present, register_callback, say_all, rprint =
-    get_var, player_present, register_callback, say_all, rprint
-local get_dynamic_player, get_player, player_alive, read_dword, read_word =
-    get_dynamic_player, get_player, player_alive, read_dword, read_word
+local get_object_memory, get_dynamic_player = get_object_memory, get_dynamic_player
+local get_var, player_present, say_all, rprint = get_var, player_present, say_all, rprint
+local get_player, player_alive, read_dword, read_word = get_player, player_alive, read_dword, read_word
 
-local json = loadfile('json.lua')()
 local players, stats = {}, {}
+local stats_file, txt_export_file
+local json = loadfile('json.lua')()
 local current_map, tick_rate = "", 1 / 30
 local global_best_lap = { time = math_huge, player = "", map = "" }
 
-local function formatMessage(message, ...)
-    if select('#', ...) > 0 then return message:format(...) end
-    return message
+local function fmt(str, ...)
+    return select('#', ...) > 0 and str:format(...) or str
 end
 
-local function sendPublic(message)
+local function sendPublic(str)
     execute_command('msg_prefix ""')
-    say_all(message)
+    say_all(str)
     execute_command('msg_prefix "' .. CONFIG.MSG_PREFIX .. '"')
 end
 
@@ -129,14 +127,14 @@ local function getConfigPath()
     return read_string(read_dword(sig_scan('68??????008D54245468') + 0x1))
 end
 
-local function formatTime(lap_time)
+local function fmtTime(lap_time)
     if lap_time == 0 or lap_time == math_huge then return "00:00.000" end
     local total_hundredths = math_floor(lap_time * 100 + 0.5)
     local minutes = math_floor(total_hundredths / 6000)
     local remaining_hundredths = total_hundredths % 6000
     local secs = math_floor(remaining_hundredths / 100)
     local hundredths = remaining_hundredths % 100
-    return string_format("%02d:%02d.%03d", minutes, secs, hundredths)
+    return fmt("%02d:%02d.%03d", minutes, secs, hundredths)
 end
 
 local function readJSON(default)
@@ -179,14 +177,14 @@ local function exportLapRecords()
     for _, map in ipairs(maps) do
         local data = stats[map]
         if data.current_best and data.current_best.time < math_huge then
-            local line = string_format("%s, %s, %s", map, data.current_best.time, data.current_best.player)
+            local line = fmt("%s, %s, %s", map, data.current_best.time, data.current_best.player)
             table_insert(lines, line)
         end
     end
 
     -- Add global best lap to export
     if global_best_lap.time < math_huge then
-        local line = string_format("GLOBAL_BEST, %s, %s (%s)", global_best_lap.time,
+        local line = fmt("GLOBAL_BEST, %s, %s (%s)", global_best_lap.time,
             global_best_lap.player, global_best_lap.map)
         table_insert(lines, line)
     end
@@ -231,8 +229,6 @@ local function updatePlayerStats(player, lapTime)
 
     local is_personal_best = false
     local is_map_record = false
-    --local is_global_record = false
-
     local lap_count = tonumber(get_var(player.id, '$score'))
 
     -- Personal best
@@ -249,7 +245,6 @@ local function updatePlayerStats(player, lapTime)
         -- Check for global best
         if lapTime < global_best_lap.time then
             global_best_lap = { time = lapTime, player = name, map = current_map }
-            --is_global_record = true
         end
     end
 
@@ -268,12 +263,10 @@ local function updatePlayerStats(player, lapTime)
     stats[current_map] = map_stats
 
     -- Announce
-    --if is_global_record then
-    --sendPublic(formatMessage("NEW GLOBAL RECORD by %s: %s on %s!", name, formatTime(lapTime), current_map))
     if is_map_record then
-        sendPublic(formatMessage("New map record by %s: %s!", name, formatTime(lapTime)))
+        sendPublic(fmt("NEW MAP RECORD: [%s - %s]", name, fmtTime(lapTime)))
     elseif is_personal_best then
-        sendPublic(formatMessage("New personal best for %s: %s", name, formatTime(lapTime)))
+        sendPublic(fmt("New personal best: [%s - %s]", name, fmtTime(lapTime)))
     end
 end
 
@@ -291,7 +284,7 @@ local function showTopPlayers(id, page)
     local map_best_laps = {}
 
     if not map_data then
-        send("No records for this map yet.")
+        send("No records for this map yet")
         return
     end
 
@@ -304,35 +297,35 @@ local function showTopPlayers(id, page)
     end
 
     if #map_best_laps == 0 then
-        send("No records for this map yet.")
+        send("No records for this map yet")
         return
     end
 
     -- Sort by best lap time
-    table.sort(map_best_laps, function(a, b) return a.best_lap < b.best_lap end)
+    table_sort(map_best_laps, function(a, b) return a.best_lap < b.best_lap end)
 
     -- Pagination logic
     local page_size = CONFIG.TOP_PAGE_SIZE
     local total_entries = #map_best_laps
-    local total_pages = math.ceil(total_entries / page_size)
+    local total_pages = math_ceil(total_entries / page_size)
 
     page = page or 1
     if page < 1 then page = 1 end
     if page > total_pages then page = total_pages end
 
     local start_index = (page - 1) * page_size + 1
-    local end_index = math.min(start_index + page_size - 1, total_entries)
+    local end_index = math_min(start_index + page_size - 1, total_entries)
 
     -- Display results
-    send(string.format("Top players for %s (Page %d/%d):", current_map, page, total_pages))
+    send(fmt("Top players for %s [Page %d/%d]:", current_map, page, total_pages))
 
     for i = start_index, end_index do
         local entry = map_best_laps[i]
-        send(string.format("%d. %s - %s", i, entry.name, formatTime(entry.best_lap)))
+        send(fmt("%d. %s - %s", i, entry.name, fmtTime(entry.best_lap)))
     end
 
     if total_pages > 1 then
-        send(string.format("Use '/top %d' to see next page", page + 1))
+        send(fmt("Use '/top %d' for next page", page + 1))
     end
 end
 
@@ -348,8 +341,7 @@ local function getTopOverallPlayers(n)
                         points = 0,
                         map_records = 0,
                         top_finishes = 0,
-                        maps_played = 0,
-                        has_global_record = false
+                        maps_played = 0
                     }
                 end
 
@@ -365,13 +357,12 @@ local function getTopOverallPlayers(n)
                 -- Award bonus for global record
                 if global_best_lap.player == player_name then
                     player.points = player.points + CONFIG.GLOBAL_RECORD_WEIGHT
-                    player.has_global_record = true
                 end
 
                 -- Award points based on performance relative to map record
                 if map_data.current_best then
                     local ratio = map_data.current_best.time / player_stats.best
-                    local performance_points = math.floor(ratio * CONFIG.PERFORMANCE_WEIGHT)
+                    local performance_points = math_floor(ratio * CONFIG.PERFORMANCE_WEIGHT)
                     player.points = player.points + performance_points
 
                     -- Count top finishes (within threshold of record)
@@ -392,27 +383,22 @@ local function getTopOverallPlayers(n)
             local participation_penalty = data.maps_played < 3 and 0.5 or 1
             data.adjusted_points = data.points * participation_penalty
 
-            table.insert(players_array, {
+            table_insert(players_array, {
                 name = name,
                 points = data.adjusted_points,
                 map_records = data.map_records,
                 top_finishes = data.top_finishes,
-                maps_played = data.maps_played,
-                has_global_record = data.has_global_record
+                maps_played = data.maps_played
             })
         end
     end
 
     -- Sort by points (descending)
-    table.sort(players_array, function(a, b)
+    table_sort(players_array, function(a, b)
         if a.points == b.points then
             -- Tiebreaker: more map records
             if a.map_records == b.map_records then
-                -- Second tiebreaker: global record holder
-                if a.has_global_record ~= b.has_global_record then
-                    return a.has_global_record
-                end
-                -- Third tiebreaker: more top finishes
+                -- Second tiebreaker: more top finishes
                 return a.top_finishes > b.top_finishes
             end
             return a.map_records > b.map_records
@@ -422,8 +408,8 @@ local function getTopOverallPlayers(n)
 
     -- Return top n players
     local result = {}
-    for i = 1, math.min(n, #players_array) do
-        table.insert(result, players_array[i])
+    for i = 1, math_min(n, #players_array) do
+        table_insert(result, players_array[i])
     end
 
     return result
@@ -436,34 +422,32 @@ local function showGlobalStats(id, page, page_size)
     local all_players = getTopOverallPlayers(10000) -- Large number to get all players
 
     if #all_players == 0 then
-        send("No records yet.")
+        send("No records yet")
         return
     end
 
     -- Pagination logic
     page_size = page_size or CONFIG.GLOBAL_PAGE_SIZE
     local total_entries = #all_players
-    local total_pages = math.ceil(total_entries / page_size)
+    local total_pages = math_ceil(total_entries / page_size)
 
     page = page or 1
     if page < 1 then page = 1 end
     if page > total_pages then page = total_pages end
 
     local start_index = (page - 1) * page_size + 1
-    local end_index = math.min(start_index + page_size - 1, total_entries)
+    local end_index = math_min(start_index + page_size - 1, total_entries)
 
     -- Display results
-    send(string.format("Top overall players (Page %d/%d):", page, total_pages))
+    send(fmt("Top players [Page %d/%d]:", page, total_pages))
 
     for i = start_index, end_index do
         local player = all_players[i]
-        local global_indicator = player.has_global_record and " [GLOBAL RECORD]" or ""
-        send(string.format("%d. %s%s [%dpts, %d records]",
-            i, player.name, global_indicator, player.points, player.map_records))
+        send(fmt("%d. %s [%d pts]", i, player.name, player.points))
     end
 
     if total_pages > 1 then
-        send(string.format("Use '/global %d' to see next page", page + 1))
+        send(fmt("Use '/global %d' for next page", page + 1))
     end
 end
 
@@ -472,23 +456,23 @@ local function showPlayerStats(id, target)
     local map_data = stats[current_map]
 
     if not map_data or not map_data.players then
-        send("No records for this map yet.")
+        send("No records for this map yet")
         return
     end
 
     if target == "all" then
         -- Show stats for all online players
-        send("Current map stats for all online players:")
         for pid, player_data in pairs(players) do
             if player_present(pid) then
                 local player_name = player_data.name
                 local player_stats = map_data.players[player_name]
                 if player_stats then
-                    send(string.format("%s: Best %s, Avg %s, Laps %d",
-                        player_name, formatTime(player_stats.best),
-                        formatTime(player_stats.average), player_stats.laps))
+                    send(fmt("%s: Best [%s], Avg [%s]",
+                        player_name,
+                        fmtTime(player_stats.best),
+                        fmtTime(player_stats.average)))
                 else
-                    send(string.format("%s: No laps recorded", player_name))
+                    send(fmt("%s: No laps recorded", player_name))
                 end
             end
         end
@@ -506,12 +490,12 @@ local function showPlayerStats(id, target)
 
         local player_stats = map_data.players[player_name]
         if player_stats then
-            send(string.format("Stats for %s on %s:", player_name, current_map))
-            send(string.format("Best lap: %s", formatTime(player_stats.best)))
-            send(string.format("Average lap: %s", formatTime(player_stats.average)))
-            send(string.format("Laps completed: %d", player_stats.laps))
+            send(fmt("%s: Best [%s], Avg [%s]",
+                player_name,
+                fmtTime(player_stats.best),
+                fmtTime(player_stats.average)))
         else
-            send(string.format("No records found for %s on %s", player_name, current_map))
+            send(fmt("No records found for %s on %s", player_name, current_map))
         end
     end
 end
@@ -581,7 +565,7 @@ function OnCommand(id, command)
         showTopPlayers(id, page)
         return false
     elseif args[1] == CONFIG.STATS_COMMAND then
-        local target = args[2] or tostring(id) -- Default to current player if no target specified
+        local target = args[2] or tostring(id)
         showPlayerStats(id, target)
         return false
     elseif args[1] == CONFIG.GLOBAL_TOP_COMMAND then

@@ -166,9 +166,8 @@ local function loadVehicleConfig()
     return vehicles
 end
 
-local function fmt(message, ...)
-    if select('#', ...) > 0 then return message:format(...) end
-    return message
+local function fmt(str, ...)
+    return select('#', ...) > 0 and str:format(...) or str
 end
 
 local function getTag(class, name)

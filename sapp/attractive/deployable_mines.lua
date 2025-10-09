@@ -122,13 +122,13 @@ function Mines:NewMine(pos, cur_time)
 
     if not pos.seat then return end
     if pos.seat ~= 0 then
-        rprint(self.id, 'You must be in the driver\'s seat')
+        rprint(self.id, "You must be in the driver's seat")
         return
     end
 
     local vehicle_tag = read_string(read_dword(read_word(pos.vehicle) * 32 + 0x40440038))
     if not VEHICLES[vehicle_tag] then
-        rprint(self.id, 'This vehicle cannot deploy mines')
+        rprint(self.id, "This vehicle cannot deploy mines")
         return
     end
 
@@ -152,7 +152,7 @@ function Mines:NewMine(pos, cur_time)
     }
 
     self.mines = self.mines - 1
-    rprint(self.id, 'Mine Deployed! ' .. self.mines .. '/' .. MINES_PER_LIFE)
+    rprint(self.id, 'Mine Deployed (Mina desplegada)! ' .. self.mines .. '/' .. MINES_PER_LIFE)
 end
 
 function OnScriptLoad()

@@ -82,7 +82,8 @@ local game_over
 local active_vehicles, vehicle_meta_cache, player_cooldowns = {}, {}, {}
 
 local os_time = os.time
-local string_format, os_clock, pairs = string.format, os.clock, pairs
+local math_floor = math.floor
+local os_clock, pairs = os.clock, pairs
 
 local rprint, cprint, get_var = rprint, cprint, get_var
 local read_dword, read_vector3d = read_dword, read_vector3d
@@ -98,6 +99,10 @@ local sapp_events = {
     [cb['EVENT_SPAWN']] = 'OnSpawn',
     [cb['EVENT_GAME_END']] = 'OnEnd',
 }
+
+local function fmtMsg(str, ...)
+    return select('#', ...) > 0 and str:format(...) or str
+end
 
 local function register_callbacks(enable)
     for event, callback in pairs(sapp_events) do
@@ -140,12 +145,12 @@ end
 
 local function getPos(id)
     if not player_alive(id) then
-        rprint(id, "You must be alive to spawn a vehicle")
+        rprint(id, "Must be alive to spawn vehicle!")
         return nil
     end
 
     if getVehicle(id) then
-        rprint(id, "You are already in a vehicle")
+        rprint(id, "Already in vehicle!")
         return nil
     end
 
@@ -166,8 +171,8 @@ local function canSpawnVehicle(id)
     local player_cooldown = player_cooldowns[id]
 
     if player_cooldown and now < player_cooldown then
-        local remaining = player_cooldown - now
-        rprint(id, string.format("Please wait %d seconds before spawning another vehicle.", math.floor(remaining)))
+        local remaining = math_floor(player_cooldown - now)
+        rprint(id, fmtMsg("Wait %ds to spawn another vehicle.", remaining))
         return false
     end
 
@@ -175,7 +180,7 @@ local function canSpawnVehicle(id)
 end
 
 local function showKeyWords(id)
-    rprint(id, "Type keywords in chat to spawn vehicles:")
+    rprint(id, "Vehicle spawn keywords (map-specific):")
     rprint(id, vehicle_meta_cache[map_name].hud)
 end
 
@@ -207,7 +212,7 @@ function OnStart()
             local meta_id = getTag("vehi", tag_path)
             if not meta_id then
                 register_callbacks(false)
-                cprint(string_format("[ERROR] Failed to get meta ID for vehicle: %s (%s)", keyword, tag_path), 12)
+                cprint(fmtMsg("[ERROR] Failed to get meta ID for vehicle: %s (%s)", keyword, tag_path), 12)
                 vehicle_meta_cache[map_name] = nil
                 return
             end
