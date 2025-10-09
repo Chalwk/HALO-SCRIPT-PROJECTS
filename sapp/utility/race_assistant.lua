@@ -10,7 +10,6 @@ FEATURES:         - Visual countdown warnings before penalty
                   - Admin exemption system
                   - Multi-stage violation handling (warnings → kill/kick)
 
-
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
@@ -21,9 +20,9 @@ LICENSE:          MIT License
 -- CONFIGURATION
 ---------------------------------
 local RaceAssistant = {
-    warnings = 2,              -- Warnings before penalty
-    initial_grace_period = 10, -- Seconds to find first vehicle
-    exit_grace_period = 10,    -- Seconds to re-enter after exiting
+    warnings = 3,              -- Warnings before penalty
+    initial_grace_period = 30, -- Seconds to find first vehicle
+    exit_grace_period = 90,    -- Seconds to re-enter after exiting
     driving_grace_period = 10, -- Seconds driving to clear warnings
     enable_safe_zones = true,  -- Allow safe zones
     allow_exemptions = true,   -- Admins won't be punished
@@ -47,6 +46,65 @@ local map
 local players = {}
 local time = os.time
 local game_in_progress
+
+local function in_vehicle(id)
+    local dyn = get_dynamic_player(id)
+    if dyn == 0 then return false end
+    return read_dword(dyn + 0x11C) ~= 0xFFFFFFFF
+end
+
+local function in_safe_zone(id)
+    if not RaceAssistant.enable_safe_zones then return false end
+
+    local zones = RaceAssistant.safe_zones[map]
+    if not zones then return false end
+
+    local dyn = get_dynamic_player(id)
+    if dyn == 0 then return false end
+    local x, y, z = read_vector3d(dyn + 0x5C)
+
+    for _, zone in ipairs(zones) do
+        local zx, zy, zz, radius = unpack(zone)
+        local dist = math.sqrt((x - zx) ^ 2 + (y - zy) ^ 2 + (z - zz) ^ 2)
+        if dist <= radius then return true end
+    end
+    return false
+end
+
+local function handle_penalty(id, playerData, currentTime)
+    playerData.strikes = playerData.strikes - 1
+    playerData.timer = currentTime + RaceAssistant.exit_grace_period
+
+    if playerData.strikes > 0 then
+        rprint(id, "Enter a vehicle! Strikes left: " .. playerData.strikes)
+		rprint(id, "¡Entra a un vehículo! Avisos restantes: " .. playerData.strikes)
+    else
+        if RaceAssistant.punishment == "kill" then
+            execute_command('kill ' .. id)
+            rprint(id, "Killed for not entering a vehicle!")
+			rprint(id, "¡Eliminado por no entrar a un vehículo!")
+        elseif RaceAssistant.punishment == "kick" then
+            execute_command('k ' .. id .. ' "Not entering a vehicle within the required time"')
+        end
+    end
+end
+
+local function reset_strikes(id, playerData)
+    local had_strikes = playerData.strikes < RaceAssistant.warnings
+    playerData.strikes = RaceAssistant.warnings
+    playerData.grace = 0
+    if had_strikes then
+        rprint(id, "Strikes reset - keep racing!")
+        rprint(id, "Avisos reiniciados - ¡sigue compitiendo!")
+    end
+end
+
+local function proceed(id, playerData)
+    return player_present(id)
+        and player_alive(id)
+        and not in_safe_zone(id)
+        and not playerData.exempt()
+end
 
 function OnScriptLoad()
     register_callback(cb['EVENT_TICK'], 'OnTick')
@@ -78,37 +136,38 @@ function OnEnd()
     game_in_progress = false
 end
 
-function OnJoin(playerId)
-    players[playerId] = {
+function OnJoin(id)
+    players[id] = {
         strikes = RaceAssistant.warnings,
         timer = time() + RaceAssistant.initial_grace_period,
         grace = 0,
         warned = false,
         exempt = function()
             if not RaceAssistant.allow_exemptions then return false end
-            local level = tonumber(get_var(playerId, '$lvl'))
+            local level = tonumber(get_var(id, '$lvl'))
             return RaceAssistant.exempt_admin_levels[level] or false
         end
     }
 end
 
-function OnQuit(playerId)
-    players[playerId] = nil
+function OnQuit(id)
+    players[id] = nil
 end
 
-function OnSpawn(playerId)
+function OnSpawn(id)
     if not game_in_progress then return end
-    local p = players[playerId]
+    local p = players[id]
     if p and not p.exempt() then
         p.strikes = RaceAssistant.warnings
         p.timer = time() + RaceAssistant.initial_grace_period
         p.warned = false
-        rprint(playerId, "You have " .. RaceAssistant.initial_grace_period .. "s to enter a vehicle!")
+        rprint(id, RaceAssistant.initial_grace_period .. "s to enter a vehicle!")
+        rprint(id, RaceAssistant.initial_grace_period .. " segundos para entrar a un vehículo!")
     end
 end
 
-function OnEnter(playerId)
-    local p = players[playerId]
+function OnEnter(id)
+    local p = players[id]
     if p then
         p.timer = 0
         p.grace = time() + RaceAssistant.driving_grace_period
@@ -116,87 +175,32 @@ function OnEnter(playerId)
     end
 end
 
-function OnExit(playerId)
+function OnExit(id)
     if not game_in_progress then return end
-    local p = players[playerId]
+    local p = players[id]
     if p and not p.exempt() then
         p.timer = time() + RaceAssistant.exit_grace_period
         p.grace = 0
     end
 end
 
-local function in_vehicle(playerId)
-    local dyn = get_dynamic_player(playerId)
-    if dyn == 0 then return false end
-    return read_dword(dyn + 0x11C) ~= 0xFFFFFFFF
-end
-
-local function in_safe_zone(playerId)
-    if not RaceAssistant.enable_safe_zones then return false end
-
-    local zones = RaceAssistant.safe_zones[map]
-    if not zones then return false end
-
-    local dyn = get_dynamic_player(playerId)
-    if dyn == 0 then return false end
-    local x, y, z = read_vector3d(dyn + 0x5C)
-
-    for _, zone in ipairs(zones) do
-        local zx, zy, zz, radius = unpack(zone)
-        local dist = math.sqrt((x - zx) ^ 2 + (y - zy) ^ 2 + (z - zz) ^ 2)
-        if dist <= radius then return true end
-    end
-    return false
-end
-
-local function handle_penalty(playerId, playerData, currentTime)
-    playerData.strikes = playerData.strikes - 1
-    playerData.timer = currentTime + RaceAssistant.exit_grace_period
-
-    if playerData.strikes > 0 then
-        rprint(playerId, "Enter a vehicle! Strikes left: " .. playerData.strikes)
-    else
-        if RaceAssistant.punishment == "kill" then
-            execute_command('kill ' .. playerId)
-            rprint(playerId, "Killed for not entering a vehicle!")
-        elseif RaceAssistant.punishment == "kick" then
-            execute_command('k ' .. playerId .. ' "Not entering a vehicle within the required time"')
-        end
-    end
-end
-
-local function reset_strikes(playerId, playerData)
-    local had_strikes = playerData.strikes < RaceAssistant.warnings
-    playerData.strikes = RaceAssistant.warnings
-    playerData.grace = 0
-    if had_strikes then
-        rprint(playerId, "Strikes reset - keep racing!")
-    end
-end
-
-local function proceed(playerId, playerData)
-    return player_present(playerId)
-        and player_alive(playerId)
-        and not in_safe_zone(playerId)
-        and not playerData.exempt()
-end
-
 function OnTick()
     if not game_in_progress then return end
     local now = time()
 
-    for playerId, p in pairs(players) do
-        if not proceed(playerId, p) then goto continue end
+    for id, p in pairs(players) do
+        if not proceed(id, p) then goto continue end
 
-        if not in_vehicle(playerId) then
+        if not in_vehicle(id) then
             if p.timer > 0 and now >= p.timer then
-                handle_penalty(playerId, p, now)
+                handle_penalty(id, p, now)
             elseif p.timer > 0 and not p.warned and (p.timer - now) <= 10 then
-                rprint(playerId, "WARNING: " .. (p.timer - now) .. "s to enter a vehicle!")
+                rprint(id, "WARNING: " .. (p.timer - now) .. "s to enter a vehicle!")
+                rprint(id, "ADVERTENCIA: " .. (p.timer - now) .. " segundos para entrar a un vehículo!")
                 p.warned = true
             end
         elseif p.grace > 0 and now >= p.grace then
-            reset_strikes(playerId, p)
+            reset_strikes(id, p)
         end
         ::continue::
     end
