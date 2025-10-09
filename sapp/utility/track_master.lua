@@ -268,7 +268,7 @@ local function updatePlayerStats(player, lapTime)
     elseif is_personal_best then
         sendPublic(fmt("NEW PERSONAL BEST: [%s - %s]", name, fmtTime(lapTime)))
     else
-        rprint(player.id, fmt("Lap completed: [%s - %s]", name, fmtTime(lapTime)))
+        rprint(player.id, fmt("Lap completed: %s", fmtTime(lapTime)))
     end
 end
 
