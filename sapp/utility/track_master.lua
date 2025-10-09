@@ -137,6 +137,17 @@ local function fmtTime(lap_time)
     return fmt("%02d:%02d.%03d", minutes, secs, hundredths)
 end
 
+local function fmtTimeDifference(diff)
+    local sign = diff >= 0 and "+" or "-"
+    local abs_diff = math.abs(diff)
+    local total_hundredths = math_floor(abs_diff * 100 + 0.5)
+    local minutes = math_floor(total_hundredths / 6000)
+    local remaining_hundredths = total_hundredths % 6000
+    local secs = math_floor(remaining_hundredths / 100)
+    local hundredths = remaining_hundredths % 100
+    return fmt("%s%02d:%02d.%03d", sign, minutes, secs, hundredths)
+end
+
 local function readJSON(default)
     local file = io_open(stats_file, "r")
     if not file then return default end
@@ -268,7 +279,13 @@ local function updatePlayerStats(player, lapTime)
     elseif is_personal_best then
         sendPublic(fmt("NEW PERSONAL BEST: [%s - %s]", name, fmtTime(lapTime)))
     else
-        rprint(player.id, fmt("Lap completed: %s", fmtTime(lapTime)))
+        local best_time = player.best_lap
+        local difference = lapTime - best_time
+        rprint(player.id,
+            fmt("Lap completed: %s (Best: %s | +%s)",
+                fmtTime(lapTime),
+                fmtTime(best_time),
+                fmtTimeDifference(difference)))
     end
 end
 
