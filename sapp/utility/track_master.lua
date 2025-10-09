@@ -97,7 +97,7 @@ api_version = '1.12.0.0'
 local io_open = io.open
 local tonumber, pcall, pairs, ipairs, select = tonumber, pcall, pairs, ipairs, select
 local table_insert, table_sort, table_concat = table.insert, table.sort, table.concat
-local math_floor, math_huge, math_min, math_ceil = math.floor, math.huge, math.min, math.ceil
+local math_floor, math_huge, math_min, math_ceil, math_abs = math.floor, math.huge, math.min, math.ceil, math.abs
 
 local get_object_memory, get_dynamic_player = get_object_memory, get_dynamic_player
 local get_var, player_present, say_all, rprint = get_var, player_present, say_all, rprint
@@ -139,7 +139,7 @@ end
 
 local function fmtTimeDifference(diff)
     local sign = diff >= 0 and "+" or "-"
-    local abs_diff = math.abs(diff)
+    local abs_diff = math_abs(diff)
     local total_hundredths = math_floor(abs_diff * 100 + 0.5)
     local minutes = math_floor(total_hundredths / 6000)
     local remaining_hundredths = total_hundredths % 6000
