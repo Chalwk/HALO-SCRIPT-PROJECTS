@@ -267,6 +267,8 @@ local function updatePlayerStats(player, lapTime)
         sendPublic(fmt("NEW MAP RECORD: [%s - %s]", name, fmtTime(lapTime)))
     elseif is_personal_best then
         sendPublic(fmt("New personal best: [%s - %s]", name, fmtTime(lapTime)))
+    else
+        sendPublic(fmt("Lap completed: [%s - %.3fs]", name, fmtTime(lapTime)))
     end
 end
 
