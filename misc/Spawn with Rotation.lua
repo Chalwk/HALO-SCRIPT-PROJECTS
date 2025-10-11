@@ -1,5 +1,5 @@
 -- One-time load of Coordinates library:
-local coordinates = assert(loadfile "Coordinates.lib")()
+local coordinates = assert(loadfile "map_coordinates.lua")()
 
 -- coordinates[map].ffa
 -- coordinates[map].red
