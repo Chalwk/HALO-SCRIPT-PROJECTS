@@ -25,7 +25,7 @@ USAGE:
                   Rules display for 10 seconds in console format
 
 DEPENDENCIES:
-                  Requires console_text_lib.lua for formatted text display
+                  Requires rcon_text.lua for formatted text display
 
 Copyright (c) 2021-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -59,7 +59,7 @@ local server_prefix = "**BK**"  -- Server prefix for messages
 
 api_version = "1.12.0.0"
 
-local ConsoleText = (loadfile "console_text_lib.lua")()
+local ConsoleText = (loadfile "rcon_text.lua")()
 local game_started = false  -- Flag to track if the game has started
 
 -- Load script and register callbacks
