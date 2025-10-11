@@ -72,13 +72,15 @@ local CONFIG = {
     GLOBAL_TOP_COMMAND = "global", -- Command to show top 5 overall players (all maps)
 
     -- Settings:
-    LIST_SIZE = 5,             -- Number of top laps to display (applies to top command and game end)
-    MIN_LAP_TIME = 10.0,       -- Minimum valid lap time in seconds
-    EXPORT_LAP_RECORDS = true, -- Export lap records to a text file
-    DRIVER_REQUIRED = true,    -- Only count laps if the player is the driver of the vehicle
-    SHOW_FINAL_TOP = true,     -- Show top results on game end
-    TOP_FINAL_GLOBAL = false,  -- true = GLOBAL map results | false = CURRENT map results | This setting requires SHOW_FINAL_TOP = true
-    MSG_PREFIX = "**SAPP**",   -- Some functions temporarily change the message msg_prefix; this restores it.
+    LIST_SIZE = 5,                  -- Number of top laps to display (applies to top command and game end)
+    MIN_LAP_TIME = 10.0,            -- Minimum valid lap time in seconds
+    EXPORT_LAP_RECORDS = true,      -- Export lap records to a text file
+    DRIVER_REQUIRED = true,         -- Only count laps if the player is the driver of the vehicle
+    SHOW_FINAL_TOP = true,          -- Show top results on game end
+    TOP_FINAL_GLOBAL = false,       -- true = GLOBAL map results | false = CURRENT map results | This setting requires SHOW_FINAL_TOP = true
+    MSG_PREFIX = "**SAPP**",        -- Some functions temporarily change the message msg_prefix; this restores it.
+
+    USE_CHECKPOINT_TRACKING = true, -- Enable checkpoint-based timing fix (recommended)
 
     -- Pagination settings
     TOP_PAGE_SIZE = 10,    -- Default results per page for /top command
@@ -95,10 +97,14 @@ local CONFIG = {
 api_version = '1.12.0.0'
 
 local io_open = io.open
+local os_clock = os.clock
 local tonumber, pcall, pairs, ipairs, select = tonumber, pcall, pairs, ipairs, select
 local table_insert, table_sort, table_concat = table.insert, table.sort, table.concat
+
+local math_max = math.max
 local math_floor, math_huge, math_min, math_ceil, math_abs = math.floor, math.huge, math.min, math.ceil, math.abs
 
+local race_globals
 local get_object_memory, get_dynamic_player = get_object_memory, get_dynamic_player
 local get_var, player_present, say_all, rprint = get_var, player_present, say_all, rprint
 local get_player, player_alive, read_dword, read_word = get_player, player_alive, read_dword, read_word
@@ -520,20 +526,61 @@ local function showPlayerStats(id, target)
 end
 
 function OnScore(id)
-    if not considerOccupant(id) then goto continue end
-
+    if not considerOccupant(id) then return end
     local player = players[id]
-    if not player or not player_alive(id) then goto continue end
+    if not player or not player_alive(id) then return end
 
     local static_player = get_player(id)
     local lap_ticks = getLapTicks(static_player + 0xC4)
     local lap_time = roundToHundredths(lap_ticks * tick_rate)
 
-    if lap_time >= CONFIG.MIN_LAP_TIME then
-        updatePlayerStats(player, lap_time)
+    if not CONFIG.USE_CHECKPOINT_TRACKING then goto continue end
+
+    -- Only adjust time if player properly started the lap
+    if player.has_started_lap and player.offset_time then
+        lap_time = lap_time - player.offset_time
+
+        -- Safety check: if subtraction gives nonsense result, use raw time
+        if lap_time < 0 or lap_time > 600 then -- 600 seconds = 10 minutes
+            lap_time = roundToHundredths(lap_ticks * tick_rate)
+        end
+
+        -- Reset for next lap
+        player.has_started_lap = false
+        player.offset_time = nil
+        player.spawn_time = os_clock() -- Reset spawn time for next lap
+    else
+        -- Player completed lap without properly starting? Ignore this lap
+        return
     end
 
     ::continue::
+
+    if lap_time >= CONFIG.MIN_LAP_TIME then
+        updatePlayerStats(player, lap_time)
+    end
+end
+
+-- Engine-Level Bug work aournd (Lapticks accumulate while the player is not racing)
+function OnTick()
+    for id, player in pairs(players) do
+        if player_present(id) then
+            local checkpoint = read_dword(race_globals + to_real_index(id) * 4 + 0x44)
+
+            -- Player crosses start line (checkpoint 1)
+            if checkpoint == 1 and not player.has_started_lap then
+                local now = os_clock()
+                player.offset_time = now - (player.spawn_time or now)
+                player.has_started_lap = true
+            end
+
+            -- Player resets (checkpoint goes back to 0)
+            if checkpoint == 0 and player.has_started_lap then
+                player.has_started_lap = false
+                player.offset_time = nil
+            end
+        end
+    end
 end
 
 function OnStart()
@@ -569,6 +616,15 @@ function OnJoin(id)
     }
 end
 
+function OnSpawn(id)
+    local player = players[id]
+    if player then
+        player.spawn_time = os_clock()
+        player.offset_time = nil
+        player.has_started_lap = false -- Track if they've crossed start line
+    end
+end
+
 function OnQuit(id)
     players[id] = nil
 end
@@ -595,6 +651,8 @@ function OnCommand(id, command)
 end
 
 function OnScriptLoad()
+    race_globals = read_dword(sig_scan("BF??????00F3ABB952000000") + 0x1)
+
     local config_path = getConfigPath()
     stats_file = config_path .. "\\sapp\\" .. CONFIG.STATS_FILE
     txt_export_file = config_path .. "\\sapp\\" .. CONFIG.TEXT_EXPORT_FILE
@@ -607,6 +665,11 @@ function OnScriptLoad()
     register_callback(cb['EVENT_GAME_END'], 'OnEnd')
     register_callback(cb['EVENT_COMMAND'], 'OnCommand')
     register_callback(cb['EVENT_GAME_START'], 'OnStart')
+
+    if CONFIG.USE_CHECKPOINT_TRACKING then
+        register_callback(cb['EVENT_SPAWN'], 'OnSpawn')
+        register_callback(cb['EVENT_TICK'], 'OnTick')
+    end
 
     OnStart()
 end
