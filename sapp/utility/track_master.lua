@@ -3,33 +3,33 @@
 SCRIPT NAME:      track_master.lua
 DESCRIPTION:      Advanced racing tracker and leaderboard system for Halo SAPP.
 
-FEATURES:         - Tracks player lap times and validates laps (minimum time + driver seat)
+FEATURES:         - Tracks player lap times with checkpoint validation
+                  - Supports both sequential and non-sequential race modes
                   - Records personal bests per player and all-time map records
                   - Maintains detailed per-map player statistics:
                       * laps completed
-                      * best lap
-                      * average lap
-                  - Calculates global rankings across all maps using a weighted point system:
-                      * MAP_RECORD_WEIGHT: points awarded for holding a map record
-                      * GLOBAL_RECORD_WEIGHT: bonus points for holding the global best lap
-                      * PERFORMANCE_WEIGHT: points for performance relative to the map record
-                      * TOP_FINISH_THRESHOLD: counts near-record laps as top finishes
-                      * Participation penalty: players with few maps played may have adjusted points
-                      * Tiebreakers: map records > global record > top finishes
-                  - Announces in-game:
-                      * New personal bests + New map records
-                  - Provides in-game commands:
-                      * /stats [player|all]     - Show personal stats for current player, specific player, or all online players
-                      * /top [page]             - Display paginated top laps for current map (default page size: 10)
-                      * /global [page]          - Display paginated top overall players across all maps (default page size: 10)
-                  - Exports lap records to JSON and optional text file
-                  - Automatic saving and exporting on game end or script unload
-                  - Configurable options:
-                      * pagination sizes
-                      * minimum lap time
-                      * export files
-                      * driver-only laps
-                      * final leaderboard display (map or global)
+                      * best lap time
+                      * average lap time
+                  - Real-time checkpoint tracking with optional time display
+                  - Calculates global rankings across all maps using weighted scoring:
+                      * MAP_RECORD_WEIGHT: points for holding map records
+                      * GLOBAL_RECORD_WEIGHT: bonus for overall best lap
+                      * PERFORMANCE_WEIGHT: points based on lap time vs record
+                      * TOP_FINISH_THRESHOLD: counts near-record laps
+                      * Participation adjustment for players with few maps
+                  - In-game announcements:
+                      * New personal bests
+                      * New map records
+                      * Checkpoint completion times
+                  - Player commands:
+                      * /stats [player|all] - Personal/player stats for current map
+                      * /top [page] - Paginated top laps for current map
+                      * /global [page] - Paginated top overall players (all maps)
+                      * /reset - Reset personal checkpoint progress
+                  - Automatic data persistence with JSON export
+                  - Optional text file export of lap records
+                  - Configurable race validation (driver seat requirement)
+                  - End-of-game leaderboard display (map or global)
 
 COMMAND SYNTAX:
     /stats                    - Show your personal stats on current map
@@ -40,6 +40,15 @@ COMMAND SYNTAX:
     /top [page_number]        - Show specific page of top laps for current map
     /global                   - Show first page of top overall players
     /global [page_number]     - Show specific page of top overall players
+    /reset                    - Reset your current checkpoint progress
+
+RACE MECHANICS:
+    - Sequential Mode: Checkpoints must be collected in order
+    - Non-Sequential Mode: Checkpoints can be collected in any order
+    - Lap validation requires minimum time threshold
+    - Optional driver seat requirement for lap validation
+    - Real-time checkpoint time tracking
+    - Automatic race start/stop detection
 
 SCORING SYSTEM:
     Global rankings are calculated using a weighted system:
@@ -48,11 +57,12 @@ SCORING SYSTEM:
     - Performance: Up to +50 points based on lap time relative to map record
     - Top Finishes: Laps within 95% of record time count as top finishes (tiebreaker)
     - Participation: Players with fewer than 3 maps played get 50% point penalty
+    - Tiebreakers: map records > global record > top finishes
 
 REQUIREMENTS:     Install to the same directory as sapp.dll
                   - Lua JSON Parser:  http://regex.info/blog/lua/json
 
-LAST UPDATED:     9/10/2025
+LAST UPDATED:     12/10/2025
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -67,60 +77,62 @@ local CONFIG = {
     TEXT_EXPORT_FILE = "lap_records.txt",
 
     -- Commands:
-    STATS_COMMAND = "stats",       -- Command to show player's personal best lap (current map)
-    MAP_TOP_COMMAND = "top",       -- Command to show top 5 global best laps (current map)
-    GLOBAL_TOP_COMMAND = "global", -- Command to show top 5 overall players (all maps)
+    STATS_COMMAND = "stats",            -- Command to show player's personal best lap (current map)
+    MAP_TOP_COMMAND = "top",            -- Command to show top 5 global best laps (current map)
+    GLOBAL_TOP_COMMAND = "global",      -- Command to show top 5 overall players (all maps)
+    RESET_CHECKPOINT_COMMAND = "reset", -- Command to reset checkpoint for yourself
 
     -- Settings:
-    LIST_SIZE = 5,             -- Number of top laps to display (applies to top command and game end)
-    MIN_LAP_TIME = 10.0,       -- Minimum valid lap time in seconds
-    EXPORT_LAP_RECORDS = true, -- Export lap records to a text file
-    DRIVER_REQUIRED = true,    -- Only count laps if the player is the driver of the vehicle
-    SHOW_FINAL_TOP = true,     -- Show top results on game end
-    TOP_FINAL_GLOBAL = false,  -- true = GLOBAL map results | false = CURRENT map results | This setting requires SHOW_FINAL_TOP = true
-    MSG_PREFIX = "**SAPP**",   -- Some functions temporarily change the message msg_prefix; this restores it.
+    LIST_SIZE = 5,              -- Number of top laps to display (applies to top command and game end)
+    MIN_LAP_TIME = 10.0,        -- Minimum valid lap time in seconds
+    EXPORT_LAP_RECORDS = true,  -- Export lap records to a text file
+    DRIVER_REQUIRED = true,     -- Only count laps if the player is the driver of the vehicle
+    SHOW_FINAL_TOP = true,      -- Show top results on game end
+    TOP_FINAL_GLOBAL = false,   -- true = GLOBAL map results | false = CURRENT map results | This setting requires SHOW_FINAL_TOP = true
+    SHOW_CHECKPOINT_HUD = true, -- Show checkpoint HUD while racing
+    MSG_PREFIX = "**SAPP**",    -- Some functions temporarily change the message msg_prefix; this restores it.
 
     -- Pagination settings
     TOP_PAGE_SIZE = 10,    -- Default results per page for /top command
     GLOBAL_PAGE_SIZE = 10, -- Default results per page for /global command
 
     -- Scoring weights
-    MAP_RECORD_WEIGHT = 200,    -- Points for holding a map record
-    GLOBAL_RECORD_WEIGHT = 300, -- Bonus points for holding the global best lap
-    PERFORMANCE_WEIGHT = 50,    -- Max points for performance relative to record
-    TOP_FINISH_THRESHOLD = 0.95 -- Ratio threshold for counting top finishes
+    MAP_RECORD_WEIGHT = 200,     -- Points for holding a map record
+    GLOBAL_RECORD_WEIGHT = 300,  -- Bonus points for holding the global best lap
+    PERFORMANCE_WEIGHT = 50,     -- Max points for performance relative to record
+    TOP_FINISH_THRESHOLD = 0.95, -- Ratio threshold for counting top finishes
+
+    -- Add custom game modes that are non-sequential (any order) here:
+    --
+    MODES = {
+        ["ANY_ORDER"] = true -- Example: "ANY_ORDER", or "MY_CUSTOM_GAMEMODE"
+    }
 }
 -- Config ends ---------------------------------------------
 
 api_version = '1.12.0.0'
 
 local io_open = io.open
-
 local os_clock = os.clock
 
-local math_abs, math_ceil, math_floor, math_huge, math_min =
-    math.abs, math.ceil, math.floor, math.huge, math.min
+local band = bit.band
 
-local table_concat, table_insert, table_sort =
-    table.concat, table.insert, table.sort
+local math_abs, math_ceil, math_floor, math_huge, math_min, math_log =
+    math.abs, math.ceil, math.floor, math.huge, math.min, math.log
 
-local tonumber, pcall, pairs, ipairs, select =
-    tonumber, pcall, pairs, ipairs, select
+local table_concat, table_insert, table_sort = table.concat, table.insert, table.sort
+local tonumber, pcall, pairs, ipairs, select = tonumber, pcall, pairs, ipairs, select
 
-local get_object_memory, get_dynamic_player =
-    get_object_memory, get_dynamic_player
+local get_object_memory, get_dynamic_player = get_object_memory, get_dynamic_player
+local player_alive, read_dword, read_word = player_alive, read_dword, read_word
+local get_var, player_present, rprint, say_all = get_var, player_present, rprint, say_all
 
-local get_player, player_alive, read_dword, read_word =
-    get_player, player_alive, read_dword, read_word
+local race_globals, race_mode
 
-local get_var, player_present, rprint, say_all =
-    get_var, player_present, rprint, say_all
-
-local race_globals
 local players, stats = {}, {}
 local stats_file, txt_export_file
 
-local current_map, tick_rate = "", 1 / 30
+local current_map = ""
 local json = loadfile('json.lua')()
 
 local global_best_lap = {
@@ -247,11 +259,6 @@ local function considerOccupant(id)
     if vehicle_object == 0 then return false end
 
     return read_word(dyn_player + 0x2F0) == 0 -- driver seat
-end
-
-local function getLapTicks(address)
-    if address == 0 then return 0 end
-    return read_word(address)
 end
 
 local function updatePlayerStats(player, lapTime)
@@ -539,20 +546,49 @@ local function showPlayerStats(id, target)
     end
 end
 
+local function getRaceMode()
+    local mode = get_var(0, '$mode')
+    return CONFIG.MODES[mode] and 2 or 1
+end
+
+local function getCheckpointNumber(bitmask)
+    if bitmask == 0 then return 0 end
+    if race_mode == 1 then
+        return math_floor(math_log(bitmask, 2)) + 1
+    elseif race_mode == 2 then
+        local n = 0
+        while bitmask ~= 0 do bitmask, n = band(bitmask, bitmask - 1), n + 1 end
+        return n
+    end
+end
+
+local function setPlayerState(player, racing, time, checkpoint)
+    player.racing = racing; player.start_time = time
+    player.last_checkpoint = checkpoint
+end
+
+local function resetCheckpoint(id)
+    local player = players[id]
+    if not player then return end
+
+    write_dword(race_globals + to_real_index(id) * 4 + 0x44, 0) -- works regardless of game varient (i.e, normal, rally, any-order)
+    setPlayerState(player, nil, nil, 0)
+
+    rprint(id, "Checkpoint reset")
+end
+
 function OnScore(id)
     if not considerOccupant(id) then goto continue end
 
     local player = players[id]
-    if not player or not player_alive(id) then goto continue end
-    --
-    --local static_player = get_player(id)
-    --local lap_ticks = getLapTicks(static_player + 0xC4)
+    if not player or not player.racing or not player.start_time then goto continue end
 
-    local timer = os_clock() - player.timer
+    local timer = os_clock() - player.start_time
     local lap_time = roundToHundredths(timer)
 
     if lap_time >= CONFIG.MIN_LAP_TIME then
         updatePlayerStats(player, lap_time)
+        setPlayerState(player, nil, nil, 0)
     end
 
     ::continue::
@@ -560,17 +596,45 @@ end
 
 function OnTick()
     for id, player in pairs(players) do
-        if player_present(id) then
-            local checkpoint = read_dword(race_globals + to_real_index(id) * 4 + 0x44)
+        if player_present(id) and player_alive(id) then
+            local checkpoint_address = race_globals + to_real_index(id) * 4 + 0x44
+            local checkpoint = read_dword(checkpoint_address)
+            local now = os_clock()
 
-            -- Player crosses start line (checkpoint 1)
-            if checkpoint == 1 and not player.racing then
-                player.timer = os_clock(); player.racing = true
+            local current_checkpoint = getCheckpointNumber(checkpoint)
+            local prev_checkpoint = player.last_checkpoint
+
+            -- Sequential checkpoints
+            if race_mode == 1 then
+                if checkpoint == 1 and not player.racing then
+                    -- Start race at first checkpoint
+                    setPlayerState(player, true, now, 0)
+                elseif checkpoint == 0 and player.racing then
+                    -- Reset if race conditions lost
+                    setPlayerState(player, nil, nil, 0)
+                end
+                -- Non-sequential
+            elseif race_mode == 2 then
+                if current_checkpoint >= 1 and not player.racing then
+                    -- Start race when first checkpoint is collected
+                    setPlayerState(player, true, now, 0)
+                elseif current_checkpoint == 0 and player.racing then
+                    -- Reset if race abandoned
+                    setPlayerState(player, nil, nil, 0)
+                end
             end
 
-            -- Player resets (checkpoint goes back to 0)
-            if checkpoint == 0 and player.racing then
-                player.racing = nil; player.timer = nil
+            -- Show checkpoint times (applies to all modes)
+            if player.racing and player.start_time then
+                local elapsed = now - player.start_time
+
+                -- Timeout safeguard (10 minutes)
+                if elapsed > 600 then
+                    setPlayerState(player, nil, nil, 0)
+                elseif CONFIG.SHOW_CHECKPOINT_HUD and current_checkpoint > 1 and current_checkpoint ~= prev_checkpoint then
+                    rprint(id, fmt("Checkpoint %d - [%s]", current_checkpoint, fmtTime(elapsed)))
+                    player.last_checkpoint = current_checkpoint
+                end
             end
         end
     end
@@ -578,8 +642,11 @@ end
 
 function OnStart()
     if get_var(0, '$gt') ~= 'race' then return end
+
+    race_mode = getRaceMode()
     current_map = get_var(0, "$map")
     players = {}
+
     for i = 1, 16 do
         if player_present(i) then OnJoin(i) end
     end
@@ -605,6 +672,7 @@ function OnJoin(id)
         id = id,
         name = player_name,
         previous_time = 0,
+        last_checkpoint = 0,
         best_lap = best_lap
     }
 end
@@ -630,6 +698,9 @@ function OnCommand(id, command)
     elseif args[1] == CONFIG.GLOBAL_TOP_COMMAND then
         local page = tonumber(args[2]) or 1
         showGlobalStats(id, page)
+        return false
+    elseif args[1] == CONFIG.RESET_CHECKPOINT_COMMAND then
+        resetCheckpoint(id)
         return false
     end
 end
