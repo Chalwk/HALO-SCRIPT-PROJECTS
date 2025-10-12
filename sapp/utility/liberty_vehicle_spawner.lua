@@ -10,18 +10,16 @@ CONFIGURATION:
                 HELP_COMMAND:           Command to list available vehicles
                 COOLDOWN_PERIOD:        Cooldown time (seconds) between vehicle spawns per player
                 DESPAWN_DELAY_SECONDS:  Time (in seconds) before a spawned vehicle despawns
-
+                POLL_INTERVAL:          Interval (in seconds) for periodic vehicle despawn checks
                 DEFAULT_TAGS: Base vehicle definitions
                     Format: ["keyword"] = "tag_path"
                         - keyword: What players type in chat to spawn the vehicle
                         - tag_path: The internal path to the vehicle tag name
-
                 CUSTOM_TAGS: Map-specific vehicle definitions that extend DEFAULT_TAGS
                     Format: ["map_name"] = {["keyword"] = "tag_path", ...}
                         - map_name: The name of the map (not case sensitive)
                         - keyword: What players type in chat to spawn the vehicle
                         - tag_path: The internal path to the vehicle tag name
-
                     BEHAVIOR:
                         - For maps listed here: DEFAULT_TAGS and CUSTOM_TAGS are merged
                         - Stock vehicles take precedence over custom vehicles with same keyword
@@ -41,7 +39,7 @@ LICENSE:          MIT License
 local HELP_COMMAND = "vlist"
 local DESPAWN_DELAY_SECONDS = 7
 local COOLDOWN_PERIOD = 7
-local POLL_INTERVAL = 1
+local POLL_INTERVAL = 1 -- do not touch unless you know what you're doing
 
 local DEFAULT_TAGS = {
     ["hog"] = "vehicles\\warthog\\mp_warthog",
