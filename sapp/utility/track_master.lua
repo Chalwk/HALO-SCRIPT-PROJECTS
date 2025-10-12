@@ -118,7 +118,7 @@ local get_object_memory, get_dynamic_player = get_object_memory, get_dynamic_pla
 local player_alive, read_dword, read_word = player_alive, read_dword, read_word
 local get_var, player_present, rprint, say_all = get_var, player_present, rprint, say_all
 
-local race_globals, race_mode
+local race_globals, race_mode, game_over
 
 local players, stats = {}, {}
 local stats_file, txt_export_file
@@ -150,32 +150,47 @@ local function getConfigPath()
     return read_string(read_dword(sig_scan('68??????008D54245468') + 0x1))
 end
 
+local function formatMinutes(abs_time, sign)
+    local total_ms = math_floor(abs_time * 1000 + 0.5)
+    local minutes = math_floor(total_ms / 60000)
+    local remaining = total_ms % 60000
+    local secs = math_floor(remaining / 1000)
+    local ms = remaining % 1000
+    return fmt("%s%d:%02d.%03d", sign or "", minutes, secs, ms)
+end
+
+local function formatSeconds(abs_time, sign)
+    local total_ms = math_floor(abs_time * 1000 + 0.5)
+    local seconds = math_floor(total_ms / 1000)
+    local ms = total_ms % 1000
+    if seconds >= 60 then
+        return formatMinutes(total_ms / 1000, sign)
+    end
+    return fmt("%s%d.%03ds", sign or "", seconds, ms)
+end
+
+local function formatSubSecond(abs_time, sign)
+    local total_ms = math_floor(abs_time * 1000 + 0.5)
+    if total_ms >= 1000 then
+        return formatSeconds(total_ms / 1000, sign)
+    end
+    return fmt("%s0.%03ds", sign or "", total_ms)
+end
+
 local function fmtTime(time, is_difference)
     if time == 0 or time == math_huge then
         return is_difference and "+00:00.000" or "00:00.000"
     end
 
-    local total_hundredths = math_floor(time * 100 + 0.5)
-    local minutes = math_floor(total_hundredths / 6000)
-    local remaining_hundredths = total_hundredths % 6000
-    local secs = math_floor(remaining_hundredths / 100)
-    local hundredths = remaining_hundredths % 100
+    local abs_time = math_abs(time)
+    local sign = is_difference and "+" or ""
 
-    if is_difference then
-        if time < 60 then
-            return fmt("%+.3fs", time)
-        else
-            local sign = time >= 0 and "+" or "-"
-            local abs_time = math_abs(time)
-            local abs_total_hundredths = math_floor(abs_time * 100 + 0.5)
-            local abs_minutes = math_floor(abs_total_hundredths / 6000)
-            local abs_remaining_hundredths = abs_total_hundredths % 6000
-            local abs_secs = math_floor(abs_remaining_hundredths / 100)
-            local abs_hundredths = abs_remaining_hundredths % 100
-            return fmt("%s%02d:%02d.%03d", sign, abs_minutes, abs_secs, abs_hundredths)
-        end
+    if abs_time < 1 then
+        return formatSubSecond(abs_time, sign)
+    elseif abs_time < 60 then
+        return formatSeconds(abs_time, sign)
     else
-        return fmt("%02d:%02d.%03d", minutes, secs, hundredths)
+        return formatMinutes(abs_time, sign)
     end
 end
 
@@ -264,12 +279,13 @@ local function updatePlayerStats(player, lap_time)
     local name = player.name
     local map_stats = stats[current_map] or { current_best = { time = math_huge, player = "" }, players = {} }
 
+    local lap_count = tonumber(get_var(player.id, '$score'))
+    local previous_best = player.best_lap or math_huge
     local is_personal_best = false
     local is_map_record = false
-    local lap_count = tonumber(get_var(player.id, '$score'))
 
     -- Personal best
-    if lap_time < (player.best_lap or math_huge) then
+    if lap_time < previous_best then
         player.best_lap = lap_time
         is_personal_best = true
     end
@@ -285,13 +301,11 @@ local function updatePlayerStats(player, lap_time)
         end
     end
 
-    -- Player stats for this map
     local player_stats = map_stats.players[name]
     if not player_stats then
         player_stats = { best = lap_time, laps = lap_count, average = lap_time }
         map_stats.players[name] = player_stats
     else
-        -- Update lap count from the game's score system
         player_stats.laps = lap_count
         player_stats.best = math_min(player_stats.best, lap_time)
         player_stats.average = ((player_stats.average * (lap_count - 1)) + lap_time) / lap_count
@@ -300,20 +314,17 @@ local function updatePlayerStats(player, lap_time)
     stats[current_map] = map_stats
 
     local lap_time_formatted = fmtTime(lap_time)
-    -- Announce
+
     if is_map_record then
         sendPublic(fmt("NEW MAP RECORD: [%s - %s]", name, lap_time_formatted))
     elseif is_personal_best then
         sendPublic(fmt("NEW PERSONAL BEST: [%s - %s]", name, lap_time_formatted))
     else
-        local best_time = player.best_lap
-        local difference = lap_time - best_time
-
         rprint(player.id,
             fmt("Lap completed: %s (Best: %s | %s)",
                 lap_time_formatted,
-                fmtTime(best_time),
-                fmtTime(difference, true)))
+                fmtTime(previous_best),
+                fmtTime(lap_time - previous_best, true)))
     end
 end
 
@@ -625,6 +636,8 @@ function OnScore(id)
 end
 
 function OnTick()
+    if game_over then return end
+
     for id, player in pairs(players) do
         if player_present(id) and player_alive(id) then
             local now = os_clock()
@@ -658,6 +671,7 @@ function OnStart()
     players = {}
     race_mode = getRaceMode()
     current_map = get_var(0, "$map")
+    game_over = false
 
     for i = 1, 16 do
         if player_present(i) then OnJoin(i) end
@@ -672,6 +686,7 @@ function OnEnd()
         return
     end
     showGlobalStats(nil, 1, CONFIG.LIST_SIZE) -- show top overall players (all maps)
+    game_over = true
 end
 
 function OnJoin(id)
