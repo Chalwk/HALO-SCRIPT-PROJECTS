@@ -95,19 +95,39 @@ local CONFIG = {
 api_version = '1.12.0.0'
 
 local io_open = io.open
-local tonumber, pcall, pairs, ipairs, select = tonumber, pcall, pairs, ipairs, select
-local table_insert, table_sort, table_concat = table.insert, table.sort, table.concat
-local math_floor, math_huge, math_min, math_ceil, math_abs = math.floor, math.huge, math.min, math.ceil, math.abs
 
-local get_object_memory, get_dynamic_player = get_object_memory, get_dynamic_player
-local get_var, player_present, say_all, rprint = get_var, player_present, say_all, rprint
-local get_player, player_alive, read_dword, read_word = get_player, player_alive, read_dword, read_word
+local os_clock = os.clock
 
+local math_abs, math_ceil, math_floor, math_huge, math_min =
+    math.abs, math.ceil, math.floor, math.huge, math.min
+
+local table_concat, table_insert, table_sort =
+    table.concat, table.insert, table.sort
+
+local tonumber, pcall, pairs, ipairs, select =
+    tonumber, pcall, pairs, ipairs, select
+
+local get_object_memory, get_dynamic_player =
+    get_object_memory, get_dynamic_player
+
+local get_player, player_alive, read_dword, read_word =
+    get_player, player_alive, read_dword, read_word
+
+local get_var, player_present, rprint, say_all =
+    get_var, player_present, rprint, say_all
+
+local race_globals
 local players, stats = {}, {}
 local stats_file, txt_export_file
-local json = loadfile('json.lua')()
+
 local current_map, tick_rate = "", 1 / 30
-local global_best_lap = { time = math_huge, player = "", map = "" }
+local json = loadfile('json.lua')()
+
+local global_best_lap = {
+    time = math_huge,
+    player = "",
+    map = ""
+}
 
 local function fmt(str, ...)
     return select('#', ...) > 0 and str:format(...) or str
@@ -524,16 +544,36 @@ function OnScore(id)
 
     local player = players[id]
     if not player or not player_alive(id) then goto continue end
+    --
+    --local static_player = get_player(id)
+    --local lap_ticks = getLapTicks(static_player + 0xC4)
 
-    local static_player = get_player(id)
-    local lap_ticks = getLapTicks(static_player + 0xC4)
-    local lap_time = roundToHundredths(lap_ticks * tick_rate)
+    local timer = os_clock() - player.timer
+    local lap_time = roundToHundredths(timer)
 
     if lap_time >= CONFIG.MIN_LAP_TIME then
         updatePlayerStats(player, lap_time)
     end
 
     ::continue::
+end
+
+function OnTick()
+    for id, player in pairs(players) do
+        if player_present(id) then
+            local checkpoint = read_dword(race_globals + to_real_index(id) * 4 + 0x44)
+
+            -- Player crosses start line (checkpoint 1)
+            if checkpoint == 1 and not player.racing then
+                player.timer = os_clock(); player.racing = true
+            end
+
+            -- Player resets (checkpoint goes back to 0)
+            if checkpoint == 0 and player.racing then
+                player.racing = nil; player.timer = nil
+            end
+        end
+    end
 end
 
 function OnStart()
@@ -595,12 +635,15 @@ function OnCommand(id, command)
 end
 
 function OnScriptLoad()
+    race_globals = read_dword(sig_scan("BF??????00F3ABB952000000") + 0x1)
+
     local config_path = getConfigPath()
     stats_file = config_path .. "\\sapp\\" .. CONFIG.STATS_FILE
     txt_export_file = config_path .. "\\sapp\\" .. CONFIG.TEXT_EXPORT_FILE
 
     stats = readJSON(stats)
 
+    register_callback(cb['EVENT_TICK'], 'OnTick')
     register_callback(cb['EVENT_JOIN'], 'OnJoin')
     register_callback(cb['EVENT_SCORE'], 'OnScore')
     register_callback(cb['EVENT_LEAVE'], 'OnQuit')
