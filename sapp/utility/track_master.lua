@@ -598,37 +598,36 @@ function OnScore(id)
     ::continue::
 end
 
+local function handleRaceMode(player, current_checkpoint, now)
+    local start_condition
+    local reset_condition = (current_checkpoint == 0 and player.racing)
+
+    if race_mode == 1 then
+        -- Sequential mode: Start only at the first checkpoint
+        start_condition = (current_checkpoint == 1 and not player.racing)
+    elseif race_mode == 2 then
+        -- Non-sequential mode: Start when any checkpoint is reached
+        start_condition = (current_checkpoint >= 1 and not player.racing)
+    end
+
+    if start_condition then
+        setPlayerState(player, true, now, 0)
+    elseif reset_condition then
+        setPlayerState(player, nil, nil, 0)
+    end
+end
+
 function OnTick()
     for id, player in pairs(players) do
         if player_present(id) and player_alive(id) then
+            local now = os_clock()
             local checkpoint_address = race_globals + to_real_index(id) * 4 + 0x44
             local checkpoint = read_dword(checkpoint_address)
-            local now = os_clock()
 
             local current_checkpoint = getCheckpointNumber(checkpoint)
             local prev_checkpoint = player.last_checkpoint
 
-            -- Sequential checkpoints
-            if race_mode == 1 then
-                if checkpoint == 1 and not player.racing then
-                    -- Start race at first checkpoint
-                    setPlayerState(player, true, now, 0)
-                    --rprint(id, "Lap started! Timer is now running.")
-                elseif checkpoint == 0 and player.racing then
-                    -- Reset if race conditions lost
-                    setPlayerState(player, nil, nil, 0)
-                end
-                -- Non-sequential
-            elseif race_mode == 2 then
-                if current_checkpoint >= 1 and not player.racing then
-                    -- Start race when first checkpoint is collected
-                    setPlayerState(player, true, now, 0)
-                    --rprint(id, "Lap started! Timer is now running.")
-                elseif current_checkpoint == 0 and player.racing then
-                    -- Reset if race abandoned
-                    setPlayerState(player, nil, nil, 0)
-                end
-            end
+            handleRaceMode(player, current_checkpoint, now)
 
             -- Show checkpoint times (applies to all modes)
             if player.racing and player.start_time then
@@ -649,9 +648,9 @@ end
 function OnStart()
     if get_var(0, '$gt') ~= 'race' then return end
 
+    players = {}
     race_mode = getRaceMode()
     current_map = get_var(0, "$map")
-    players = {}
 
     for i = 1, 16 do
         if player_present(i) then OnJoin(i) end
