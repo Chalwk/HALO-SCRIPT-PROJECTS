@@ -42,14 +42,6 @@ COMMAND SYNTAX:
     /global [page_number]     - Show specific page of top overall players
     /reset                    - Reset your current checkpoint progress
 
-RACE MECHANICS:
-    - Sequential Mode: Checkpoints must be collected in order
-    - Non-Sequential Mode: Checkpoints can be collected in any order
-    - Lap validation requires minimum time threshold
-    - Optional driver seat requirement for lap validation
-    - Real-time checkpoint time tracking
-    - Automatic race start/stop detection
-
 SCORING SYSTEM:
     Global rankings are calculated using a weighted system:
     - Map Record: +200 points per map record held
@@ -102,10 +94,9 @@ local CONFIG = {
     PERFORMANCE_WEIGHT = 50,     -- Max points for performance relative to record
     TOP_FINISH_THRESHOLD = 0.95, -- Ratio threshold for counting top finishes
 
-    -- Add custom game modes that are non-sequential (any order) here:
-    --
-    MODES = {
-        ["ANY_ORDER"] = true -- Example: "ANY_ORDER", or "MY_CUSTOM_GAMEMODE"
+    -- Add game modes that are non-sequential (any order) here:
+    NON_SEQUENTIAL_MODES = {
+        ["ANY_ORDER"] = true
     }
 }
 -- Config ends ---------------------------------------------
@@ -117,8 +108,8 @@ local os_clock = os.clock
 
 local band = bit.band
 
-local math_abs, math_ceil, math_floor, math_huge, math_min, math_log =
-    math.abs, math.ceil, math.floor, math.huge, math.min, math.log
+local math_abs, math_ceil, math_floor, math_huge, math_min =
+    math.abs, math.ceil, math.floor, math.huge, math.min
 
 local table_concat, table_insert, table_sort = table.concat, table.insert, table.sort
 local tonumber, pcall, pairs, ipairs, select = tonumber, pcall, pairs, ipairs, select
@@ -558,7 +549,7 @@ end
 
 local function getRaceMode()
     local mode = get_var(0, '$mode')
-    return CONFIG.MODES[mode] and 2 or 1
+    return CONFIG.NON_SEQUENTIAL_MODES[mode] and 2 or 1
 end
 
 local function getCheckpointNumber(bitmask)
@@ -645,7 +636,7 @@ function OnTick()
 
             handleRaceMode(player, current_checkpoint, now)
 
-            -- Show checkpoint times (applies to all modes)
+            -- Show checkpoint times
             if player.racing and player.start_time then
                 local elapsed = now - player.start_time
 
