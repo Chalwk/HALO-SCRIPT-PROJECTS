@@ -214,8 +214,7 @@ local function mapNamesToLower()
 end
 
 local function buildVehicleConfig(map_name_lower)
-    local merged_config = {}
-    local hud_strings = {}
+    local merged_config, hud_strings = {}, {}
 
     for keyword, tag_path in pairs(DEFAULT_TAGS) do
         merged_config[keyword] = tag_path
@@ -267,16 +266,20 @@ function OnStart()
     if not vehicle_meta_cache[map_name] then
         local config = buildVehicleConfig(map_name)
 
-        vehicle_meta_cache[map_name] = { hud = config.hud }
+        vehicle_meta_cache[map_name] = {}
         for keyword, tag_path in pairs(config.vehicles) do
             local meta_id = getTag("vehi", tag_path)
-            if not meta_id then
-                register_callbacks(false)
-                cprint(fmtMsg("[ERROR] Failed to get meta ID for vehicle: %s (%s)", keyword, tag_path), 12)
-                vehicle_meta_cache[map_name] = nil
-                return
+            if meta_id then
+                vehicle_meta_cache[map_name][keyword] = meta_id
             end
-            vehicle_meta_cache[map_name][keyword] = meta_id
+        end
+
+        if next(vehicle_meta_cache[map_name]) == nil or #next(vehicle_meta_cache[map_name]) == 0 then
+            vehicle_meta_cache[map_name] = nil
+            register_callbacks(false)
+            return
+        else
+            vehicle_meta_cache[map_name].hud = config.hud
         end
     end
 
