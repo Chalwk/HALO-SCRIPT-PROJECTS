@@ -553,13 +553,12 @@ end
 
 local function getCheckpointNumber(bitmask)
     if bitmask == 0 then return 0 end
-    if race_mode == 1 then
-        return math_floor(math_log(bitmask, 2)) + 1
-    elseif race_mode == 2 then
-        local n = 0
-        while bitmask ~= 0 do bitmask, n = band(bitmask, bitmask - 1), n + 1 end
-        return n
+    local n = 0
+    while bitmask ~= 0 do
+        bitmask = band(bitmask, bitmask - 1)
+        n = n + 1
     end
+    return n
 end
 
 local function setPlayerState(player, racing, time, checkpoint)

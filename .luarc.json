@@ -49,6 +49,7 @@
     "write_word",
         "register_callback",
         "write_short",
-        "write_int"
+        "write_int",
+        "bit"
   ]
 }
