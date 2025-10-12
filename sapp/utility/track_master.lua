@@ -159,25 +159,35 @@ local function getConfigPath()
     return read_string(read_dword(sig_scan('68??????008D54245468') + 0x1))
 end
 
-local function fmtTime(lap_time)
-    if lap_time == 0 or lap_time == math_huge then return "00:00.000" end
-    local total_hundredths = math_floor(lap_time * 100 + 0.5)
-    local minutes = math_floor(total_hundredths / 6000)
-    local remaining_hundredths = total_hundredths % 6000
-    local secs = math_floor(remaining_hundredths / 100)
-    local hundredths = remaining_hundredths % 100
-    return fmt("%02d:%02d.%03d", minutes, secs, hundredths)
-end
+local function fmtTime(time, is_difference)
+    if time == 0 or time == math_huge then
+        return is_difference and "+00:00.000" or "00:00.000"
+    end
 
-local function fmtTimeDifference(diff)
-    local sign = diff >= 0 and "+" or "-"
-    local abs_diff = math_abs(diff)
-    local total_hundredths = math_floor(abs_diff * 100 + 0.5)
+    local total_hundredths = math_floor(time * 100 + 0.5)
     local minutes = math_floor(total_hundredths / 6000)
     local remaining_hundredths = total_hundredths % 6000
     local secs = math_floor(remaining_hundredths / 100)
     local hundredths = remaining_hundredths % 100
-    return fmt("%s%02d:%02d.%03d", sign, minutes, secs, hundredths)
+
+    if is_difference then
+        -- For differences, check if we need compact format
+        if time < 60 then
+            return fmt("%+.3fs", time)
+        else
+            local sign = time >= 0 and "+" or "-"
+            local abs_time = math_abs(time)
+            local abs_total_hundredths = math_floor(abs_time * 100 + 0.5)
+            local abs_minutes = math_floor(abs_total_hundredths / 6000)
+            local abs_remaining_hundredths = abs_total_hundredths % 6000
+            local abs_secs = math_floor(abs_remaining_hundredths / 100)
+            local abs_hundredths = abs_remaining_hundredths % 100
+            return fmt("%s%02d:%02d.%03d", sign, abs_minutes, abs_secs, abs_hundredths)
+        end
+    else
+        -- Regular time format
+        return fmt("%02d:%02d.%03d", minutes, secs, hundredths)
+    end
 end
 
 local function readJSON(default)
@@ -261,7 +271,7 @@ local function considerOccupant(id)
     return read_word(dyn_player + 0x2F0) == 0 -- driver seat
 end
 
-local function updatePlayerStats(player, lapTime)
+local function updatePlayerStats(player, lap_time)
     local name = player.name
     local map_stats = stats[current_map] or { current_best = { time = math_huge, player = "" }, players = {} }
 
@@ -270,49 +280,51 @@ local function updatePlayerStats(player, lapTime)
     local lap_count = tonumber(get_var(player.id, '$score'))
 
     -- Personal best
-    if lapTime < (player.best_lap or math_huge) then
-        player.best_lap = lapTime
+    if lap_time < (player.best_lap or math_huge) then
+        player.best_lap = lap_time
         is_personal_best = true
     end
 
     -- Map best
-    if lapTime < map_stats.current_best.time then
-        map_stats.current_best = { time = lapTime, player = name }
+    if lap_time < map_stats.current_best.time then
+        map_stats.current_best = { time = lap_time, player = name }
         is_map_record = true
 
         -- Check for global best
-        if lapTime < global_best_lap.time then
-            global_best_lap = { time = lapTime, player = name, map = current_map }
+        if lap_time < global_best_lap.time then
+            global_best_lap = { time = lap_time, player = name, map = current_map }
         end
     end
 
     -- Player stats for this map
     local player_stats = map_stats.players[name]
     if not player_stats then
-        player_stats = { best = lapTime, laps = lap_count, average = lapTime }
+        player_stats = { best = lap_time, laps = lap_count, average = lap_time }
         map_stats.players[name] = player_stats
     else
         -- Update lap count from the game's score system
         player_stats.laps = lap_count
-        player_stats.best = math_min(player_stats.best, lapTime)
-        player_stats.average = ((player_stats.average * (lap_count - 1)) + lapTime) / lap_count
+        player_stats.best = math_min(player_stats.best, lap_time)
+        player_stats.average = ((player_stats.average * (lap_count - 1)) + lap_time) / lap_count
     end
 
     stats[current_map] = map_stats
 
+    local lap_time_formatted = fmtTime(lap_time)
     -- Announce
     if is_map_record then
-        sendPublic(fmt("NEW MAP RECORD: [%s - %s]", name, fmtTime(lapTime)))
+        sendPublic(fmt("NEW MAP RECORD: [%s - %s]", name, lap_time_formatted))
     elseif is_personal_best then
-        sendPublic(fmt("NEW PERSONAL BEST: [%s - %s]", name, fmtTime(lapTime)))
+        sendPublic(fmt("NEW PERSONAL BEST: [%s - %s]", name, lap_time_formatted))
     else
         local best_time = player.best_lap
-        local difference = lapTime - best_time
+        local difference = lap_time - best_time
+
         rprint(player.id,
-            fmt("Lap completed: %s (Best: %s | +%s)",
-                fmtTime(lapTime),
+            fmt("Lap completed: %s (Best: %s | %s)",
+                lap_time_formatted,
                 fmtTime(best_time),
-                fmtTimeDifference(difference)))
+                fmtTime(difference, true)))
     end
 end
 
