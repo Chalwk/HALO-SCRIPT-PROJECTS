@@ -571,31 +571,15 @@ local function resetCheckpoint(id)
     local player = players[id]
     if not player then return end
 
-    write_dword(race_globals + to_real_index(id) * 4 + 0x44, 0) -- works regardless of game varient (normal, any-order)
+    write_dword(race_globals + to_real_index(id) * 4 + 0x44, 0)
     setPlayerState(player, nil, nil, 0)
+    player.just_completed_lap = false
 
     if race_mode == 1 then
         rprint(id, "Lap progress reset. Start a new lap from the first checkpoint")
     else
         rprint(id, "Lap progress reset. Start a new lap from any checkpoint")
     end
-end
-
-function OnScore(id)
-    if not considerOccupant(id) then goto continue end
-
-    local player = players[id]
-    if not player or not player.racing or not player.start_time then goto continue end
-
-    local timer = os_clock() - player.start_time
-    local lap_time = roundToHundredths(timer)
-
-    if lap_time >= CONFIG.MIN_LAP_TIME then
-        updatePlayerStats(player, lap_time)
-        setPlayerState(player, nil, nil, 0)
-    end
-
-    ::continue::
 end
 
 local function handleRaceMode(player, current_checkpoint, now)
@@ -612,9 +596,32 @@ local function handleRaceMode(player, current_checkpoint, now)
 
     if start_condition then
         setPlayerState(player, true, now, 0)
+        if not player.just_completed_lap then
+            rprint(player.id, "LAP STARTED!")
+        end
+        player.just_completed_lap = false
     elseif reset_condition then
         setPlayerState(player, nil, nil, 0)
+        player.just_completed_lap = false
     end
+end
+
+function OnScore(id)
+    if not considerOccupant(id) then goto continue end
+
+    local player = players[id]
+    if not player or not player.racing or not player.start_time then goto continue end
+
+    local timer = os_clock() - player.start_time
+    local lap_time = roundToHundredths(timer)
+
+    if lap_time >= CONFIG.MIN_LAP_TIME then
+        updatePlayerStats(player, lap_time)
+        setPlayerState(player, nil, nil, 0)
+        player.just_completed_lap = true
+    end
+
+    ::continue::
 end
 
 function OnTick()
@@ -678,7 +685,8 @@ function OnJoin(id)
         name = player_name,
         previous_time = 0,
         last_checkpoint = 0,
-        best_lap = best_lap
+        best_lap = best_lap,
+        just_completed_lap = false
     }
 end
 
