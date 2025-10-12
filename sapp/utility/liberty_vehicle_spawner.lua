@@ -4,9 +4,31 @@ SCRIPT NAME:      liberty_vehicle_spawner.lua
 DESCRIPTION:      On-demand vehicle spawning system with:
                   - Chat command activation
                   - Automatic player entry
-                  - Multi-map support
+                  - Custom map support
 
-LAST UPDATED:     6/10/2025
+CONFIGURATION:
+                HELP_COMMAND:           Command to list available vehicles
+                COOLDOWN_PERIOD:        Cooldown time (seconds) between vehicle spawns per player
+                DESPAWN_DELAY_SECONDS:  Time (in seconds) before a spawned vehicle despawns
+
+                DEFAULT_TAGS: Base vehicle definitions
+                    Format: ["keyword"] = "tag_path"
+                        - keyword: What players type in chat to spawn the vehicle
+                        - tag_path: The internal path to the vehicle tag name
+
+                CUSTOM_TAGS: Map-specific vehicle definitions that extend DEFAULT_TAGS
+                    Format: ["map_name"] = {["keyword"] = "tag_path", ...}
+                        - map_name: The name of the map (not case sensitive)
+                        - keyword: What players type in chat to spawn the vehicle
+                        - tag_path: The internal path to the vehicle tag name
+
+                    BEHAVIOR:
+                        - For maps listed here: DEFAULT_TAGS and CUSTOM_TAGS are merged
+                        - Stock vehicles take precedence over custom vehicles with same keyword
+                        - If keyword conflicts occur, custom vehicles are automatically renamed (hog -> hog2, etc.)
+                        - For maps not listed: Only DEFAULT_TAGS are available
+
+LAST UPDATED:     13/10/2025
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -16,23 +38,15 @@ LICENSE:          MIT License
 
 -- CONFIG START ----------------------------------------------------------------
 
-local DESPAWN_DELAY_SECONDS = 7 -- Time (in seconds) before a spawned vehicle despawns
-local COOLDOWN_PERIOD = 7       -- Cooldown time (seconds) between vehicle spawns per player
+local HELP_COMMAND = "vlist"
+local DESPAWN_DELAY_SECONDS = 7
+local COOLDOWN_PERIOD = 7
 
--- DEFAULT_TAGS: Fallback vehicle definitions used when a map isn't listed in CUSTOM_TAGS
--- Format: ["keyword"] = "tag_path"
---  - keyword: What players type in chat to spawn the vehicle
---  - tag_path: The internal path to the vehicle tag name
 local DEFAULT_TAGS = {
     ["hog"] = "vehicles\\warthog\\mp_warthog",
     ["rhog"] = "vehicles\\rwarthog\\rwarthog"
 }
 
--- CUSTOM_TAGS: Map-specific vehicle definitions (overrides DEFAULT_TAGS for listed maps)
--- Format: ["map_name"] = {["keyword"] = "tag_path", ...}
---  - map_name: The exact name of the map as it appears in $map (case-sensitive)
---  - keyword: What players type in chat to spawn the vehicle
---  - tag_path: The internal path to the vehicle tag name
 local CUSTOM_TAGS = {
     ["[h3]_sandtrap"] = {
         ["hog"] = "halo3\\vehicles\\warthog\\mp_warthog",
@@ -53,7 +67,7 @@ local CUSTOM_TAGS = {
         ["hog"] = "vehicles\\g_warthog\\g_warthog"
     },
     ["mongoose_point"] = {
-        ["hog"] = "vehicles\\m257_multvp\\m257_multvp"
+        ["mon"] = "vehicles\\m257_multvp\\m257_multvp"
     },
     ["mystic_mod"] = {
         ["hog"] = "vehicles\\puma\\puma_lt",
@@ -71,6 +85,9 @@ local CUSTOM_TAGS = {
         ["hog"] = "vehicles\\warthog\\art_cwarthog",
         ["rhog"] = "vehicles\\rwarthog\\art_rwarthog_shiny"
     },
+    ["yoyorast_island"] = {
+        ["mon"] = "vehicles\\mongoose\\mongoose"
+    }
 }
 -- CONFIG ENDS ----------------------------------------------------------------
 
@@ -84,6 +101,8 @@ local active_vehicles, vehicle_meta_cache, player_cooldowns = {}, {}, {}
 local os_time = os.time
 local math_floor = math.floor
 local os_clock, pairs = os.clock, pairs
+local table_insert, table_sort = table.insert, table.sort
+local table_concat = table.concat
 
 local rprint, cprint, get_var = rprint, cprint, get_var
 local read_dword, read_vector3d = read_dword, read_vector3d
@@ -98,6 +117,7 @@ local sapp_events = {
     [cb['EVENT_CHAT']] = 'OnChat',
     [cb['EVENT_SPAWN']] = 'OnSpawn',
     [cb['EVENT_GAME_END']] = 'OnEnd',
+    [cb['EVENT_COMMAND']] = 'OnCommand'
 }
 
 local function fmtMsg(str, ...)
@@ -128,7 +148,10 @@ local function getVehicle(id)
     local vehicle_id = read_dword(player_obj + 0x11C)
     if vehicle_id == 0xFFFFFFFF then return nil end
 
-    return get_object_memory(vehicle_id)
+    local object_id = get_object_memory(vehicle_id)
+    if object_id == 0 then return nil end
+
+    return object_id
 end
 
 local function isOccupied(vehicle_object)
@@ -192,11 +215,47 @@ local function mapNamesToLower()
     return custom_tags_lower
 end
 
+local function buildVehicleConfig(map_name_lower)
+    local merged_config = {}
+    local hud_strings = {}
+
+    for keyword, tag_path in pairs(DEFAULT_TAGS) do
+        merged_config[keyword] = tag_path
+        table_insert(hud_strings, "[" .. keyword .. "]")
+    end
+
+    local custom_vehicles = CUSTOM_TAGS[map_name_lower]
+    if custom_vehicles then
+        for keyword, tag_path in pairs(custom_vehicles) do
+            if merged_config[keyword] then
+                local base_keyword = keyword
+                local counter = 2
+                while merged_config[base_keyword .. counter] do
+                    counter = counter + 1
+                end
+                local new_keyword = base_keyword .. counter
+                merged_config[new_keyword] = tag_path
+                table_insert(hud_strings, "[" .. new_keyword .. "]")
+            else
+                merged_config[keyword] = tag_path
+                table_insert(hud_strings, "[" .. keyword .. "]")
+            end
+        end
+    end
+
+    table_sort(hud_strings)
+
+    return {
+        vehicles = merged_config,
+        hud = table_concat(hud_strings, " ")
+    }
+end
+
 function OnScriptLoad()
     CUSTOM_TAGS = mapNamesToLower()
     register_callback(cb["EVENT_GAME_START"], "OnStart")
 
-    OnStart()
+    OnStart() -- in case script is loaded mid-game
 end
 
 function OnStart()
@@ -205,10 +264,11 @@ function OnStart()
     map_name = get_var(0, "$map"):lower()
     active_vehicles = {}
 
-    local cfg = CUSTOM_TAGS[map_name] or DEFAULT_TAGS
-    if not vehicle_meta_cache[map_name] then -- not cached yet
-        vehicle_meta_cache[map_name] = { hud = "" }
-        for keyword, tag_path in pairs(cfg) do
+    if not vehicle_meta_cache[map_name] then
+        local config = buildVehicleConfig(map_name)
+
+        vehicle_meta_cache[map_name] = { hud = config.hud }
+        for keyword, tag_path in pairs(config.vehicles) do
             local meta_id = getTag("vehi", tag_path)
             if not meta_id then
                 register_callbacks(false)
@@ -217,7 +277,6 @@ function OnStart()
                 return
             end
             vehicle_meta_cache[map_name][keyword] = meta_id
-            vehicle_meta_cache[map_name].hud = vehicle_meta_cache[map_name].hud .. " [" .. keyword .. "]"
         end
     end
 
@@ -264,29 +323,31 @@ function OnChat(id, message)
     return true
 end
 
+function OnCommand(id, cmd)
+    if cmd == HELP_COMMAND then
+        showKeyWords(id)
+        return false
+    end
+end
+
 function OnTick()
     if game_over then return end
     local now = os_clock()
 
-    -- Iterate through all active vehicles
     for object_id, data in pairs(active_vehicles) do
         local object = get_object_memory(object_id)
 
         if object == 0 then
-            -- Vehicle no longer exists, remove from tracking
             active_vehicles[object_id] = nil
         else
             if not isOccupied(object) then
                 if not data.despawn_time then
-                    -- Start despawn timer if not already set
                     data.despawn_time = now + DESPAWN_DELAY_SECONDS
                 elseif now >= data.despawn_time then
-                    -- Destroy vehicle
                     destroy_object(object_id)
                     active_vehicles[object_id] = nil
                 end
             else
-                -- Vehicle is occupied, reset despawn timer
                 if data.despawn_time then data.despawn_time = nil end
             end
         end
