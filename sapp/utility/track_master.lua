@@ -171,7 +171,6 @@ local function fmtTime(time, is_difference)
     local hundredths = remaining_hundredths % 100
 
     if is_difference then
-        -- For differences, check if we need compact format
         if time < 60 then
             return fmt("%+.3fs", time)
         else
@@ -185,7 +184,6 @@ local function fmtTime(time, is_difference)
             return fmt("%s%02d:%02d.%03d", sign, abs_minutes, abs_secs, abs_hundredths)
         end
     else
-        -- Regular time format
         return fmt("%02d:%02d.%03d", minutes, secs, hundredths)
     end
 end
