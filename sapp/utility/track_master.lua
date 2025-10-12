@@ -574,7 +574,7 @@ local function resetCheckpoint(id)
     write_dword(race_globals + to_real_index(id) * 4 + 0x44, 0) -- works regardless of game varient (normal, any-order)
     setPlayerState(player, nil, nil, 0)
 
-    rprint(id, "Checkpoint reset")
+    rprint(id, "Lap Reset!")
 end
 
 function OnScore(id)
