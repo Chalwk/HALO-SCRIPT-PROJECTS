@@ -574,7 +574,11 @@ local function resetCheckpoint(id)
     write_dword(race_globals + to_real_index(id) * 4 + 0x44, 0) -- works regardless of game varient (normal, any-order)
     setPlayerState(player, nil, nil, 0)
 
-    rprint(id, "Lap Reset!")
+    if race_mode == 1 then
+        rprint(id, "Lap progress reset. Start a new lap from the first checkpoint")
+    else
+        rprint(id, "Lap progress reset. Start a new lap from any checkpoint")
+    end
 end
 
 function OnScore(id)
@@ -609,6 +613,7 @@ function OnTick()
                 if checkpoint == 1 and not player.racing then
                     -- Start race at first checkpoint
                     setPlayerState(player, true, now, 0)
+                    rprint(id, "Lap started! Timer is now running.")
                 elseif checkpoint == 0 and player.racing then
                     -- Reset if race conditions lost
                     setPlayerState(player, nil, nil, 0)
@@ -618,6 +623,7 @@ function OnTick()
                 if current_checkpoint >= 1 and not player.racing then
                     -- Start race when first checkpoint is collected
                     setPlayerState(player, true, now, 0)
+                    rprint(id, "Lap started! Timer is now running.")
                 elseif current_checkpoint == 0 and player.racing then
                     -- Reset if race abandoned
                     setPlayerState(player, nil, nil, 0)
