@@ -41,6 +41,7 @@ LICENSE:          MIT License
 local HELP_COMMAND = "vlist"
 local DESPAWN_DELAY_SECONDS = 7
 local COOLDOWN_PERIOD = 7
+local POLL_INTERVAL = 1
 
 local DEFAULT_TAGS = {
     ["hog"] = "vehicles\\warthog\\mp_warthog",
@@ -112,7 +113,6 @@ local spawn_object, destroy_object = spawn_object, destroy_object
 local get_dynamic_player, get_object_memory = get_dynamic_player, get_object_memory
 
 local sapp_events = {
-    [cb['EVENT_TICK']] = 'OnTick',
     [cb['EVENT_JOIN']] = 'OnJoin',
     [cb['EVENT_CHAT']] = 'OnChat',
     [cb['EVENT_SPAWN']] = 'OnSpawn',
@@ -252,6 +252,8 @@ local function buildVehicleConfig(map_name_lower)
 end
 
 function OnScriptLoad()
+    timer(1000 * POLL_INTERVAL, "DespawnVehicles")
+
     CUSTOM_TAGS = mapNamesToLower()
     register_callback(cb["EVENT_GAME_START"], "OnStart")
 
@@ -330,28 +332,27 @@ function OnCommand(id, cmd)
     end
 end
 
-function OnTick()
-    if game_over then return end
-    local now = os_clock()
+function DespawnVehicles()
+    if not game_over then
+        local now = os_clock()
+        for object_id, data in pairs(active_vehicles) do
+            local object = get_object_memory(object_id)
 
-    for object_id, data in pairs(active_vehicles) do
-        local object = get_object_memory(object_id)
-
-        if object == 0 then
-            active_vehicles[object_id] = nil
-        else
-            if not isOccupied(object) then
+            if object == 0 then
+                active_vehicles[object_id] = nil
+            elseif not isOccupied(object) then
                 if not data.despawn_time then
                     data.despawn_time = now + DESPAWN_DELAY_SECONDS
                 elseif now >= data.despawn_time then
                     destroy_object(object_id)
                     active_vehicles[object_id] = nil
                 end
-            else
-                if data.despawn_time then data.despawn_time = nil end
+            elseif data.despawn_time then
+                data.despawn_time = nil
             end
         end
     end
+    return true
 end
 
 function OnJoin(id)
