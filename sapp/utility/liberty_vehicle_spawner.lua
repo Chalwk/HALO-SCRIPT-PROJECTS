@@ -103,7 +103,7 @@ local os_clock, pairs = os.clock, pairs
 local table_insert, table_sort = table.insert, table.sort
 local table_concat = table.concat
 
-local rprint, cprint, get_var = rprint, cprint, get_var
+local rprint, get_var = rprint, get_var
 local read_dword, read_vector3d = read_dword, read_vector3d
 local lookup_tag, enter_vehicle = lookup_tag, enter_vehicle
 local player_present, player_alive = player_present, player_alive
