@@ -59,8 +59,9 @@ local CUSTOM_TAGS = {
         ["hog5"] = "levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi3"  -- blue, red, green, pink
     },
     ["cityscape-adrenaline"] = {
+        ["civ"] = "vehicles\\civvi\\civvi",
         ["hog"] = "vehicles\\g_warthog\\g_warthog",
-        ["rhog"] = "vehicles\\rwarthog\\boogerhawg"
+        ["rhog"] = "vehicles\\rwarthog\\boogerhawg",
     },
     ["hypothermia_race"] = {
         ["hog"] = "vehicles\\g_warthog\\g_warthog"
