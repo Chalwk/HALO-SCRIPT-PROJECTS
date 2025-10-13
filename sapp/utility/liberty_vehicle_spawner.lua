@@ -213,44 +213,48 @@ local function mapNamesToLower()
     return custom_tags_lower
 end
 
+local function addVehicle(merged_config, hud_strings, keyword, tag_path)
+    local meta_id = getTag("vehi", tag_path)
+    if meta_id then
+        merged_config[keyword] = meta_id
+        table_insert(hud_strings, "[" .. keyword .. "]")
+        return true
+    end
+    return false
+end
+
 local function buildVehicleConfig(map_name_lower)
     local merged_config = {}
+    local hud_strings = {}
 
+    local valid_defaults = {}
     for keyword, tag_path in pairs(DEFAULT_TAGS) do
-        merged_config[keyword] = tag_path
+        if addVehicle(merged_config, hud_strings, keyword, tag_path) then
+            valid_defaults[keyword] = true
+        end
     end
 
     local custom_vehicles = CUSTOM_TAGS[map_name_lower]
     if custom_vehicles then
         for keyword, tag_path in pairs(custom_vehicles) do
-            if merged_config[keyword] then
+            if valid_defaults[keyword] then
                 local base_keyword = keyword
                 local counter = 2
                 while merged_config[base_keyword .. counter] do
                     counter = counter + 1
                 end
                 local new_keyword = base_keyword .. counter
-                merged_config[new_keyword] = tag_path
+                addVehicle(merged_config, hud_strings, new_keyword, tag_path)
             else
-                merged_config[keyword] = tag_path
+                addVehicle(merged_config, hud_strings, keyword, tag_path)
             end
-        end
-    end
-
-    local valid_vehicles, hud_strings = {}, {}
-
-    for keyword, tag_path in pairs(merged_config) do
-        local meta_id = getTag("vehi", tag_path)
-        if meta_id then
-            valid_vehicles[keyword] = tag_path
-            table_insert(hud_strings, "[" .. keyword .. "]")
         end
     end
 
     table_sort(hud_strings)
 
     return {
-        vehicles = valid_vehicles,
+        vehicles = merged_config,
         hud = table_concat(hud_strings, " ")
     }
 end
@@ -270,29 +274,14 @@ function OnStart()
     map_name = get_var(0, "$map"):lower()
     active_vehicles = {}
 
-    -- todo: If the custom map doesn't have a default vehicle, but there's a keyword conflict, we do not need to a +n to the keyword
-
     if not vehicle_meta_cache[map_name] then
         local config = buildVehicleConfig(map_name)
-
         if next(config.vehicles) == nil then
             vehicle_meta_cache[map_name] = nil
             register_callbacks(false)
             return
         end
-
-        local vehicles_with_meta = {}
-        for keyword, tag_path in pairs(config.vehicles) do
-            local meta_id = getTag("vehi", tag_path)
-            if meta_id then
-                vehicles_with_meta[keyword] = meta_id
-            end
-        end
-
-        vehicle_meta_cache[map_name] = {
-            vehicles = vehicles_with_meta,
-            hud = config.hud
-        }
+        vehicle_meta_cache[map_name] = config
     end
 
     register_callbacks(true)
