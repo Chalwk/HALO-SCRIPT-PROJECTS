@@ -32,26 +32,26 @@ being the fastest driver, it's about teamwork, strategy, and leveraging multiple
 ## Maps and Lap Numbers
 
 - timberland - laps 10
-- [Gauntlet_Race](https://maps.halonet.net/maps/Gauntlet_Race.zip) - laps 10
-- [mercury_falling](https://maps.halonet.net/maps/mercury_falling.zip) - laps 8
-- [LostCove_Race](https://maps.halonet.net/maps/LostCove_Race.zip) - laps 8
-- [Camtrack-Arena-Race](https://maps.halonet.net/maps/Camtrack-Arena-Race.zip) - laps 16
-- [hypothermia_race](https://maps.halonet.net/maps/hypothermia_race.zip) - laps 10
-- [Massacre_Mountain_Race](https://maps.halonet.net/maps/Massacre_Mountain_Race.zip) - laps 8
-- [Mongoose_Point](https://maps.halonet.net/maps/Mongoose_Point.zip) - laps 16
-- [bc_raceway_final_mp](https://maps.halonet.net/maps/bc_raceway_final_mp.zip) - laps 8
-- [islandthunder_race](https://maps.halonet.net/maps/islandthunder_race.zip) - laps 12
-- [Cityscape-Adrenaline](https://maps.halonet.net/maps/Cityscape-Adrenaline.zip) - laps 10
-- [cliffhanger](https://maps.halonet.net/maps/cliffhanger.zip) - laps 12
-- [New_Mombasa_Race_v2](https://maps.halonet.net/maps/New_Mombasa_Race_v2.zip) - laps 6
-- [mystic_mod](https://maps.halonet.net/maps/mystic_mod.zip) - laps 10
-- [luigi_raceway](https://maps.halonet.net/maps/luigi_raceway.zip) - laps 16
-- [dessication_pb1](https://maps.halonet.net/maps/dessication_pb1.zip) - laps 12
-- [equinox_v2](https://maps.halonet.net/maps/equinox_v2.zip) - laps 8
-- [Nervous_King](https://maps.halonet.net/maps/Nervous_King.zip) - laps 6
 - [Prime_C3_Race](https://maps.halonet.net/maps/Prime_C3_Race.zip) - laps 10
+- [Camtrack-Arena-Race](https://maps.halonet.net/maps/Camtrack-Arena-Race.zip) - laps 10
+- [equinox_v2](https://maps.halonet.net/maps/equinox_v2.zip) - laps 8
+- [Cityscape-Adrenaline](https://maps.halonet.net/maps/Cityscape-Adrenaline.zip) - laps 10
+- [luigi_raceway](https://maps.halonet.net/maps/luigi_raceway.zip) - laps 16
+- [islandthunder_race](https://maps.halonet.net/maps/islandthunder_race.zip) - laps 12
+- [Nervous_King](https://maps.halonet.net/maps/Nervous_King.zip) - laps 6
+- [LostCove_Race](https://maps.halonet.net/maps/LostCove_Race.zip) - laps 6
+- [bc_raceway_final_mp](https://maps.halonet.net/maps/bc_raceway_final_mp.zip) - laps 8
+- [Yoyorast_Island](https://maps.halonet.net/maps/Yoyorast_Island.zip) - laps 8
+- [mystic_mod](https://maps.halonet.net/maps/mystic_mod.zip) - laps 10
 - [TLSstronghold](https://maps.halonet.net/maps/TLSstronghold.zip) - laps 14
+- [massacre_mountain_race_v2](https://maps.halonet.net/maps/massacre_mountain_race_v2.zip) - laps 8
+- [Mongoose_Point](https://maps.halonet.net/maps/Mongoose_Point.zip) - laps 16
+- [Gauntlet_Race](https://maps.halonet.net/maps/Gauntlet_Race.zip) - laps 10
+- [hypothermia_race](https://maps.halonet.net/maps/hypothermia_race.zip) - laps 6
+- [dessication_pb1](https://maps.halonet.net/maps/dessication_pb1.zip) - laps 8
+- [mercury_falling](https://maps.halonet.net/maps/mercury_falling.zip) - laps 8
 - [wpitest1_race](https://maps.halonet.net/maps/wpitest1_race.zip) - laps 14
+- [New_Mombasa_Race_v2](https://maps.halonet.net/maps/New_Mombasa_Race_v2.zip) - laps 6
 
 ---
 
