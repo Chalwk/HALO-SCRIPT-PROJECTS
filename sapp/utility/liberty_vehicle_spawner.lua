@@ -214,11 +214,10 @@ local function mapNamesToLower()
 end
 
 local function buildVehicleConfig(map_name_lower)
-    local merged_config, hud_strings = {}, {}
+    local merged_config = {}
 
     for keyword, tag_path in pairs(DEFAULT_TAGS) do
         merged_config[keyword] = tag_path
-        table_insert(hud_strings, "[" .. keyword .. "]")
     end
 
     local custom_vehicles = CUSTOM_TAGS[map_name_lower]
@@ -232,18 +231,26 @@ local function buildVehicleConfig(map_name_lower)
                 end
                 local new_keyword = base_keyword .. counter
                 merged_config[new_keyword] = tag_path
-                table_insert(hud_strings, "[" .. new_keyword .. "]")
             else
                 merged_config[keyword] = tag_path
-                table_insert(hud_strings, "[" .. keyword .. "]")
             end
+        end
+    end
+
+    local valid_vehicles, hud_strings = {}, {}
+
+    for keyword, tag_path in pairs(merged_config) do
+        local meta_id = getTag("vehi", tag_path)
+        if meta_id then
+            valid_vehicles[keyword] = tag_path
+            table_insert(hud_strings, "[" .. keyword .. "]")
         end
     end
 
     table_sort(hud_strings)
 
     return {
-        vehicles = merged_config,
+        vehicles = valid_vehicles,
         hud = table_concat(hud_strings, " ")
     }
 end
@@ -263,24 +270,29 @@ function OnStart()
     map_name = get_var(0, "$map"):lower()
     active_vehicles = {}
 
+    -- todo: If the custom map doesn't have a default vehicle, but there's a keyword conflict, we do not need to a +n to the keyword
+
     if not vehicle_meta_cache[map_name] then
         local config = buildVehicleConfig(map_name)
 
-        vehicle_meta_cache[map_name] = {}
-        for keyword, tag_path in pairs(config.vehicles) do
-            local meta_id = getTag("vehi", tag_path)
-            if meta_id then
-                vehicle_meta_cache[map_name][keyword] = meta_id
-            end
-        end
-
-        if next(vehicle_meta_cache[map_name]) == nil or #next(vehicle_meta_cache[map_name]) == 0 then
+        if next(config.vehicles) == nil then
             vehicle_meta_cache[map_name] = nil
             register_callbacks(false)
             return
-        else
-            vehicle_meta_cache[map_name].hud = config.hud
         end
+
+        local vehicles_with_meta = {}
+        for keyword, tag_path in pairs(config.vehicles) do
+            local meta_id = getTag("vehi", tag_path)
+            if meta_id then
+                vehicles_with_meta[keyword] = meta_id
+            end
+        end
+
+        vehicle_meta_cache[map_name] = {
+            vehicles = vehicles_with_meta,
+            hud = config.hud
+        }
     end
 
     register_callbacks(true)
@@ -302,7 +314,7 @@ function OnChat(id, message)
     local input = message:lower():gsub("^%s*(.-)%s*$", "%1")
     if game_over or input == "hud" then return end
 
-    local map_config = vehicle_meta_cache[map_name]
+    local map_config = vehicle_meta_cache[map_name].vehicles
     for keyword, meta_id in pairs(map_config) do
         if input == keyword then
             if not canSpawnVehicle(id) then return false end
