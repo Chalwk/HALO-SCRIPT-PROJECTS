@@ -13,7 +13,7 @@ LICENSE:          MIT License
 ]]
 
 -- CONFIG START ------------------------------------------------------------
-local GRACE_PERIOD = 15   -- Seconds to enter vehicle
+local GRACE_PERIOD = 25   -- Seconds to enter vehicle
 local PUNISHMENT = "kill" -- "kill" or "kick"
 
 local ALLOW_EXEMPTIONS = true
@@ -44,6 +44,13 @@ local get_dynamic_player = get_dynamic_player
 local function inVehicle(id)
     local dyn = get_dynamic_player(id)
     return dyn ~= 0 and read_dword(dyn + 0x11C) ~= 0xFFFFFFFF
+end
+
+local function resetPlayer(id)
+    players[id] = {
+        timer = os_time() + GRACE_PERIOD,
+        warned = false
+    }
 end
 
 local function isExempt(id)
@@ -97,10 +104,7 @@ function OnEnd()
 end
 
 function OnJoin(id)
-    players[id] = {
-        timer = os_time() + GRACE_PERIOD,
-        warned = false
-    }
+    resetPlayer(id)
 end
 
 function OnQuit(id)
@@ -109,11 +113,7 @@ end
 
 function OnSpawn(id)
     if not game_in_progress then return end
-
-    players[id] = {
-        timer = os_time() + GRACE_PERIOD,
-        warned = false
-    }
+    resetPlayer(id)
 end
 
 function OnEnter(id)
@@ -142,6 +142,7 @@ function CheckPlayers()
                 -- Warning at half grace period
                 if not player.warned and time_left <= half_time then
                     rprint(i, "WARNING: Enter a vehicle in " .. math_ceil(time_left) .. "s!")
+                    rprint(i, "Type /vlist to see available vehicles.")
                     player.warned = true
                 end
 
