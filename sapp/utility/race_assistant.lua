@@ -4,7 +4,7 @@ SCRIPT NAME:      race_assistant.lua
 DESCRIPTION:      Enforces vehicle usage in race gametypes with configurable
                   penalties for violations.
 
-LAST UPDATED:     14/10/25
+LAST UPDATED:     17/10/25
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -13,8 +13,14 @@ LICENSE:          MIT License
 ]]
 
 -- CONFIG START ------------------------------------------------------------
-local GRACE_PERIOD = 25   -- Seconds to enter vehicle
-local PUNISHMENT = "kill" -- "kill" or "kick"
+local GRACE_PERIOD = 30       -- Seconds to enter vehicle
+local FORGIVENESS_PERIOD = 30 -- Seconds of continuous racing before violations reset
+
+local ESCALATING_PENALTIES = {
+    { violations = 1, action = "kill", message = "Killed for not racing - 1st offense" },
+    { violations = 2, action = "kill", message = "Killed for not racing - 2nd offense" },
+    { violations = 3, action = "kick", message = "Removed for racing violations" }
+}
 
 local ALLOW_EXEMPTIONS = true
 local EXEMPT_ADMIN_LEVELS = {
@@ -41,16 +47,27 @@ local player_alive = player_alive
 local player_present = player_present
 local get_dynamic_player = get_dynamic_player
 
+local function getPenalty(violation_count)
+    for i = #ESCALATING_PENALTIES, 1, -1 do
+        if violation_count >= ESCALATING_PENALTIES[i].violations then
+            return ESCALATING_PENALTIES[i]
+        end
+    end
+    return ESCALATING_PENALTIES[1]
+end
+
 local function inVehicle(id)
     local dyn = get_dynamic_player(id)
     return dyn ~= 0 and read_dword(dyn + 0x11C) ~= 0xFFFFFFFF
 end
 
 local function resetPlayer(id)
-    players[id] = {
-        timer = os_time() + GRACE_PERIOD,
-        warned = false
-    }
+    if not players[id] then players[id] = {} end
+
+    players[id].timer = os_time() + GRACE_PERIOD
+    players[id].warned = false
+    players[id].in_vehicle_since = nil
+    players[id].violations = players[id].violations or 0
 end
 
 local function isExempt(id)
@@ -59,13 +76,20 @@ local function isExempt(id)
     return EXEMPT_ADMIN_LEVELS[level] or false
 end
 
-local function penalize(id)
-    if PUNISHMENT == "kill" then
+local function penalize(player, id, current_time)
+    player.violations = player.violations + 1
+    local penalty = getPenalty(player.violations)
+
+    rprint(id, penalty.message)
+
+    if penalty.action == "kill" then
         execute_command('kill ' .. id)
-        rprint(id, "Killed for not racing!")
-    else
-        execute_command('k ' .. id .. ' "Not racing!"')
+    elseif penalty.action == "kick" then
+        execute_command('k ' .. id .. ' "Repeated racing violations"')
     end
+
+    player.timer = current_time + GRACE_PERIOD
+    player.warned = false
 end
 
 local function proceed(id)
@@ -117,49 +141,51 @@ function OnSpawn(id)
 end
 
 function OnEnter(id)
-    if players[id] then
-        players[id].timer = 0 -- Reset timer (in vehicle)
-        players[id].warned = false
+    local player = players[id]
+    if player then
+        player.timer = 0
+        player.warned = false
+        player.in_vehicle_since = os_time()
     end
 end
 
 function CheckPlayers()
-    if game_in_progress then
-        local current_time = os_time()
+    if not game_in_progress then return true end
 
-        for i = 1, 16 do
-            local player = proceed(i)
-            if not player then goto continue end
+    local current_time = os_time()
 
-            -- Player is in vehicle, skip checks
-            if inVehicle(i) then goto continue end
+    for i = 1, 16 do
+        local player = proceed(i)
+        if not player then goto continue end
 
-            -- Player not in vehicle and timer is active
-            if player.timer > 0 then
-                local time_left = player.timer - current_time
-                local half_time = GRACE_PERIOD / 2
-
-                -- Warning at half grace period
-                if not player.warned and time_left <= half_time then
-                    rprint(i, "WARNING: Enter a vehicle in " .. math_ceil(time_left) .. "s!")
-                    rprint(i, "Type /vlist to see available vehicles.")
-                    player.warned = true
+        if inVehicle(i) then
+            if player.in_vehicle_since and (current_time - player.in_vehicle_since >= FORGIVENESS_PERIOD) then
+                if player.violations > 0 then
+                    player.violations = 0
+                    rprint(i, "Race violations reset.")
                 end
-
-                -- Penalize when timer expires
-                if time_left <= 0 then
-                    penalize(i)
-                    player.timer = current_time + GRACE_PERIOD -- Reset for next violation
-                    player.warned = false
-                end
-            else
-                -- Player exited vehicle, start new grace period
-                player.timer = current_time + GRACE_PERIOD
-                player.warned = false
+                player.in_vehicle_since = os_time()
             end
-
-            ::continue::
+            goto continue
         end
+
+        if player.timer > 0 then
+            local time_left = player.timer - current_time
+            local half_time = GRACE_PERIOD / 2
+
+            if not player.warned and time_left <= half_time then
+                rprint(i, "WARNING: Enter vehicle in " .. math_ceil(time_left) .. "s and race, or die!")
+                rprint(i, 'Use "/vlist" to show vehicle spawn commands.')
+                player.warned = true
+            elseif time_left <= 0 then
+                penalize(player, i, current_time)
+            end
+        else
+            player.timer = current_time + GRACE_PERIOD
+            player.warned = false
+        end
+
+        ::continue::
     end
     return true
 end
