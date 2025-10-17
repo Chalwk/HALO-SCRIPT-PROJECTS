@@ -50,5 +50,7 @@ The server features an advanced ranking system where players earn credits for in
 
 ## Maps
 
-`destiny`, `fissurefall`, `graveyard`, `grove_final`,
-`immure`, `ivory_tower_final`, `airlock`, `requiem`, `anxiety`, `garden_ce`
+`garden ce`, `ivory tower`, `anxiety`, `ascetic`, `graveyard`,
+`ivory tower`, `grove`, `airlock`, `garden ce`, `fissurefall`,
+`immure`, `destiny`, `fissurefall`, `graveyard`, `requiem`,
+`grove`, `destiny`, `sciophobia`, `seclusion`

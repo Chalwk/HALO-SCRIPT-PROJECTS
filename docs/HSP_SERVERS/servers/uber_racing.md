@@ -52,6 +52,7 @@ being the fastest driver, it's about teamwork, strategy, and leveraging multiple
 - [mercury_falling](https://maps.halonet.net/maps/mercury_falling.zip) - laps 8
 - [wpitest1_race](https://maps.halonet.net/maps/wpitest1_race.zip) - laps 14
 - [New_Mombasa_Race_v2](https://maps.halonet.net/maps/New_Mombasa_Race_v2.zip) - laps 6
+- [secrets_of_egypt](https://maps.halonet.net/maps/secrets_of_egypt.zip) - laps 6
 
 ---
 
