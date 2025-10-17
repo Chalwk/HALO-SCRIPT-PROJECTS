@@ -20,7 +20,7 @@ FEATURES:         - Vehicle-based mine deployment system
 
                     [!] Important: Ensure your maps have the tag addresses for the objects you want to use.
 
-LAST UPDATED:     13/10/2025
+LAST UPDATED:     18/10/2025
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -29,18 +29,43 @@ LICENSE:          MIT License
 ]]
 
 -- CONFIG START -----------------------------------------------
+
+-- Maximum number of mines a player can deploy in a single life
+-- Set to 0 for unlimited mines, or any positive integer to limit mine usage
 local MINES_PER_LIFE = 20
+
+-- Time in seconds before a deployed mine automatically despawns
 local DESPAWN_RATE = 30
+
+-- Detection radius in world units for mine activation
 local TRIGGER_RADIUS = 0.7
-local MINE_ARM_DELAY = 1.0 -- 1 second arm time
+
+-- Time in seconds after deployment before the mine becomes active
+local MINE_ARM_DELAY = 1.0
+
+-- Team damage control for mine explosions
 local MINES_KILL_TEAMMATES = false
+
+-- Object tag used to visually represent mines (Must be a valid equipment tag from your maps)
+-- 'powerups\\full-spectrum vision' - Naturally despawns after 30 seconds
 local MINE_OBJECT = 'powerups\\full-spectrum vision'
+
+-- Fallback mine object if the primary MINE_OBJECT tag is not found
+-- Provides redundancy if the primary object isn't available in certain maps
 local MINE_OBJECT_FALLBACK = 'powerups\\health pack'
-local PROJECTILE_OBJECT = 'weapons\\rocket launcher\\rocket' -- for explosion effect
-local VEHICLES = {                                           -- vehicles that can deploy mines
-    ['vehicles\\ghost\\ghost_mp'] = true,                                                  -- stock
-    ['vehicles\\rwarthog\\rwarthog'] = true,                                               -- stock
-    ['vehicles\\warthog\\mp_warthog'] = true,                                              -- stock
+
+-- Projectile tag used for the mine explosion effect
+-- Creates the visual and damage effect when a mine is triggered
+local PROJECTILE_OBJECT = 'weapons\\rocket launcher\\rocket'
+
+-- List of vehicles that are permitted to deploy mines
+-- Only vehicles in this list will have mine deployment capability
+-- Add or remove vehicle tags to control which vehicles can deploy mines
+-- Format: ['vehicle_tag_path'] = true (enabled) / false (disabled)
+local VEHICLES = {
+    ['vehicles\\ghost\\ghost_mp'] = true,                                                  -- stock maps
+    ['vehicles\\rwarthog\\rwarthog'] = true,                                               -- stock maps
+    ['vehicles\\warthog\\mp_warthog'] = true,                                              -- stock maps
     ['halo3\\vehicles\\warthog\\mp_warthog'] = true,                                       -- [h3]_sandtrap
     ['halo3\\vehicles\\mongoose\\mongoose'] = true,                                        -- [h3]_sandtrap
     ['levels\\test\\racetrack\\custom_hogs\\mp_warthog_green'] = true,                     -- bc_raceway_final_mp
@@ -154,7 +179,7 @@ local function deployMine(player_id, pos, current_time)
     local player = players[player_id]
     if not player then return end
 
-    if player.mines_remaining <= 0 then
+    if MINES_PER_LIFE > 0 and player.mines_remaining <= 0 then
         rprint(player_id, "No more mines for this life!")
         return
     end
