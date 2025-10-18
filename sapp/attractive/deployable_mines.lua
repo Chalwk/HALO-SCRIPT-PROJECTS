@@ -20,7 +20,7 @@ FEATURES:         - Vehicle-based mine deployment system
 
                     [!] Important: Ensure your maps have the tag addresses for the objects you want to use.
 
-LAST UPDATED:     18/10/2025
+LAST UPDATED:     19/10/2025
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -29,6 +29,10 @@ LICENSE:          MIT License
 ]]
 
 -- CONFIG START -----------------------------------------------
+
+-- Level required to toggle deployable mines on|off
+local TOGGLE_COMMAND = 'mines'
+local TOGGLE_REQUIRED_LEVEL = 4
 
 -- Maximum number of mines a player can deploy in a single life
 -- Set to 0 for unlimited mines, or any positive integer to limit mine usage
@@ -92,6 +96,9 @@ local map_name
 local MINE_TAG_ID, PROJECTILE_TAG_ID
 local active_mines, jpt_data, players = {}, {}, {}
 
+-- Runtime toggle for enabling/disabling mines
+local MINES_ENABLED = true
+
 local os_time, pairs = os.time, pairs
 
 local read_vector3d = read_vector3d
@@ -110,6 +117,7 @@ local event_handlers = {
     [cb['EVENT_JOIN']] = 'OnJoin',
     [cb['EVENT_LEAVE']] = 'OnQuit',
     [cb['EVENT_SPAWN']] = 'OnSpawn',
+    [cb['EVENT_COMMAND']] = 'OnCommand',
     [cb['EVENT_TEAM_SWITCH']] = 'OnTeamSwitch'
 }
 
@@ -368,6 +376,8 @@ local function initGame()
     -- Initialize existing players
     initAllPlayers()
 
+    MINES_ENABLED = true
+
     return true
 end
 
@@ -377,6 +387,7 @@ function OnScriptLoad()
 end
 
 function OnTick()
+    if not MINES_ENABLED then return end
     local current_time = os_time()
 
     for player_id, player_data in pairs(players) do
@@ -432,6 +443,31 @@ function OnStart()
     else
         registerEventCallbacks(false)
         if error_message then error(fmt(error_message, map_name)) end
+    end
+end
+
+local function isAdmin(id)
+    if id == 0 then return true end
+    return tonumber(get_var(id, '$lvl')) >= TOGGLE_REQUIRED_LEVEL
+end
+
+function OnCommand(id, command)
+    command = command:lower()
+    if command == TOGGLE_COMMAND then
+        if not isAdmin(id) then
+            rprint(id, "You do not have permission to use this command")
+        else
+            MINES_ENABLED = not MINES_ENABLED
+            local state = MINES_ENABLED and "enabled" or "disabled"
+            rprint(id, fmt("Mines %s", state))
+
+            if MINES_ENABLED == false then -- just in case
+                for mine_id, _ in pairs(active_mines) do
+                    destroyMine(mine_id, false)
+                end
+            end
+        end
+        return false
     end
 end
 
