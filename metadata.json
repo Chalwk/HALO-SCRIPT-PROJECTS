@@ -760,6 +760,12 @@
       "description": "Automatically spawns random weapons and vehicles at predefined map coordinates with configurable timing, height, and despawn behavior.",
       "filename": "item_sky_spawner.lua"
     },
+    "item_spawner": {
+      "title": "Item Spawner",
+      "shortDescription": "Spawn weapons, vehicles, and items with seat and amount options.",
+      "description": "Advanced item spawning system for weapons, vehicles, equipment, bipeds, and projectiles with caching, cleanup, and paginated item listing.",
+      "filename": "item_spawner.lua"
+    },
     "kill_zones": {
       "title": "Kill Zones",
       "shortDescription": "Configurable danger areas that eliminate players after delay",
