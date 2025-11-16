@@ -9,25 +9,32 @@ let scriptMetadata = {};
 const RAW_METADATA_URL = 'https://raw.githubusercontent.com/Chalwk/HALO-SCRIPT-PROJECTS/master/metadata.json';
 const RAW_REPO_BASE = 'https://raw.githubusercontent.com/Chalwk/HALO-SCRIPT-PROJECTS/master/';
 
+// Virtual scrolling variables
+let visibleCategories = new Set();
+const RENDER_CHUNK_SIZE = 15; // Render scripts in chunks
+let currentRenderIndex = 0;
+
 fetch(RAW_METADATA_URL)
     .then(res => res.json())
     .then(metadata => {
     scriptMetadata = metadata;
-    renderScripts();
+    renderCategories(); // Only render categories initially
     setupSearch();
     setupCategoryToggles();
+    setupEventDelegation(); // Use event delegation instead of individual listeners
 })
     .catch(err => console.error('Error loading script metadata:', err));
 
 // ---------------
-// Render scripts into categories
+// Render only categories initially
 // ---------------
-function renderScripts() {
+function renderCategories() {
     const container = document.getElementById('scriptCategories');
     if (!container) return;
 
+    container.innerHTML = ''; // Clear container
+
     for (const categoryName in scriptMetadata) {
-        const categoryScripts = scriptMetadata[categoryName];
         const categoryId = categoryName.toLowerCase().replace(/\s+/g, '-');
 
         const categoryElement = document.createElement('div');
@@ -36,55 +43,209 @@ function renderScripts() {
 
         const categoryHeader = document.createElement('h3');
         categoryHeader.textContent = categoryName;
+        categoryHeader.setAttribute('data-category', categoryName);
 
         const scriptGrid = document.createElement('div');
         scriptGrid.className = 'script-grid';
+        scriptGrid.style.display = 'none'; // Hide initially
+        scriptGrid.setAttribute('data-category', categoryName);
 
-        for (const scriptId in categoryScripts) {
-            const meta = categoryScripts[scriptId];
-
-            const card = document.createElement('div');
-            card.className = 'script-card';
-            card.innerHTML = `
-                <div class="script-header">
-                    <h3>
-                        <a href="?script=${categoryName}/${scriptId}" class="script-link">
-                            ${meta.title}
-                        </a>
-                    </h3>
-                    <p>${meta.shortDescription}</p>
-                </div>
-                <div class="script-content">
-                    <div class="script-actions">
-                        <button class="btn view-btn" data-script="${categoryName}/${scriptId}">
-                            <i class="fas fa-eye"></i> View
-                        </button>
-                        <button class="btn copy-btn" data-script="${categoryName}/${scriptId}">
-                            <i class="fas fa-copy"></i> Copy
-                        </button>
-                        <button class="btn download-btn" data-script="${categoryName}/${scriptId}">
-                            <i class="fas fa-download"></i> Download
-                        </button>
-                    </div>
-                </div>
-            `;
-            scriptGrid.appendChild(card);
-        }
+        // Add loading indicator
+        const loadingIndicator = document.createElement('div');
+        loadingIndicator.className = 'loading-indicator';
+        loadingIndicator.innerHTML = '<div class="spinner"></div><span>Loading scripts...</span>';
+        scriptGrid.appendChild(loadingIndicator);
 
         categoryElement.appendChild(categoryHeader);
         categoryElement.appendChild(scriptGrid);
         container.appendChild(categoryElement);
     }
-
-    attachEventListeners();
 }
 
 // ---------------
-// Fetch script from GitHub
+// Lazy load scripts when category is expanded
+// ---------------
+function loadCategoryScripts(categoryName) {
+    const categoryScripts = scriptMetadata[categoryName];
+    const categoryId = categoryName.toLowerCase().replace(/\s+/g, '-');
+    const scriptGrid = document.querySelector(`.script-grid[data-category="${categoryName}"]`);
+
+    if (!scriptGrid || scriptGrid.getAttribute('data-loaded') === 'true') {
+        return; // Already loaded or doesn't exist
+    }
+
+    // Remove loading indicator
+    scriptGrid.innerHTML = '';
+    scriptGrid.setAttribute('data-loaded', 'true');
+
+    const scriptIds = Object.keys(categoryScripts);
+    currentRenderIndex = 0;
+
+    // Render first chunk immediately
+    renderScriptChunk(categoryName, scriptIds, scriptGrid);
+
+    // Setup intersection observer for lazy loading
+    setupLazyLoading(categoryName, scriptIds, scriptGrid);
+}
+
+function renderScriptChunk(categoryName, scriptIds, scriptGrid) {
+    const endIndex = Math.min(currentRenderIndex + RENDER_CHUNK_SIZE, scriptIds.length);
+
+    for (let i = currentRenderIndex; i < endIndex; i++) {
+        const scriptId = scriptIds[i];
+        const meta = scriptMetadata[categoryName][scriptId];
+
+        const card = createScriptCard(categoryName, scriptId, meta);
+        scriptGrid.appendChild(card);
+    }
+
+    currentRenderIndex = endIndex;
+
+    // Show progress for large categories
+    if (scriptIds.length > RENDER_CHUNK_SIZE && currentRenderIndex < scriptIds.length) {
+        showLoadingProgress(scriptGrid, currentRenderIndex, scriptIds.length);
+    }
+}
+
+function createScriptCard(categoryName, scriptId, meta) {
+    const card = document.createElement('div');
+    card.className = 'script-card';
+    card.setAttribute('data-script-path', `${categoryName}/${scriptId}`);
+    card.innerHTML = `
+        <div class="script-header">
+            <h3>
+                <a href="?script=${categoryName}/${scriptId}" class="script-link">
+                    ${meta.title}
+                </a>
+            </h3>
+            <p>${meta.shortDescription}</p>
+        </div>
+        <div class="script-content">
+            <div class="script-actions">
+                <button class="btn view-btn" data-script="${categoryName}/${scriptId}">
+                    <i class="fas fa-eye"></i> View
+                </button>
+                <button class="btn copy-btn" data-script="${categoryName}/${scriptId}">
+                    <i class="fas fa-copy"></i> Copy
+                </button>
+                <button class="btn download-btn" data-script="${categoryName}/${scriptId}">
+                    <i class="fas fa-download"></i> Download
+                </button>
+            </div>
+        </div>
+    `;
+    return card;
+}
+
+function setupLazyLoading(categoryName, scriptIds, scriptGrid) {
+    if (currentRenderIndex >= scriptIds.length) return;
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                renderScriptChunk(categoryName, scriptIds, scriptGrid);
+
+                if (currentRenderIndex >= scriptIds.length) {
+                    observer.disconnect();
+                    removeLoadingProgress(scriptGrid);
+                }
+            }
+        });
+    }, {
+        rootMargin: '100px' // Start loading 100px before reaching the bottom
+    });
+
+    // Observe the last card to trigger loading more
+    const lastCard = scriptGrid.lastElementChild;
+    if (lastCard) {
+        observer.observe(lastCard);
+    }
+}
+
+function showLoadingProgress(container, loaded, total) {
+    let progress = container.querySelector('.loading-progress');
+    if (!progress) {
+        progress = document.createElement('div');
+        progress.className = 'loading-progress';
+        container.appendChild(progress);
+    }
+    progress.innerHTML = `<div class="progress-text">Loaded ${loaded} of ${total} scripts...</div>`;
+}
+
+function removeLoadingProgress(container) {
+    const progress = container.querySelector('.loading-progress');
+    if (progress) {
+        progress.remove();
+    }
+}
+
+// ---------------
+// Event Delegation - Much more efficient
+// ---------------
+function setupEventDelegation() {
+    // Delegate all button clicks to the container
+    document.getElementById('scriptCategories').addEventListener('click', function(e) {
+        const target = e.target;
+        const button = target.closest('.view-btn, .copy-btn, .download-btn');
+
+        if (!button) return;
+
+        const scriptPath = button.getAttribute('data-script');
+        if (!scriptPath) return;
+
+        if (button.classList.contains('view-btn')) {
+            openScriptDetail(scriptPath);
+        } else if (button.classList.contains('copy-btn')) {
+            getScript(scriptPath, code => {
+                navigator.clipboard.writeText(code).then(() => showToast('Code copied to clipboard!'));
+            });
+        } else if (button.classList.contains('download-btn')) {
+            handleDownload(scriptPath);
+        }
+    });
+
+    // Script link clicks
+    document.getElementById('scriptCategories').addEventListener('click', function(e) {
+        if (e.target.classList.contains('script-link')) {
+            e.preventDefault();
+            const url = new URL(e.target.href);
+            const scriptParam = url.searchParams.get('script');
+            if (scriptParam) {
+                openScriptDetail(scriptParam);
+            }
+        }
+    });
+}
+
+function handleDownload(scriptPath) {
+    const [category, scriptId] = scriptPath.split('/');
+    const meta = scriptMetadata[category] && scriptMetadata[category][scriptId];
+    if (!meta) return;
+
+    getScript(scriptPath, code => {
+        const blob = new Blob([code], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = meta.filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('Download started!');
+    });
+}
+
+// ---------------
+// Fetch script from GitHub (optimized with caching)
 // ---------------
 function fetchScript(scriptPath) {
+    if (scriptCache[scriptPath]) {
+        return Promise.resolve(scriptCache[scriptPath]);
+    }
+
     const [category, scriptId] = scriptPath.split('/');
-    const meta = scriptMetadata[category][scriptId];
+    const meta = scriptMetadata[category] && scriptMetadata[category][scriptId];
     if (!meta) return Promise.reject('Metadata missing');
 
     const url = `${RAW_REPO_BASE}sapp/${category}/${meta.filename}`;
@@ -98,57 +259,28 @@ function fetchScript(scriptPath) {
 }
 
 function getScript(scriptPath, callback) {
-    if (scriptCache[scriptPath]) callback(scriptCache[scriptPath]);
-    else fetchScript(scriptPath).then(code => callback(code)).catch(console.error);
-}
-
-// ---------------
-// Event Listeners
-// ---------------
-function attachEventListeners() {
-    document.querySelectorAll('.view-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            const scriptPath = this.getAttribute('data-script');
-            openScriptDetail(scriptPath);
-        });
-    });
-
-    document.querySelectorAll('.copy-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            const scriptPath = this.getAttribute('data-script');
-            getScript(scriptPath, code => {
-                navigator.clipboard.writeText(code).then(() => showToast('Code copied to clipboard!'));
-            });
-        });
-    });
-
-    document.querySelectorAll('.download-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            const scriptPath = this.getAttribute('data-script');
-            const [category, scriptId] = scriptPath.split('/');
-            const meta = scriptMetadata[category][scriptId];
-            if (!meta) return;
-
-            getScript(scriptPath, code => {
-                const blob = new Blob([code], { type: 'text/plain' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = meta.filename;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                showToast('Download started!');
-            });
-        });
+    fetchScript(scriptPath)
+        .then(code => callback(code))
+        .catch(err => {
+        console.error('Error fetching script:', err);
+        showToast('Error loading script');
     });
 }
 
+// ---------------
+// Script Detail Panel
+// ---------------
 function openScriptDetail(scriptPath) {
     const [category, scriptId] = scriptPath.split('/');
-    const meta = scriptMetadata[category][scriptId];
+    const meta = scriptMetadata[category] && scriptMetadata[category][scriptId];
     if (!meta) return;
+
+    // Show loading state
+    document.getElementById('scriptTitle').textContent = 'Loading...';
+    document.getElementById('scriptFullDescription').textContent = '';
+    document.getElementById('scriptCode').textContent = '// Loading script...';
+    document.getElementById('scriptDetail').style.display = 'block';
+    document.body.style.overflow = 'hidden';
 
     getScript(scriptPath, code => {
         document.getElementById('scriptTitle').textContent = meta.title;
@@ -157,39 +289,25 @@ function openScriptDetail(scriptPath) {
         hljs.highlightElement(document.getElementById('scriptCode'));
         document.querySelector('.code-header div').textContent = meta.filename;
         document.getElementById('downloadCodeBtn').setAttribute('data-script', scriptPath);
-        document.getElementById('scriptDetail').style.display = 'block';
-        document.body.style.overflow = 'hidden';
     });
 }
 
+// Close detail panel
 document.getElementById('closeDetail').addEventListener('click', () => {
     document.getElementById('scriptDetail').style.display = 'none';
     document.body.style.overflow = 'auto';
 });
 
+// Copy code from detail panel
 document.getElementById('copyCodeBtn').addEventListener('click', () => {
     const code = document.getElementById('scriptCode').textContent;
     navigator.clipboard.writeText(code).then(() => showToast('Code copied to clipboard!'));
 });
 
+// Download from detail panel
 document.getElementById('downloadCodeBtn').addEventListener('click', function() {
     const scriptPath = this.getAttribute('data-script');
-    const code = scriptCache[scriptPath];
-    if (!code) return;
-    const [category, scriptId] = scriptPath.split('/');
-    const meta = scriptMetadata[category][scriptId];
-    if (!meta) return;
-
-    const blob = new Blob([code], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = meta.filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    showToast('Download started!');
+    handleDownload(scriptPath);
 });
 
 // ---------------
@@ -197,19 +315,21 @@ document.getElementById('downloadCodeBtn').addEventListener('click', function() 
 // ---------------
 function showToast(message) {
     const toast = document.getElementById('toast');
-    toast.querySelector('span').textContent = message;
+    const toastSpan = toast.querySelector('span');
+    toastSpan.textContent = message;
     toast.classList.add('show');
     setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
 // ---------------
-// Search functionality
+// Search functionality (optimized)
 // ---------------
 function setupSearch() {
     const searchInput = document.getElementById('scriptSearch');
     const clearSearchBtn = document.getElementById('clearSearch');
     let searchTimeout;
 
+    // Debounced search
     searchInput.addEventListener('input', () => {
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(() => {
@@ -220,9 +340,9 @@ function setupSearch() {
     clearSearchBtn.addEventListener('click', () => {
         searchInput.value = '';
         performSearch('');
+        searchInput.focus();
     });
 
-    // Also trigger search on Enter key
     searchInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             performSearch(searchInput.value);
@@ -233,7 +353,6 @@ function setupSearch() {
 function performSearch(query) {
     const searchTerm = query.toLowerCase().trim();
 
-    // If search is empty, show all categories and cards
     if (!searchTerm) {
         resetSearch();
         return;
@@ -243,41 +362,50 @@ function performSearch(query) {
     let totalMatches = 0;
 
     allCategories.forEach(category => {
-        const cards = category.querySelectorAll('.script-card');
-        let categoryMatches = 0;
+        const categoryName = category.querySelector('h3').textContent.toLowerCase();
+        const categoryMatchesSearch = categoryName.includes(searchTerm);
+        let scriptMatches = 0;
 
-        cards.forEach(card => {
-            const titleElement = card.querySelector('h3');
-            const descElement = card.querySelector('p');
-
-            if (titleElement && descElement) {
-                const title = titleElement.textContent.toLowerCase();
-                const desc = descElement.textContent.toLowerCase();
-                const matches = title.includes(searchTerm) || desc.includes(searchTerm);
-
-                if (matches) {
-                    card.style.display = '';
-                    categoryMatches++;
-                    totalMatches++;
-                } else {
-                    card.style.display = 'none';
-                }
-            }
-        });
-
-        // Show/hide entire category based on matches
-        if (categoryMatches > 0) {
+        // If category name matches, show all scripts in category
+        if (categoryMatchesSearch) {
             category.style.display = '';
             const grid = category.querySelector('.script-grid');
             if (grid) {
+                const cards = grid.querySelectorAll('.script-card');
+                cards.forEach(card => {
+                    card.style.display = '';
+                    scriptMatches++;
+                });
                 grid.style.display = 'grid';
             }
+            totalMatches += scriptMatches;
         } else {
-            category.style.display = 'none';
+            // Otherwise, filter scripts within category
+            const grid = category.querySelector('.script-grid');
+            if (grid) {
+                const cards = grid.querySelectorAll('.script-card');
+                scriptMatches = 0;
+
+                cards.forEach(card => {
+                    const title = card.querySelector('h3').textContent.toLowerCase();
+                    const desc = card.querySelector('p').textContent.toLowerCase();
+                    const matches = title.includes(searchTerm) || desc.includes(searchTerm);
+
+                    if (matches) {
+                        card.style.display = '';
+                        scriptMatches++;
+                        totalMatches++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+
+                category.style.display = scriptMatches > 0 ? '' : 'none';
+                grid.style.display = scriptMatches > 0 ? 'grid' : 'none';
+            }
         }
     });
 
-    // Show message if no results found
     if (totalMatches === 0) {
         showNoResultsMessage(searchTerm);
     } else {
@@ -289,17 +417,15 @@ function resetSearch() {
     const allCategories = document.querySelectorAll('.script-category');
     const allCards = document.querySelectorAll('.script-card');
 
-    // Show all cards
     allCards.forEach(card => {
         card.style.display = '';
     });
 
-    // Show all categories and ensure grids are visible
     allCategories.forEach(category => {
         category.style.display = '';
         const grid = category.querySelector('.script-grid');
-        if (grid) {
-            grid.style.display = 'grid'; // Force grid display
+        if (grid && grid.getAttribute('data-loaded') === 'true') {
+            grid.style.display = 'grid';
         }
     });
 
@@ -307,7 +433,7 @@ function resetSearch() {
 }
 
 function showNoResultsMessage(searchTerm) {
-    let noResultsMsg = document.getElementById('noResultsMessage');
+    const noResultsMsg = document.getElementById('noResultsMessage');
     if (!noResultsMsg) return;
 
     noResultsMsg.innerHTML = `No scripts found for "<strong>${searchTerm}</strong>"`;
@@ -322,24 +448,33 @@ function hideNoResultsMessage() {
 }
 
 // ---------------
-// Category Toggles
+// Category Toggles (optimized)
 // ---------------
 function setupCategoryToggles() {
-    document.querySelectorAll('.script-category h3').forEach(header => {
-        const category = header.parentElement;
-        const grid = category.querySelector('.script-grid');
-        if (grid) {
-            grid.style.display = 'none';
-            category.classList.add('collapsed');
-        }
-
-        header.addEventListener('click', () => {
+    document.getElementById('scriptCategories').addEventListener('click', function(e) {
+        if (e.target.tagName === 'H3') {
+            const header = e.target;
             const category = header.parentElement;
             const isCollapsed = category.classList.toggle('collapsed');
             const grid = category.querySelector('.script-grid');
+
             if (grid) {
-                grid.style.display = isCollapsed ? 'none' : 'grid';
+                if (isCollapsed) {
+                    grid.style.display = 'none';
+                } else {
+                    grid.style.display = 'grid';
+                    // Lazy load scripts when category is expanded
+                    const categoryName = header.textContent;
+                    if (grid.getAttribute('data-loaded') !== 'true') {
+                        loadCategoryScripts(categoryName);
+                    }
+                }
             }
-        });
+        }
+    });
+
+    // Initially collapse all categories
+    document.querySelectorAll('.script-category').forEach(category => {
+        category.classList.add('collapsed');
     });
 }

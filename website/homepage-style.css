@@ -114,6 +114,9 @@ header.hero {
     background: linear-gradient(180deg, var(--accent), #4fb3ef);
     color: #07202a;
     box-shadow: 0 4px 12px rgba(90,150,230,0.2);
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000;
 }
 
 .btn:hover {
@@ -184,6 +187,7 @@ header.hero {
     border-radius: var(--radius);
     overflow: hidden;
     background: rgba(255,255,255,0.02);
+    contain: layout style paint;
 }
 
 .script-category h3 {
@@ -222,6 +226,8 @@ header.hero {
     gap: 20px;
     padding: 24px;
     transition: all 0.3s ease;
+    content-visibility: auto;
+    contain-intrinsic-size: 200px;
 }
 
 /* Script Cards */
@@ -234,6 +240,8 @@ header.hero {
     display: flex;
     flex-direction: column;
     height: 100%;
+    will-change: transform;
+    transform: translateZ(0);
 }
 
 .script-card:hover {
@@ -292,6 +300,44 @@ header.hero {
 .script-actions .btn:hover {
     background: rgba(126,200,255,0.2);
     transform: translateY(-1px);
+}
+
+/* Loading indicators */
+.loading-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    color: var(--muted);
+    gap: 12px;
+}
+
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(126, 200, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: var(--accent);
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.loading-progress {
+    text-align: center;
+    padding: 15px;
+    color: var(--muted);
+    font-size: 14px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.progress-text {
+    background: rgba(255,255,255,0.05);
+    padding: 8px 16px;
+    border-radius: 20px;
+    display: inline-block;
 }
 
 /* Tags */
@@ -493,6 +539,11 @@ footer.footer {
     .hero-title p {
         font-size: 14px;
     }
+
+    /* Reduce animation intensity on mobile */
+    .script-card:hover {
+        transform: translateY(-2px);
+    }
 }
 
 @media (max-width: 480px) {
@@ -512,5 +563,21 @@ footer.footer {
     .btn {
         padding: 10px 16px;
         font-size: 13px;
+    }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+    .script-card, .btn {
+        transition: none;
+    }
+
+    .script-card:hover {
+        transform: none;
+    }
+
+    .spinner {
+        animation: none;
+        border-top-color: transparent;
     }
 }
