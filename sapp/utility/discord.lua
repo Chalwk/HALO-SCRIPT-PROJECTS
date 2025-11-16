@@ -116,13 +116,14 @@ LICENSE:          MIT License
 =====================================================================================
 ]]
 
--- Configuration starts here -----------------------------------------------------------------------
+-- CONFG START -----------------------------------------------------------------------
 local CONFIG = {
     CHANNELS = {
-        ['GENERAL'] = 'xxxxxxxxxxxxxxxxxxx',
-        ['CHAT'] = 'xxxxxxxxxxxxxxxxxxx',
-        ['COMMAND'] = 'xxxxxxxxxxxxxxxxxxx'
+        GENERAL = '1439547790312341584',
+        CHAT = '1439547790312341584',
+        COMMAND = '1439547790312341584'
     },
+
     EVENTS = {
         GENERAL = {
             event_start = {
@@ -130,182 +131,150 @@ local CONFIG = {
                 embed = {
                     description = "**🗺️ Game Started** → `$map` **-** `$gt ($ffa)`",
                     color = 'green',
-                    footer = "$serverName"
+                    footer = true
                 }
             },
+
             event_end = {
                 enable = true,
                 embed = {
                     description = "**🏁 Game Ended** → `$map` **-** `$gt ($ffa)`",
                     color = 'red',
-                    footer = "$serverName"
+                    footer = true
                 }
             },
+
             event_join = {
                 enable = true,
                 text = "**🟢 Join** → `$name` **-** `$total/16`"
             },
+
             event_leave = {
                 enable = true,
                 text = "**🔴 Quit** → `$name` **-** `$total/16`"
             },
+
             event_spawn = {
                 enable = false,
                 text = "**✨ Spawn** → `$name` Team: `$team`"
             },
+
             event_team_switch = {
                 enable = false,
                 text = "**🔄 Team Switch** → `$name` → `$team`"
             },
+
             event_map_reset = {
                 enable = false,
                 text = "**♻️ Map Reset** → `$map` **-** `$gt ($ffa)`"
             },
+
             event_login = {
                 enable = false,
                 embed = {
                     description = "**🔐 Login** → `$name`",
                     color = 'yellow',
-                    footer = "$serverName",
+                    footer = true,
                     fields = {
-                        { name = "Admin Level", value = "$lvl", inline = true }
+                        {
+                            name = "Admin Level",
+                            value = "$lvl",
+                            inline = true
+                        }
                     }
                 }
             },
+
             event_snap = {
                 enable = false,
                 text = "**📸 Snap** → `$name`"
             },
+
             event_score = {
-                [1] = { -- CTF
+                [1] = {
                     enable = true,
                     embed = {
                         title = "🏆 CTF Scoreboard update!",
-                        description = [[
-**$name** captured the flag for the **$team** team!
-
-🟥 Red Score: **$redScore**
-🟦 Blue Score: **$blueScore**
-🏁 Scorelimit: **$scorelimit**
-]],
+                        description =
+                        "**$name** captured the flag for the **$team** team!\n\n🟥 Red Score: **$redScore**\n🟦 Blue Score: **$blueScore**\n🏁 Scorelimit: **$scorelimit**",
                         color = 'green',
-                        footer = "$serverName"
+                        footer = true
                     }
                 },
-                [2] = { -- Team Race
+
+                [2] = {
                     enable = true,
                     embed = {
                         title = "🏆 Team RACE Scoreboard updated!",
-                        description = [[
-**$name** completed a lap for **$team** team!
-🏁 Team Total Laps: **$totalTeamLaps/$scorelimit**
-🚩 Player Laps: **$score**
-]],
+                        description =
+                        "**$name** completed a lap for **$team** team!\n🏁 Team Total Laps: **$totalTeamLaps/$scorelimit**\n🚩 Player Laps: **$score**",
                         color = 'green',
-                        footer = "$serverName"
+                        footer = true
                     }
                 },
-                [3] = { -- FFA Race
+
+                [3] = {
                     enable = true,
                     embed = {
                         title = "🏆 FFA RACE Scoreboard updated!",
-                        description = [[
-**$name** finished a lap.
-🏆 Total Laps Completed: **$score/$scorelimit**
-]],
+                        description = "**$name** finished a lap.\n🏆 Total Laps Completed: **$score/$scorelimit**",
                         color = 'green',
-                        footer = "$serverName"
+                        footer = true
                     }
                 },
-                [4] = { -- Team Slayer
+
+                [4] = {
                     enable = true,
                     embed = {
                         title = "🏆 Team Slayer Scoreboard updated!",
-                        description = [[
-**$name** scored for **$team** team!
-
-🟥 Red Score: **$redScore**
-🟦 Blue Score: **$blueScore**
-🏁 Scorelimit: **$scorelimit**
-]],
+                        description =
+                        "**$name** scored for **$team** team!\n\n🟥 Red Score: **$redScore**\n🟦 Blue Score: **$blueScore**\n🏁 Scorelimit: **$scorelimit**",
                         color = 'green',
-                        footer = "$serverName"
+                        footer = true
                     }
                 },
-                [5] = { -- FFA Slayer
+
+                [5] = {
                     enable = true,
                     embed = {
                         title = "🏆 FFA Slayer Scoreboard updated!",
-                        description = [[
-**$name** scored!
-
-🟥 Red Score: **$redScore**
-🟦 Blue Score: **$blueScore**
-🏁 Scorelimit: **$scorelimit**
-]],
+                        description =
+                        "**$name** scored!\n\n🟥 Red Score: **$redScore**\n🟦 Blue Score: **$blueScore**\n🏁 Scorelimit: **$scorelimit**",
                         color = 'green',
-                        footer = "$serverName"
+                        footer = true
                     }
                 }
             },
+
             event_death = {
-                [1] = { -- first blood
-                    enable = true,
-                    text = "**☠️ Death:** `$killerName` drew first blood on `$victimName`"
-                },
-                [2] = { -- killed from the grave
-                    enable = true,
-                    text = "**☠️ Death:** `$victimName` was killed from the grave by `$killerName`"
-                },
-                [3] = { -- vehicle kill
-                    enable = true,
-                    text = "**☠️ Death:** `$victimName` was run over by `$killerName`"
-                },
-                [4] = { -- pvp
-                    enable = true,
-                    text = "**☠️ Death:** `$victimName` was killed by `$killerName`"
-                },
-                [5] = { -- suicide
-                    enable = true,
-                    text = "**☠️ Death:** `$victimName` committed suicide"
-                },
-                [6] = { -- betrayal
-                    enable = true,
-                    text = "**☠️ Death:** `$victimName` was betrayed by `$killerName`"
-                },
-                [7] = { -- squashed by a vehicle
-                    enable = true,
-                    text = "**☠️ Death:** `$victimName` was squashed by a vehicle"
-                },
-                [8] = { -- fall damage
-                    enable = true,
-                    text = "**☠️ Death:** `$victimName` fell to their death"
-                },
-                [9] = { -- killed by the server
-                    enable = true,
-                    text = "**☠️ Death:** `$victimName` was killed by the server"
-                },
-                [10] = { -- unknown death
-                    enable = true,
-                    text = "**☠️ Death:** `$victimName` died"
-                }
+                [1]  = { enable = true, text = "**☠️ Death:** `$killerName` drew first blood on `$victimName`" },
+                [2]  = { enable = true, text = "**☠️ Death:** `$victimName` was killed from the grave by `$killerName`" },
+                [3]  = { enable = true, text = "**☠️ Death:** `$victimName` was run over by `$killerName`" },
+                [4]  = { enable = true, text = "**☠️ Death:** `$victimName` was killed by `$killerName`" },
+                [5]  = { enable = true, text = "**☠️ Death:** `$victimName` committed suicide" },
+                [6]  = { enable = true, text = "**☠️ Death:** `$victimName` was betrayed by `$killerName`" },
+                [7]  = { enable = true, text = "**☠️ Death:** `$victimName` was squashed by a vehicle" },
+                [8]  = { enable = true, text = "**☠️ Death:** `$victimName` fell to their death" },
+                [9]  = { enable = true, text = "**☠️ Death:** `$victimName` was killed by the server" },
+                [10] = { enable = true, text = "**☠️ Death:** `$victimName` died" }
             }
         },
+
         CHAT = {
             enable = true,
             text = "**💬 Chat** → `$name`: *$msg*"
         },
+
         COMMAND = {
             enable = true,
             embed = {
                 description = "**⌘ Command** → `$name`: `$cmd`",
                 color = 'green',
-                footer = "$serverName"
+                footer = true
             }
         }
     },
 
-    -- HEX color codes for embed messages
     COLORS = {
         red = 0xFF0000,
         green = 0x00FF00,
@@ -320,9 +289,7 @@ local CONFIG = {
         grey = 0x808080
     },
 
-    -- Known CD-key hashes from pirated/cracked Halo copies.
-    -- Used to flag players with "$pirated = YES".
-    KNOWN_PIRATED_HASHES = {
+    PIRATED_HASHES = {
         ['388e89e69b4cc08b3441f25959f74103'] = true,
         ['81f9c914b3402c2702a12dc1405247ee'] = true,
         ['c939c09426f69c4843ff75ae704bf426'] = true,
@@ -353,206 +320,190 @@ local CONFIG = {
         ['f35309a653ae6243dab90c203fa50000'] = true,
         ['50bbef5ebf4e0393016d129a545bd09d'] = true,
         ['a77ee0be91bd38a0635b65991bc4b686'] = true,
-        ['3126fab3615a94119d5fe9eead1e88c1'] = true,
+        ['3126fab3615a94119d5fe9eead1e88c1'] = true
     }
 }
-
--- Configuration ends here -----------------------------------------------------------------------
+-- CONFG ENDS -----------------------------------------------------------------------
 
 api_version = '1.12.0.0'
 
-local json, log_path
-
+-- Standard Lua functions
 local pcall = pcall
+local tonumber = tonumber
+local tostring = tostring
+local pairs = pairs
+local ipairs = ipairs
 local io_open = io.open
 local os_remove = os.remove
-local tonumber, tostring = tonumber, tostring
-local table_insert, pairs, ipairs = table.insert, pairs, ipairs
-local char, concat = string.char, table.concat
+local table_insert = table.insert
+local concat = table.concat
+local char = string.char
 
-local get_var, player_present, player_alive, register_callback =
-    get_var, player_present, player_alive, register_callback
+-- SAPP API functions
+local get_var = get_var
+local player_present = player_present
+local player_alive = player_alive
+local register_callback = register_callback
+local read_byte = read_byte
+local read_dword = read_dword
+local sig_scan = sig_scan
+local lookup_tag = lookup_tag
+local get_dynamic_player = get_dynamic_player
 
-local read_byte, read_dword, sig_scan, lookup_tag, get_dynamic_player, timer =
-    read_byte, read_dword, sig_scan, lookup_tag, get_dynamic_player, timer
+-- JSON handling
+local json
+local log_path
 
-local players = {}
+-- Game/server state
+local players
 local server_name
-local map, mode, gametype
-local gametype_base, score_limit
-local ffa, falling, distance, first_blood
+local map
+local mode
+local gametype
+local gametype_base
+local score_limit
+local ffa
+local first_blood
+local falling_tag
+local distance_tag
 
-local command_type = {
-    [0] = "RCON",
-    [1] = "CONSOLE",
-    [2] = "CHAT",
-    [3] = "UNKNOWN",
+-- Constants
+local COMMAND_TYPE = { [0] = "RCON", [1] = "CONSOLE", [2] = "CHAT", [3] = "UNKNOWN" }
+local CHAT_TYPE = { [0] = "GLOBAL", [1] = "TEAM", [2] = "VEHICLE", [3] = "UNKNOWN" }
+local GAMETYPE_MAP = { ctf = 1, race = 2, slayer = 4 }
+local CALLBACKS = {
+    [cb['EVENT_CHAT']] = 'OnChat',
+    [cb['EVENT_COMMAND']] = 'OnCommand',
+    [cb['EVENT_DIE']] = 'OnDeath',
+    [cb['EVENT_SCORE']] = 'OnScore',
+    [cb['EVENT_DAMAGE_APPLICATION']] = 'OnDamage',
+    [cb['EVENT_JOIN']] = 'OnJoin',
+    [cb['EVENT_LEAVE']] = 'OnQuit',
+    [cb['EVENT_GAME_END']] = 'OnEnd',
+    [cb['EVENT_GAME_START']] = 'OnStart',
+    [cb['EVENT_SNAP']] = 'OnSnap',
+    [cb['EVENT_SPAWN']] = 'OnSpawn',
+    [cb['EVENT_LOGIN']] = 'OnLogin',
+    [cb['EVENT_MAP_RESET']] = "OnReset",
+    [cb['EVENT_TEAM_SWITCH']] = 'OnSwitch'
 }
 
-local chat_type = {
-    [0] = "GLOBAL",
-    [1] = "TEAM",
-    [2] = "VEHICLE",
-    [3] = "UNKNOWN",
-}
 local function clearLog()
     local file = io_open(log_path, "w")
     if file then
-        file:write("[]")
-        file:close()
+        file:write("[]"); file:close()
     end
 end
 
-function WriteToJSON(eventData, attempt)
+local function WriteToJSON(eventData, attempt)
     attempt = attempt or 1
-    local maxRetries = 3
-    local retryDelay = 100
-
-    -- Create a lock file path
     local lockPath = log_path .. ".lock"
 
     local success, result = pcall(function()
-        -- Create lock file
         local lockFile = io_open(lockPath, "w")
-        if not lockFile then return false, "Could not create lock file" end
+        if not lockFile then return false end
         lockFile:close()
 
-        -- Read existing events
         local events = {}
         local file = io_open(log_path, "r")
         if file then
             local content = file:read("*a")
             file:close()
-            if content and content ~= "" and content ~= " " then
+            if content ~= "" and content ~= " " then
                 events = json:decode(content) or {}
             end
         end
 
         table_insert(events, eventData)
 
-        -- Write back
         file = io_open(log_path, "w")
         if not file then
-            os_remove(lockPath)
-            return false, "Failed to open file for writing"
+            os_remove(lockPath); return false
         end
         file:write(json:encode(events))
         file:close()
 
-        -- Remove lock file
         os_remove(lockPath)
         return true
     end)
 
-    -- Clean up lock file if it still exists
     pcall(function() os_remove(lockPath) end)
 
-    if success and result then return true end
-
-    -- Retry if failed
-    if attempt < maxRetries then -- todo: fix this
-        timer(retryDelay, "WriteToJSON", eventData, attempt + 1)
-        return false
+    if not success and attempt < 3 then
+        timer(100, "RetryWriteToJSON", json:encode(eventData), attempt + 1)
     end
 
-    return false
+    return success and result
 end
 
-local function parseTemplate(template, args)
-    return (template:gsub("($[%w_]+)", function(placeholder)
-        return args[placeholder] or placeholder
-    end))
+function RetryWriteToJSON(jsonString, attempt)
+    attempt = tonumber(attempt) or 1
+    local success = WriteToJSON(json:decode(jsonString), attempt)
+    if not success and attempt < 3 then
+        timer(100, "RetryWriteToJSON", jsonString, attempt + 1)
+    end
 end
 
-local function getEmbedColor(embed)
-    if not embed.color then return nil end
-    return CONFIG.COLORS[embed.color] or embed.color
+local function parseTemplate(template, args) return (template:gsub("($%w+)", args)) end
+
+local function getEventConfig(event, subtype)
+    if event == "event_chat" then return CONFIG.EVENTS.CHAT end
+    if event == "event_command" then return CONFIG.EVENTS.COMMAND end
+
+    local general = CONFIG.EVENTS.GENERAL[event]
+    return subtype and general[subtype] or general
 end
 
-local function parseEmbedTemplate(embedTemplate, args)
-    local embed = {}
-    embed.title = parseTemplate(embedTemplate.title or " ", args)
-    embed.description = parseTemplate(embedTemplate.description or "", args)
-    embed.color = getEmbedColor(embedTemplate)
-    embed.footer = embedTemplate.footer
+local function getChannelID(event)
+    return CONFIG.CHANNELS[event == "event_chat" and "CHAT" or event == "event_command" and "COMMAND" or "GENERAL"]
+end
 
-    if embedTemplate.fields then
-        embed.fields = {}
-        for i, field in ipairs(embedTemplate.fields) do
-            embed.fields[i] = {
-                name = parseTemplate(field.name or "", args),
-                value = parseTemplate(field.value or "", args),
-                inline = field.inline
-            }
+local function logEvent(event, args, subtype)
+    local config = getEventConfig(event, subtype)
+    if not config or not config.enable then return end
+
+    local channel_id = getChannelID(event)
+    args["$serverName"] = server_name
+
+    if config.embed then
+        local embed = {
+            title = parseTemplate(config.embed.title or "", args),
+            description = parseTemplate(config.embed.description or "", args),
+            color = CONFIG.COLORS[config.embed.color],
+            channel_id = channel_id
+        }
+
+        if config.embed.footer then embed.footer = server_name end
+        if config.embed.fields then
+            embed.fields = {}
+            for _, field in ipairs(config.embed.fields) do
+                embed.fields[#embed.fields + 1] = {
+                    name = parseTemplate(field.name, args),
+                    value = parseTemplate(field.value, args),
+                    inline = field.inline
+                }
+            end
         end
-    end
 
-    return embed
-end
-
-local function getEvent(event_name, event_type)
-    -- Handle special cases for CHAT and COMMAND
-    if event_name == "event_chat" then
-        return CONFIG.EVENTS.CHAT
-    elseif event_name == "event_command" then
-        return CONFIG.EVENTS.COMMAND
-    end
-
-    -- Handle GENERAL events
-    local general_events = CONFIG.EVENTS.GENERAL[event_name]
-    if not general_events then return nil end
-
-    -- Handle events with subtypes (event_score, event_death)
-    if event_type and general_events[event_type] then
-        return general_events[event_type]
-    end
-
-    return general_events
-end
-
-local function getChannelForEvent(event_name)
-    if event_name == "event_chat" then
-        return "CHAT"
-    elseif event_name == "event_command" then
-        return "COMMAND"
-    else
-        return "GENERAL"
-    end
-end
-
-local function log(event_name, args)
-    local event_type = args and args.event_type
-    local event = getEvent(event_name, event_type)
-    if not event or not event.enable then return end
-
-    local channel_id = CONFIG.CHANNELS[getChannelForEvent(event_name)]
-
-    if event.embed then
-        local embed = parseEmbedTemplate(event.embed, args)
-        embed.channel_id = channel_id
         WriteToJSON({ embed = embed })
     else
-        -- Fallback to regular message
-        local text = parseTemplate(event.text, args)
         WriteToJSON({
             message = {
                 channel_id = channel_id,
-                text = text,
+                text = parseTemplate(config.text, args)
             }
         })
     end
 end
 
 local function readWideString(address, length)
-    local count = 0
-    local byte_table = {}
+    local bytes = {}
     for i = 1, length do
-        if read_byte(address + count) ~= 0 then
-            byte_table[i] = char(read_byte(address + count))
-        end
-        count = count + 2
+        local byte = read_byte(address + (i - 1) * 2)
+        if byte == 0 then break end
+        bytes[#bytes + 1] = char(byte)
     end
-    return concat(byte_table)
+    return concat(bytes)
 end
 
 local function getServerName()
@@ -565,34 +516,6 @@ local function getTag(class, name)
     return tag ~= 0 and read_dword(tag + 0xC) or nil
 end
 
-local function getTeamPlay()
-    return ffa and "FFA" or "Team Play"
-end
-
-local function getscorelimit()
-    return read_byte(gametype_base + 0x58)
-end
-
-local function isPirated(hash)
-    return CONFIG.KNOWN_PIRATED_HASHES[hash] and 'YES' or 'NO'
-end
-
-local function getPlayerData(player, quit)
-    local total = tonumber(get_var(0, '$pn'))
-    total = (quit and total - 1) or total
-
-    return {
-        ["$total"] = total,
-        ["$name"] = player.name,
-        ["$ip"] = player.ip,
-        ["$hash"] = player.hash,
-        ["$id"] = player.id,
-        ["$lvl"] = player.level(),
-        ["$ping"] = get_var(player.id, "$ping"),
-        ["$pirated"] = isPirated(player.hash)
-    }
-end
-
 local function newPlayer(id)
     return {
         id = id,
@@ -602,271 +525,215 @@ local function newPlayer(id)
         name = get_var(id, '$name'),
         team = get_var(id, '$team'),
         hash = get_var(id, '$hash'),
-        level = function()
-            return tonumber(get_var(id, '$lvl'))
-        end
+        level = function() return tonumber(get_var(id, '$lvl')) end
     }
 end
 
-local function isCommand(str)
-    return str:sub(1, 1) == "/" or str:sub(1, 1) == "\\"
+local function getPlayerData(player, isQuit)
+    local total = tonumber(get_var(0, '$pn'))
+    return {
+        ["$total"] = isQuit and total - 1 or total,
+        ["$name"] = player.name,
+        ["$ip"] = player.ip,
+        ["$hash"] = player.hash,
+        ["$id"] = player.id,
+        ["$lvl"] = player.level(),
+        ["$ping"] = get_var(player.id, "$ping"),
+        ["$pirated"] = CONFIG.PIRATED_HASHES[player.hash] and 'YES' or 'NO'
+    }
 end
 
 local function inVehicle(id)
     local dyn_player = get_dynamic_player(id)
-    if dyn_player == 0 then return false end
-    return read_dword(dyn_player + 0x11C) ~= 0xFFFFFFFF
-end
-
-local function replaceServerNameInEmbeds(configTable)
-    for _, value in pairs(configTable) do
-        if type(value) == "table" then
-            -- Check if this is an event with an embed that has a footer
-            if value.embed and value.embed.footer then
-                value.embed.footer = value.embed.footer:gsub("%$serverName", server_name)
-            end
-
-            -- Recursively process nested tables
-            replaceServerNameInEmbeds(value)
-        end
-    end
+    return dyn_player ~= 0 and read_dword(dyn_player + 0x11C) ~= 0xFFFFFFFF
 end
 
 function OnStart(notifyFlag)
     gametype = get_var(0, "$gt")
     if gametype == 'n/a' then return end
 
-    if server_name == nil then
+    if not server_name then
         server_name = getServerName()
-        replaceServerNameInEmbeds(CONFIG.EVENTS)
         log_path = "./discord_events/" .. server_name .. ".json"
-        clearLog() -- ensure file is clean
+        clearLog()
     end
 
-    players = {}
-    first_blood = true
+    players, first_blood = {}, true
     ffa = get_var(0, '$ffa') == '1'
-    mode = get_var(0, "$mode")
-    map = get_var(0, "$map")
-    falling = getTag('jpt!', 'globals\\falling')
-    distance = getTag('jpt!', 'globals\\distance')
-    score_limit = getscorelimit()
+    mode, map = get_var(0, "$mode"), get_var(0, "$map")
+    falling_tag, distance_tag = getTag('jpt!', 'globals\\falling'), getTag('jpt!', 'globals\\distance')
+    score_limit = read_byte(gametype_base + 0x58)
 
     if not notifyFlag or notifyFlag == 0 then
-        log("event_start", {
+        logEvent("event_start", {
             ["$map"] = map,
             ["$mode"] = mode,
             ["$gt"] = gametype,
-            ["$ffa"] = getTeamPlay()
+            ["$ffa"] = ffa and "FFA" or "Team Play"
         })
     end
 
     for i = 1, 16 do
-        if player_present(i) then
-            OnJoin(i, notifyFlag)
-        end
+        if player_present(i) then OnJoin(i, notifyFlag) end
     end
 end
 
 function OnEnd()
-    log("event_end", {
+    logEvent("event_end", {
         ["$map"] = map,
         ["$mode"] = mode,
         ["$gt"] = gametype,
-        ["$ffa"] = getTeamPlay()
+        ["$ffa"] = ffa and "FFA" or "Team Play"
     })
 end
 
 function OnJoin(id, notifyFlag)
     players[id] = newPlayer(id)
-
-    if not notifyFlag or notifyFlag == 0 then
-        log("event_join", getPlayerData(players[id]))
+    if not notifyFlag then
+        logEvent("event_join", getPlayerData(players[id]))
     end
 end
 
 function OnQuit(id)
     local player = players[id]
-    if not player then return end
-
-    log("event_leave", getPlayerData(player, true))
-    players[id] = nil
+    if player then
+        logEvent("event_leave", getPlayerData(player, true))
+        players[id] = nil
+    end
 end
 
 function OnSpawn(id)
     local player = players[id]
-    if not player then return end
-
-    player.last_damage = 0
-    player.switched = nil
-    log("event_spawn", { ["$name"] = player.name, ["$team"] = player.team })
+    if player then
+        player.last_damage, player.switched = 0, nil
+        logEvent("event_spawn", { ["$name"] = player.name, ["$team"] = player.team })
+    end
 end
 
 function OnSwitch(id)
     local player = players[id]
-    if not player then return end
-
-    player.team = get_var(id, '$team')
-    player.switched = true
-    log("event_team_switch", { ["$name"] = player.name, ["$team"] = player.team })
+    if player then
+        player.team, player.switched = get_var(id, '$team'), true
+        logEvent("event_team_switch", { ["$name"] = player.name, ["$team"] = player.team })
+    end
 end
 
 function OnReset()
-    log("event_map_reset", {
+    logEvent("event_map_reset", {
         ["$map"] = map,
         ["$mode"] = mode,
         ["$gt"] = gametype,
-        ["$ffa"] = getTeamPlay()
+        ["$ffa"] = ffa and "FFA" or "Team Play"
     })
 end
 
 function OnLogin(id)
     local player = players[id]
-    if not player then return end
-
-    log("event_login", {
-        ["$name"] = player.name,
-        ["$lvl"] = player.level()
-    })
+    if player then
+        logEvent("event_login", { ["$name"] = player.name, ["$lvl"] = player.level() })
+    end
 end
 
 function OnSnap(id)
     local player = players[id]
-    if not player then return end
-
-    log("event_snap", { ["$name"] = player.name })
+    if player then logEvent("event_snap", { ["$name"] = player.name }) end
 end
 
-function OnCommand(id, command, environment)
+function OnCommand(id, command, env)
     local player = players[id]
-    if not player then return true end
-
-    log("event_command", {
-        ["$lvl"] = player.level(),
-        ["$name"] = player.name,
-        ["$id"] = tostring(id),
-        ["$type"] = command_type[environment],
-        ["$cmd"] = command
-    })
+    if player then
+        logEvent("event_command", {
+            ["$lvl"] = player.level(),
+            ["$name"] = player.name,
+            ["$id"] = tostring(id),
+            ["$type"] = COMMAND_TYPE[env],
+            ["$cmd"] = command
+        })
+    end
+    return true
 end
 
-function OnChat(id, message, environment)
+function OnChat(id, msg, env)
     local player = players[id]
-    if not player or isCommand(message) then return end
-
-    if message:sub(1, 1) == "@" then return end
-
-    log("event_chat", {
-        ["$type"] = chat_type[environment],
-        ["$name"] = player.name,
-        ["$id"] = id,
-        ["$msg"] = message
-    })
+    if player and msg:sub(1, 1) ~= "/" and msg:sub(1, 1) ~= "\\" and msg:sub(1, 1) ~= "@" then
+        logEvent("event_chat", {
+            ["$type"] = CHAT_TYPE[env],
+            ["$name"] = player.name,
+            ["$id"] = id,
+            ["$msg"] = msg
+        })
+    end
 end
 
 function OnScore(id)
     local player = players[id]
     if not player then return end
 
-    local event_type = ({
-        ctf = 1,
-        race = not ffa and 2 or 3,
-        slayer = not ffa and 4 or 5
-    })[gametype]
+    local event_type = GAMETYPE_MAP[gametype] or (gametype == "race" and (ffa and 3 or 2))
+    if not event_type then return end
 
-    local score = get_var(id, "$score")
-    local blue_score = get_var(0, "$bluescore")
-    local red_score = get_var(0, "$redscore")
-
-    log("event_score", {
-        event_type = event_type,
-        ["$totalTeamLaps"] = player.team == "red" and red_score or blue_score,
-        ["$score"] = score,
+    logEvent("event_score", {
+        ["$totalTeamLaps"] = player.team == "red" and get_var(0, "$redscore") or get_var(0, "$bluescore"),
+        ["$score"] = get_var(id, "$score"),
         ["$name"] = player.name,
         ["$team"] = player.team or "FFA",
-        ["$redScore"] = red_score,
-        ["$blueScore"] = blue_score,
+        ["$redScore"] = get_var(0, "$redscore"),
+        ["$blueScore"] = get_var(0, "$bluescore"),
         ["$scorelimit"] = score_limit
-    })
+    }, event_type)
 end
 
-function OnDamage(victimIndex, _, metaId)
-    local victim = players[tonumber(victimIndex)]
-    if victim then victim.last_damage = metaId end
+function OnDamage(victim, _, metaId)
+    local player = players[tonumber(victim)]
+    if player then player.last_damage = metaId end
 end
 
-function OnDeath(victimIndex, killerIndex)
-    local victim = tonumber(victimIndex)
-    local victim_data = players[victim]
+function OnDeath(victim, killer)
+    victim, killer = tonumber(victim), tonumber(killer)
+    local victim_data, killer_data = players[victim], players[killer]
     if not victim_data then return end
 
-    local killer = tonumber(killerIndex)
-    local killer_data = players[killer]
-
-    local event_type = 10 -- fallback event type
-
+    local event_type = 10
     if killer == -1 and not victim_data.switched then
-        if victim_data.last_damage == falling or victim_data.last_damage == distance then
-            event_type = 8 -- fall damage
-        else
-            event_type = 9 -- server
-        end
+        event_type = (victim_data.last_damage == falling_tag or victim_data.last_damage == distance_tag) and 8 or 9
     elseif killer == 0 then
-        event_type = 7  -- squashed
-    elseif killer == nil then
-        event_type = 10 -- unknown/guardians
+        event_type = 7
     elseif killer > 0 then
         if killer == victim then
-            event_type = 5 -- suicide
+            event_type = 5
         elseif not ffa and killer_data and victim_data.team == killer_data.team then
-            event_type = 6 -- betrayal
+            event_type = 6
         elseif first_blood then
-            first_blood = false
-            event_type = 1 -- first blood
+            first_blood = false; event_type = 1
         elseif not player_alive(killer) then
-            event_type = 2 -- killed from the grave
+            event_type = 2
         elseif inVehicle(victim) then
-            event_type = 3 -- vehicle kill
+            event_type = 3
         else
-            event_type = 4 -- pvp
+            event_type = 4
         end
     end
 
-    log("event_death", {
-        event_type = event_type,
+    logEvent("event_death", {
         ["$killerName"] = killer_data and killer_data.name or "",
         ["$victimName"] = victim_data.name
-    })
+    }, event_type)
 end
 
 function OnScriptLoad()
-    local success, result = pcall(function()
-        return loadfile('json.lua')()
-    end)
-
-    if not success or not result then
-        error("Failed to load json.lua. Make sure the file exists and is valid.")
+    local success, result = pcall(function() return loadfile('json.lua')() end)
+    if not success then
+        error("Failed to load json.lua")
         return
     end
+
     json = result
     gametype_base = read_dword(sig_scan("B9360000008BF3BF78545F00") + 0x8)
+    for event, handler in pairs(CALLBACKS) do
+        register_callback(event, handler)
+    end
 
-    register_callback(cb['EVENT_CHAT'], 'OnChat')
-    register_callback(cb['EVENT_COMMAND'], 'OnCommand')
-    register_callback(cb['EVENT_DIE'], 'OnDeath')
-    register_callback(cb['EVENT_SCORE'], 'OnScore')
-    register_callback(cb['EVENT_DAMAGE_APPLICATION'], 'OnDamage')
-    register_callback(cb['EVENT_JOIN'], 'OnJoin')
-    register_callback(cb['EVENT_LEAVE'], 'OnQuit')
-    register_callback(cb['EVENT_GAME_END'], 'OnEnd')
-    register_callback(cb['EVENT_GAME_START'], 'OnStart')
-    register_callback(cb['EVENT_SNAP'], 'OnSnap')
-    register_callback(cb['EVENT_SPAWN'], 'OnSpawn')
-    register_callback(cb['EVENT_LOGIN'], 'OnLogin')
-    register_callback(cb['EVENT_MAP_RESET'], "OnReset")
-    register_callback(cb['EVENT_TEAM_SWITCH'], 'OnSwitch')
-
-    OnStart(1) -- in case script is loaded mid-game
+    OnStart(1)
 end
 
 function OnScriptUnload() end
