@@ -691,7 +691,7 @@ function OnDeath(victim, killer)
     local victim_data, killer_data = players[victim], players[killer]
     if not victim_data then return end
 
-    local event_type = 10.
+    local event_type = 10
     if killer == -1 and not victim_data.switched then
         event_type = (victim_data.last_damage == falling_tag or victim_data.last_damage == distance_tag) and 8 or 9
     elseif killer == 0 then
