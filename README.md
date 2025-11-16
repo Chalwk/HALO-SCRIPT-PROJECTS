@@ -59,6 +59,10 @@ compatible with many scripts and still sees use in some legacy setups.
 | [**Releases**](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases) | Larger SAPP projects with advanced functionality beyond standard scripts |
 | [Knowledge Base (docs)](docs/knowledge_base)                            | Documentation and community knowledge base                               |
 
+## [SCRIPT BROWSER GUI](https://chalwk.github.io/HALO-SCRIPT-PROJECTS/)
+
+Click [here](https://chalwk.github.io/HALO-SCRIPT-PROJECTS/) to visit the script browser GUI.
+
 ---
 
 ## Community Favorites
