@@ -326,11 +326,11 @@ function hideNoResultsMessage() {
 // ---------------
 function setupCategoryToggles() {
     document.querySelectorAll('.script-category h3').forEach(header => {
-        // Start with all categories expanded
         const category = header.parentElement;
         const grid = category.querySelector('.script-grid');
         if (grid) {
-            grid.style.display = 'grid';
+            grid.style.display = 'none';
+            category.classList.add('collapsed');
         }
 
         header.addEventListener('click', () => {
