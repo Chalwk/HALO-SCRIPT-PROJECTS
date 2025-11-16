@@ -395,50 +395,6 @@ local chat_type = {
     [2] = "VEHICLE",
     [3] = "UNKNOWN",
 }
-
-local function registerServer()
-    local serverFilePath = "./servers.json"
-    local servers = {}
-
-    -- Try to read existing servers
-    local file = io_open(serverFilePath, "r")
-    if file then
-        local content = file:read("*a")
-        file:close()
-        if content and content ~= "" then
-            local ok, decoded = pcall(function() return json:decode(content) end)
-            if ok and type(decoded) == "table" then
-                servers = decoded
-            else
-                return false, "Failed to decode existing servers.json"
-            end
-        end
-    end
-
-    -- Check if server is already registered
-    if servers[server_name] then return true end
-
-    -- Add this server's entry
-    servers[server_name] = log_path
-
-    -- Write back
-    file = io_open(serverFilePath, "w")
-    if not file then
-        return false, "Failed to open servers.json for writing"
-    end
-
-    local ok, err = pcall(function()
-        file:write(json:encode(servers))
-    end)
-    file:close()
-
-    if not ok then
-        return false, "Failed to write to servers.json: " .. tostring(err)
-    end
-
-    return true
-end
-
 local function clearLog()
     local file = io_open(log_path, "w")
     if file then
@@ -684,11 +640,6 @@ function OnStart(notifyFlag)
         server_name = getServerName()
         replaceServerNameInEmbeds(CONFIG.EVENTS)
         log_path = "./discord_events/" .. server_name .. ".json"
-
-        local reg_success, err = registerServer()
-        if not reg_success then
-            error("registerServer failed: " .. tostring(err))
-        end
         clearLog() -- ensure file is clean
     end
 
