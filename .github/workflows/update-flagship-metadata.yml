@@ -2,7 +2,7 @@ name: Update Flagship Metadata
 
 on:
   release:
-    types: [published]   # Runs automatically on new releases
+    types: [ published ]   # Runs automatically on new releases
 #  workflow_dispatch:      # Allows manual triggering
 
 jobs:

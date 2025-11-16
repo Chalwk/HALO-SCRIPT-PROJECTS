@@ -1,6 +1,8 @@
 # HSP Halo Servers: A Masterclass in Multi-Server Management
 
-This document outlines the sophisticated server architecture powering all 16 official HSP Halo SAPP servers (8 Halo Custom Edition and 8 Halo PC). The design leverages SAPP's built-in capabilities to create a system that is efficient, consistent, and incredibly easy to maintain.
+This document outlines the sophisticated server architecture powering all 16 official HSP Halo SAPP servers (8 Halo
+Custom Edition and 8 Halo PC). The design leverages SAPP's built-in capabilities to create a system that is efficient,
+consistent, and incredibly easy to maintain.
 
 ## The Problem: Managing 16 Servers the Naive Way
 
@@ -20,7 +22,8 @@ This leads to a nightmare of redundancy:
 
 ## The Solution: Exploiting SAPP's Dual Folder Design
 
-The structure solves these problems by masterfully utilizing SAPP's intended separation between global and instance-specific configurations through a clever, hierarchical folder layout.
+The structure solves these problems by masterfully utilizing SAPP's intended separation between global and
+instance-specific configurations through a clever, hierarchical folder layout.
 
 ### Directory Structure Overview
 
@@ -77,7 +80,8 @@ The system's brilliance is in its explicit use of two dedicated `sapp` directori
 
 ### Portable Configuration with Environment Variables
 
-To enhance portability and simplify configuration, I use system environment variables to define the root server paths. This means the batch files don't need hardcoded paths, making the entire setup easily movable.
+To enhance portability and simplify configuration, I use system environment variables to define the root server paths.
+This means the batch files don't need hardcoded paths, making the entire setup easily movable.
 
 **Environment Variables Setup:**
 
@@ -106,7 +110,8 @@ This directive causes SAPP to:
 2. Inherently and simultaneously pull global, shared data from the `../sapp` folder relative to the executable's
    location for files like `admins.txt`.
 
-This is not a fallback mechanism; it is a deliberate, fixed feature of SAPP that your structure leverages optimally. This clear separation is what makes the architecture not just clever, but **robust and professional**.
+This is not a fallback mechanism; it is a deliberate, fixed feature of SAPP that your structure leverages optimally.
+This clear separation is what makes the architecture not just clever, but **robust and professional**.
 
 **Configuration Simplicity:** With this environment variable approach, configuring a new server batch file requires
 changing only two values:

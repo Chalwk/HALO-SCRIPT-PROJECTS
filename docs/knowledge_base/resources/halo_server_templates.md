@@ -1,3 +1,6 @@
-Want to get a Halo server online quickly? The **Halo Server Template Project** offers two preconfigured templates: one for **Halo: PC (Retail)** and one for **Halo: Custom Edition (CE)**. Both are fully compatible with **Windows** and **Linux**.
+Want to get a Halo server online quickly? The **Halo Server Template Project** offers two preconfigured templates: one
+for **Halo: PC (Retail)** and one for **Halo: Custom Edition (CE)**. Both are fully compatible with **Windows** and *
+*Linux**.
 
-> **See the release page for download and installation instructions:** [GitHub Release Page](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/ReadyToGo)
+> **See the release page for download and installation instructions:
+** [GitHub Release Page](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/ReadyToGo)

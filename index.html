@@ -1,96 +1,104 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>HALO SCRIPT PROJECTS</title>
-
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            background: #0c0f14;
-            color: #e0e6f0;
-        }
-
-        header {
-            padding: 40px 20px;
-            text-align: center;
-            background: #11161d;
-            border-bottom: 2px solid #233044;
-        }
-
-        h1 {
-            font-size: 42px;
-            letter-spacing: 1px;
-            margin: 0;
-            color: #7ec8ff;
-        }
-
-        h2 {
-            color: #9ccfff;
-        }
-
-        p {
-            line-height: 1.6;
-            max-width: 700px;
-            margin: 10px auto;
-            text-align: center;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-
-        .card {
-            background: #11161d;
-            border: 1px solid #233044;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 25px;
-        }
-
-        .card h2 {
-            margin-top: 0;
-        }
-
-        a {
-            color: #7ec8ff;
-            text-decoration: none;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        footer {
-            text-align: center;
-            padding: 20px;
-            font-size: 14px;
-            color: #88a2bd;
-            margin-top: 40px;
-        }
-    </style>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <title>Halo Script Projects — Modern</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Space+Grotesk:wght@400;600&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css">
+    <link rel="stylesheet" href="website/homepage-style.css">
 </head>
-
 <body>
-<header>
-    <h1>HALO SCRIPT PROJECTS</h1>
-    <p>The largest public archive of Lua scripts for SAPP and Phasor.</p>
-</header>
-
 <div class="container">
 
-    <div class="card">
-        <h2>About the Project</h2>
-        <p>...</p>
+    <header class="hero card">
+        <div class="hero-left">
+            <img class="hero-logo" src="misc/hsp-logo.png" alt="HSP logo"/>
+            <div class="hero-title">
+                <h1>Halo Script Projects</h1>
+                <p class="muted">The largest community archive of Lua scripts for Halo CE and Halo PC</p>
+            </div>
+        </div>
+
+        <div class="hero-cta">
+            <a class="btn" href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS" target="_blank" rel="noopener">
+                <i class="fab fa-github"></i> View on GitHub
+            </a>
+            <a class="btn" href="https://discord.gg/D76H7RVPC9"
+               style="background:linear-gradient(180deg,#6f8cf0,#475bd9);">
+                <i class="fab fa-discord"></i> Join Discord
+            </a>
+        </div>
+    </header>
+
+    <main class="content">
+        <section class="card" id="main-col">
+            <!-- Search Section -->
+            <section class="card" id="search-section">
+                <h2>Search Scripts</h2>
+                <div class="search-container">
+                    <label for="scriptSearch">Search for scripts by name or description...</label>
+                    <input type="text" id="scriptSearch"
+                           placeholder="Search for scripts by name or description..."
+                           class="search-input">
+                    <button id="clearSearch" class="btn" style="background:linear-gradient(180deg,#2bd1a6,#159b6f)">
+                        Clear
+                    </button>
+                </div>
+                <div id="noResultsMessage" class="no-results-message" style="display:none;"></div>
+            </section>
+
+            <!-- Script Categories Section -->
+            <section class="card" id="scripts">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                    <h2 style="margin: 0;">Script Categories</h2>
+                    <div class="tag small">Browse or search</div>
+                </div>
+
+                <div id="scriptCategories">
+                    <!-- Script categories will be dynamically loaded here -->
+                </div>
+            </section>
+        </section>
+    </main>
+
+    <!-- Script Detail Panel -->
+    <div id="scriptDetail" class="script-detail" style="display:none;">
+        <div class="script-detail-content">
+            <div class="script-detail-header">
+                <h2 id="scriptTitle">Script Title</h2>
+                <button id="closeDetail" class="btn"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="script-detail-body">
+                <div class="script-description">
+                    <p id="scriptFullDescription">Full script description will appear here.</p>
+                </div>
+                <div class="code-container">
+                    <div class="code-header">
+                        <div>script.lua</div>
+                        <div class="code-actions">
+                            <button id="copyCodeBtn" class="btn"><i class="fas fa-copy"></i> Copy</button>
+                            <button id="downloadCodeBtn" class="btn"><i class="fas fa-download"></i> Download</button>
+                        </div>
+                    </div>
+                    <pre><code id="scriptCode" class="language-lua"></code></pre>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <span></span>
+    </div>
+
+    <footer class="footer">&copy; 2025 Jericho Crosby (Chalwk).</footer>
 </div>
 
-<footer>&copy; 2025 Jericho Crosby (Chalwk). All rights reserved.</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+<script src="website/homepage-script-manager.js"></script>
 </body>
 </html>

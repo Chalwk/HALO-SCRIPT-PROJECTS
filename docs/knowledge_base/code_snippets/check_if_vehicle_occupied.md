@@ -1,11 +1,13 @@
 Checks whether a specific vehicle object is currently occupied by any player.
 
 **Parameters:**
+
 * `vehicleObject` `number` - Vehicle object memory address.
   **Returns:**
 * `boolean` - `true` if the vehicle is occupied, `false` otherwise.
 
 **Function Definition:**
+
 ```lua
 local function isVehicleOccupied(vehicleObject)
     -- Loop through all possible player indices (1-16)

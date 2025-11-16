@@ -1,6 +1,7 @@
 # :scroll: Directive from the Assembly (Community Rules)
 
-By mandate of the **Halo Script Projects Council**, our **Code of Conduct** is archived within the **[HSP Repository](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/tree/master/docs/policies/community-rules.md)**.
+By mandate of the **Halo Script Projects Council**, our **Code of Conduct** is archived within the *
+*[HSP Repository](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/tree/master/docs/policies/community-rules.md)**.
 
 > **Attention, script architects and server custodians!**
 >

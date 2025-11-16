@@ -1,4 +1,5 @@
-I generally **do not recommend adding users as hash-admins**, since many players are using pirated clients. Similarly, because most players have **dynamic IP addresses**, assigning them as IP-admins is often impractical.
+I generally **do not recommend adding users as hash-admins**, since many players are using pirated clients. Similarly,
+because most players have **dynamic IP addresses**, assigning them as IP-admins is often impractical.
 
 For these members, I advise using the **Name/Password system** instead.
 
@@ -17,7 +18,9 @@ For these members, I advise using the **Name/Password system** instead.
    `login <password>`
    in the in-game chat to activate their privileges. The password used here is the one set in step 1.
    **Security Recommendations:**
-* Assign a **unique password for each admin**. This ensures that if one password is compromised, it does not affect other users.
+
+* Assign a **unique password for each admin**. This ensures that if one password is compromised, it does not affect
+  other users.
 * Admins do **not need to log in every time**, unless the server is restarted or their IP address changes.
 
 For users with **legitimate CD Keys**, the **hash-based system** remains the recommended method.

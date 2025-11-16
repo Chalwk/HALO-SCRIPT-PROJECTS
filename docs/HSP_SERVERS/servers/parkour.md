@@ -9,13 +9,17 @@
 
 ## Overview
 
-**EV Jump** is a parkour challenge where players navigate a course full of jumps, ledges, and obstacles. The goal is to complete the course **as quickly as possible**, passing through checkpoints and finishing the run in record time. Success depends on **timing, movement precision, and course knowledge**.
+**EV Jump** is a parkour challenge where players navigate a course full of jumps, ledges, and obstacles. The goal is to
+complete the course **as quickly as possible**, passing through checkpoints and finishing the run in record time.
+Success depends on **timing, movement precision, and course knowledge**.
 
 ### Key Features
 
 * **Checkpoint System:** Players progress through designated checkpoints.
-* **Death Limit & Respawn:** If a player dies too many times, their run resets automatically. Players respawn at the **last checkpoint reached**.
-* **Timed Runs:** Completion times are tracked for personal bests, map records, and averages. Top 5 rankings are displayed per map.
+* **Death Limit & Respawn:** If a player dies too many times, their run resets automatically. Players respawn at the *
+  *last checkpoint reached**.
+* **Timed Runs:** Completion times are tracked for personal bests, map records, and averages. Top 5 rankings are
+  displayed per map.
 * **Visual Aids:** Start/finish lines and checkpoint markers (flags and oddballs) help guide players.
 * **Adjustable Speed:** Running speed varies per map.
 * **Anti-Camping:** Players cannot linger on checkpoints without progressing, or they will be reset.
@@ -50,6 +54,7 @@
 * **Checkpoints:** Approach a checkpoint to claim it.
 * **Finish Line:** Cross the finish line after reaching all checkpoints to complete the run.
 * **Death Tracking:** Players are reset after reaching 10 deaths.
-* **Anti-Camp:** Standing in the same spot at a checkpoint too long triggers a reset warning, followed by a course reset if ignored.
+* **Anti-Camp:** Standing in the same spot at a checkpoint too long triggers a reset warning, followed by a course reset
+  if ignored.
 
 ---

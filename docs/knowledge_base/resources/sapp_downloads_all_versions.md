@@ -1,4 +1,5 @@
-Need a specific version of **SAPP** for your Halo server? You can download **all previous and latest versions** for both **Halo: CE** and **Halo: PC** directly from the repository.
+Need a specific version of **SAPP** for your Halo server? You can download **all previous and latest versions** for both
+**Halo: CE** and **Halo: PC** directly from the repository.
 
 Available versions:
 
