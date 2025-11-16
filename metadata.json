@@ -706,6 +706,12 @@
       "description": "Disables fall damage on specified maps while maintaining normal gameplay mechanics on others, with per-map configuration options.",
       "filename": "disable_fall_damage.lua"
     },
+    "discord": {
+      "title": "Discord Integration",
+      "shortDescription": "Discord integration for server events",
+      "description": "Comprehensive Discord integration system for server events, with configurable event types and message formatting. Requires https://github.com/Chalwk/SAPPDiscordBot to be installed.",
+      "filename": "discord.lua"
+    },
     "dynamic_ping_kicker": {
       "title": "Dynamic Ping Kicker",
       "shortDescription": "Adaptive ping management system with player count-based thresholds",
