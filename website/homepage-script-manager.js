@@ -18,10 +18,10 @@ fetch(RAW_METADATA_URL)
     .then(res => res.json())
     .then(metadata => {
     scriptMetadata = metadata;
-    renderCategories(); // Only render categories initially
+    renderCategories();
     setupSearch();
     setupCategoryToggles();
-    setupEventDelegation(); // Use event delegation instead of individual listeners
+    setupEventDelegation();
 })
     .catch(err => console.error('Error loading script metadata:', err));
 
@@ -50,7 +50,7 @@ function renderCategories() {
         scriptGrid.style.display = 'none'; // Hide initially
         scriptGrid.setAttribute('data-category', categoryName);
 
-        // Add loading indicator
+        // Loading indicator
         const loadingIndicator = document.createElement('div');
         loadingIndicator.className = 'loading-indicator';
         loadingIndicator.innerHTML = '<div class="spinner"></div><span>Loading scripts...</span>';
@@ -180,7 +180,7 @@ function removeLoadingProgress(container) {
 }
 
 // ---------------
-// Event Delegation - Much more efficient
+// Event Delegation
 // ---------------
 function setupEventDelegation() {
     // Delegate all button clicks to the container
@@ -237,7 +237,7 @@ function handleDownload(scriptPath) {
 }
 
 // ---------------
-// Fetch script from GitHub (optimized with caching)
+// Fetch script from GitHub
 // ---------------
 function fetchScript(scriptPath) {
     if (scriptCache[scriptPath]) {
@@ -322,7 +322,7 @@ function showToast(message) {
 }
 
 // ---------------
-// Search functionality (optimized)
+// Search functionality
 // ---------------
 function setupSearch() {
     const searchInput = document.getElementById('scriptSearch');
@@ -448,7 +448,7 @@ function hideNoResultsMessage() {
 }
 
 // ---------------
-// Category Toggles (optimized)
+// Category Toggles
 // ---------------
 function setupCategoryToggles() {
     document.getElementById('scriptCategories').addEventListener('click', function(e) {

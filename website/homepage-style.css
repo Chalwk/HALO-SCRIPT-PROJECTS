@@ -566,7 +566,6 @@ footer.footer {
     }
 }
 
-/* Reduce motion for users who prefer it */
 @media (prefers-reduced-motion: reduce) {
     .script-card, .btn {
         transition: none;
