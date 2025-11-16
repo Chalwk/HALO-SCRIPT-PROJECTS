@@ -108,7 +108,7 @@ CONFIGURATION:    CHANNELS: Maps Discord channel IDs.
                           10 = unknown / fallback
 
 
-LAST UPDATED:     23/9/2025
+LAST UPDATED:     16/11/2025
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
