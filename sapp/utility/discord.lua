@@ -9,6 +9,17 @@ DESCRIPTION:      Logs Halo server events and exports them
                   out as JSON. Templates use dynamic placeholders
                   which are replaced at runtime.
 
+
+                  ================================================================================
+                  ================================================================================
+
+                  This script REQUIRES the SAPPDiscordBot to be installed and running.
+                  Download it from: https://github.com/Chalwk/SAPPDiscordBot
+
+                  ================================================================================
+                  ================================================================================
+
+
 CONFIGURATION:    CHANNELS: Maps Discord channel IDs.
                     - Keys IDs used internally by the script to categorize events
                     - "GENERAL" : for general game events (start, end, join, leave, score, death, etc.)
