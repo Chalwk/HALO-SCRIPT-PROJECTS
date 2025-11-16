@@ -589,9 +589,7 @@ end
 
 function OnJoin(id, notifyFlag)
     players[id] = newPlayer(id)
-    if not notifyFlag then
-        logEvent("event_join", getPlayerData(players[id]))
-    end
+    if not notifyFlag then logEvent("event_join", getPlayerData(players[id])) end
 end
 
 function OnQuit(id)
