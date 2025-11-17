@@ -2,6 +2,7 @@
   <img src="misc/hsp-logo.png" alt="Halo Script Projects" width="250">
 
 [![Discord](https://img.shields.io/badge/Discord-Join_Our_Server-7289DA?style=for-the-badge&logo=discord)](https://discord.gg/D76H7RVPC9)
+[![SCRIPT BROWSER GUI](https://img.shields.io/badge/SCRIPT_BROWSER_GUI-Explore-6ee7b7?style=for-the-badge&logo=github)](https://chalwk.github.io/HALO-SCRIPT-PROJECTS)
 
 </div>
 
@@ -36,6 +37,10 @@ insights to enhance, customize, and extend your multiplayer server experience.
 
 ---
 
+#### (new) [Click here to view the new SCRIPT BROWSER](https://chalwk.github.io/HALO-SCRIPT-PROJECTS/)
+
+---
+
 ## What are SAPP & Phasor?
 
 **SAPP** and **Phasor** are server-side extensions that provide advanced scripting and customization capabilities for *
@@ -58,10 +63,6 @@ compatible with many scripts and still sees use in some legacy setups.
 | [**Phasor Scripts**](./phasor)                                          | Phasor Scripts                                                           |
 | [**Releases**](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases) | Larger SAPP projects with advanced functionality beyond standard scripts |
 | [Knowledge Base (docs)](docs/knowledge_base)                            | Documentation and community knowledge base                               |
-
-## [SCRIPT BROWSER GUI](https://chalwk.github.io/HALO-SCRIPT-PROJECTS/)
-
-Click [here](https://chalwk.github.io/HALO-SCRIPT-PROJECTS/) to visit the script browser GUI.
 
 ---
 
