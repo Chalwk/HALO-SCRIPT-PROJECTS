@@ -2,12 +2,10 @@
 =====================================================================================
 SCRIPT NAME:      discord.lua
 DESCRIPTION:      Logs Halo server events and exports them
-                  to a JSON file for external processing by a Discord bot.
+                  to a text file for external processing by a Discord bot.
 
-                  This script listens for in-game callbacks and converts
-                  them into structured messages or embeds that are written
-                  out as JSON. Templates use dynamic placeholders
-                  which are replaced at runtime.
+                  This script listens for in-game callbacks and writes
+                  raw text events that are parsed by the Java bot.
 
                   ================================================================================
                   ================================================================================
@@ -73,6 +71,7 @@ local os_remove = os.remove
 local table_insert = table.insert
 local concat = table.concat
 local char = string.char
+local format = string.format
 
 -- SAPP API functions
 local get_var = get_var
@@ -84,10 +83,6 @@ local read_dword = read_dword
 local sig_scan = sig_scan
 local lookup_tag = lookup_tag
 local get_dynamic_player = get_dynamic_player
-
--- JSON handling
-local json
-local log_path
 
 -- Game/server state
 local players
@@ -123,70 +118,66 @@ local CALLBACKS = {
     [cb['EVENT_TEAM_SWITCH']] = 'OnSwitch'
 }
 
+local log_path
+
+local function escapeValue(value)
+    if value == nil then return "" end
+    local str = tostring(value)
+    str = str:gsub("|", "\\|")
+    str = str:gsub("\n", "\\n")
+    str = str:gsub("\r", "\\r")
+    return str
+end
+
+local function formatEvent(event_type, data_table, subtype)
+    local parts = {event_type}
+    
+    if subtype then
+        table_insert(parts, "subtype=" .. escapeValue(subtype))
+    end
+    
+    for key, value in pairs(data_table) do
+        table_insert(parts, key .. "=" .. escapeValue(value))
+    end
+    
+    table_insert(parts, "timestamp=" .. os.time())
+    
+    return concat(parts, "|")
+end
+
 local function clearLog()
     local file = io_open(log_path, "w")
     if file then
-        file:write("[]"); file:close()
+        file:close() -- Just create empty file
     end
 end
 
-local function WriteToJSON(eventData, attempt)
-    attempt = attempt or 1
-    local lockPath = log_path .. ".lock"
-
-    local success, result = pcall(function()
-        local lockFile = io_open(lockPath, "w")
-        if not lockFile then return false end
-        lockFile:close()
-
-        local events = {}
-        local file = io_open(log_path, "r")
-        if file then
-            local content = file:read("*a")
-            file:close()
-            if content ~= "" and content ~= " " then
-                events = json:decode(content) or {}
-            end
-        end
-
-        table_insert(events, eventData)
-
-        file = io_open(log_path, "w")
-        if not file then
-            os_remove(lockPath); return false
-        end
-        file:write(json:encode(events))
+local function appendEvent(event_string)
+    local file = io_open(log_path, "a")
+    if file then
+        file:write(event_string .. "\n")
         file:close()
-
-        os_remove(lockPath)
         return true
-    end)
-
-    pcall(function() os_remove(lockPath) end)
-
-    if not success and attempt < 3 then
-        timer(100, "RetryWriteToJSON", json:encode(eventData), attempt + 1)
     end
-
-    return success and result
+    return false
 end
 
-local function logRawEvent(event_type, data, subtype)
-    local eventData = {
-        event_type = event_type,
-        subtype = subtype,
-        data = data,
-        timestamp = os.time()
-    }
-    WriteToJSON(eventData)
+local function WriteEvent(event_type, data, subtype, attempt)
+    attempt = attempt or 1
+    local event_string = formatEvent(event_type, data, subtype)
+    
+    local success = appendEvent(event_string)
+    
+    if not success and attempt < 3 then
+        timer(100, "RetryWriteEvent", event_type, data, subtype, attempt + 1)
+    end
+    
+    return success
 end
 
-function RetryWriteToJSON(jsonString, attempt)
+function RetryWriteEvent(event_type, data, subtype, attempt)
     attempt = tonumber(attempt) or 1
-    local success = WriteToJSON(json:decode(jsonString), attempt)
-    if not success and attempt < 3 then
-        timer(100, "RetryWriteToJSON", jsonString, attempt + 1)
-    end
+    WriteEvent(event_type, data, subtype, attempt)
 end
 
 local function readWideString(address, length)
@@ -247,7 +238,7 @@ function OnStart(notifyFlag)
 
     if not server_name then
         server_name = getServerName()
-        log_path = "./discord_events/" .. server_name .. ".json"
+        log_path = "./discord_events/" .. server_name .. ".txt"  -- Changed to .txt
         clearLog()
     end
 
@@ -258,11 +249,11 @@ function OnStart(notifyFlag)
     score_limit = read_byte(gametype_base + 0x58)
 
     if not notifyFlag or notifyFlag == 0 then
-        logRawEvent("event_start", {
+        WriteEvent("event_start", {
             map = map,
             mode = mode,
             gametype = gametype,
-            ffa = ffa
+            ffa = ffa and "true" or "false"
         })
     end
 
@@ -272,25 +263,25 @@ function OnStart(notifyFlag)
 end
 
 function OnEnd()
-    logRawEvent("event_end", {
+    WriteEvent("event_end", {
         map = map,
         mode = mode,
         gametype = gametype,
-        ffa = ffa
+        ffa = ffa and "true" or "false"
     })
 end
 
 function OnJoin(id, notifyFlag)
     players[id] = newPlayer(id)
     if not notifyFlag then
-        logRawEvent("event_join", getPlayerData(players[id]))
+        WriteEvent("event_join", getPlayerData(players[id]))
     end
 end
 
 function OnQuit(id)
     local player = players[id]
     if player then
-        logRawEvent("event_leave", getPlayerData(player, true))
+        WriteEvent("event_leave", getPlayerData(player, true))
         players[id] = nil
     end
 end
@@ -299,7 +290,7 @@ function OnSpawn(id)
     local player = players[id]
     if player then
         player.last_damage, player.switched = 0, nil
-        logRawEvent("event_spawn", { name = player.name, team = player.team })
+        WriteEvent("event_spawn", { name = player.name, team = player.team })
     end
 end
 
@@ -307,12 +298,12 @@ function OnSwitch(id)
     local player = players[id]
     if player then
         player.team, player.switched = get_var(id, '$team'), true
-        logRawEvent("event_team_switch", { name = player.name, team = player.team })
+        WriteEvent("event_team_switch", { name = player.name, team = player.team })
     end
 end
 
 function OnReset()
-    logRawEvent("event_map_reset", {
+    WriteEvent("event_map_reset", {
         map = map,
         mode = mode,
         gt = gametype,
@@ -323,19 +314,19 @@ end
 function OnLogin(id)
     local player = players[id]
     if player then
-        logRawEvent("event_login", { name = player.name, lvl = player.level() })
+        WriteEvent("event_login", { name = player.name, lvl = player.level() })
     end
 end
 
 function OnSnap(id)
     local player = players[id]
-    if player then logRawEvent("event_snap", { name = player.name }) end
+    if player then WriteEvent("event_snap", { name = player.name }) end
 end
 
 function OnCommand(id, command, env)
     local player = players[id]
     if player then
-        logRawEvent("event_command", {
+        WriteEvent("event_command", {
             lvl = player.level(),
             name = player.name,
             id = tostring(id),
@@ -349,7 +340,7 @@ end
 function OnChat(id, msg, env)
     local player = players[id]
     if player and msg:sub(1, 1) ~= "/" and msg:sub(1, 1) ~= "\\" and msg:sub(1, 1) ~= "@" then
-        logRawEvent("event_chat", {
+        WriteEvent("event_chat", {
             type = CHAT_TYPE[env],
             name = player.name,
             id = id,
@@ -365,7 +356,7 @@ function OnScore(id)
     local event_type = GAMETYPE_MAP[gametype] or (gametype == "race" and (ffa and 3 or 2))
     if not event_type then return end
 
-    logRawEvent("event_score", {
+    WriteEvent("event_score", {
         totalTeamLaps = player.team == "red" and get_var(0, "$redscore") or get_var(0, "$bluescore"),
         score = get_var(id, "$score"),
         name = player.name,
@@ -407,20 +398,13 @@ function OnDeath(victim, killer)
         end
     end
 
-    logRawEvent("event_death", {
+    WriteEvent("event_death", {
         killerName = killer_data and killer_data.name or "",
         victimName = victim_data.name
     }, event_type)
 end
 
 function OnScriptLoad()
-    local success, result = pcall(function() return loadfile('json.lua')() end)
-    if not success then
-        error("Failed to load json.lua")
-        return
-    end
-
-    json = result
     gametype_base = read_dword(sig_scan("B9360000008BF3BF78545F00") + 0x8)
     for event, handler in pairs(CALLBACKS) do
         register_callback(event, handler)
