@@ -141,7 +141,7 @@ categoryEl.onchange = render;
         const md = await loadMetadata();
         scripts = buildIndex(md);
         render();
-        showStatus("Ready");
+        showStatus("");
     } catch (err) {
         console.error(err);
         showStatus("Failed to load");

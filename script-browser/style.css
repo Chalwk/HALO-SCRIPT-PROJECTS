@@ -50,12 +50,23 @@ h1 { margin:0; }
 .toolbar select {
     padding:10px;
     border-radius:10px;
-    border:1px solid rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255, 1.0 );
     background:var(--glass);
     color:inherit;
 }
 .toolbar input { flex:1 1 320px; }
 .status { margin-left:auto; color:var(--muted); font-size:13px; }
+
+.toolbar select option {
+    background: var(--card);
+    color: #e6eef6;
+    padding: 10px;
+}
+
+.toolbar select:focus {
+    outline: none;
+    border-color: var(--accent);
+}
 
 /* Grid */
 .grid {
