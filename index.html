@@ -2,104 +2,66 @@
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <title>Halo Script Projects — Modern</title>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Space+Grotesk:wght@400;600&display=swap"
-          rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css">
-    <link rel="stylesheet" href="script-browser/homepage-style.css">
+    <meta content="width=device-width,initial-scale=1" name="viewport"/>
+    <title>HALO SCRIPT PROJECTS - Script Browser</title>
+
+    <link href="script-browser/style.css" rel="stylesheet">
+
+    <!-- Prism for Lua syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-lua.min.js"></script>
 </head>
 <body>
-<div class="container">
+<header class="site-header">
+    <div class="container header-inner">
+        <h1>HALO SCRIPT PROJECTS</h1>
+        <p class="lead">Browse, view, copy, and download SAPP Lua scripts.</p>
+    </div>
+</header>
 
-    <header class="hero card">
-        <div class="hero-left">
-            <img class="hero-logo" src="misc/hsp-logo.png" alt="HSP logo"/>
-            <div class="hero-title">
-                <h1>Halo Script Projects</h1>
-                <p class="muted">The largest community archive of Lua scripts for Halo CE and Halo PC</p>
-            </div>
+<main class="container">
+    <section class="toolbar">
+        <label for="search"></label><input id="search" placeholder="Search scripts" type="search"/>
+        <label for="categoryFilter"></label><select id="categoryFilter">
+        <option value="all">All categories</option>
+        <option value="attractive">Attractive</option>
+        <option value="custom_games">Custom Games</option>
+        <option value="utility">Utility</option>
+    </select>
+        <div class="status" id="status">Loading...</div>
+    </section>
+
+    <section class="grid" id="grid"></section>
+</main>
+
+<!-- Modal viewer -->
+<div class="modal hidden" id="modal">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h2 id="modalTitle">Script</h2>
+            <button class="btn small" id="modalClose">Close</button>
         </div>
-
-        <div class="hero-cta">
-            <a class="btn" href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS" target="_blank" rel="noopener">
-                <i class="fab fa-github"></i> View on GitHub
-            </a>
-            <a class="btn" href="https://discord.gg/D76H7RVPC9"
-               style="background:linear-gradient(180deg,#6f8cf0,#475bd9);">
-                <i class="fab fa-discord"></i> Join Discord
-            </a>
+        <div class="modal-body">
+            <pre class="code-block"><code class="language-lua" id="modalCode"></code></pre>
         </div>
-    </header>
-
-    <main class="content">
-        <section class="card" id="main-col">
-            <!-- Search Section -->
-            <section class="card" id="search-section">
-                <h2>Search Scripts</h2>
-                <div class="search-container">
-                    <label for="scriptSearch"></label>
-                    <input type="text" id="scriptSearch"
-                           placeholder="Search for scripts by name or description..."
-                           class="search-input">
-                    <button id="clearSearch"
-                            class="btn" style="background:linear-gradient(180deg,#2bd1a6,#159b6f)">
-                        Clear
-                    </button>
-                </div>
-                <div id="noResultsMessage" class="no-results-message" style="display:none;"></div>
-            </section>
-
-            <!-- Script Categories Section -->
-            <section class="card" id="scripts">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-                    <h2 style="margin: 0;">Script Categories</h2>
-                    <div class="tag small">Browse or search</div>
-                </div>
-
-                <div id="scriptCategories">
-                    <!-- Script categories will be dynamically loaded here -->
-                </div>
-            </section>
-        </section>
-    </main>
-
-    <!-- Script Detail Panel -->
-    <div id="scriptDetail" class="script-detail" style="display:none;">
-        <div class="script-detail-content">
-            <div class="script-detail-header">
-                <h2 id="scriptTitle">Script Title</h2>
-                <button id="closeDetail" class="btn"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="script-detail-body">
-                <div class="script-description">
-                    <p id="scriptFullDescription">Full script description will appear here.</p>
-                </div>
-                <div class="code-container">
-                    <div class="code-header">
-                        <div>script.lua</div>
-                        <div class="code-actions">
-                            <button id="copyCodeBtn" class="btn"><i class="fas fa-copy"></i> Copy</button>
-                            <button id="downloadCodeBtn" class="btn"><i class="fas fa-download"></i> Download</button>
-                        </div>
-                    </div>
-                    <pre><code id="scriptCode" class="language-lua"></code></pre>
-                </div>
-            </div>
+        <div class="modal-footer">
+            <button class="btn" id="modalCopy">
+                <span class="icon">📋</span> Copy
+            </button>
+            <a class="btn" download id="modalDownload">
+                <span class="icon">⬇️</span> Download
+            </a>
         </div>
     </div>
-
-    <!-- Toast Notification -->
-    <div id="toast" class="toast">
-        <span></span>
-    </div>
-
-    <footer class="footer">&copy; 2025 Jericho Crosby (Chalwk).</footer>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
-<script src="script-browser/homepage-script-manager.js"></script>
+<footer class="site-footer">
+    <div class="container">
+        <small>HALO SCRIPT PROJECTS Browser</small>
+    </div>
+</footer>
+
+<script defer src="/script-browser/script.js"></script>
 </body>
 </html>

@@ -1,0 +1,156 @@
+:root {
+    --bg:#0f1720;
+    --card:#0b1220;
+    --muted:#9aa7b3;
+    --accent:#6ee7b7;
+    --glass: rgba(255,255,255,0.03);
+    --radius:12px;
+    --gap:16px;
+    --max-width:1200px;
+    font-family: Inter, sans-serif;
+    color-scheme: dark;
+}
+
+* { box-sizing:border-box; }
+
+body {
+    margin:0;
+    background:linear-gradient(180deg,#07121a 0%, #071a1f 60%);
+    color:#e6eef6;
+    padding-bottom:48px;
+}
+
+.container {
+    width:calc(100% - 48px);
+    max-width:var(--max-width);
+    margin:0 auto;
+}
+
+.site-header {
+    padding:20px 0;
+    border-bottom:1px solid rgba(255,255,255,0.03);
+}
+
+.header-inner {
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+}
+
+h1 { margin:0; }
+.lead { color:var(--muted); font-size:13px; }
+
+.toolbar {
+    margin:20px 0;
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+.toolbar input,
+.toolbar select {
+    padding:10px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.04);
+    background:var(--glass);
+    color:inherit;
+}
+.toolbar input { flex:1 1 320px; }
+.status { margin-left:auto; color:var(--muted); font-size:13px; }
+
+/* Grid */
+.grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(260px,1fr));
+    gap:var(--gap);
+}
+
+/* Card */
+.card {
+    background:var(--card);
+    border-radius:var(--radius);
+    padding:14px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.5);
+    border:1px solid rgba(255,255,255,0.04);
+    transition:transform .15s ease, box-shadow .15s ease;
+}
+.card:hover {
+    transform:translateY(-6px);
+    box-shadow:0 14px 40px rgba(0,0,0,0.7);
+}
+
+.card h3 { margin:0; font-size:16px; }
+.card p.desc { color:var(--muted); font-size:13px; }
+
+/* Buttons */
+.btn {
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.1);
+    padding:8px 12px;
+    border-radius:10px;
+    font-size:13px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    transition:background .2s ease, transform .1s ease;
+}
+
+.btn:hover {
+    background:rgba(255,255,255,0.08);
+    transform:translateY(-2px);
+}
+
+.btn:active {
+    transform:translateY(1px);
+}
+
+.btn.small { padding:6px 8px; font-size:12px; }
+
+.icon { font-size:14px; }
+
+/* Card footer */
+.actions {
+    display:flex;
+    gap:10px;
+    margin-top:14px;
+    flex-wrap:wrap;
+}
+
+/* Modal */
+.modal {
+    position:fixed;
+    inset:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:rgba(0,0,0,0.6);
+    backdrop-filter:blur(4px);
+    padding:20px;
+}
+.modal.hidden { display:none; }
+.modal-dialog {
+    width:100%;
+    max-width:900px;
+    background:var(--card);
+    border-radius:14px;
+    overflow:hidden;
+}
+
+.modal-header,
+.modal-footer {
+    display:flex;
+    justify-content:space-between;
+    padding:12px 16px;
+    border-bottom:1px solid rgba(255,255,255,0.05);
+}
+.modal-footer { border-top:1px solid rgba(255,255,255,0.05); }
+
+.modal-body { padding:16px; }
+
+.code-block {
+    background:#0a101a;
+    padding:12px;
+    border-radius:8px;
+    max-height:60vh;
+    overflow:auto;
+}
