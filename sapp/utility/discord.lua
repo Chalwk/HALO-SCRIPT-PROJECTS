@@ -4,17 +4,8 @@ SCRIPT NAME:      discord.lua
 DESCRIPTION:      Logs Halo server events and exports them
                   to a text file for external processing by a Discord bot.
 
-                  This script listens for in-game callbacks and writes
-                  raw text events that are parsed by the Java bot.
-
-                  ================================================================================
-                  ================================================================================
-
                   This script REQUIRES the SAPPDiscordBot to be installed and running.
                   Download it from: https://github.com/Chalwk/SAPPDiscordBot
-
-                  ================================================================================
-                  ================================================================================
 
 LAST UPDATED:     17/11/2025
 
@@ -144,7 +135,7 @@ end
 
 local function clearLog()
     local file = io_open(log_path, "w")
-    if file then file:close() end -- Just create empty file
+    if file then file:close() end
 end
 
 local function appendEvent(event_string)
@@ -233,7 +224,7 @@ function OnStart(notifyFlag)
 
     if not server_name then
         server_name = getServerName()
-        log_path = "./discord_events/" .. server_name .. ".txt" -- Changed to .txt
+        log_path = "./discord_events/" .. server_name .. ".txt"
         clearLog()
     end
 
