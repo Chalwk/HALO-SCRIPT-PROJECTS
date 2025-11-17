@@ -61,17 +61,14 @@ local PIRATED_HASHES = {
 api_version = '1.12.0.0'
 
 -- Standard Lua functions
-local pcall = pcall
 local tonumber = tonumber
 local tostring = tostring
 local pairs = pairs
-local ipairs = ipairs
 local io_open = io.open
-local os_remove = os.remove
 local table_insert = table.insert
 local concat = table.concat
 local char = string.char
-local format = string.format
+local os_time = os.time
 
 -- SAPP API functions
 local get_var = get_var
@@ -130,26 +127,24 @@ local function escapeValue(value)
 end
 
 local function formatEvent(event_type, data_table, subtype)
-    local parts = {event_type}
-    
+    local parts = { event_type }
+
     if subtype then
         table_insert(parts, "subtype=" .. escapeValue(subtype))
     end
-    
+
     for key, value in pairs(data_table) do
         table_insert(parts, key .. "=" .. escapeValue(value))
     end
-    
-    table_insert(parts, "timestamp=" .. os.time())
-    
+
+    table_insert(parts, "timestamp=" .. os_time())
+
     return concat(parts, "|")
 end
 
 local function clearLog()
     local file = io_open(log_path, "w")
-    if file then
-        file:close() -- Just create empty file
-    end
+    if file then file:close() end -- Just create empty file
 end
 
 local function appendEvent(event_string)
@@ -165,13 +160,13 @@ end
 local function WriteEvent(event_type, data, subtype, attempt)
     attempt = attempt or 1
     local event_string = formatEvent(event_type, data, subtype)
-    
+
     local success = appendEvent(event_string)
-    
+
     if not success and attempt < 3 then
         timer(100, "RetryWriteEvent", event_type, data, subtype, attempt + 1)
     end
-    
+
     return success
 end
 
@@ -238,7 +233,7 @@ function OnStart(notifyFlag)
 
     if not server_name then
         server_name = getServerName()
-        log_path = "./discord_events/" .. server_name .. ".txt"  -- Changed to .txt
+        log_path = "./discord_events/" .. server_name .. ".txt" -- Changed to .txt
         clearLog()
     end
 
