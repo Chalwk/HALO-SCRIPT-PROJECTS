@@ -9,7 +9,6 @@ DESCRIPTION:      Logs Halo server events and exports them
                   out as JSON. Templates use dynamic placeholders
                   which are replaced at runtime.
 
-
                   ================================================================================
                   ================================================================================
 
@@ -19,96 +18,7 @@ DESCRIPTION:      Logs Halo server events and exports them
                   ================================================================================
                   ================================================================================
 
-
-CONFIGURATION:    CHANNELS: Maps Discord channel IDs.
-                    - Keys IDs used internally by the script to categorize events
-                    - "GENERAL" : for general game events (start, end, join, leave, score, death, etc.)
-                    - "CHAT"    : for player chat messages
-                    - "COMMAND" : for commands issued by players/admins
-                    - Values are Discord channel IDs where messages/embeds will be sent
-
-                  SUPPORTED EVENTS AND AVAILABLE PLACEHOLDERS
-
-                    $serverName         - (embed footers only)
-
-                    event_start / event_end / event_map_reset:
-                        $map            - Current map name
-                        $mode           - Current mode
-                        $gt             - Current game type (eg "slayer", "race")
-                        $ffa            - "FFA" or "Team Play" depending on mode
-
-                    event_join / event_leave:
-                        $total          - Current number of players
-                        $name           - Player name
-                        $ip             - Player IP
-                        $hash           - Player CD-key hash
-                        $id             - Player id
-                        $lvl            - Player admin level
-                        $ping           - Player ping
-                        $pirated        - "YES"/"NO" flag if hash matches known list
-
-                    event_spawn:
-                        $name           - Player name
-                        $team           - Player team
-
-                    event_team_switch:
-                        $name           - Player name
-                        $team           - New team
-
-                    event_login:
-                        $name           - Player name
-                        $lvl            - Player admin level
-
-                    event_snap:
-                        $name           - Player name
-
-                    event_command:
-                        $lvl            - Player admin level
-                        $name           - Player name
-                        $id             - Player index
-                        $type           - Command source text (RCON, CONSOLE, CHAT, UNKNOWN)
-                        $cmd            - Command text
-
-                    event_chat:
-                        $type           - Chat source (GLOBAL, TEAM, VEHICLE, UNKNOWN)
-                        $name           - Player name
-                        $id             - Player index
-                        $msg            - Message content
-
-                    event_score (per gametype subtype):
-                        $totalTeamLaps  - Team lap total (race)
-                        $score          - Individual score or player laps (depends on gametype)
-                        $name           - Player name who scored
-                        $team           - Player team or "FFA"
-                        $redScore       - Current red team score
-                        $blueScore      - Current blue team score
-                        $scorelimit     - Score limit
-
-                        Subtype mapping used in code:
-                          1 = CTF
-                          2 = Team Race
-                          3 = FFA Race
-                          4 = Team Slayer
-                          5 = FFA Slayer
-
-                    event_death (per death subtype):
-                        $victimName     - Name of the player who died
-                        $killerName     - Name of the killer when applicable (empty string otherwise)
-
-                        Subtype mapping used in code:
-                          1  = first blood
-                          2  = killed from the grave
-                          3  = vehicle kill
-                          4  = pvp
-                          5  = suicide
-                          6  = betrayal
-                          7  = squashed by a vehicle
-                          8  = fall damage
-                          9  = killed by the server
-                          10 = unknown / fallback
-
-
-LAST UPDATED:     16/11/2025
+LAST UPDATED:     17/11/2025
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -116,214 +26,39 @@ LICENSE:          MIT License
 =====================================================================================
 ]]
 
--- CONFG START -----------------------------------------------------------------------
-local CONFIG = {
-    CHANNELS = {
-        GENERAL = '1439547790312341584',
-        CHAT = '1439547790312341584',
-        COMMAND = '1439547790312341584'
-    },
-
-    EVENTS = {
-        GENERAL = {
-            event_start = {
-                enable = true,
-                embed = {
-                    description = "**🗺️ Game Started** → `$map` **-** `$gt ($ffa)`",
-                    color = 'green',
-                    footer = true
-                }
-            },
-
-            event_end = {
-                enable = true,
-                embed = {
-                    description = "**🏁 Game Ended** → `$map` **-** `$gt ($ffa)`",
-                    color = 'red',
-                    footer = true
-                }
-            },
-
-            event_join = {
-                enable = true,
-                text = "**🟢 Join** → `$name` **-** `$total/16`"
-            },
-
-            event_leave = {
-                enable = true,
-                text = "**🔴 Quit** → `$name` **-** `$total/16`"
-            },
-
-            event_spawn = {
-                enable = false,
-                text = "**✨ Spawn** → `$name` Team: `$team`"
-            },
-
-            event_team_switch = {
-                enable = false,
-                text = "**🔄 Team Switch** → `$name` → `$team`"
-            },
-
-            event_map_reset = {
-                enable = false,
-                text = "**♻️ Map Reset** → `$map` **-** `$gt ($ffa)`"
-            },
-
-            event_login = {
-                enable = false,
-                embed = {
-                    description = "**🔐 Login** → `$name`",
-                    color = 'yellow',
-                    footer = true,
-                    fields = {
-                        {
-                            name = "Admin Level",
-                            value = "$lvl",
-                            inline = true
-                        }
-                    }
-                }
-            },
-
-            event_snap = {
-                enable = false,
-                text = "**📸 Snap** → `$name`"
-            },
-
-            event_score = {
-                [1] = {
-                    enable = true,
-                    embed = {
-                        title = "🏆 CTF Scoreboard update!",
-                        description =
-                        "**$name** captured the flag for the **$team** team!\n\n🟥 Red Score: **$redScore**\n🟦 Blue Score: **$blueScore**\n🏁 Scorelimit: **$scorelimit**",
-                        color = 'green',
-                        footer = true
-                    }
-                },
-
-                [2] = {
-                    enable = true,
-                    embed = {
-                        title = "🏆 Team RACE Scoreboard updated!",
-                        description =
-                        "**$name** completed a lap for **$team** team!\n🏁 Team Total Laps: **$totalTeamLaps/$scorelimit**\n🚩 Player Laps: **$score**",
-                        color = 'green',
-                        footer = true
-                    }
-                },
-
-                [3] = {
-                    enable = true,
-                    embed = {
-                        title = "🏆 FFA RACE Scoreboard updated!",
-                        description = "**$name** finished a lap.\n🏆 Total Laps Completed: **$score/$scorelimit**",
-                        color = 'green',
-                        footer = true
-                    }
-                },
-
-                [4] = {
-                    enable = true,
-                    embed = {
-                        title = "🏆 Team Slayer Scoreboard updated!",
-                        description =
-                        "**$name** scored for **$team** team!\n\n🟥 Red Score: **$redScore**\n🟦 Blue Score: **$blueScore**\n🏁 Scorelimit: **$scorelimit**",
-                        color = 'green',
-                        footer = true
-                    }
-                },
-
-                [5] = {
-                    enable = true,
-                    embed = {
-                        title = "🏆 FFA Slayer Scoreboard updated!",
-                        description =
-                        "**$name** scored!\n\n🟥 Red Score: **$redScore**\n🟦 Blue Score: **$blueScore**\n🏁 Scorelimit: **$scorelimit**",
-                        color = 'green',
-                        footer = true
-                    }
-                }
-            },
-
-            event_death = {
-                [1]  = { enable = true, text = "**☠️ Death:** `$killerName` drew first blood on `$victimName`" },
-                [2]  = { enable = true, text = "**☠️ Death:** `$victimName` was killed from the grave by `$killerName`" },
-                [3]  = { enable = true, text = "**☠️ Death:** `$victimName` was run over by `$killerName`" },
-                [4]  = { enable = true, text = "**☠️ Death:** `$victimName` was killed by `$killerName`" },
-                [5]  = { enable = true, text = "**☠️ Death:** `$victimName` committed suicide" },
-                [6]  = { enable = true, text = "**☠️ Death:** `$victimName` was betrayed by `$killerName`" },
-                [7]  = { enable = true, text = "**☠️ Death:** `$victimName` was squashed by a vehicle" },
-                [8]  = { enable = true, text = "**☠️ Death:** `$victimName` fell to their death" },
-                [9]  = { enable = true, text = "**☠️ Death:** `$victimName` was killed by the server" },
-                [10] = { enable = true, text = "**☠️ Death:** `$victimName` died" }
-            }
-        },
-
-        CHAT = {
-            enable = true,
-            text = "**💬 Chat** → `$name`: *$msg*"
-        },
-
-        COMMAND = {
-            enable = true,
-            embed = {
-                description = "**⌘ Command** → `$name`: `$cmd`",
-                color = 'green',
-                footer = true
-            }
-        }
-    },
-
-    COLORS = {
-        red = 0xFF0000,
-        green = 0x00FF00,
-        blue = 0x0000FF,
-        yellow = 0xFFFF00,
-        orange = 0xFFA500,
-        purple = 0x800080,
-        cyan = 0x00FFFF,
-        pink = 0xFFC0CB,
-        white = 0xFFFFFF,
-        black = 0x000000,
-        grey = 0x808080
-    },
-
-    PIRATED_HASHES = {
-        ['388e89e69b4cc08b3441f25959f74103'] = true,
-        ['81f9c914b3402c2702a12dc1405247ee'] = true,
-        ['c939c09426f69c4843ff75ae704bf426'] = true,
-        ['13dbf72b3c21c5235c47e405dd6e092d'] = true,
-        ['29a29f3659a221351ed3d6f8355b2200'] = true,
-        ['d72b3f33bfb7266a8d0f13b37c62fddb'] = true,
-        ['76b9b8db9ae6b6cacdd59770a18fc1d5'] = true,
-        ['55d368354b5021e7dd5d3d1525a4ab82'] = true,
-        ['d41d8cd98f00b204e9800998ecf8427e'] = true,
-        ['c702226e783ea7e091c0bb44c2d0ec64'] = true,
-        ['f443106bd82fd6f3c22ba2df7c5e4094'] = true,
-        ['10440b462f6cbc3160c6280c2734f184'] = true,
-        ['3d5cd27b3fa487b040043273fa00f51b'] = true,
-        ['b661a51d4ccf44f5da2869b0055563cb'] = true,
-        ['740da6bafb23c2fbdc5140b5d320edb1'] = true,
-        ['7503dad2a08026fc4b6cfb32a940cfe0'] = true,
-        ['4486253cba68da6786359e7ff2c7b467'] = true,
-        ['f1d7c0018e1648d7d48f257dc35e9660'] = true,
-        ['40da66d41e9c79172a84eef745739521'] = true,
-        ['2863ab7e0e7371f9a6b3f0440c06c560'] = true,
-        ['34146dc35d583f2b34693a83469fac2a'] = true,
-        ['b315d022891afedf2e6bc7e5aaf2d357'] = true,
-        ['63bf3d5a51b292cd0702135f6f566bd1'] = true,
-        ['6891d0a75336a75f9d03bb5e51a53095'] = true,
-        ['325a53c37324e4adb484d7a9c6741314'] = true,
-        ['0e3c41078d06f7f502e4bb5bd886772a'] = true,
-        ['fc65cda372eeb75fc1a2e7d19e91a86f'] = true,
-        ['f35309a653ae6243dab90c203fa50000'] = true,
-        ['50bbef5ebf4e0393016d129a545bd09d'] = true,
-        ['a77ee0be91bd38a0635b65991bc4b686'] = true,
-        ['3126fab3615a94119d5fe9eead1e88c1'] = true
-    }
+local PIRATED_HASHES = {
+    ['388e89e69b4cc08b3441f25959f74103'] = true,
+    ['81f9c914b3402c2702a12dc1405247ee'] = true,
+    ['c939c09426f69c4843ff75ae704bf426'] = true,
+    ['13dbf72b3c21c5235c47e405dd6e092d'] = true,
+    ['29a29f3659a221351ed3d6f8355b2200'] = true,
+    ['d72b3f33bfb7266a8d0f13b37c62fddb'] = true,
+    ['76b9b8db9ae6b6cacdd59770a18fc1d5'] = true,
+    ['55d368354b5021e7dd5d3d1525a4ab82'] = true,
+    ['d41d8cd98f00b204e9800998ecf8427e'] = true,
+    ['c702226e783ea7e091c0bb44c2d0ec64'] = true,
+    ['f443106bd82fd6f3c22ba2df7c5e4094'] = true,
+    ['10440b462f6cbc3160c6280c2734f184'] = true,
+    ['3d5cd27b3fa487b040043273fa00f51b'] = true,
+    ['b661a51d4ccf44f5da2869b0055563cb'] = true,
+    ['740da6bafb23c2fbdc5140b5d320edb1'] = true,
+    ['7503dad2a08026fc4b6cfb32a940cfe0'] = true,
+    ['4486253cba68da6786359e7ff2c7b467'] = true,
+    ['f1d7c0018e1648d7d48f257dc35e9660'] = true,
+    ['40da66d41e9c79172a84eef745739521'] = true,
+    ['2863ab7e0e7371f9a6b3f0440c06c560'] = true,
+    ['34146dc35d583f2b34693a83469fac2a'] = true,
+    ['b315d022891afedf2e6bc7e5aaf2d357'] = true,
+    ['63bf3d5a51b292cd0702135f6f566bd1'] = true,
+    ['6891d0a75336a75f9d03bb5e51a53095'] = true,
+    ['325a53c37324e4adb484d7a9c6741314'] = true,
+    ['0e3c41078d06f7f502e4bb5bd886772a'] = true,
+    ['fc65cda372eeb75fc1a2e7d19e91a86f'] = true,
+    ['f35309a653ae6243dab90c203fa50000'] = true,
+    ['50bbef5ebf4e0393016d129a545bd09d'] = true,
+    ['a77ee0be91bd38a0635b65991bc4b686'] = true,
+    ['3126fab3615a94119d5fe9eead1e88c1'] = true
 }
--- CONFG ENDS -----------------------------------------------------------------------
 
 api_version = '1.12.0.0'
 
@@ -436,63 +171,21 @@ local function WriteToJSON(eventData, attempt)
     return success and result
 end
 
+local function logRawEvent(event_type, data, subtype)
+    local eventData = {
+        event_type = event_type,
+        subtype = subtype,
+        data = data,
+        timestamp = os.time()
+    }
+    WriteToJSON(eventData)
+end
+
 function RetryWriteToJSON(jsonString, attempt)
     attempt = tonumber(attempt) or 1
     local success = WriteToJSON(json:decode(jsonString), attempt)
     if not success and attempt < 3 then
         timer(100, "RetryWriteToJSON", jsonString, attempt + 1)
-    end
-end
-
-local function parseTemplate(template, args) return (template:gsub("($%w+)", args)) end
-
-local function getEventConfig(event, subtype)
-    if event == "event_chat" then return CONFIG.EVENTS.CHAT end
-    if event == "event_command" then return CONFIG.EVENTS.COMMAND end
-
-    local general = CONFIG.EVENTS.GENERAL[event]
-    return subtype and general[subtype] or general
-end
-
-local function getChannelID(event)
-    return CONFIG.CHANNELS[event == "event_chat" and "CHAT" or event == "event_command" and "COMMAND" or "GENERAL"]
-end
-
-local function logEvent(event, args, subtype)
-    local config = getEventConfig(event, subtype)
-    if not config or not config.enable then return end
-
-    local channel_id = getChannelID(event)
-    args["$serverName"] = server_name
-
-    if config.embed then
-        local embed = {
-            title = parseTemplate(config.embed.title or "", args),
-            description = parseTemplate(config.embed.description or "", args),
-            color = CONFIG.COLORS[config.embed.color],
-            channel_id = channel_id
-        }
-
-        if config.embed.footer then embed.footer = server_name end
-        if config.embed.fields then
-            embed.fields = {}
-            for _, field in ipairs(config.embed.fields) do
-                embed.fields[#embed.fields + 1] = {
-                    name = parseTemplate(field.name, args),
-                    value = parseTemplate(field.value, args),
-                    inline = field.inline
-                }
-            end
-        end
-
-        WriteToJSON({ embed = embed })
-    else
-        WriteToJSON({
-            message = {
-                channel_id = channel_id,
-                text = parseTemplate(config.text, args)
-            }
-        })
     end
 end
 
@@ -532,14 +225,14 @@ end
 local function getPlayerData(player, isQuit)
     local total = tonumber(get_var(0, '$pn'))
     return {
-        ["$total"] = isQuit and total - 1 or total,
-        ["$name"] = player.name,
-        ["$ip"] = player.ip,
-        ["$hash"] = player.hash,
-        ["$id"] = player.id,
-        ["$lvl"] = player.level(),
-        ["$ping"] = get_var(player.id, "$ping"),
-        ["$pirated"] = CONFIG.PIRATED_HASHES[player.hash] and 'YES' or 'NO'
+        total = isQuit and total - 1 or total,
+        name = player.name,
+        ip = player.ip,
+        hash = player.hash,
+        id = player.id,
+        lvl = player.level(),
+        ping = get_var(player.id, "$ping"),
+        pirated = PIRATED_HASHES[player.hash] and 'YES' or 'NO'
     }
 end
 
@@ -565,11 +258,11 @@ function OnStart(notifyFlag)
     score_limit = read_byte(gametype_base + 0x58)
 
     if not notifyFlag or notifyFlag == 0 then
-        logEvent("event_start", {
-            ["$map"] = map,
-            ["$mode"] = mode,
-            ["$gt"] = gametype,
-            ["$ffa"] = ffa and "FFA" or "Team Play"
+        logRawEvent("event_start", {
+            map = map,
+            mode = mode,
+            gametype = gametype,
+            ffa = ffa
         })
     end
 
@@ -579,23 +272,25 @@ function OnStart(notifyFlag)
 end
 
 function OnEnd()
-    logEvent("event_end", {
-        ["$map"] = map,
-        ["$mode"] = mode,
-        ["$gt"] = gametype,
-        ["$ffa"] = ffa and "FFA" or "Team Play"
+    logRawEvent("event_end", {
+        map = map,
+        mode = mode,
+        gametype = gametype,
+        ffa = ffa
     })
 end
 
 function OnJoin(id, notifyFlag)
     players[id] = newPlayer(id)
-    if not notifyFlag then logEvent("event_join", getPlayerData(players[id])) end
+    if not notifyFlag then
+        logRawEvent("event_join", getPlayerData(players[id]))
+    end
 end
 
 function OnQuit(id)
     local player = players[id]
     if player then
-        logEvent("event_leave", getPlayerData(player, true))
+        logRawEvent("event_leave", getPlayerData(player, true))
         players[id] = nil
     end
 end
@@ -604,7 +299,7 @@ function OnSpawn(id)
     local player = players[id]
     if player then
         player.last_damage, player.switched = 0, nil
-        logEvent("event_spawn", { ["$name"] = player.name, ["$team"] = player.team })
+        logRawEvent("event_spawn", { name = player.name, team = player.team })
     end
 end
 
@@ -612,40 +307,40 @@ function OnSwitch(id)
     local player = players[id]
     if player then
         player.team, player.switched = get_var(id, '$team'), true
-        logEvent("event_team_switch", { ["$name"] = player.name, ["$team"] = player.team })
+        logRawEvent("event_team_switch", { name = player.name, team = player.team })
     end
 end
 
 function OnReset()
-    logEvent("event_map_reset", {
-        ["$map"] = map,
-        ["$mode"] = mode,
-        ["$gt"] = gametype,
-        ["$ffa"] = ffa and "FFA" or "Team Play"
+    logRawEvent("event_map_reset", {
+        map = map,
+        mode = mode,
+        gt = gametype,
+        ffa = ffa and "FFA" or "Team Play"
     })
 end
 
 function OnLogin(id)
     local player = players[id]
     if player then
-        logEvent("event_login", { ["$name"] = player.name, ["$lvl"] = player.level() })
+        logRawEvent("event_login", { name = player.name, lvl = player.level() })
     end
 end
 
 function OnSnap(id)
     local player = players[id]
-    if player then logEvent("event_snap", { ["$name"] = player.name }) end
+    if player then logRawEvent("event_snap", { name = player.name }) end
 end
 
 function OnCommand(id, command, env)
     local player = players[id]
     if player then
-        logEvent("event_command", {
-            ["$lvl"] = player.level(),
-            ["$name"] = player.name,
-            ["$id"] = tostring(id),
-            ["$type"] = COMMAND_TYPE[env],
-            ["$cmd"] = command
+        logRawEvent("event_command", {
+            lvl = player.level(),
+            name = player.name,
+            id = tostring(id),
+            type = COMMAND_TYPE[env],
+            cmd = command
         })
     end
     return true
@@ -654,11 +349,11 @@ end
 function OnChat(id, msg, env)
     local player = players[id]
     if player and msg:sub(1, 1) ~= "/" and msg:sub(1, 1) ~= "\\" and msg:sub(1, 1) ~= "@" then
-        logEvent("event_chat", {
-            ["$type"] = CHAT_TYPE[env],
-            ["$name"] = player.name,
-            ["$id"] = id,
-            ["$msg"] = msg
+        logRawEvent("event_chat", {
+            type = CHAT_TYPE[env],
+            name = player.name,
+            id = id,
+            msg = msg
         })
     end
 end
@@ -670,14 +365,14 @@ function OnScore(id)
     local event_type = GAMETYPE_MAP[gametype] or (gametype == "race" and (ffa and 3 or 2))
     if not event_type then return end
 
-    logEvent("event_score", {
-        ["$totalTeamLaps"] = player.team == "red" and get_var(0, "$redscore") or get_var(0, "$bluescore"),
-        ["$score"] = get_var(id, "$score"),
-        ["$name"] = player.name,
-        ["$team"] = player.team or "FFA",
-        ["$redScore"] = get_var(0, "$redscore"),
-        ["$blueScore"] = get_var(0, "$bluescore"),
-        ["$scorelimit"] = score_limit
+    logRawEvent("event_score", {
+        totalTeamLaps = player.team == "red" and get_var(0, "$redscore") or get_var(0, "$bluescore"),
+        score = get_var(id, "$score"),
+        name = player.name,
+        team = player.team or "FFA",
+        redScore = get_var(0, "$redscore"),
+        blueScore = get_var(0, "$bluescore"),
+        scorelimit = score_limit
     }, event_type)
 end
 
@@ -712,9 +407,9 @@ function OnDeath(victim, killer)
         end
     end
 
-    logEvent("event_death", {
-        ["$killerName"] = killer_data and killer_data.name or "",
-        ["$victimName"] = victim_data.name
+    logRawEvent("event_death", {
+        killerName = killer_data and killer_data.name or "",
+        victimName = victim_data.name
     }, event_type)
 end
 
