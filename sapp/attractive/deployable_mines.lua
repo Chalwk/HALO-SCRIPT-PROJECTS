@@ -6,11 +6,13 @@ DESCRIPTION:      Tactical mine deployment system allowing players to place
 
 FEATURES:         - Vehicle-based mine deployment system
                   - Configurable mine count per life
-                  - Timed despawn for placed mines
+                  - Dynamic mine longevity based on player count
+                  - Fixed or scalable despawn timing (toggleable)
                   - Adjustable explosion radius
                   - Team damage toggle
                   - Death message customization
                   - Vehicle-specific deployment restrictions
+                  - Admin toggle commands for mine system
 
                   Technical note:
                   - The default object to represent mines is 'powerups\\full-spectrum vision'
@@ -20,7 +22,7 @@ FEATURES:         - Vehicle-based mine deployment system
 
                     [!] Important: Ensure your maps have the tag addresses for the objects you want to use.
 
-LAST UPDATED:     19/10/2025
+LAST UPDATED:     19/11/2025
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
