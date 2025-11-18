@@ -41,6 +41,11 @@ local MINES_PER_LIFE = 20
 -- Time in seconds before a deployed mine automatically despawns
 local DESPAWN_RATE = 30
 
+-- Dynamic despawn settings
+local DYNAMIC_DESPAWN_ENABLED = true -- Set to false to use fixed DESPAWN_RATE
+local MIN_DESPAWN_RATE = 20          -- Minimum despawn time (high population)
+local MAX_DESPAWN_RATE = 60          -- Maximum despawn time (low population)
+
 -- Detection radius in world units for mine activation
 local TRIGGER_RADIUS = 0.7
 
@@ -135,6 +140,15 @@ local function registerEventCallbacks(should_register)
     end
 end
 
+local function getDynamicDespawnRate()
+    if not DYNAMIC_DESPAWN_ENABLED then return DESPAWN_RATE end
+
+    local player_count = tonumber(get_var(0, '$pn'))
+    if not player_count or player_count <= 1 then return MAX_DESPAWN_RATE end
+    local scale = (player_count - 1) / 15
+    return MAX_DESPAWN_RATE - scale * (MAX_DESPAWN_RATE - MIN_DESPAWN_RATE)
+end
+
 local function getPos(dyn_player)
     local vehicle_id = read_dword(dyn_player + 0x11C)
     local vehicle_obj = get_object_memory(vehicle_id)
@@ -211,16 +225,21 @@ local function deployMine(player_id, pos, current_time)
         return
     end
 
-    -- Register mine
+    local despawn_duration = getDynamicDespawnRate()
+
     active_mines[mine_id] = {
         owner_id = player_id,
         creation_time = current_time,
         arm_time = current_time + MINE_ARM_DELAY,
-        expiration_time = current_time + DESPAWN_RATE
+        expiration_time = current_time + despawn_duration
     }
-
     player.mines_remaining = player.mines_remaining - 1
-    rprint(player_id, 'Mine Deployed! ' .. player.mines_remaining .. '/' .. MINES_PER_LIFE)
+
+    if DYNAMIC_DESPAWN_ENABLED then
+        rprint(player_id, fmt('Mine Deployed! (%ds) %d/%d', despawn_duration, player.mines_remaining, MINES_PER_LIFE))
+    else
+        rprint(player_id, 'Mine Deployed! ' .. player.mines_remaining .. '/' .. MINES_PER_LIFE)
+    end
 end
 
 local function destroyMine(mine_id, trigger_explosion, x, y, z)
@@ -466,6 +485,15 @@ function OnCommand(id, command)
                     destroyMine(mine_id, false)
                 end
             end
+        end
+        return false
+    elseif command == 'dynamicmines' then
+        if not isAdmin(id) then
+            rprint(id, "You do not have permission to use this command")
+        else
+            DYNAMIC_DESPAWN_ENABLED = not DYNAMIC_DESPAWN_ENABLED
+            local state = DYNAMIC_DESPAWN_ENABLED and "enabled" or "disabled"
+            rprint(id, fmt("Dynamic mine longevity %s", state))
         end
         return false
     end
