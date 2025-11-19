@@ -110,6 +110,28 @@ compatible with many scripts and still sees use in some legacy setups.
 
 ---
 
+## Integration Tools
+
+### SAPPDiscordBot
+
+[![Java](https://img.shields.io/badge/Java-17%2B-orange.svg)](https://github.com/Chalwk/SAPPDiscordBot)
+[![GitHub release](https://img.shields.io/github/v/release/Chalwk/SAPPDiscordBot)](https://github.com/Chalwk/SAPPDiscordBot/releases)
+
+A Java application that uses the [JDA API](https://github.com/discord-jda/JDA) to connect Halo SAPP server events to
+Discord, providing real-time alerts, structured embeds, and a GUI interface for monitoring your servers.
+
+**Features:**
+
+- Real-time event monitoring for multiple Halo servers
+- Rich Discord embeds with customizable templates
+- GUI interface for easy configuration
+- Support for all SAPP event types (joins, deaths, scores, chat, etc.)
+- Cross-platform (Windows & Linux)
+
+**[→ Visit SAPPDiscordBot Repository](https://github.com/Chalwk/SAPPDiscordBot)**
+
+---
+
 ## Contribute & Request Features
 
 ### Submit Ideas
