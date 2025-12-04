@@ -204,5 +204,3 @@ All community interactions are governed by our:
 ## Contact
 
 **Discord:** Chalwk / [HSP Discord](https://discord.gg/D76H7RVPC9)
-
-DEV TEST - IGNORE THIS TEMPORARY LINE
