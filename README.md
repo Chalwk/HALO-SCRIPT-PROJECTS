@@ -33,14 +33,6 @@ insights to enhance, customize, and extend your multiplayer server experience.
 
 ---
 
-## Visit the [Official HSP Discord Server](https://discord.gg/D76H7RVPC9)
-
----
-
-#### (new) [Click here to view the new SCRIPT BROWSER](https://chalwk.github.io/HALO-SCRIPT-PROJECTS/)
-
----
-
 ## What are SAPP & Phasor?
 
 **SAPP** and **Phasor** are server-side extensions that provide advanced scripting and customization capabilities for *
@@ -137,7 +129,7 @@ Discord, providing real-time alerts, structured embeds, and a GUI interface for 
 ### Submit Ideas
 
 Have an idea for a new feature or script?  
-[🛠️ Submit Feature Request](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/issues/new?template=FEATURE_REQUEST.yaml)
+[Submit Feature Request](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/issues/new?template=FEATURE_REQUEST.yaml)
 
 ### Report Issues
 
@@ -204,6 +196,3 @@ All community interactions are governed by our:
 ## Contact
 
 **Discord:** Chalwk / [HSP Discord](https://discord.gg/D76H7RVPC9)
-
-
-DEV TEST (ignore this line)
