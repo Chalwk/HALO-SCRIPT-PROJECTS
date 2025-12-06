@@ -21,10 +21,9 @@ LICENSE:          MIT License
 clua_version = 2.056
 
 local custom_command = "show_pos"
-local enabled = true -- start enabled
+local enabled = true
 
 local fmt = string.format
--- Use placeholders {x}, {y}, and {z} for coordinates
 local output_format = "Player position is X={x}, Y={y}, Z={z}"
 
 function OnTick()

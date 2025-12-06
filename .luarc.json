@@ -50,6 +50,9 @@
     "register_callback",
     "write_short",
     "write_int",
-    "bit"
+    "bit",
+    "execute_script",
+    "console_out",
+    "clua_version"
   ]
 }
