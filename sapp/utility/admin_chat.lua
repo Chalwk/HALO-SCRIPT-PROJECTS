@@ -14,6 +14,7 @@ LICENSE:          MIT License
 =====================================================================================
 ]]
 
+-- CONFIG START -------------------------------------------------------------------
 local AdminChat = {
     -- Primary command and aliases
     commands = { 'achat', 'ac' },
@@ -38,10 +39,16 @@ local AdminChat = {
         help = 'Use /$cmd to toggle admin-only chat'
     }
 }
+-- CONFIG ENDS -------------------------------------------------------------------
 
 local cooldowns = {}
 local command_map = {}
 local active_players = {}
+
+local get_var = get_var
+
+local ipairs = ipairs
+local os_clock = os.clock
 
 api_version = '1.12.0.0'
 
@@ -100,7 +107,7 @@ end
 local function handle_admin_chat(player, message)
     if not player.state then return true end
 
-    local now = os.clock()
+    local now = os_clock()
     if cooldowns[player.id] and now - cooldowns[player.id] < AdminChat.cooldown then
         player:send_message(AdminChat.messages.cooldown)
         return false
@@ -113,8 +120,7 @@ end
 
 local function process_command(player, command)
     if command_map[command] then
-        if player == 0 then return end -- prevent console
-        local success, response = player:toggle_state()
+        local _, response = player:toggle_state()
         player:send_message(response)
         return true
     end
@@ -129,7 +135,6 @@ local function show_help(player)
 end
 
 function OnScriptLoad()
-
     for _, cmd in ipairs(AdminChat.commands) do
         command_map[cmd:lower()] = true
     end
@@ -187,6 +192,4 @@ function OnCommand(playerId, command)
     return not process_command(player, command)
 end
 
-function OnScriptUnload()
-    -- N/A
-end
+function OnScriptUnload() end
