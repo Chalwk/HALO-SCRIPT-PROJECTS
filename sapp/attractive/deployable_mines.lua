@@ -6,13 +6,11 @@ DESCRIPTION:      Tactical mine deployment system allowing players to place
 
 FEATURES:         - Vehicle-based mine deployment system
                   - Configurable mine count per life
-                  - Dynamic mine longevity based on player count
-                  - Fixed or scalable despawn timing (toggleable)
+                  - Timed despawn for placed mines
                   - Adjustable explosion radius
                   - Team damage toggle
                   - Death message customization
                   - Vehicle-specific deployment restrictions
-                  - Admin toggle commands for mine system
 
                   Technical note:
                   - The default object to represent mines is 'powerups\\full-spectrum vision'
@@ -22,7 +20,7 @@ FEATURES:         - Vehicle-based mine deployment system
 
                     [!] Important: Ensure your maps have the tag addresses for the objects you want to use.
 
-LAST UPDATED:     19/11/2025
+LAST UPDATED:     13/12/2025
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -32,21 +30,12 @@ LICENSE:          MIT License
 
 -- CONFIG START -----------------------------------------------
 
--- Level required to toggle deployable mines on|off
-local TOGGLE_COMMAND = 'mines'
-local TOGGLE_REQUIRED_LEVEL = 4
-
 -- Maximum number of mines a player can deploy in a single life
 -- Set to 0 for unlimited mines, or any positive integer to limit mine usage
 local MINES_PER_LIFE = 20
 
 -- Time in seconds before a deployed mine automatically despawns
 local DESPAWN_RATE = 30
-
--- Dynamic despawn settings
-local DYNAMIC_DESPAWN_ENABLED = true -- Set to false to use fixed DESPAWN_RATE
-local MIN_DESPAWN_RATE = 20          -- Minimum despawn time (high population)
-local MAX_DESPAWN_RATE = 60          -- Maximum despawn time (low population)
 
 -- Detection radius in world units for mine activation
 local TRIGGER_RADIUS = 0.7
@@ -56,6 +45,14 @@ local MINE_ARM_DELAY = 1.0
 
 -- Team damage control for mine explosions
 local MINES_KILL_TEAMMATES = false
+
+-- Set to false to use default death message
+local ENABLE_CUSTOM_DEATH_MESSAGE = true
+local DEATH_MESSAGE_FORMAT = "$victim was blown up by $killer's mine"
+
+-- When broadcasting a custom death message, the script temporarily removes the msg_prefix, and will
+-- restore it to this when the rely is finished.
+local SERVER_PREFIX = "**SAPP**"
 
 -- Object tag used to visually represent mines (Must be a valid equipment tag from your maps)
 -- 'powerups\\full-spectrum vision' - Naturally despawns after 30 seconds
@@ -74,26 +71,26 @@ local PROJECTILE_OBJECT = 'weapons\\rocket launcher\\rocket'
 -- Add or remove vehicle tags to control which vehicles can deploy mines
 -- Format: ['vehicle_tag_path'] = true (enabled) / false (disabled)
 local VEHICLES = {
-    ['vehicles\\ghost\\ghost_mp'] = true,                                                  -- stock maps
-    ['vehicles\\rwarthog\\rwarthog'] = true,                                               -- stock maps
-    ['vehicles\\warthog\\mp_warthog'] = true,                                              -- stock maps
-    ['halo3\\vehicles\\warthog\\mp_warthog'] = true,                                       -- [h3]_sandtrap
-    ['halo3\\vehicles\\mongoose\\mongoose'] = true,                                        -- [h3]_sandtrap
-    ['levels\\test\\racetrack\\custom_hogs\\mp_warthog_green'] = true,                     -- bc_raceway_final_mp
-    ['levels\\test\\racetrack\\custom_hogs\\mp_warthog_blue'] = true,                      -- bc_raceway_final_mp
-    ['levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi1'] = true,                    -- bc_raceway_final_mp
-    ['levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi2'] = true,                    -- bc_raceway_final_mp
-    ['levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi3'] = true,                    -- bc_raceway_final_mp
-    ['vehicles\\rwarthog\\boogerhawg'] = true,                                             -- cityscape-adrenaline
-    ['vehicles\\g_warthog\\g_warthog'] = true,                                             -- hypothermia_race
-    ['vehicles\\m257_multvp\\m257_multvp'] = true,                                         -- mongoose_point
-    ['vehicles\\puma\\puma_lt'] = true,                                                    -- mystic_mod
-    ['vehicles\\puma\\rpuma_lt'] = true,                                                   -- mystic_mod
-    ['cmt\\vehicles\\evolved_h1-spirit\\warthog\\_warthog_mp\\warthog_mp'] = true,         -- tsce_multiplayerv1
+    ['vehicles\\ghost\\ghost_mp'] = true, -- stock maps
+    ['vehicles\\rwarthog\\rwarthog'] = true, -- stock maps
+    ['vehicles\\warthog\\mp_warthog'] = true, -- stock maps
+    ['halo3\\vehicles\\warthog\\mp_warthog'] = true, -- [h3]_sandtrap
+    ['halo3\\vehicles\\mongoose\\mongoose'] = true, -- [h3]_sandtrap
+    ['levels\\test\\racetrack\\custom_hogs\\mp_warthog_green'] = true, -- bc_raceway_final_mp
+    ['levels\\test\\racetrack\\custom_hogs\\mp_warthog_blue'] = true, -- bc_raceway_final_mp
+    ['levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi1'] = true, -- bc_raceway_final_mp
+    ['levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi2'] = true, -- bc_raceway_final_mp
+    ['levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi3'] = true, -- bc_raceway_final_mp
+    ['vehicles\\rwarthog\\boogerhawg'] = true, -- cityscape-adrenaline
+    ['vehicles\\g_warthog\\g_warthog'] = true, -- hypothermia_race
+    ['vehicles\\m257_multvp\\m257_multvp'] = true, -- mongoose_point
+    ['vehicles\\puma\\puma_lt'] = true, -- mystic_mod
+    ['vehicles\\puma\\rpuma_lt'] = true, -- mystic_mod
+    ['cmt\\vehicles\\evolved_h1-spirit\\warthog\\_warthog_mp\\warthog_mp'] = true, -- tsce_multiplayerv1
     ['cmt\\vehicles\\evolved_h1-spirit\\warthog\\_warthog_rocket\\warthog_rocket'] = true, -- tsce_multiplayerv1
-    ['halo3\\vehicles\\warthog\\rwarthog'] = true,                                         -- hornets_nest
-    ['vehicles\\warthog\\art_cwarthog'] = true,                                            -- grove_final
-    ['vehicles\\rwarthog\\art_rwarthog_shiny'] = true,                                     -- grove_final
+    ['halo3\\vehicles\\warthog\\rwarthog'] = true, -- hornets_nest
+    ['vehicles\\warthog\\art_cwarthog'] = true, -- grove_final
+    ['vehicles\\rwarthog\\art_rwarthog_shiny'] = true, -- grove_final
 }
 -- CONFIG END -------------------------------------------------
 
@@ -103,8 +100,8 @@ local map_name
 local MINE_TAG_ID, PROJECTILE_TAG_ID
 local active_mines, jpt_data, players = {}, {}, {}
 
--- Runtime toggle for enabling/disabling mines
-local MINES_ENABLED = true
+local death_message_address
+local original_death_message_address
 
 local os_time, pairs = os.time, pairs
 
@@ -124,9 +121,39 @@ local event_handlers = {
     [cb['EVENT_JOIN']] = 'OnJoin',
     [cb['EVENT_LEAVE']] = 'OnQuit',
     [cb['EVENT_SPAWN']] = 'OnSpawn',
-    [cb['EVENT_COMMAND']] = 'OnCommand',
     [cb['EVENT_TEAM_SWITCH']] = 'OnTeamSwitch'
 }
+
+local function patchDeathMessages(address, value)
+    safe_write(true)
+    write_dword(address, value)
+    safe_write(false)
+end
+
+function restoreDeathMessages()
+    patchDeathMessages(death_message_address, original_death_message_address)
+end
+
+local function patchDeathMessageForMine(victim_id, killer_id)
+    if not ENABLE_CUSTOM_DEATH_MESSAGE then
+        return
+    end
+
+    patchDeathMessages(death_message_address, 0x03EB01B1)
+
+    local message = DEATH_MESSAGE_FORMAT
+
+    local v_name = get_var(victim_id, "$name")
+    local k_name = get_var(killer_id, "$name")
+
+    message = message:gsub("$victim", v_name):gsub("$killer", k_name)
+
+    execute_command('msg_prefix ""')
+    say_all(message)
+    execute_command('msg_prefix "' .. SERVER_PREFIX .. '"')
+
+    timer(50, "restoreDeathMessages") -- 50ms delay
+end
 
 local function fmt(str, ...)
     return select('#', ...) > 0 and str:format(...) or str
@@ -140,15 +167,6 @@ local function registerEventCallbacks(should_register)
             unregister_callback(event)
         end
     end
-end
-
-local function getDynamicDespawnRate()
-    if not DYNAMIC_DESPAWN_ENABLED then return DESPAWN_RATE end
-
-    local player_count = tonumber(get_var(0, '$pn'))
-    if not player_count or player_count <= 1 then return MAX_DESPAWN_RATE end
-    local scale = (player_count - 1) / 15
-    return MAX_DESPAWN_RATE - scale * (MAX_DESPAWN_RATE - MIN_DESPAWN_RATE)
 end
 
 local function getPos(dyn_player)
@@ -201,7 +219,9 @@ end
 
 local function deployMine(player_id, pos, current_time)
     local player = players[player_id]
-    if not player then return end
+    if not player then
+        return
+    end
 
     if MINES_PER_LIFE > 0 and player.mines_remaining <= 0 then
         rprint(player_id, "No more mines for this life!")
@@ -227,32 +247,30 @@ local function deployMine(player_id, pos, current_time)
         return
     end
 
-    local despawn_duration = getDynamicDespawnRate()
-
+    -- Register mine
     active_mines[mine_id] = {
         owner_id = player_id,
         creation_time = current_time,
         arm_time = current_time + MINE_ARM_DELAY,
-        expiration_time = current_time + despawn_duration
+        expiration_time = current_time + DESPAWN_RATE
     }
-    player.mines_remaining = player.mines_remaining - 1
 
-    if DYNAMIC_DESPAWN_ENABLED then
-        rprint(player_id, fmt('Mine Deployed! (%ds) %d/%d', despawn_duration, player.mines_remaining, MINES_PER_LIFE))
-    else
-        rprint(player_id, 'Mine Deployed! ' .. player.mines_remaining .. '/' .. MINES_PER_LIFE)
-    end
+    player.mines_remaining = player.mines_remaining - 1
+    rprint(player_id, 'Mine Deployed! ' .. player.mines_remaining .. '/' .. MINES_PER_LIFE)
 end
 
-local function destroyMine(mine_id, trigger_explosion, x, y, z)
+local function destroyMine(mine_id, trigger_explosion, x, y, z, victim_id)
     local mine_data = active_mines[mine_id]
-    if not mine_data then return end
+    if not mine_data then
+        return
+    end
 
     destroy_object(mine_id)
 
     -- Check if mine should explode
     if trigger_explosion and x and y and z then
         createExplosion(x, y, z, mine_data.owner_id)
+        patchDeathMessageForMine(victim_id, mine_data.owner_id)
     end
 
     active_mines[mine_id] = nil
@@ -260,25 +278,37 @@ end
 
 local function monitorMines(player_id, current_time)
     local player = players[player_id]
-    if not player or not player_alive(player_id) then return end
+    if not player or not player_alive(player_id) then
+        return
+    end
 
     local dyn_player = get_dynamic_player(player_id)
-    if dyn_player == 0 then return end
+    if dyn_player == 0 then
+        return
+    end
 
     local pos = getPos(dyn_player)
-    if not pos.x then return end
+    if not pos.x then
+        return
+    end
 
     for mine_id, mine_data in pairs(active_mines) do
         -- Skip if mine isn't armed yet
-        if current_time < mine_data.arm_time then goto continue end
+        if current_time < mine_data.arm_time then
+            goto continue
+        end
 
         -- Skip if this is the mine owner
-        if mine_data.owner_id == player_id then goto continue end
+        if mine_data.owner_id == player_id then
+            goto continue
+        end
 
         -- Skip if team damage is disabled and players are on same team
         if not MINES_KILL_TEAMMATES then
             local mine_owner_team = get_var(mine_data.owner_id, '$team')
-            if player.team == mine_owner_team then goto continue end
+            if player.team == mine_owner_team then
+                goto continue
+            end
         end
 
         -- Check if mine still exists in game world
@@ -291,10 +321,10 @@ local function monitorMines(player_id, current_time)
         -- Check if player is in range of mine
         local mine_x, mine_y, mine_z = read_vector3d(mine_object + 0x5C)
         if inRange(pos.x, pos.y, pos.z, mine_x, mine_y, mine_z) then
-            destroyMine(mine_id, true, mine_x, mine_y, mine_z)
+            destroyMine(mine_id, true, mine_x, mine_y, mine_z, player_id)
         end
 
-        ::continue::
+        :: continue ::
     end
 end
 
@@ -311,16 +341,20 @@ local function mineExpiration(current_time)
             destroyMine(mine_id, false)
         end
 
-        ::continue::
+        :: continue ::
     end
 end
 
 local function flashlightCheck(player_id, current_time)
     local player = players[player_id]
-    if not player or not player_alive(player_id) then return end
+    if not player or not player_alive(player_id) then
+        return
+    end
 
     local dyn_player = get_dynamic_player(player_id)
-    if dyn_player == 0 then return end
+    if dyn_player == 0 then
+        return
+    end
 
     local current_flashlight = read_bit(dyn_player + 0x208, 4)
 
@@ -369,20 +403,24 @@ local function initAllPlayers()
 end
 
 local function initGame()
-    if get_var(0, '$gt') == 'n/a' then return false end
+    if get_var(0, '$gt') == 'n/a' then
+        return false
+    end
 
     map_name = get_var(0, '$map')
-    players = {}; jpt_data = {}; active_mines = {}
+    players = {};
+    jpt_data = {};
+    active_mines = {}
 
     -- Set mine object representation
     MINE_TAG_ID = getTagID('eqip', MINE_OBJECT)
     if not MINE_TAG_ID then
         MINE_TAG_ID = getTagID('eqip', MINE_OBJECT_FALLBACK)
         print(fmt(
-            "Deployable Mines [%s]: Failed to find (%s). Trying fallback mine tag (%s)",
-            map_name,
-            MINE_OBJECT,
-            MINE_OBJECT_FALLBACK))
+                "Deployable Mines [%s]: Failed to find (%s). Trying fallback mine tag (%s)",
+                map_name,
+                MINE_OBJECT,
+                MINE_OBJECT_FALLBACK))
     end
 
     PROJECTILE_TAG_ID = getTagID('proj', PROJECTILE_OBJECT)
@@ -397,18 +435,18 @@ local function initGame()
     -- Initialize existing players
     initAllPlayers()
 
-    MINES_ENABLED = true
-
     return true
 end
 
 function OnScriptLoad()
+    death_message_address = sig_scan('8B42348A8C28D500000084C9') + 3
+    original_death_message_address = read_dword(death_message_address)
+
     register_callback(cb['EVENT_GAME_START'], 'OnStart')
     OnStart() -- in case script is loaded mid-game
 end
 
 function OnTick()
-    if not MINES_ENABLED then return end
     local current_time = os_time()
 
     for player_id, player_data in pairs(players) do
@@ -463,41 +501,9 @@ function OnStart()
         registerEventCallbacks(true)
     else
         registerEventCallbacks(false)
-        if error_message then error(fmt(error_message, map_name)) end
-    end
-end
-
-local function isAdmin(id)
-    if id == 0 then return true end
-    return tonumber(get_var(id, '$lvl')) >= TOGGLE_REQUIRED_LEVEL
-end
-
-function OnCommand(id, command)
-    command = command:lower()
-    if command == TOGGLE_COMMAND then
-        if not isAdmin(id) then
-            rprint(id, "You do not have permission to use this command")
-        else
-            MINES_ENABLED = not MINES_ENABLED
-            local state = MINES_ENABLED and "enabled" or "disabled"
-            rprint(id, fmt("Mines %s", state))
-
-            if MINES_ENABLED == false then -- just in case
-                for mine_id, _ in pairs(active_mines) do
-                    destroyMine(mine_id, false)
-                end
-            end
+        if error_message then
+            error(fmt(error_message, map_name))
         end
-        return false
-    elseif command == 'dynamicmines' then
-        if not isAdmin(id) then
-            rprint(id, "You do not have permission to use this command")
-        else
-            DYNAMIC_DESPAWN_ENABLED = not DYNAMIC_DESPAWN_ENABLED
-            local state = DYNAMIC_DESPAWN_ENABLED and "enabled" or "disabled"
-            rprint(id, fmt("Dynamic mine longevity %s", state))
-        end
-        return false
     end
 end
 
@@ -509,6 +515,9 @@ function EditRocket(rollback)
 end
 
 function OnScriptUnload()
-    for mine_id, _ in pairs(active_mines) do destroy_object(mine_id) end
-    active_mines = {}; players = {}
+    for mine_id, _ in pairs(active_mines) do
+        destroy_object(mine_id)
+    end
+    active_mines = {};
+    players = {}
 end

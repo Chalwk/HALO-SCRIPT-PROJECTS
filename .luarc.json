@@ -53,6 +53,7 @@
     "bit",
     "execute_script",
     "console_out",
-    "clua_version"
+    "clua_version",
+    "write_char"
   ]
 }

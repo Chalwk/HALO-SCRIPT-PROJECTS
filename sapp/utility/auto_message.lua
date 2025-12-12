@@ -7,7 +7,7 @@ DESCRIPTION:      Automated rotating message system that broadcasts:
                   - Optional console output for monitoring
                   - Customizable interval
 
-LAST UPDATED:     2/10/2025
+LAST UPDATED:     7/10/2025
 
 Copyright (c) 2024-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
@@ -26,10 +26,10 @@ local ANNOUNCEMENTS = {
     { 'Other information here' },
 }
 
-local INTERVAL = 180     -- Interval in seconds
-local CONSOLE = false    -- Console output
-local PREFIX = '**HSP**' -- Message prefix
-local START_OVER = true  -- Restart from beginning of ANNOUNCEMENTS when a new game begins (false to disable)
+local INTERVAL = 180      -- Interval in seconds
+local CONSOLE = false     -- Console output
+local PREFIX = '**SAPP**' -- Message prefix
+local START_OVER = true   -- Restart from beginning of ANNOUNCEMENTS when a new game begins (false to disable)
 -- CONFIG end -----------------------------------------
 
 api_version = '1.12.0.0'
