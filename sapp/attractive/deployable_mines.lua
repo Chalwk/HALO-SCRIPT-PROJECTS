@@ -66,31 +66,35 @@ local MINE_OBJECT_FALLBACK = 'powerups\\health pack'
 -- Creates the visual and damage effect when a mine is triggered
 local PROJECTILE_OBJECT = 'weapons\\rocket launcher\\rocket'
 
+-- Deployment mode: Determines when players can deploy mines
+-- Options: "vehicle_only", "on_foot_only", "both"
+local DEPLOYMENT_MODE = "vehicle_only"
+
 -- List of vehicles that are permitted to deploy mines
 -- Only vehicles in this list will have mine deployment capability
 -- Add or remove vehicle tags to control which vehicles can deploy mines
 -- Format: ['vehicle_tag_path'] = true (enabled) / false (disabled)
 local VEHICLES = {
-    ['vehicles\\ghost\\ghost_mp'] = true, -- stock maps
-    ['vehicles\\rwarthog\\rwarthog'] = true, -- stock maps
-    ['vehicles\\warthog\\mp_warthog'] = true, -- stock maps
-    ['halo3\\vehicles\\warthog\\mp_warthog'] = true, -- [h3]_sandtrap
-    ['halo3\\vehicles\\mongoose\\mongoose'] = true, -- [h3]_sandtrap
-    ['levels\\test\\racetrack\\custom_hogs\\mp_warthog_green'] = true, -- bc_raceway_final_mp
-    ['levels\\test\\racetrack\\custom_hogs\\mp_warthog_blue'] = true, -- bc_raceway_final_mp
-    ['levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi1'] = true, -- bc_raceway_final_mp
-    ['levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi2'] = true, -- bc_raceway_final_mp
-    ['levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi3'] = true, -- bc_raceway_final_mp
-    ['vehicles\\rwarthog\\boogerhawg'] = true, -- cityscape-adrenaline
-    ['vehicles\\g_warthog\\g_warthog'] = true, -- hypothermia_race
-    ['vehicles\\m257_multvp\\m257_multvp'] = true, -- mongoose_point
-    ['vehicles\\puma\\puma_lt'] = true, -- mystic_mod
-    ['vehicles\\puma\\rpuma_lt'] = true, -- mystic_mod
-    ['cmt\\vehicles\\evolved_h1-spirit\\warthog\\_warthog_mp\\warthog_mp'] = true, -- tsce_multiplayerv1
+    ['vehicles\\ghost\\ghost_mp'] = true,                                                  -- stock maps
+    ['vehicles\\rwarthog\\rwarthog'] = true,                                               -- stock maps
+    ['vehicles\\warthog\\mp_warthog'] = true,                                              -- stock maps
+    ['halo3\\vehicles\\warthog\\mp_warthog'] = true,                                       -- [h3]_sandtrap
+    ['halo3\\vehicles\\mongoose\\mongoose'] = true,                                        -- [h3]_sandtrap
+    ['levels\\test\\racetrack\\custom_hogs\\mp_warthog_green'] = true,                     -- bc_raceway_final_mp
+    ['levels\\test\\racetrack\\custom_hogs\\mp_warthog_blue'] = true,                      -- bc_raceway_final_mp
+    ['levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi1'] = true,                    -- bc_raceway_final_mp
+    ['levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi2'] = true,                    -- bc_raceway_final_mp
+    ['levels\\test\\racetrack\\custom_hogs\\mp_warthog_multi3'] = true,                    -- bc_raceway_final_mp
+    ['vehicles\\rwarthog\\boogerhawg'] = true,                                             -- cityscape-adrenaline
+    ['vehicles\\g_warthog\\g_warthog'] = true,                                             -- hypothermia_race
+    ['vehicles\\m257_multvp\\m257_multvp'] = true,                                         -- mongoose_point
+    ['vehicles\\puma\\puma_lt'] = true,                                                    -- mystic_mod
+    ['vehicles\\puma\\rpuma_lt'] = true,                                                   -- mystic_mod
+    ['cmt\\vehicles\\evolved_h1-spirit\\warthog\\_warthog_mp\\warthog_mp'] = true,         -- tsce_multiplayerv1
     ['cmt\\vehicles\\evolved_h1-spirit\\warthog\\_warthog_rocket\\warthog_rocket'] = true, -- tsce_multiplayerv1
-    ['halo3\\vehicles\\warthog\\rwarthog'] = true, -- hornets_nest
-    ['vehicles\\warthog\\art_cwarthog'] = true, -- grove_final
-    ['vehicles\\rwarthog\\art_rwarthog_shiny'] = true, -- grove_final
+    ['halo3\\vehicles\\warthog\\rwarthog'] = true,                                         -- hornets_nest
+    ['vehicles\\warthog\\art_cwarthog'] = true,                                            -- grove_final
+    ['vehicles\\rwarthog\\art_rwarthog_shiny'] = true,                                     -- grove_final
 }
 -- CONFIG END -------------------------------------------------
 
@@ -135,9 +139,7 @@ function restoreDeathMessages()
 end
 
 local function patchDeathMessageForMine(victim_id, killer_id)
-    if not ENABLE_CUSTOM_DEATH_MESSAGE then
-        return
-    end
+    if not ENABLE_CUSTOM_DEATH_MESSAGE then return end
 
     patchDeathMessages(death_message_address, 0x03EB01B1)
 
@@ -176,6 +178,8 @@ local function getPos(dyn_player)
 
     if vehicle_id == 0xFFFFFFFF then
         pos.x, pos.y, pos.z = read_vector3d(dyn_player + 0x5c)
+        pos.vehicle = nil
+        pos.seat = nil
     elseif vehicle_obj ~= 0 then
         pos.vehicle = vehicle_obj
         pos.seat = read_word(dyn_player + 0x2F0)
@@ -219,24 +223,50 @@ end
 
 local function deployMine(player_id, pos, current_time)
     local player = players[player_id]
-    if not player then
-        return
-    end
+    if not player then return end
 
     if MINES_PER_LIFE > 0 and player.mines_remaining <= 0 then
         rprint(player_id, "No more mines for this life!")
         return
     end
 
-    if not pos.seat or pos.seat ~= 0 then
-        rprint(player_id, "You must be in the driver's seat")
-        return
-    end
+    -- Check deployment mode restrictions
+    if DEPLOYMENT_MODE == "vehicle_only" then
+        if not pos.vehicle then
+            rprint(player_id, "You must be in a vehicle to deploy mines")
+            return
+        end
 
-    -- Validate vehicle
-    local vehicle_tag = read_string(read_dword(read_word(pos.vehicle) * 32 + 0x40440038))
-    if not VEHICLES[vehicle_tag] then
-        rprint(player_id, "This vehicle cannot deploy mines")
+        if not pos.seat or pos.seat ~= 0 then
+            rprint(player_id, "You must be in the driver's seat")
+            return
+        end
+
+        local vehicle_tag = read_string(read_dword(read_word(pos.vehicle) * 32 + 0x40440038))
+        if not VEHICLES[vehicle_tag] then
+            rprint(player_id, "This vehicle cannot deploy mines")
+            return
+        end
+    elseif DEPLOYMENT_MODE == "on_foot_only" then
+        if pos.vehicle then
+            rprint(player_id, "You must be on foot to deploy mines")
+            return
+        end
+    elseif DEPLOYMENT_MODE == "both" then
+        if pos.vehicle then
+            if not pos.seat or pos.seat ~= 0 then
+                rprint(player_id, "You must be in the driver's seat")
+                return
+            end
+
+            local vehicle_tag = read_string(read_dword(read_word(pos.vehicle) * 32 + 0x40440038))
+            if not VEHICLES[vehicle_tag] then
+                rprint(player_id, "This vehicle cannot deploy mines")
+                return
+            end
+        end
+    else
+        rprint(player_id, "Deployment mode error. Contact server admin.")
         return
     end
 
@@ -261,9 +291,7 @@ end
 
 local function destroyMine(mine_id, trigger_explosion, x, y, z, victim_id)
     local mine_data = active_mines[mine_id]
-    if not mine_data then
-        return
-    end
+    if not mine_data then return end
 
     destroy_object(mine_id)
 
@@ -278,37 +306,25 @@ end
 
 local function monitorMines(player_id, current_time)
     local player = players[player_id]
-    if not player or not player_alive(player_id) then
-        return
-    end
+    if not player or not player_alive(player_id) then return end
 
     local dyn_player = get_dynamic_player(player_id)
-    if dyn_player == 0 then
-        return
-    end
+    if dyn_player == 0 then return end
 
     local pos = getPos(dyn_player)
-    if not pos.x then
-        return
-    end
+    if not pos.x then return end
 
     for mine_id, mine_data in pairs(active_mines) do
         -- Skip if mine isn't armed yet
-        if current_time < mine_data.arm_time then
-            goto continue
-        end
+        if current_time < mine_data.arm_time then goto continue end
 
         -- Skip if this is the mine owner
-        if mine_data.owner_id == player_id then
-            goto continue
-        end
+        if mine_data.owner_id == player_id then goto continue end
 
         -- Skip if team damage is disabled and players are on same team
         if not MINES_KILL_TEAMMATES then
             local mine_owner_team = get_var(mine_data.owner_id, '$team')
-            if player.team == mine_owner_team then
-                goto continue
-            end
+            if player.team == mine_owner_team then goto continue end
         end
 
         -- Check if mine still exists in game world
@@ -324,7 +340,7 @@ local function monitorMines(player_id, current_time)
             destroyMine(mine_id, true, mine_x, mine_y, mine_z, player_id)
         end
 
-        :: continue ::
+        ::continue::
     end
 end
 
@@ -347,23 +363,17 @@ end
 
 local function flashlightCheck(player_id, current_time)
     local player = players[player_id]
-    if not player or not player_alive(player_id) then
-        return
-    end
+    if not player or not player_alive(player_id) then return end
 
     local dyn_player = get_dynamic_player(player_id)
-    if dyn_player == 0 then
-        return
-    end
+    if dyn_player == 0 then return end
 
     local current_flashlight = read_bit(dyn_player + 0x208, 4)
 
     -- Detect flashlight press (rising edge)
     if player.flashlight_state ~= current_flashlight and current_flashlight == 1 then
         local pos = getPos(dyn_player)
-        if pos.vehicle then
-            deployMine(player_id, pos, current_time)
-        end
+        deployMine(player_id, pos, current_time)
     end
 
     player.flashlight_state = current_flashlight
@@ -396,16 +406,12 @@ end
 
 local function initAllPlayers()
     for i = 1, 16 do
-        if player_present(i) then
-            OnJoin(i)
-        end
+        if player_present(i) then OnJoin(i) end
     end
 end
 
 local function initGame()
-    if get_var(0, '$gt') == 'n/a' then
-        return false
-    end
+    if get_var(0, '$gt') == 'n/a' then return false end
 
     map_name = get_var(0, '$map')
     players = {};
@@ -417,10 +423,10 @@ local function initGame()
     if not MINE_TAG_ID then
         MINE_TAG_ID = getTagID('eqip', MINE_OBJECT_FALLBACK)
         print(fmt(
-                "Deployable Mines [%s]: Failed to find (%s). Trying fallback mine tag (%s)",
-                map_name,
-                MINE_OBJECT,
-                MINE_OBJECT_FALLBACK))
+            "Deployable Mines [%s]: Failed to find (%s). Trying fallback mine tag (%s)",
+            map_name,
+            MINE_OBJECT,
+            MINE_OBJECT_FALLBACK))
     end
 
     PROJECTILE_TAG_ID = getTagID('proj', PROJECTILE_OBJECT)
@@ -515,9 +521,7 @@ function EditRocket(rollback)
 end
 
 function OnScriptUnload()
-    for mine_id, _ in pairs(active_mines) do
-        destroy_object(mine_id)
-    end
+    for mine_id, _ in pairs(active_mines) do destroy_object(mine_id) end
     active_mines = {};
     players = {}
 end
