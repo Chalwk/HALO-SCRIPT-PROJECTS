@@ -178,8 +178,7 @@ local function getPos(dyn_player)
 
     if vehicle_id == 0xFFFFFFFF then
         pos.x, pos.y, pos.z = read_vector3d(dyn_player + 0x5c)
-        pos.vehicle = nil
-        pos.seat = nil
+        pos.vehicle = nil; pos.seat = nil
     elseif vehicle_obj ~= 0 then
         pos.vehicle = vehicle_obj
         pos.seat = read_word(dyn_player + 0x2F0)
@@ -505,6 +504,7 @@ function OnStart()
 
     if success then
         registerEventCallbacks(true)
+        execute_command('disable_object "' .. MINE_OBJECT .. '"')
     else
         registerEventCallbacks(false)
         if error_message then
