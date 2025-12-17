@@ -68,7 +68,7 @@ local PROJECTILE_OBJECT = 'weapons\\rocket launcher\\rocket'
 
 -- Deployment mode: Determines when players can deploy mines
 -- Options: "vehicle_only", "on_foot_only", "both"
-local DEPLOYMENT_MODE = "vehicle_only"
+local DEPLOYMENT_MODE = "both"
 
 -- List of vehicles that are permitted to deploy mines
 -- Only vehicles in this list will have mine deployment capability
