@@ -20,7 +20,7 @@ FEATURES:         - Vehicle-based mine deployment system
 
                     [!] Important: Ensure your maps have the tag addresses for the objects you want to use.
 
-LAST UPDATED:     13/12/2025
+LAST UPDATED:     18/12/2025
 
 Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
