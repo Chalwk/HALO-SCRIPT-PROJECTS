@@ -10,15 +10,16 @@
 
 1. [Overview](#overview)
 2. [What are SAPP & Phasor?](#what-are-sapp--phasor)
-3. [Script Collections](#scripts-releases-and-knowledge-base)
+3. [Scripts, Releases and Knowledge Base](#scripts-releases-and-knowledge-base)
 4. [Community Favorites](#community-favorites)
-5. [Contribute & Request Features](#contribute--request-features)
-6. [Community Hubs](#community-hubs)
-7. [Halo Custom Edition Installer](#halo-custom-edition-installer)
-8. [Support](#support-my-work)
-9. [Contributors](#contributors)
-10. [Code of Conduct](#code-of-conduct)
-11. [Contact](#contact)
+5. [Integration Tools](#integration-tools)
+6. [Contribute & Request Features](#contribute--request-features)
+7. [Community Hubs](#community-hubs)
+8. [Halo Custom Edition Installer](#halo-custom-edition-installer)
+9. [Support My Work](#support-my-work)
+10. [Contributors](#contributors)
+11. [Code of Conduct](#contributors--community-guidelines)
+12. [Contact](#contact)
 
 ---
 
@@ -35,8 +36,8 @@ insights to enhance, customize, and extend your multiplayer server experience.
 
 ## What are SAPP & Phasor?
 
-**SAPP** and **Phasor** are server-side extensions that provide advanced scripting and customization capabilities for *
-*Halo: PC** and **Halo: CE** dedicated servers.
+**SAPP** and **Phasor** are server-side extensions that provide advanced scripting and customization capabilities for
+**Halo: PC** and **Halo: CE** dedicated servers.
 
 **SAPP**, developed and maintained by **sehé** ([halo.isimaginary.com](http://halo.isimaginary.com)), is the most
 feature-rich and widely used extension. It provides powerful Lua scripting support, anti-cheat tools, event hooks,
@@ -186,13 +187,15 @@ See our [Contributing Guide](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob
 
 ---
 
-## Code of Conduct
+## Contributors & Community Guidelines 
 
-All community interactions are governed by our:  
-[Code of Conduct](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/CODE_OF_CONDUCT.md)
+See our [Contributing Guide](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/CONTRIBUTING.md) to learn how to get involved.
+
+All community interactions are governed by our [Code of Conduct](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/CODE_OF_CONDUCT.md)
 
 ---
 
 ## Contact
 
-**Discord:** Chalwk / [HSP Discord](https://discord.gg/D76H7RVPC9)
+- Primary Contact (email): `chalwk.dev@gmail.com`
+- Discord: (**chalwk**)
