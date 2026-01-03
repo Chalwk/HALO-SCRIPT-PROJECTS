@@ -35,8 +35,8 @@ insights to enhance, customize, and extend your multiplayer server experience.
 
 ## What are SAPP & Phasor?
 
-**SAPP** and **Phasor** are server-side extensions that provide advanced scripting and customization capabilities for *
-*Halo: PC** and **Halo: CE** dedicated servers.
+**SAPP** and **Phasor** are server-side extensions that provide advanced scripting and customization capabilities for
+**Halo: PC** and **Halo: CE** dedicated servers.
 
 **SAPP**, developed and maintained by **sehé** ([halo.isimaginary.com](http://halo.isimaginary.com)), is the most
 feature-rich and widely used extension. It provides powerful Lua scripting support, anti-cheat tools, event hooks,
@@ -179,20 +179,15 @@ Enjoy these projects? Help me continue development:
 
 ---
 
-## Contributors
+## Contributors & Community Guidelines 
 
-Special thanks to all contributors!  
-See our [Contributing Guide](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/CONTRIBUTING.md)
+See our [Contributing Guide](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/CONTRIBUTING.md) to learn how to get involved.
 
----
-
-## Code of Conduct
-
-All community interactions are governed by our:  
-[Code of Conduct](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/CODE_OF_CONDUCT.md)
+All community interactions are governed by our [Code of Conduct](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/CODE_OF_CONDUCT.md)
 
 ---
 
 ## Contact
 
-**Discord:** Chalwk / [HSP Discord](https://discord.gg/D76H7RVPC9)
+- Primary Contact (email): `chalwk.dev@gmail.com`
+- Discord: (**chalwk**)
