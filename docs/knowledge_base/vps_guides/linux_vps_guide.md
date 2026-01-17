@@ -29,9 +29,9 @@ or CentOS). For the most reliable results, it is strongly recommended to use Ubu
 ### Important Notes Before You Begin
 
 - **Security First:** This guide prioritizes security by creating a non-root user, using a firewall, and locking down
-  remote access. Please follow these steps carefully.
+  remote access. Follow these steps carefully.
 - **Cost:** Vultr charges hourly up to a monthly cap. A `Shared CPU` plan, with 1 vCPU and 2GB RAM (the **\$10/mo
-  plan**) is sufficient for most needs. You can destroy the VPS at any time to stop charges. As of 8/9/2025, the ideal (
+  plan**) is sufficient for most needs. You can destroy the VPS at any time to stop charges. As of 10/9/2025, the ideal (
   **Shared CPU**) plan is `vc2-1c-2gb | 1 vCPU | 2GB RAM | 55 GB SSD | 2TB/mo Bandwidth` @ **\$10.00/mo** (not including
   Automatic Backups, which are an extra $2.00)
 
