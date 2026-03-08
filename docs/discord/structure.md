@@ -5,7 +5,7 @@
         * Overview of the HSP community and how to get started.
     * 〔📕〕community-rules
         * Rules to keep the server safe, fun, and organized.
-    * 〔📜〕writ-of-allegiance
+    * 〔📜〕role-selection
         * HSP roles, hierarchy, and reaction roles explained.
     * 〔👋〕introductions
         * Say hi and introduce yourself to the community.
