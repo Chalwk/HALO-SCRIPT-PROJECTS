@@ -175,7 +175,7 @@ on 64-bit systems:
 
 Enjoy these projects? Help me continue development:
 
-- ☕ Buy Me a Coffee -> Contact me on [Discord](https://discord.gg/D76H7RVPC9)
+- ☕ [Donate via PayPal](https://www.paypal.com/ncp/payment/XUPTKDU6LKM3G)
 - **Star ⭐ this repository** to show appreciation and stay updated!
 
 ---
