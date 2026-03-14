@@ -15,11 +15,12 @@
 5. [Integration Tools](#integration-tools)
 6. [Contribute & Request Features](#contribute--request-features)
 7. [Community Hubs](#community-hubs)
-8. [Halo Custom Edition Installer](#halo-custom-edition-installer)
-9. [Support My Work](#support-my-work)
-10. [Contributors](#contributors)
-11. [Code of Conduct](#contributors--community-guidelines)
-12. [Contact](#contact)
+8. [Shoutout to Clans (Past and Present)](#shoutout-to-clans-past-and-present)
+9. [Halo Custom Edition Installer](#halo-custom-edition-installer)
+10. [Support My Work](#support-my-work)
+11. [Contributors](#contributors)
+12. [Code of Conduct](#contributors--community-guidelines)
+13. [Contact](#contact)
 
 ---
 
@@ -155,6 +156,16 @@ Have an idea for a new feature or script?
 
 ---
 
+## Shoutout to Clans (Past and Present)
+
+A huge shoutout to all Halo clans, past and present.
+
+> -db-, «§», «Ag~, «Ð²Ä», «MAD», [Aķ], [CV], [GTV], [IG], [IS], [McK], [Nbk], [VR], ]ZTA[. VSA, {ATP}, {BK}, {CK}, {HWS}, {LoH}, {NR}, {ØZ}, {SSC}, {V3}, {X}, {XF} = SL =, {XG}, = EP =, = NcS =, = XA=, £V», ÄÄÄ, AOD, AR, BR, BZ, C#w, CB, CES, CGD, CHr, CK, ÇM, CODE, CSI, CST, DFS, DR, Ðu¥, EK, ev, FCM, Fem1, Fez`, FIG, FooK, GDS, GoD, GRO, HH, HSF, HTK3, IR, KB, KMT, KoD, KoF, LaG, LF, LIB, LNZ, LP, LTD2, M5, MR, MVL, ňc, ÑE», ñuß, OSR, OWV, P§ycho, PÕQ, PRO, RC, RSF, SAR, SB, SDR, ßE, TBR, TCS, TFT, TM, ToR, X¬, xOSHx, xT
+
+If you would like your clan tag added to this list, please [contact me](#contact).
+
+---
+
 ## Halo Custom Edition Installer:
 
 **Note:** You need your own CD Key to install this.
@@ -187,11 +198,13 @@ See our [Contributing Guide](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob
 
 ---
 
-## Contributors & Community Guidelines 
+## Contributors & Community Guidelines
 
-See our [Contributing Guide](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/CONTRIBUTING.md) to learn how to get involved.
+See our [Contributing Guide](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/CONTRIBUTING.md) to learn how to
+get involved.
 
-All community interactions are governed by our [Code of Conduct](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/CODE_OF_CONDUCT.md)
+All community interactions are governed by
+our [Code of Conduct](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/CODE_OF_CONDUCT.md)
 
 ---
 
