@@ -160,7 +160,7 @@ Have an idea for a new feature or script?
 
 A huge shoutout to all Halo clans, past and present.
 
-> -db-, «§», «Ag~, «Ð²Ä», «MAD», [Aķ], [CV], [GTV], [IG], [IS], [K2], [McK], [Nbk], [VR], ]ZTA[. VSA, {ATP}, {BK}, {CK}, {HWS}, {LoH}, {NR}, {OTH}, {ØZ}, {SSC}, {V3}, {X}, {XF} = SL =, {XG}, = EP =, = NcS =, = XA=, £V», ÄÄÄ, AOD, AR, BR, BZ, C#w, CB, CES, CGD, CHr, CK, ÇM, CODE, CSI, CST, DFS, DR, Ðu¥, EK, ev, FCM, Fem1, Fez`, FIG, FooK, GDS, GoD, GRO, HH, HSF, HTK3, IR, KB, KMT, KoD, KoF, LaG, LF, LIB, LNZ, LP, LTD2, M5, MR, MVL, ňc, ÑE», ñuß, OSR, OWV, P§ycho, PÕQ, PRO, RC, RSF, SAR, SB, SDR, ßE, TBR, TCS, TFT, TM, ToR, X¬, xOSHx, xT
+> -db-, «§», «Ag~, «Ð²Ä», «MAD», [Aķ], [CV], [GTV], [HGE], [IG], [IS], [K2], [McK], [Nbk], [VR], [WFFF], ]ZTA[. VSA, {ATP}, {BK}, {CK}, {CRG}, {HWS}, {LoH}, {NR}, {OTH}, {ØZ}, {PWH}, {SSC}, {V3}, {X}, {XF} = SL =, {XG}, = EP =, = NcS =, = XA=, £V», ÄÄÄ, AOD, AR, BR, BZ, C#w, CAF, CB, CES, CGD, CHr, CK, ÇM, CODE, CSI, CST, DFS, DR, Ðu¥, EK, ev, FCM, Fem1, Fez`, FIG, FooK, GDS, GoD, GRO, HH, HSF, HTK3, IR, KB, KMT, KoD, KoF, LaG, LF, LIB, LNZ, LP, LTD2, M5, MR, MVL, ňc, ÑE», ñuß, OSR, OWV, P§ycho, PÕQ, PRO, RC, RSF, SAR, SB, SDR, ßE, TBR, TCS, TFT, TM, ToR, X¬, xOSHx, xT
 
 If you would like your clan tag added to this list, please [contact me](#contact).
 
