@@ -22,36 +22,36 @@ api_version = "1.12.0.0"
 
 -- Configuration
 local config = {
-    min_projectiles = 1,       -- Minimum rockets per strike
-    max_projectiles = 5,       -- Maximum rockets per strike
-    min_interval = 30,         -- Minimum seconds between strikes
-    max_interval = 60,         -- Maximum seconds between strikes
-    min_height = 15,           -- Minimum spawn height
-    max_height = 30,           -- Maximum spawn height
+    min_projectiles = 1,  -- Minimum rockets per strike
+    max_projectiles = 5,  -- Maximum rockets per strike
+    min_interval = 30,    -- Minimum seconds between strikes
+    max_interval = 60,    -- Maximum seconds between strikes
+    min_height = 15,      -- Minimum spawn height
+    max_height = 30,      -- Maximum spawn height
     velocity = {
-        horizontal = 1.5,      -- Max horizontal velocity
-        vertical = -25         -- Downward velocity (negative = down)
+        horizontal = 1.5, -- Max horizontal velocity
+        vertical = -25    -- Downward velocity (negative = down)
     },
     strike_locations = {
         bloodgulch = {
-			{ 64, -112.09, 2.21 },
-			{ 52.96, -93.79, 0.47 },
-			{ 38.64, -91.71, 0.37 },
-			{ 81.41, -145.96, 0.6 },
-			{ 36.64, -105.38, 1.8 },
-			{ 92.14, -141.23, 1.18 },
-			{ 79.61, -135.17, 0.99 },
-			{ 80.48, -121.13, 0.63 },
-			{ 61.68, -129.85, 1.37 },
-			{ 46.78, -131.33, 1.28 },
-			{ 47.78, -116.02, 0.74 },
-			{ 80.01, -107.42, 2.31 },
-			{ 81.66, -116.47, 0.78 },
-			{ 94.88, -127.31, 1.77 },
-			{ 101.5, -143.25, 1.07 },
-			{ 82.27, -156.12, 0.19 },
-			{ 52.43, -111.84, 0.64 },
-			{ 28.06, -19.75, -18.65 }
+            { 64,    -112.09, 2.21 },
+            { 52.96, -93.79,  0.47 },
+            { 38.64, -91.71,  0.37 },
+            { 81.41, -145.96, 0.6 },
+            { 36.64, -105.38, 1.8 },
+            { 92.14, -141.23, 1.18 },
+            { 79.61, -135.17, 0.99 },
+            { 80.48, -121.13, 0.63 },
+            { 61.68, -129.85, 1.37 },
+            { 46.78, -131.33, 1.28 },
+            { 47.78, -116.02, 0.74 },
+            { 80.01, -107.42, 2.31 },
+            { 81.66, -116.47, 0.78 },
+            { 94.88, -127.31, 1.77 },
+            { 101.5, -143.25, 1.07 },
+            { 82.27, -156.12, 0.19 },
+            { 52.43, -111.84, 0.64 },
+            { 28.06, -19.75,  -18.65 }
         }
     }
 }
@@ -86,14 +86,14 @@ end
 local function calculate_velocity(target_x, target_y, spawn_x, spawn_y, height)
     local dx = target_x - spawn_x
     local dy = target_y - spawn_y
-    local distance = sqrt(dx*dx + dy*dy)
+    local distance = sqrt(dx * dx + dy * dy)
 
     -- Normalize direction and apply random offset
     if distance > 0.1 then
         dx = dx / distance
         dy = dy / distance
     else
-        dx, dy = 0, 1  -- Default direction if too close
+        dx, dy = 0, 1 -- Default direction if too close
     end
 
     -- Add randomness to impact point
@@ -132,9 +132,9 @@ local function execute_airstrike()
             if obj ~= 0 then
                 -- Calculate realistic trajectory
                 local vel = calculate_velocity(tx, ty, sx, sy, height)
-                write_float(obj + 0x68, vel.x)  -- Velocity X
-                write_float(obj + 0x6C, vel.y)  -- Velocity Y
-                write_float(obj + 0x70, vel.z)  -- Velocity Z
+                write_float(obj + 0x68, vel.x) -- Velocity X
+                write_float(obj + 0x6C, vel.y) -- Velocity Y
+                write_float(obj + 0x70, vel.z) -- Velocity Z
             end
         end
     end

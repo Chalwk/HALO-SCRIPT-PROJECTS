@@ -74,10 +74,9 @@ function OnPlayerDeath(VictimIndex, KillerIndex)
 end
 
 function OnDamageApplication(VictimIndex, CauserIndex, MetaID, _, _, _)
-    if (tonumber(CauserIndex) > 0) then
-        if Validate(CauserIndex) then
-            content.last_damage[VictimIndex] = MetaID
-        end
+    if (tonumber(CauserIndex) <= 0) then return end
+    if Validate(CauserIndex) then
+        content.last_damage[VictimIndex] = MetaID
     end
 end
 
