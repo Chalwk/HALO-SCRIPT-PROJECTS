@@ -19,11 +19,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const logoDiv = document.createElement('div');
     logoDiv.className = 'header-logo-text';
-    logoDiv.innerHTML = '<i class="fas fa-code"></i> <span>HSP</span>';
+
+    const logoImg = document.createElement('img');
+    logoImg.src = `${repoRoot}misc/hsp-logo.png`;
+    logoImg.alt = 'Halo Script Projects Logo';
+    logoDiv.appendChild(logoImg);
+
     headerTop.appendChild(logoDiv);
 
     const headerTitle = document.createElement('h1');
-    headerTitle.textContent = 'Halo Script Projects';
+    headerTitle.textContent = 'HALO SCRIPT PROJECTS';
     headerTitle.style.fontFamily = 'var(--font-header), sans-serif';
     headerTop.appendChild(headerTitle);
     header.appendChild(headerTop);

@@ -6,14 +6,14 @@ Copyright (c) 2016-2026. Jericho Crosby (Chalwk)
     --primary: #6cace4;
     --primary-dark: #4a8fc4;
     --accent: #2c7cb0;
-    --bg-dark: #ffffff;
-    --bg-panel: #f0f4f8;
-    --text-light: #1e2a3a;
-    --text-muted: #5a6e7c;
-    --border-glow: rgba(108, 172, 228, 0.3);
+    --bg-dark: #1a1a24;
+    --bg-panel: #2c2c38;
+    --text-light: #eef2ff;
+    --text-muted: #a0aab5;
+    --border-glow: rgba(108, 172, 228, 0.4);
     --font-header: 'Orbitron', sans-serif;
     --font-body: 'Rajdhani', sans-serif;
-    --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     --transition: all 0.2s ease;
 }
 
@@ -26,8 +26,8 @@ Copyright (c) 2016-2026. Jericho Crosby (Chalwk)
 body {
     font-family: var(--font-body), sans-serif;
     background-color: var(--bg-dark);
-    background-image: linear-gradient(rgba(108, 172, 228, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(108, 172, 228, 0.03) 1px, transparent 1px);
+    background-image: linear-gradient(rgba(108, 172, 228, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(108, 172, 228, 0.08) 1px, transparent 1px);
     background-size: 40px 40px;
     color: var(--text-light);
     line-height: 1.6;
@@ -53,7 +53,7 @@ h1 {
 
 h2 {
     font-size: 2rem;
-    color: var(--accent);
+    color: var(--primary);
     border-bottom: 2px solid var(--border-glow);
     padding-bottom: 0.5rem;
     margin: 2rem 0 1.5rem;
@@ -76,7 +76,7 @@ a:hover {
 .header-top {
     display: flex;
     align-items: center;
-    gap: 2rem;
+    gap: 2.5rem;
     padding: 1rem 0;
     border-bottom: 2px solid var(--border-glow);
 }
@@ -89,6 +89,12 @@ a:hover {
     font-family: var(--font-header), sans-serif;
     font-weight: 700;
     color: var(--primary);
+}
+
+.header-logo-text img {
+    height: 180px;
+    width: auto;
+    display: block;
 }
 
 .header-logo-text i {
@@ -104,13 +110,13 @@ a:hover {
 }
 
 .main-nav {
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(30, 30, 40, 0.85);
     backdrop-filter: blur(5px);
     border: 1px solid var(--border-glow);
     border-radius: 50px;
     padding: 0.5rem 1rem;
     margin: 1.5rem 0;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .main-nav ul {
@@ -135,7 +141,7 @@ a:hover {
 
 .main-nav a:hover {
     border-color: var(--primary);
-    background: rgba(108, 172, 228, 0.1);
+    background: rgba(108, 172, 228, 0.2);
     transform: translateY(-2px);
     box-shadow: 0 0 8px var(--primary);
 }
@@ -147,7 +153,7 @@ a:hover {
 }
 
 main {
-    background: rgba(255, 255, 255, 0.85);
+    background: rgba(30, 30, 40, 0.85);
     backdrop-filter: blur(3px);
     border: 1px solid var(--border-glow);
     border-radius: 30px;
@@ -322,10 +328,15 @@ footer {
         flex-wrap: wrap;
         justify-content: center;
         text-align: center;
+        gap: 3rem;
     }
 
     .header-logo-text {
         font-size: 1.8rem;
+    }
+
+    .header-logo-text img {
+        height: 60px;
     }
 
     .header-top h1 {
@@ -355,5 +366,9 @@ footer {
     .btn {
         padding: 0.8rem 1.2rem;
         font-size: 1rem;
+    }
+
+    .header-logo-text img {
+        height: 60px;
     }
 }
