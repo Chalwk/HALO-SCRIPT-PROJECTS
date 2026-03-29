@@ -1,13 +1,19 @@
+/*
+Copyright (c) 2016-2026. Jericho Crosby (Chalwk)
+*/
+
 document.addEventListener('DOMContentLoaded', function () {
     const header = document.querySelector('header.header');
     if (!header) return;
 
-    const pathSegments = window.location.pathname.split('/');
-    const isInSubfolder = pathSegments.length > 2 && pathSegments[1] !== '';
-    const basePath = isInSubfolder ? '../' : './';
+    const getRepoRoot = () => {
+        const path = window.location.pathname;
+        const match = path.match(/^\/[^/]+\//);
+        return match ? match[0] : '/';
+    };
 
+    const repoRoot = getRepoRoot();
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-
     const headerTop = document.createElement('div');
     headerTop.className = 'header-top';
 
@@ -19,17 +25,16 @@ document.addEventListener('DOMContentLoaded', function () {
     const headerTitle = document.createElement('h1');
     headerTitle.textContent = 'Halo Script Projects';
     headerTitle.style.fontFamily = 'var(--font-header), sans-serif';
-
     headerTop.appendChild(headerTitle);
     header.appendChild(headerTop);
 
     const navHtml = `
         <nav class="main-nav" aria-label="Main navigation">
             <ul>
-                <li><a href="${basePath}index.html" class="nav-link">Home</a></li>
-                <li><a href="${basePath}/website/scripts.html" class="nav-link">Scripts</a></li>
-                <li><a href="${basePath}/website/docs.html" class="nav-link">Docs</a></li>
-                <li><a href="${basePath}/website/contact.html" class="nav-link">Contact</a></li>
+                <li><a href="${repoRoot}index.html" class="nav-link">Home</a></li>
+                <li><a href="${repoRoot}website/scripts.html" class="nav-link">Scripts</a></li>
+                <li><a href="${repoRoot}website/docs.html" class="nav-link">Docs</a></li>
+                <li><a href="${repoRoot}website/contact.html" class="nav-link">Contact</a></li>
             </ul>
         </nav>
     `;
@@ -51,7 +56,6 @@ document.addEventListener('DOMContentLoaded', function () {
         link.addEventListener('click', () => {
             mainNav.classList.remove('show');
         });
-
         const linkHref = link.getAttribute('href').split('/').pop();
         if (linkHref === currentPage) {
             link.classList.add('active');
