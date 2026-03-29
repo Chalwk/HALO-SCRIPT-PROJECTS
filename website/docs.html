@@ -14,6 +14,11 @@ Copyright (c) 2016-2026. Jericho Crosby (Chalwk)
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <script src="js/nav-menu.js"></script>
     <style>
+
+        p {
+            margin: 1em 0;
+        }
+
         .doc-section {
             background: var(--bg-panel);
             border-radius: 24px;
@@ -103,33 +108,43 @@ Copyright (c) 2016-2026. Jericho Crosby (Chalwk)
 
     <div class="doc-section">
         <h2><i class="fas fa-question-circle"></i> What are SAPP & Phasor? <span class="badge-doc">Overview</span></h2>
-        <p><strong>SAPP</strong> is a powerful server extension for Halo PC/CE dedicated servers, developed by sehé. It
-            adds Lua scripting, anti‑cheat, event hooks, player management, and more. <strong>Phasor</strong> is an
-            earlier extension that is still compatible with many scripts.</p>
-        <p>All scripts in this repository are designed for SAPP unless noted otherwise. Phasor scripts are kept in the
-            <code>/phasor</code> folder.</p>
+        <p><strong>SAPP</strong> and <strong>Phasor</strong> are server-side extensions that provide advanced scripting
+            and customization capabilities for <strong>Halo: PC</strong> and <strong>Halo: CE</strong> dedicated
+            servers.
+
+        <p><strong>SAPP</strong>, developed and maintained by <strong>sehé</strong> (halo.isimaginary.com), is the most
+            feature-rich and widely used extension. It provides powerful Lua scripting support, anti-cheat tools, event
+            hooks, command handling, player management, logging, and numerous under-the-hood features.</p>
+
+        <p><strong>Phasor</strong> was an earlier server extension with similar goals. Though no longer actively
+            maintained, it remains compatible with many scripts and still sees use in some legacy setups.</p>
     </div>
 
     <div class="doc-section">
         <h2><i class="fas fa-download"></i> Installation Guide</h2>
         <ol>
-            <li><strong>Install Halo Custom Edition</strong> (requires a valid CD key). You can find installers and
+            <li><strong>Install Halo: PC or CE</strong> (requires a valid CD key). You can find installers and
                 patches in the <a href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS#halo-custom-edition-installer"
                                   target="_blank">README</a>.
             </li>
-            <li><strong>Set up SAPP</strong> by following the official <a href="https://halo.isimaginary.com/"
-                                                                          target="_blank">SAPP website</a>. Extract the
-                files into your Halo CE server directory.
+            <li><strong>Download SAPP</strong> from the official <a href="https://halo.isimaginary.com/" target="_blank">SAPP website</a>.
+                Extract the contents into your Halo server directory (where <code>haloceded.exe</code> or <code>halopc.exe</code> resides).
+            </li>
+            <li><strong>Enable SAPP</strong> - SAPP loads automatically when <code>strings.dll</code> is present. If it doesn’t load,
+                use the console command <code>\load</code>. To verify SAPP is running, type <code>\version</code> - it should show the SAPP version.
+            </li>
+            <li><strong>Enable Lua scripting</strong> - Add <code>lua 1</code> to your <code>init.txt</code> file (located in the server folder)
+                or type <code>\lua 1</code> in the server console. Without this, Lua scripts will not run.
             </li>
             <li><strong>Download a script</strong> from this repository (e.g., <code>gun_game.lua</code>).</li>
-            <li><strong>Place the <code>.lua</code> file</strong> in your server's <code>scripts</code> folder.</li>
-            <li><strong>Load the script</strong> in-game using <code>!load &lt;scriptname&gt;</code> or add it to your
-                <code>init.txt</code> for automatic loading.
+            <li><strong>Place the <code>.lua</code> file</strong> in your server’s <code>lua</code> folder (create it if necessary).</li>
+            <li><strong>Load the script</strong> using <code>\lua_load &lt;scriptname&gt;</code> (without the <code>.lua</code> extension).
+                For automatic loading on server start, add <code>lua_load &lt;scriptname&gt;</code> to your <code>init.txt</code>.
             </li>
         </ol>
         <p>For detailed instructions, see the <a
-                href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/docs/README.md" target="_blank">Docs
-            README</a>.</p>
+                href="../README.md" target="_blank">Docs
+            README</a> or the official <a href="../docs/sapp-2.4.pdf" target="_blank">SAPP documentation</a>.</p>
     </div>
 
     <div class="doc-section">
@@ -157,6 +172,15 @@ Copyright (c) 2016-2026. Jericho Crosby (Chalwk)
             \lua_load gun_game<br>
             \lua_load zombies_standard
         </div>
+    </div>
+
+    <div class="doc-section">
+        <h2><i class="fas fa-code"></i> Code Snippets Library <span class="badge-doc">Ready‑to‑use functions</span></h2>
+        <p>Access a growing collection of tested Lua functions for SAPP scripting. Each snippet includes detailed
+            comments, parameter explanations, and practical examples - from broadcast utilities to inventory readers,
+            vehicle checks, tag scanners, and more.</p>
+        <p>Browse the snippets to speed up your script development and avoid reinventing common patterns.</p>
+        <a href="docs/code_snippets.html" class="tutorial-link"><i class="fas fa-arrow-right"></i> Open Code Snippets →</a>
     </div>
 
     <div class="doc-section">
