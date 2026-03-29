@@ -110,19 +110,27 @@ Copyright (c) 2016-2026. Jericho Crosby (Chalwk)
     <div class="doc-section">
         <h2><i class="fas fa-code"></i> Using Scripts - Quick Tips</h2>
         <ul>
-            <li>Most scripts are activated with <code>!load &lt;filename&gt;</code> (without the <code>.lua</code>
-                extension).
+            <li>Lua scripting must be enabled first. Add <code>lua 1</code> to your <code>init.txt</code> or type <code>\lua
+                1</code> in the server console.
             </li>
-            <li>To unload: <code>!unload &lt;filename&gt;</code></li>
-            <li>Check if a script is loaded: <code>!scripts</code></li>
-            <li>Some scripts require configuration variables - edit them at the top of the <code>.lua</code> file before
-                loading.
+            <li>To load a script, use <code>\lua_load &lt;filename&gt;</code> (without the <code>.lua</code> extension).
+                For example: <code>\lua_load gun_game</code>.
+            </li>
+            <li>To unload a script, use <code>\lua_unload &lt;filename&gt;</code>.</li>
+            <li>Scripts can be automatically loaded on server start by adding <code>lua_load &lt;filename&gt;</code> to
+                your <code>init.txt</code> file.
+            </li>
+            <li>Many scripts have configurable settings at the top of the <code>.lua</code> file. Edit them with a text
+                editor before loading.
+            </li>
+            <li>If you’re unsure whether a script is loaded, you can check the server console after running <code>\lua_load</code>
+                - it will show a success message.
             </li>
         </ul>
         <div class="code-block">
-            !load gun_game<br>
-            !load zombies_standard<br>
-            !scripts
+            \lua 1<br>
+            \lua_load gun_game<br>
+            \lua_load zombies_standard
         </div>
     </div>
 
@@ -136,7 +144,7 @@ Copyright (c) 2016-2026. Jericho Crosby (Chalwk)
 
     <div class="doc-section">
         <h2><i class="fas fa-handshake"></i> Contributing & Code of Conduct</h2>
-        <p>We welcome contributions! Please read our <a
+        <p>Contributions welcome! Please read the <a
                 href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/CONTRIBUTING.md" target="_blank">Contributing
             Guide</a> and <a href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/CODE_OF_CONDUCT.md"
                              target="_blank">Code of Conduct</a> before submitting pull requests or reporting issues.
