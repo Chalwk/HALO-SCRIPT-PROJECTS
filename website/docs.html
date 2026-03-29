@@ -60,6 +60,22 @@ Copyright (c) 2016-2026. Jericho Crosby (Chalwk)
             margin-left: 0.5rem;
         }
 
+        .tutorial-link {
+            background: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 32px;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .tutorial-link:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
         @media (max-width: 600px) {
             .doc-section {
                 padding: 1rem;
@@ -75,6 +91,15 @@ Copyright (c) 2016-2026. Jericho Crosby (Chalwk)
     <p>Get started with SAPP, Phasor, and the scripts in this repository. For detailed reference, visit the <a
             href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/tree/master/docs" target="_blank">docs folder</a> on
         GitHub.</p>
+
+    <div class="doc-section"
+         style="background: linear-gradient(135deg, rgba(0,212,255,0.05) 0%, rgba(9,9,121,0.05) 100%);">
+        <h2><i class="fas fa-graduation-cap"></i> New to scripting?</h2>
+        <p>Check out the step‑by‑step tutorials that walk you through real SAPP scripts, from chat commands to kill
+            counters and even LuaJIT FFI examples.</p>
+        <a href="docs/using_sapp.html" class="tutorial-link"><i class="fas fa-arrow-right"></i> Start the "Using SAPP"
+            Tutorial Series →</a>
+    </div>
 
     <div class="doc-section">
         <h2><i class="fas fa-question-circle"></i> What are SAPP & Phasor? <span class="badge-doc">Overview</span></h2>

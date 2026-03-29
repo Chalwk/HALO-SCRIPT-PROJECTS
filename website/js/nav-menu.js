@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
     logoDiv.className = 'header-logo-text';
 
     const logoImg = document.createElement('img');
-    logoImg.src = `${repoRoot}misc/hsp-logo.png`;
+    logoImg.src = `${repoRoot}misc/hsp-logo2.png`;
     logoImg.alt = 'Halo Script Projects Logo';
     logoDiv.appendChild(logoImg);
 
@@ -39,6 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <li><a href="${repoRoot}index.html" class="nav-link">Home</a></li>
                 <li><a href="${repoRoot}website/scripts.html" class="nav-link">Scripts</a></li>
                 <li><a href="${repoRoot}website/docs.html" class="nav-link">Docs</a></li>
+                <li><a href="${repoRoot}website/docs/community_rules.html" class="nav-link">Rules</a></li>
                 <li><a href="${repoRoot}website/contact.html" class="nav-link">Contact</a></li>
             </ul>
         </nav>

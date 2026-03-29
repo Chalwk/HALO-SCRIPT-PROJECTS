@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSP - Community Rules</title>
+    <link rel="stylesheet" href="/website/css/core.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Rajdhani:wght@300;400;500;600&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script defer src="/website/js/nav-menu.js"></script>
+    <style>
+        .rules-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #5865F2;
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+            text-decoration: none;
+        }
+
+        .badge:hover {
+            background: #4752c4;
+        }
+
+        .rule-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: var(--bg-panel);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border-glow);
+        }
+
+        .rule-table th,
+        .rule-table td {
+            padding: 0.8rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-glow);
+            vertical-align: top;
+        }
+
+        .rule-table th {
+            background: rgba(108, 172, 228, 0.1);
+            font-weight: 600;
+            color: var(--primary);
+            width: 30%;
+        }
+
+        .rule-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .tier-section {
+            margin: 2rem 0;
+        }
+
+        .tier-section h3 {
+            color: var(--accent);
+            margin-top: 1.5rem;
+            border-left: 4px solid var(--primary);
+            padding-left: 1rem;
+        }
+
+        .offense-list {
+            margin: 1rem 0;
+            padding-left: 1.2rem;
+        }
+
+        .offense-list li {
+            margin: 0.5rem 0;
+        }
+
+        @media (max-width: 700px) {
+            .rule-table th,
+            .rule-table td {
+                display: block;
+                width: 100%;
+            }
+
+            .rule-table th {
+                border-bottom: none;
+                background: none;
+                padding-bottom: 0.2rem;
+            }
+
+            .rule-table td {
+                padding-top: 0;
+                border-bottom: 1px solid var(--border-glow);
+            }
+
+            .rule-table tr:last-child td {
+                border-bottom: none;
+            }
+        }
+    </style>
+</head>
+<body>
+<header class="header"></header>
+
+<main class="rules-container">
+    <h1><i class="fas fa-gavel"></i> Community Rules</h1>
+
+    <p>Welcome to the <strong>Halo Script Projects Community Rules</strong>! These guidelines ensure a <strong>positive,
+        productive, and respectful environment</strong> for all members. By joining and/or contributing, you agree to
+        follow these rules. Violations may result in warnings, temporary restrictions, or permanent bans.</p>
+
+    <hr style="border-color: var(--border-glow); margin: 2rem 0;">
+
+    <h2>Scope & Enforcement</h2>
+    <p>Rules apply to <strong>all members</strong>, including staff and volunteers, across <strong>Discord, GitHub, and
+        the HSP Halo Servers</strong>. They are enforced to maintain a safe, collaborative, and professional
+        environment. Questions? Ask staff or moderators.</p>
+
+    <h2>VPN / Proxy Advisory</h2>
+    <p>The HSP Halo Servers use <strong>IP-based moderation systems</strong>. Using VPNs or proxies can trigger false
+        flags. Avoid free/shared VPNs. If you believe a ban was accidental (e.g., shared IP), contact staff for review.
+    </p>
+
+    <h2>General Conduct Rules</h2>
+    <table class="rule-table">
+        <tr>
+            <th>No Offensive Language or Content</th>
+            <td>Avoid offensive usernames, avatars, code comments, messages, or uploads on any platform.</td>
+        </tr>
+        <tr>
+            <th>No Harassment or Trolling</th>
+            <td>Respect all members. Do not troll, harass, or intimidate anyone on Discord, GitHub, or HSP Halo
+                Servers.
+            </td>
+        </tr>
+        <tr>
+            <th>No Impersonation</th>
+            <td>Do not impersonate staff, community members, or HSP/related brands.</td>
+        </tr>
+        <tr>
+            <th>No Scamming or Deception</th>
+            <td>Be honest in collaborations, trades, or Halo server/admin interactions.</td>
+        </tr>
+        <tr>
+            <th>No Sharing Private Data</th>
+            <td>Keep personal information (your own or others') confidential.</td>
+        </tr>
+        <tr>
+            <th>No Controversial Topics</th>
+            <td>Avoid discussions of politics, religion, or personal drama in public channels.</td>
+        </tr>
+        <tr>
+            <th>No Spam or Advertising</th>
+            <td>Avoid excessive messages, irrelevant links, self-promotion, or unsolicited invites.</td>
+        </tr>
+        <tr>
+            <th>Respect Staff Instructions</th>
+            <td>Follow moderators' directions on Discord, GitHub, or servers.</td>
+        </tr>
+        <tr>
+            <th>No Bypassing Security or Filters</th>
+            <td>Do not circumvent moderation, anti-cheat, or bot filters.</td>
+        </tr>
+        <tr>
+            <th>Respect Project & Server Boundaries</th>
+            <td>Do not alter scripts, repos, or servers without permission.</td>
+        </tr>
+        <tr>
+            <th>No Malicious Code or Links</th>
+            <td>Sharing malware, trojans, or unsafe scripts is strictly prohibited.</td>
+        </tr>
+        <tr>
+            <th>No Performance Disruption</th>
+            <td>Avoid scripts or actions that degrade server performance.</td>
+        </tr>
+        <tr>
+            <th>No NSFW Content</th>
+            <td>Do not post sexually explicit, violent, or illegal material.</td>
+        </tr>
+        <tr>
+            <th>Use Appropriate Channels</th>
+            <td>Keep discussions relevant to channel topics.</td>
+        </tr>
+        <tr>
+            <th>Respect @Mentions</th>
+            <td>Do not abuse @everyone, @here, or staff mentions.</td>
+        </tr>
+        <tr>
+            <th>Respect Project Ownership</th>
+            <td>Only modify code, projects, or servers when authorized.</td>
+        </tr>
+        <tr>
+            <th>No Alt Accounts for Evading Punishments</th>
+            <td>Alternate accounts used to bypass rules will also be sanctioned.</td>
+        </tr>
+        <tr>
+            <th>Collaboration Etiquette</th>
+            <td>Communicate respectfully in pull requests, issues, and Discord discussions.</td>
+        </tr>
+        <tr>
+            <th>Proper Use of Server/Repo Commands</th>
+            <td>Use bots, scripts, and server commands responsibly.</td>
+        </tr>
+    </table>
+
+    <h2>Tiered Punishment System</h2>
+    <p>Offenses are categorized by severity. Staff discretion applies.</p>
+
+    <div class="tier-section">
+        <h3>Tier 1: Severe Offenses - Permanent Ban</h3>
+        <ul class="offense-list">
+            <li><strong>Malicious Code</strong> - Uploading malware, backdoors, or harmful scripts.</li>
+            <li><strong>Scamming or Fraud</strong> - Deceiving members for personal gain.</li>
+            <li><strong>Impersonation</strong> - Pretending to be staff or HSP representatives.</li>
+            <li><strong>Discrimination or Hate Speech</strong> - Promoting harm or prejudice.</li>
+            <li><strong>Threats & Harassment</strong> - Targeted threats or severe harassment.</li>
+            <li><strong>Privacy Violations</strong> - Sharing personal data without consent.</li>
+            <li><strong>NSFW/Illegal Content</strong> - Sharing sexually explicit or illegal material.</li>
+        </ul>
+    </div>
+
+    <div class="tier-section">
+        <h3>Tier 2: Moderate Offenses - 1 to 2-Week Ban</h3>
+        <ul class="offense-list">
+            <li><strong>Unauthorized Code Changes</strong> - Modifying scripts, repos, or servers without permission.
+            </li>
+            <li><strong>Inappropriate Content</strong> - Offensive memes, comments, or images in Discord/GitHub.</li>
+            <li><strong>Abusive Communication</strong> - Harsh language, disrespect, or aggressive tones.</li>
+            <li><strong>Harassment & Disruption</strong> - Trolling, spamming, or ignoring staff guidance.</li>
+            <li><strong>Account Misuse</strong> - Sharing accounts or evading previous bans.</li>
+            <li><strong>Exploiting Bugs/Glitches</strong> - Using server/script bugs to gain unfair advantages.</li>
+            <li><strong>Discord Feature Misuse</strong> - Bot spam, reaction abuse, or irrelevant pings.</li>
+        </ul>
+    </div>
+
+    <div class="tier-section">
+        <h3>Tier 3: Minor Offenses - Up to 1-Week Ban</h3>
+        <ul class="offense-list">
+            <li><strong>Unwanted Communication</strong> - Excessive unsolicited messages or pinging.</li>
+            <li><strong>Inappropriate Roleplay/Comments</strong> - Offensive or NSFW-themed roleplay/comments.</li>
+            <li><strong>Minor Slang/Language Issues</strong> - Language that may mildly offend.</li>
+            <li><strong>Off-topic Discussions</strong> - Excessive derailing of conversations.</li>
+            <li><strong>Voice Chat Etiquette</strong> - Background noise, mic spam, or interruptions.</li>
+        </ul>
+    </div>
+
+    <h2>Repeat Offenses</h2>
+    <p>Violations across <strong>Discord, GitHub, or HSP Halo Servers</strong> may escalate consequences.</p>
+
+    <h2>Final Note</h2>
+    <p><strong>HSP Discord and GitHub are extensions of our HSP Halo Servers.</strong> Treat them professionally,
+        responsibly, and respectfully. Follow <strong>common sense</strong>, Discord's <a
+                href="https://discord.com/terms" target="_blank">Terms of Service</a>, and GitHub's <a
+                href="https://docs.github.com/en/site-policy/github-community-guidelines" target="_blank">Community
+            Guidelines</a>.</p>
+</main>
+</body>
+</html>
