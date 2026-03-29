@@ -1,0 +1,112 @@
+<!--
+Copyright (c) 2016-2026. Jericho Crosby (Chalwk)
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSP – Contact</title>
+    <link rel="stylesheet" href="css/core.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Rajdhani:wght@300;400;500;600&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script defer src="js/nav-menu.js"></script>
+    <style>
+        .contact-card {
+            background: rgba(13, 15, 20, 0.9);
+            border: 1px solid var(--border-glow);
+            border-radius: 30px;
+            padding: 2rem;
+            max-width: 800px;
+            margin: 2rem auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .contact-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 150px;
+            transition: transform 0.2s ease;
+        }
+
+        .contact-item i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            transition: color 0.2s ease;
+        }
+
+        .contact-item a {
+            font-size: 1.3rem;
+            text-align: center;
+            word-break: break-word;
+            text-decoration: none;
+            color: inherit;
+            transition: color 0.2s ease, text-shadow 0.2s ease;
+        }
+
+        .contact-item a:hover {
+            color: var(--primary);
+            text-shadow: 0 0 8px var(--primary);
+        }
+
+        .contact-item:hover i {
+            color: var(--primary);
+        }
+
+        @media (max-width: 600px) {
+            .contact-card {
+                padding: 1.5rem;
+                gap: 1rem;
+            }
+
+            .contact-item a {
+                font-size: 1.1rem;
+            }
+
+            .contact-item {
+                min-width: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+<header class="header"></header>
+
+<main>
+    <h1>Contact & Support</h1>
+    <div class="contact-card">
+        <div class="contact-item">
+            <i class="fas fa-envelope"></i>
+            <a href="mailto:chalwk.dev@gmail.com">chalwk.dev@gmail.com</a>
+        </div>
+
+        <div class="contact-item">
+            <i class="fab fa-discord"></i>
+            <a href="https://discord.gg/D76H7RVPC9" target="_blank">Join the HSP Discord</a>
+        </div>
+
+        <div class="contact-item">
+            <i class="fab fa-github"></i>
+            <a href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS" target="_blank">GitHub Repository</a>
+        </div>
+
+        <div class="contact-item">
+            <i class="fas fa-heart"></i>
+            <a href="https://www.paypal.com/ncp/payment/XUPTKDU6LKM3G" target="_blank">Support the Project</a>
+        </div>
+    </div>
+
+    <p style="text-align: center; margin-top: 2rem;">
+        For quick questions, join the Discord. For bugs or feature requests, please open an issue on GitHub.
+    </p>
+</main>
+</body>
+</html>

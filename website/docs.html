@@ -1,0 +1,148 @@
+<!--
+Copyright (c) 2016-2026. Jericho Crosby (Chalwk)
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSP – Documentation & Knowledge Base</title>
+    <link rel="stylesheet" href="css/core.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Rajdhani:wght@300;400;500;600&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="js/nav-menu.js"></script>
+    <style>
+        .doc-section {
+            background: rgba(13, 15, 20, 0.8);
+            border-radius: 24px;
+            padding: 1.8rem;
+            margin: 2rem 0;
+            border-left: 6px solid var(--primary);
+        }
+
+        .doc-section h2 {
+            border-bottom: none;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .doc-section ul, .doc-section ol {
+            padding-left: 1.8rem;
+            margin: 1rem 0;
+        }
+
+        .doc-section li {
+            margin: 0.5rem 0;
+        }
+
+        .code-block {
+            background: #0F1117;
+            padding: 1rem;
+            border-radius: 12px;
+            font-family: monospace;
+            border: 1px solid var(--border-glow);
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        .badge-doc {
+            display: inline-block;
+            background: var(--primary-dark);
+            color: white;
+            font-size: 0.8rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            margin-left: 0.5rem;
+        }
+
+        @media (max-width: 600px) {
+            .doc-section {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<header class="header"></header>
+
+<main>
+    <h1><i class="fas fa-book"></i> Documentation & Guides</h1>
+    <p>Get started with SAPP, Phasor, and the scripts in this repository. For detailed reference, visit the <a
+            href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/tree/main/docs" target="_blank">docs folder</a> on
+        GitHub.</p>
+
+    <div class="doc-section">
+        <h2><i class="fas fa-question-circle"></i> What are SAPP & Phasor? <span class="badge-doc">Overview</span></h2>
+        <p><strong>SAPP</strong> is a powerful server extension for Halo PC/CE dedicated servers, developed by sehé. It
+            adds Lua scripting, anti‑cheat, event hooks, player management, and more. <strong>Phasor</strong> is an
+            earlier extension that is still compatible with many scripts.</p>
+        <p>All scripts in this repository are designed for SAPP unless noted otherwise. Phasor scripts are kept in the
+            <code>/phasor</code> folder.</p>
+    </div>
+
+    <div class="doc-section">
+        <h2><i class="fas fa-download"></i> Installation Guide</h2>
+        <ol>
+            <li><strong>Install Halo Custom Edition</strong> (requires a valid CD key). You can find installers and
+                patches in the <a href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS#halo-custom-edition-installer"
+                                  target="_blank">README</a>.
+            </li>
+            <li><strong>Set up SAPP</strong> by following the official <a href="https://halo.isimaginary.com/"
+                                                                          target="_blank">SAPP website</a>. Extract the
+                files into your Halo CE server directory.
+            </li>
+            <li><strong>Download a script</strong> from this repository (e.g., <code>gun_game.lua</code>).</li>
+            <li><strong>Place the <code>.lua</code> file</strong> in your server's <code>scripts</code> folder.</li>
+            <li><strong>Load the script</strong> in-game using <code>!load &lt;scriptname&gt;</code> or add it to your
+                <code>init.txt</code> for automatic loading.
+            </li>
+        </ol>
+        <p>For detailed instructions, see the <a
+                href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/docs/README.md" target="_blank">Docs
+            README</a>.</p>
+    </div>
+
+    <div class="doc-section">
+        <h2><i class="fas fa-code"></i> Using Scripts – Quick Tips</h2>
+        <ul>
+            <li>Most scripts are activated with <code>!load &lt;filename&gt;</code> (without the <code>.lua</code>
+                extension).
+            </li>
+            <li>To unload: <code>!unload &lt;filename&gt;</code></li>
+            <li>Check if a script is loaded: <code>!scripts</code></li>
+            <li>Some scripts require configuration variables – edit them at the top of the <code>.lua</code> file before
+                loading.
+            </li>
+        </ul>
+        <div class="code-block">
+            !load gun_game<br>
+            !load zombies_standard<br>
+            !scripts
+        </div>
+    </div>
+
+    <div class="doc-section">
+        <h2><i class="fas fa-robot"></i> SAPPDiscordBot Integration</h2>
+        <p>The <a href="https://github.com/Chalwk/SAPPDiscordBot" target="_blank">SAPPDiscordBot</a> connects your Halo
+            server to Discord. It sends real‑time events (joins, kills, chat) with rich embeds and has a GUI for easy
+            setup.</p>
+        <p>Follow the repository instructions to set up the bot and link it to your Discord server.</p>
+    </div>
+
+    <div class="doc-section">
+        <h2><i class="fas fa-handshake"></i> Contributing & Code of Conduct</h2>
+        <p>We welcome contributions! Please read our <a
+                href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/CONTRIBUTING.md" target="_blank">Contributing
+            Guide</a> and <a href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/CODE_OF_CONDUCT.md"
+                             target="_blank">Code of Conduct</a> before submitting pull requests or reporting issues.
+        </p>
+        <p>To report a bug or request a feature, use the <a href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/issues"
+                                                            target="_blank">GitHub Issues</a> page.</p>
+    </div>
+</main>
+</body>
+</html>

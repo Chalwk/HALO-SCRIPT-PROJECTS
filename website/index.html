@@ -1,0 +1,140 @@
+<!--
+Copyright (c) 2016-2026. Jericho Crosby (Chalwk)
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Halo Script Projects – SAPP & Phasor Scripts for Halo CE</title>
+    <link rel="stylesheet" href="css/core.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Rajdhani:wght@300;400;500;600&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="js/nav-menu.js"></script>
+    <style>
+        .hero {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: rgba(13, 15, 20, 0.6);
+            border-radius: 30px;
+            margin-bottom: 3rem;
+            border: 1px solid var(--border-glow);
+        }
+
+        .hero h2 {
+            font-size: 2.8rem;
+            border: none;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .feature-card {
+            background: rgba(13, 15, 20, 0.9);
+            border: 1px solid var(--border-glow);
+            border-radius: 24px;
+            padding: 1.8rem;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .feature-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 0 15px var(--primary);
+        }
+
+        .feature-card i {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            color: var(--text-light);
+            margin-bottom: 0.8rem;
+        }
+
+        .cta-section {
+            text-align: center;
+            background: rgba(0, 81, 204, 0.1);
+            border-radius: 40px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px dashed var(--primary);
+        }
+
+        .cta-section .btn {
+            margin: 0.5rem;
+        }
+
+        @media (max-width: 600px) {
+            .hero h2 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<header class="header"></header>
+
+<main>
+    <div class="hero">
+        <h2>Halo Script Projects</h2>
+        <p>A curated collection of Lua scripts, utilities, and resources for Halo: Combat Evolved (PC/CE) dedicated
+            servers using <strong>SAPP</strong> and <strong>Phasor</strong>. Enhance your multiplayer experience with
+            custom games, attractive features, and powerful admin tools.</p>
+    </div>
+
+    <h2><i class="fas fa-cogs"></i> What's Inside</h2>
+    <div class="feature-grid">
+        <div class="feature-card">
+            <i class="fas fa-gamepad"></i>
+            <h3>Custom Games</h3>
+            <p>Gun Game, Zombies, Kill Confirmed, One In The Chamber, and more.</p>
+        </div>
+        <div class="feature-card">
+            <i class="fas fa-star"></i>
+            <h3>Attractive Features</h3>
+            <p>Rank system, sprint, deployable mines, tactical insertion, teabagging effects.</p>
+        </div>
+        <div class="feature-card">
+            <i class="fas fa-tools"></i>
+            <h3>Utility Scripts</h3>
+            <p>AFK system, team shuffler, dynamic ping kicker, custom loadouts, server logger.</p>
+        </div>
+        <div class="feature-card">
+            <i class="fas fa-robot"></i>
+            <h3>Integration Tools</h3>
+            <p>SAPPDiscordBot – real‑time Halo server events to Discord, with rich embeds.</p>
+        </div>
+    </div>
+
+    <div class="cta-section">
+        <h3><i class="fab fa-github"></i> Open Source & Community Driven</h3>
+        <p>All scripts are free to use, modify, and share. Join our Discord to contribute or get help.</p>
+        <a href="scripts.html" class="btn">Browse Scripts</a>
+        <a href="https://discord.gg/D76H7RVPC9" target="_blank" class="btn"
+           style="background: transparent; border: 1px solid var(--primary);">Join Discord</a>
+    </div>
+</main>
+</body>
+</html>

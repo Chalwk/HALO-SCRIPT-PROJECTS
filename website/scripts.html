@@ -1,0 +1,263 @@
+<!--
+Copyright (c) 2016-2026. Jericho Crosby (Chalwk)
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSP – Scripts for SAPP & Phasor</title>
+    <link rel="stylesheet" href="css/core.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Rajdhani:wght@300;400;500;600&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="js/nav-menu.js"></script>
+    <style>
+        .category {
+            margin-bottom: 3rem;
+        }
+
+        .category h2 {
+            margin-bottom: 1rem;
+        }
+
+        .scripts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.2rem;
+        }
+
+        .script-card {
+            background: rgba(13, 15, 20, 0.9);
+            border: 1px solid var(--border-glow);
+            border-radius: 20px;
+            padding: 1rem 1.2rem;
+            transition: var(--transition);
+        }
+
+        .script-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .script-card a {
+            display: block;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+            color: var(--text-light);
+        }
+
+        .script-card a:hover {
+            color: var(--primary);
+        }
+
+        .script-card .badge {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.05);
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            margin-top: 0.4rem;
+        }
+
+        .script-card i {
+            margin-right: 0.4rem;
+            color: var(--primary);
+        }
+
+        .note {
+            text-align: center;
+            margin-top: 2rem;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 600px) {
+            .scripts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<header class="header"></header>
+
+<main>
+    <h1><i class="fas fa-scroll"></i> Scripts & Utilities</h1>
+    <p>All scripts are available in the <a href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/tree/main/sapp"
+                                           target="_blank">SAPP folder</a> on GitHub. Click any script name to view the
+        source.</p>
+
+    <div class="category">
+        <h2>🎮 Custom Games</h2>
+        <div class="scripts-grid">
+            <div class="script-card"><a
+                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/custom_games/gun_game.lua"
+                    target="_blank"><i class="fab fa-github"></i> Gun Game</a>
+                <div class="badge">SAPP</div>
+            </div>
+            <div class="script-card"><a
+                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/custom_games/zombies_standard.lua"
+                    target="_blank"><i class="fab fa-github"></i> Zombies Standard</a>
+                <div class="badge">SAPP</div>
+            </div>
+            <div class="script-card"><a
+                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/custom_games/zombies_advanced.lua"
+                    target="_blank"><i class="fab fa-github"></i> Zombies Advanced</a>
+                <div class="badge">SAPP</div>
+            </div>
+            <div class="script-card"><a
+                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/custom_games/kill_confirmed.lua"
+                    target="_blank"><i class="fab fa-github"></i> Kill Confirmed</a>
+                <div class="badge">SAPP</div>
+            </div>
+            <div class="script-card"><a
+                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/custom_games/one_in_the_chamber.lua"
+                    target="_blank"><i class="fab fa-github"></i> One In The Chamber</a>
+                <div class="badge">SAPP</div>
+            </div>
+            <div class="script-card"><a
+                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/custom_games/tag.lua"
+                    target="_blank"><i class="fab fa-github"></i> Tag</a>
+                <div class="badge">SAPP</div>
+            </div>
+            <div class="script-card"><a
+                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/custom_games/divide_and_conquer.lua"
+                    target="_blank"><i class="fab fa-github"></i> Divide and Conquer</a>
+                <div class="badge">SAPP</div>
+            </div>
+            <div class="script-card"><a
+                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/custom_games/melee_attack.lua"
+                    target="_blank"><i class="fab fa-github"></i> Melee Attack</a>
+                <div class="badge">SAPP</div>
+            </div>
+            <div class="script-card"><a
+                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/custom_games/snipers_dream_team.lua"
+                    target="_blank"><i class="fab fa-github"></i> Snipers Dream Team</a>
+                <div class="badge">SAPP</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="category">
+        <h2>✨ Attractive Features</h2>
+        <div class="scripts-grid">
+            <div class="script-card"><a
+                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/attractive/rank_system.lua"
+                    target="_blank"><i class="fab fa-github"></i> Rank System</a>
+                <div class="badge">SAPP</div>
+            </div>
+            <div class="script-card"><a
+                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/attractive/sprint.lua"
+                    target="_blank"><i class="fab fa-github"></i> Sprint System</a>
+                <div class="badge">SAPP</div>
+            </div>
+            <div class="script-card"><a
+                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/attractive/deployable_mines.lua"
+                    target="_blank"><i class="fab fa-github"></i> Deployable Mines</a>
+                <div class="badge">SAPP</div>
+            </div>
+            <div class="script-card"><a
+                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/attractive/tactical_insertion.lua"
+                    target="_blank"><i class="fab fa-github"></i> Tactical Insertion</a>
+                <div class="badge">SAPP</div>
+            </div>
+            <div class="script-card"><a
+                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/attractive/teabagging.lua"
+                    target="_blank"><i class="fab fa-github"></i> Tea Bagging</a>
+                <div class="badge">SAPP</div>
+            </div>
+            <div class="script-card"><a
+                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/attractive/uber.lua"
+                    target="_blank"><i class="fab fa-github"></i> Uber</a>
+                <div class="badge">SAPP</div>
+            </div>
+            <div class="script-card"><a
+                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/attractive/vanish.lua"
+                    target="_blank"><i class="fab fa-github"></i> Vanish</a>
+                <div class="badge">SAPP</div>
+            </div>
+            <div class="script-card"><a
+                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/attractive/capture_the_flag.lua"
+                    target="_blank"><i class="fab fa-github"></i> Capture The Flag</a>
+                <div class="badge">SAPP</div>
+            </div>
+            <div class="script-card"><a
+                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/attractive/custom_teleports.lua"
+                    target="_blank"><i class="fab fa-github"></i> Custom Teleports</a>
+                <div class="badge">SAPP</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="category">
+        <h2>🛠️ Utility Scripts</h2>
+        <div class="scripts-grid">
+            <div class="script-card"><a
+                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/utility/afk_system.lua"
+                    target="_blank"><i class="fab fa-github"></i> AFK System</a>
+                <div class="badge">SAPP</div>
+            </div>
+            <div class="script-card"><a
+                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/utility/anti_impersonator.lua"
+                    target="_blank"><i class="fab fa-github"></i> Anti Impersonator</a>
+                <div class="badge">SAPP</div>
+            </div>
+            <div class="script-card"><a
+                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/utility/auto_message.lua"
+                    target="_blank"><i class="fab fa-github"></i> Auto Message</a>
+                <div class="badge">SAPP</div>
+            </div>
+            <div class="script-card"><a
+                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/utility/custom_loadouts.lua"
+                    target="_blank"><i class="fab fa-github"></i> Custom Loadouts</a>
+                <div class="badge">SAPP</div>
+            </div>
+            <div class="script-card"><a
+                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/utility/dynamic_ping_kicker.lua"
+                    target="_blank"><i class="fab fa-github"></i> Dynamic Ping Kicker</a>
+                <div class="badge">SAPP</div>
+            </div>
+            <div class="script-card"><a
+                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/utility/team_shuffler.lua"
+                    target="_blank"><i class="fab fa-github"></i> Team Shuffler</a>
+                <div class="badge">SAPP</div>
+            </div>
+            <div class="script-card"><a
+                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/utility/server_logger.lua"
+                    target="_blank"><i class="fab fa-github"></i> Server Logger</a>
+                <div class="badge">SAPP</div>
+            </div>
+            <div class="script-card"><a
+                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/utility/word_buster.lua"
+                    target="_blank"><i class="fab fa-github"></i> Word Buster</a>
+                <div class="badge">SAPP</div>
+            </div>
+            <div class="script-card"><a
+                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/utility/race_assistant.lua"
+                    target="_blank"><i class="fab fa-github"></i> Race Assistant</a>
+                <div class="badge">SAPP</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="category">
+        <h2>🔌 Phasor Scripts</h2>
+        <div class="scripts-grid">
+            <div class="script-card"><a href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/tree/main/phasor"
+                                        target="_blank"><i class="fab fa-github"></i> Browse Phasor Folder</a>
+                <div class="badge">Phasor</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="note">
+        <i class="fas fa-info-circle"></i> Missing a script? Check the <a
+            href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/tree/main/sapp" target="_blank">full SAPP directory</a>
+        on GitHub.
+    </div>
+</main>
+</body>
+</html>
