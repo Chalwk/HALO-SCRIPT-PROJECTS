@@ -1,61 +1,140 @@
-<!doctype html>
+<!--
+Copyright (c) 2016-2026. Jericho Crosby (Chalwk)
+-->
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width,initial-scale=1" name="viewport"/>
-    <title>HALO SCRIPT PROJECTS - Script Browser</title>
-    <link href="script-browser/style.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-lua.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Halo Script Projects – SAPP & Phasor Scripts for Halo CE</title>
+    <link rel="stylesheet" href="website/css/core.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Rajdhani:wght@300;400;500;600&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="website/js/nav-menu.js"></script>
+    <style>
+        .hero {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: rgba(108, 172, 228, 0.08);
+            border-radius: 30px;
+            margin-bottom: 3rem;
+            border: 1px solid var(--border-glow);
+        }
+
+        .hero h2 {
+            font-size: 2.8rem;
+            border: none;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .feature-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-glow);
+            border-radius: 24px;
+            padding: 1.8rem;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .feature-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 0 15px var(--primary);
+        }
+
+        .feature-card i {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            color: var(--accent);
+            margin-bottom: 0.8rem;
+        }
+
+        .cta-section {
+            text-align: center;
+            background: rgba(108, 172, 228, 0.08);
+            border-radius: 40px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px dashed var(--primary);
+        }
+
+        .cta-section .btn {
+            margin: 0.5rem;
+        }
+
+        @media (max-width: 600px) {
+            .hero h2 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
 </head>
 <body>
-<header class="site-header">
-    <div class="container header-inner">
-        <h1>HALO SCRIPT PROJECTS</h1>
-        <p class="lead">Browse, view, copy, and download SAPP Lua scripts.</p>
+<header class="header"></header>
+
+<main>
+    <div class="hero">
+        <h2>Halo Script Projects</h2>
+        <p>A curated collection of Lua scripts, utilities, and resources for Halo: Combat Evolved (PC/CE) dedicated
+            servers using <strong>SAPP</strong> and <strong>Phasor</strong>. Enhance your multiplayer experience with
+            custom games, attractive features, and powerful admin tools.</p>
     </div>
-</header>
 
-<main class="container">
-    <section class="toolbar">
-        <label for="search"></label><input id="search" placeholder="Search scripts" type="search"/>
-        <label for="categoryFilter"></label><select id="categoryFilter">
-        <option value="all">All categories</option>
-        <option value="attractive">Attractive</option>
-        <option value="custom_games">Custom Games</option>
-        <option value="utility">Utility</option>
-    </select>
-        <div class="status" id="status">Loading...</div>
-    </section>
+    <h2><i class="fas fa-cogs"></i> What's Inside</h2>
+    <div class="feature-grid">
+        <div class="feature-card">
+            <i class="fas fa-gamepad"></i>
+            <h3>Custom Games</h3>
+            <p>Gun Game, Zombies, Kill Confirmed, One In The Chamber, and more.</p>
+        </div>
+        <div class="feature-card">
+            <i class="fas fa-star"></i>
+            <h3>Attractive Features</h3>
+            <p>Rank system, sprint, deployable mines, tactical insertion, teabagging effects.</p>
+        </div>
+        <div class="feature-card">
+            <i class="fas fa-tools"></i>
+            <h3>Utility Scripts</h3>
+            <p>AFK system, team shuffler, dynamic ping kicker, custom loadouts, server logger.</p>
+        </div>
+        <div class="feature-card">
+            <i class="fas fa-robot"></i>
+            <h3>Integration Tools</h3>
+            <p>SAPPDiscordBot – real‑time Halo server events to Discord, with rich embeds.</p>
+        </div>
+    </div>
 
-    <section class="grid" id="grid"></section>
+    <div class="cta-section">
+        <h3><i class="fab fa-github"></i> Open Source & Community Driven</h3>
+        <p>All scripts are free to use, modify, and share. Join our Discord to contribute or get help.</p>
+        <a href="website/scripts.html" class="btn">Browse Scripts</a>
+        <a href="https://discord.gg/D76H7RVPC9" target="_blank" class="btn"
+           style="background: transparent; border: 1px solid var(--primary);">Join Discord</a>
+    </div>
 </main>
-
-<div class="modal hidden" id="modal">
-    <div class="modal-dialog">
-        <div class="modal-header">
-            <h2 id="modalTitle">Script</h2>
-            <button class="btn small" id="modalClose">Close</button>
-        </div>
-        <div class="modal-body">
-            <pre class="code-block"><code class="language-lua" id="modalCode"></code></pre>
-        </div>
-        <div class="modal-footer">
-            <button class="btn" id="modalCopy">
-                <span class="icon">📋</span> Copy
-            </button>
-            <a class="btn" download id="modalDownload">
-                <span class="icon">⬇️</span> Download
-            </a>
-        </div>
-    </div>
-</div>
-
-<footer class="site-footer">
-    <div class="container"><small>© 2016-2026. Jericho Crosby (Chalwk)</small></div>
-</footer>
-
-<script defer src="script-browser/script.js"></script>
 </body>
 </html>

@@ -1,13 +1,9 @@
-<!--
-Copyright (c) 2016-2026. Jericho Crosby (Chalwk)
--->
-
 document.addEventListener('DOMContentLoaded', function () {
     const header = document.querySelector('header.header');
     if (!header) return;
 
     const pathSegments = window.location.pathname.split('/');
-    const isInSubfolder = pathSegments.length > 2 && pathSegments[1] !== ''; // crude check
+    const isInSubfolder = pathSegments.length > 2 && pathSegments[1] !== '';
     const basePath = isInSubfolder ? '../' : './';
 
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
@@ -31,9 +27,9 @@ document.addEventListener('DOMContentLoaded', function () {
         <nav class="main-nav" aria-label="Main navigation">
             <ul>
                 <li><a href="${basePath}index.html" class="nav-link">Home</a></li>
-                <li><a href="${basePath}scripts.html" class="nav-link">Scripts</a></li>
-                <li><a href="${basePath}docs.html" class="nav-link">Docs</a></li>
-                <li><a href="${basePath}contact.html" class="nav-link">Contact</a></li>
+                <li><a href="${basePath}/website/scripts.html" class="nav-link">Scripts</a></li>
+                <li><a href="${basePath}/website/docs.html" class="nav-link">Docs</a></li>
+                <li><a href="${basePath}/website/contact.html" class="nav-link">Contact</a></li>
             </ul>
         </nav>
     `;

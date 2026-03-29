@@ -12,60 +12,179 @@ Copyright (c) 2016-2026. Jericho Crosby (Chalwk)
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Rajdhani:wght@300;400;500;600&display=swap"
           rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-lua.min.js"></script>
     <script src="js/nav-menu.js"></script>
     <style>
-        .category {
-            margin-bottom: 3rem;
+        .browser-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 2rem 0 1.5rem;
+            align-items: center;
         }
 
-        .category h2 {
-            margin-bottom: 1rem;
+        .browser-toolbar input,
+        .browser-toolbar select {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-glow);
+            border-radius: 30px;
+            padding: 0.6rem 1.2rem;
+            font-family: var(--font-body), sans-serif;
+            font-size: 1rem;
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+
+        .browser-toolbar input:focus,
+        .browser-toolbar select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(108, 172, 228, 0.2);
+        }
+
+        .browser-toolbar input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .status {
+            margin-left: auto;
+            color: var(--text-muted);
+            font-size: 0.9rem;
         }
 
         .scripts-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.2rem;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
         }
 
         .script-card {
-            background: rgba(13, 15, 20, 0.9);
+            background: var(--bg-panel);
             border: 1px solid var(--border-glow);
-            border-radius: 20px;
-            padding: 1rem 1.2rem;
+            border-radius: 24px;
+            padding: 1.2rem 1.5rem;
             transition: var(--transition);
         }
 
         .script-card:hover {
             border-color: var(--primary);
             transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
         }
 
-        .script-card a {
-            display: block;
-            font-weight: 600;
-            font-size: 1.1rem;
-            margin-bottom: 0.3rem;
+        .script-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent);
+        }
+
+        .script-card .desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+
+        .script-actions {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .script-actions .btn {
+            padding: 0.4rem 1rem;
+            font-size: 0.85rem;
+            background: transparent;
+            border: 1px solid var(--border-glow);
             color: var(--text-light);
         }
 
-        .script-card a:hover {
-            color: var(--primary);
+        .script-actions .btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
         }
 
-        .script-card .badge {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            background: rgba(255, 255, 255, 0.05);
-            display: inline-block;
-            padding: 0.2rem 0.6rem;
-            border-radius: 20px;
-            margin-top: 0.4rem;
+        .modal {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
         }
 
-        .script-card i {
-            margin-right: 0.4rem;
-            color: var(--primary);
+        .modal.hidden {
+            display: none;
+        }
+
+        .modal-dialog {
+            width: 90%;
+            max-width: 1000px;
+            background: var(--bg-panel);
+            border-radius: 30px;
+            border: 1px solid var(--border-glow);
+            overflow: hidden;
+            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header,
+        .modal-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-glow);
+        }
+
+        .modal-footer {
+            border-top: 1px solid var(--border-glow);
+            border-bottom: none;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.3rem;
+            border: none;
+            padding: 0;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            max-height: 60vh;
+            overflow: auto;
+        }
+
+        .code-block {
+            background: #1e2a3a;
+            border-radius: 16px;
+            overflow: auto;
+        }
+
+        .code-block code {
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+        }
+
+        .phasor-section {
+            margin-top: 3rem;
+            padding: 1.5rem;
+            background: rgba(108, 172, 228, 0.05);
+            border-radius: 30px;
+            text-align: center;
+            border: 1px solid var(--border-glow);
+        }
+
+        .phasor-section h2 {
+            border: none;
+            margin-top: 0;
         }
 
         .note {
@@ -75,8 +194,22 @@ Copyright (c) 2016-2026. Jericho Crosby (Chalwk)
         }
 
         @media (max-width: 600px) {
+            .browser-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .status {
+                margin-left: 0;
+                text-align: center;
+            }
+
             .scripts-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .modal-dialog {
+                width: 95%;
             }
         }
     </style>
@@ -86,178 +219,256 @@ Copyright (c) 2016-2026. Jericho Crosby (Chalwk)
 
 <main>
     <h1><i class="fas fa-scroll"></i> Scripts & Utilities</h1>
-    <p>All scripts are available in the <a href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/tree/main/sapp"
-                                           target="_blank">SAPP folder</a> on GitHub. Click any script name to view the
-        source.</p>
+    <p>Browse, view, copy, and download SAPP Lua scripts directly from the repository. All scripts are open source and
+        ready to use on your Halo CE dedicated server.</p>
 
-    <div class="category">
-        <h2>🎮 Custom Games</h2>
-        <div class="scripts-grid">
-            <div class="script-card"><a
-                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/custom_games/gun_game.lua"
-                    target="_blank"><i class="fab fa-github"></i> Gun Game</a>
-                <div class="badge">SAPP</div>
-            </div>
-            <div class="script-card"><a
-                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/custom_games/zombies_standard.lua"
-                    target="_blank"><i class="fab fa-github"></i> Zombies Standard</a>
-                <div class="badge">SAPP</div>
-            </div>
-            <div class="script-card"><a
-                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/custom_games/zombies_advanced.lua"
-                    target="_blank"><i class="fab fa-github"></i> Zombies Advanced</a>
-                <div class="badge">SAPP</div>
-            </div>
-            <div class="script-card"><a
-                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/custom_games/kill_confirmed.lua"
-                    target="_blank"><i class="fab fa-github"></i> Kill Confirmed</a>
-                <div class="badge">SAPP</div>
-            </div>
-            <div class="script-card"><a
-                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/custom_games/one_in_the_chamber.lua"
-                    target="_blank"><i class="fab fa-github"></i> One In The Chamber</a>
-                <div class="badge">SAPP</div>
-            </div>
-            <div class="script-card"><a
-                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/custom_games/tag.lua"
-                    target="_blank"><i class="fab fa-github"></i> Tag</a>
-                <div class="badge">SAPP</div>
-            </div>
-            <div class="script-card"><a
-                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/custom_games/divide_and_conquer.lua"
-                    target="_blank"><i class="fab fa-github"></i> Divide and Conquer</a>
-                <div class="badge">SAPP</div>
-            </div>
-            <div class="script-card"><a
-                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/custom_games/melee_attack.lua"
-                    target="_blank"><i class="fab fa-github"></i> Melee Attack</a>
-                <div class="badge">SAPP</div>
-            </div>
-            <div class="script-card"><a
-                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/custom_games/snipers_dream_team.lua"
-                    target="_blank"><i class="fab fa-github"></i> Snipers Dream Team</a>
-                <div class="badge">SAPP</div>
-            </div>
-        </div>
+    <div class="browser-toolbar">
+        <label for="searchScript"></label><input type="search" id="searchScript"
+                                                 placeholder="Search scripts by name, description, or filename...">
+        <label for="categoryFilter"></label><select id="categoryFilter">
+        <option value="all">All categories</option>
+        <option value="attractive">✨ Attractive Features</option>
+        <option value="custom_games">🎮 Custom Games</option>
+        <option value="utility">🛠️ Utility Scripts</option>
+    </select>
+        <div class="status" id="status">Loading scripts...</div>
     </div>
 
-    <div class="category">
-        <h2>✨ Attractive Features</h2>
-        <div class="scripts-grid">
-            <div class="script-card"><a
-                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/attractive/rank_system.lua"
-                    target="_blank"><i class="fab fa-github"></i> Rank System</a>
-                <div class="badge">SAPP</div>
-            </div>
-            <div class="script-card"><a
-                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/attractive/sprint.lua"
-                    target="_blank"><i class="fab fa-github"></i> Sprint System</a>
-                <div class="badge">SAPP</div>
-            </div>
-            <div class="script-card"><a
-                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/attractive/deployable_mines.lua"
-                    target="_blank"><i class="fab fa-github"></i> Deployable Mines</a>
-                <div class="badge">SAPP</div>
-            </div>
-            <div class="script-card"><a
-                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/attractive/tactical_insertion.lua"
-                    target="_blank"><i class="fab fa-github"></i> Tactical Insertion</a>
-                <div class="badge">SAPP</div>
-            </div>
-            <div class="script-card"><a
-                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/attractive/teabagging.lua"
-                    target="_blank"><i class="fab fa-github"></i> Tea Bagging</a>
-                <div class="badge">SAPP</div>
-            </div>
-            <div class="script-card"><a
-                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/attractive/uber.lua"
-                    target="_blank"><i class="fab fa-github"></i> Uber</a>
-                <div class="badge">SAPP</div>
-            </div>
-            <div class="script-card"><a
-                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/attractive/vanish.lua"
-                    target="_blank"><i class="fab fa-github"></i> Vanish</a>
-                <div class="badge">SAPP</div>
-            </div>
-            <div class="script-card"><a
-                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/attractive/capture_the_flag.lua"
-                    target="_blank"><i class="fab fa-github"></i> Capture The Flag</a>
-                <div class="badge">SAPP</div>
-            </div>
-            <div class="script-card"><a
-                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/attractive/custom_teleports.lua"
-                    target="_blank"><i class="fab fa-github"></i> Custom Teleports</a>
-                <div class="badge">SAPP</div>
-            </div>
-        </div>
-    </div>
+    <div id="scriptsGrid" class="scripts-grid"></div>
 
-    <div class="category">
-        <h2>🛠️ Utility Scripts</h2>
-        <div class="scripts-grid">
-            <div class="script-card"><a
-                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/utility/afk_system.lua"
-                    target="_blank"><i class="fab fa-github"></i> AFK System</a>
-                <div class="badge">SAPP</div>
-            </div>
-            <div class="script-card"><a
-                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/utility/anti_impersonator.lua"
-                    target="_blank"><i class="fab fa-github"></i> Anti Impersonator</a>
-                <div class="badge">SAPP</div>
-            </div>
-            <div class="script-card"><a
-                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/utility/auto_message.lua"
-                    target="_blank"><i class="fab fa-github"></i> Auto Message</a>
-                <div class="badge">SAPP</div>
-            </div>
-            <div class="script-card"><a
-                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/utility/custom_loadouts.lua"
-                    target="_blank"><i class="fab fa-github"></i> Custom Loadouts</a>
-                <div class="badge">SAPP</div>
-            </div>
-            <div class="script-card"><a
-                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/utility/dynamic_ping_kicker.lua"
-                    target="_blank"><i class="fab fa-github"></i> Dynamic Ping Kicker</a>
-                <div class="badge">SAPP</div>
-            </div>
-            <div class="script-card"><a
-                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/utility/team_shuffler.lua"
-                    target="_blank"><i class="fab fa-github"></i> Team Shuffler</a>
-                <div class="badge">SAPP</div>
-            </div>
-            <div class="script-card"><a
-                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/utility/server_logger.lua"
-                    target="_blank"><i class="fab fa-github"></i> Server Logger</a>
-                <div class="badge">SAPP</div>
-            </div>
-            <div class="script-card"><a
-                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/utility/word_buster.lua"
-                    target="_blank"><i class="fab fa-github"></i> Word Buster</a>
-                <div class="badge">SAPP</div>
-            </div>
-            <div class="script-card"><a
-                    href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/main/sapp/utility/race_assistant.lua"
-                    target="_blank"><i class="fab fa-github"></i> Race Assistant</a>
-                <div class="badge">SAPP</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="category">
-        <h2>🔌 Phasor Scripts</h2>
-        <div class="scripts-grid">
-            <div class="script-card"><a href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/tree/main/phasor"
-                                        target="_blank"><i class="fab fa-github"></i> Browse Phasor Folder</a>
-                <div class="badge">Phasor</div>
-            </div>
-        </div>
+    <div class="phasor-section">
+        <h2><i class="fas fa-plug"></i> Phasor Scripts</h2>
+        <p>Legacy Phasor extension scripts are available in a separate folder. Click below to browse.</p>
+        <a href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/tree/main/phasor" target="_blank" class="btn">
+            <i class="fab fa-github"></i> Browse Phasor Scripts
+        </a>
     </div>
 
     <div class="note">
-        <i class="fas fa-info-circle"></i> Missing a script? Check the <a
+        <i class="fas fa-info-circle"></i> Missing something? Check the <a
             href="https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/tree/main/sapp" target="_blank">full SAPP directory</a>
         on GitHub.
     </div>
 </main>
+
+<div id="modal" class="modal hidden">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h2 id="modalTitle">Script</h2>
+            <button class="btn small" id="modalClose"><i class="fas fa-times"></i> Close</button>
+        </div>
+        <div class="modal-body">
+            <pre class="code-block"><code id="modalCode" class="language-lua"></code></pre>
+        </div>
+        <div class="modal-footer">
+            <button class="btn" id="modalCopy"><i class="fas fa-copy"></i> Copy</button>
+            <a class="btn" id="modalDownload" download><i class="fas fa-download"></i> Download</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    const repoOwner = "Chalwk";
+    const repoName = "HALO-SCRIPT-PROJECTS";
+    const metadataURL = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/master/metadata.json`;
+    const rawBase = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/master/`;
+
+    const statusEl = document.getElementById("status");
+    const gridEl = document.getElementById("scriptsGrid");
+    const searchEl = document.getElementById("searchScript");
+    const categoryEl = document.getElementById("categoryFilter");
+
+    const modal = document.getElementById("modal");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalCode = document.getElementById("modalCode");
+    const modalClose = document.getElementById("modalClose");
+    const modalCopy = document.getElementById("modalCopy");
+    const modalDownload = document.getElementById("modalDownload");
+
+    let scripts = [];
+    let cache = {};
+
+    function showStatus(text) {
+        if (statusEl) statusEl.textContent = text;
+    }
+
+    async function loadMetadata() {
+        const res = await fetch(metadataURL);
+        if (!res.ok) throw new Error("Failed to load metadata.json from repository");
+        return await res.json();
+    }
+
+    function buildIndex(metadata) {
+        const out = [];
+        for (const category of Object.keys(metadata)) {
+            for (const key of Object.keys(metadata[category])) {
+                const entry = metadata[category][key];
+                out.push({
+                    category: category,
+                    key: key,
+                    title: entry.title || key,
+                    description: entry.description || entry.shortDescription || "",
+                    filename: entry.filename || `${key}.lua`
+                });
+            }
+        }
+        return out;
+    }
+
+    async function getScriptContent(path) {
+        if (cache[path]) return cache[path];
+        const res = await fetch(rawBase + path);
+        if (!res.ok) throw new Error(`File not found: ${path}`);
+        const text = await res.text();
+        cache[path] = text;
+        return text;
+    }
+
+    function renderGrid() {
+        if (!gridEl) return;
+        gridEl.innerHTML = "";
+
+        const query = searchEl.value.toLowerCase();
+        const selectedCat = categoryEl.value;
+
+        let filtered = scripts.slice();
+
+        if (selectedCat !== "all") {
+            filtered = filtered.filter(s => s.category === selectedCat);
+        }
+
+        if (query) {
+            filtered = filtered.filter(s =>
+                s.title.toLowerCase().includes(query) ||
+                s.description.toLowerCase().includes(query) ||
+                s.filename.toLowerCase().includes(query)
+            );
+        }
+
+        if (filtered.length === 0) {
+            gridEl.innerHTML = '<p style="text-align:center; grid-column:1/-1;">No scripts found matching your criteria.</p>';
+            return;
+        }
+
+        for (const script of filtered) {
+            const path = `sapp/${script.category}/${script.filename}`;
+            const card = document.createElement("div");
+            card.className = "script-card";
+
+            card.innerHTML = `
+                <h3><i class="fas fa-file-code"></i> ${escapeHtml(script.title)}</h3>
+                <div class="desc">${escapeHtml(script.description)}</div>
+                <div class="script-actions">
+                    <button class="btn view-btn" data-path="${path}" data-title="${script.title}" data-filename="${script.filename}"><i class="fas fa-eye"></i> View</button>
+                    <button class="btn copy-btn" data-path="${path}"><i class="fas fa-copy"></i> Copy</button>
+                    <button class="btn download-btn" data-path="${path}" data-filename="${script.filename}"><i class="fas fa-download"></i> Download</button>
+                </div>
+            `;
+
+            const viewBtn = card.querySelector(".view-btn");
+            const copyBtn = card.querySelector(".copy-btn");
+            const downloadBtn = card.querySelector(".download-btn");
+
+            viewBtn.addEventListener("click", async () => {
+                const path = viewBtn.dataset.path;
+                const title = viewBtn.dataset.title;
+                const filename = viewBtn.dataset.filename;
+                try {
+                    const code = await getScriptContent(path);
+                    modalTitle.textContent = `${title} — ${filename}`;
+                    modalCode.textContent = code;
+                    Prism.highlightElement(modalCode);
+                    const blob = new Blob([code], {type: "text/plain"});
+                    modalDownload.href = URL.createObjectURL(blob);
+                    modalDownload.download = filename;
+                    modal.classList.remove("hidden");
+                } catch (err) {
+                    console.error(err);
+                    showStatus("Error loading script");
+                }
+            });
+
+            copyBtn.addEventListener("click", async () => {
+                const path = copyBtn.dataset.path;
+                try {
+                    const code = await getScriptContent(path);
+                    await navigator.clipboard.writeText(code);
+                    showStatus("Copied to clipboard!");
+                    setTimeout(() => showStatus(""), 2000);
+                } catch (err) {
+                    console.error(err);
+                    showStatus("Copy failed");
+                }
+            });
+
+            downloadBtn.addEventListener("click", async () => {
+                const path = downloadBtn.dataset.path;
+                const filename = downloadBtn.dataset.filename;
+                try {
+                    const code = await getScriptContent(path);
+                    const blob = new Blob([code], {type: "text/plain"});
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = filename;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                } catch (err) {
+                    console.error(err);
+                    showStatus("Download failed");
+                }
+            });
+
+            gridEl.appendChild(card);
+        }
+    }
+
+    function escapeHtml(str) {
+        if (!str) return "";
+        return str.replace(/[&<>]/g, function (m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function (c) {
+            return c;
+        });
+    }
+
+    if (searchEl) searchEl.addEventListener("input", renderGrid);
+    if (categoryEl) categoryEl.addEventListener("change", renderGrid);
+
+    function closeModal() {
+        modal.classList.add("hidden");
+        if (modalDownload.href) URL.revokeObjectURL(modalDownload.href);
+    }
+
+    modalClose.addEventListener("click", closeModal);
+    modal.addEventListener("click", (e) => {
+        if (e.target === modal) closeModal();
+    });
+
+    modalCopy.addEventListener("click", async () => {
+        const code = modalCode.textContent;
+        if (code) {
+            await navigator.clipboard.writeText(code);
+            showStatus("Copied to clipboard!");
+            setTimeout(() => showStatus(""), 2000);
+        }
+    });
+
+    (async function init() {
+        try {
+            const metadata = await loadMetadata();
+            scripts = buildIndex(metadata);
+            renderGrid();
+            showStatus(`${scripts.length} scripts loaded`);
+        } catch (err) {
+            console.error(err);
+            showStatus("Failed to load scripts. Please try again later.");
+            gridEl.innerHTML = '<p style="text-align:center; grid-column:1/-1;">Error loading scripts from GitHub. Make sure metadata.json exists and the repository is accessible.</p>';
+        }
+    })();
+</script>
 </body>
 </html>

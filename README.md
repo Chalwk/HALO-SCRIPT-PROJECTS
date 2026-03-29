@@ -2,7 +2,7 @@
   <img src="misc/hsp-logo.png" alt="Halo Script Projects" width="250">
 
 [![Discord](https://img.shields.io/badge/Discord-Join_Our_Server-7289DA?style=for-the-badge&logo=discord)](https://discord.gg/D76H7RVPC9)
-[![SCRIPT BROWSER GUI](https://img.shields.io/badge/SCRIPT_BROWSER_GUI-Explore-6ee7b7?style=for-the-badge&logo=github)](https://chalwk.github.io/HALO-SCRIPT-PROJECTS)
+[![SCRIPT HSP WEBSITE](https://img.shields.io/badge/HSP_WEBSITE-Explore-6ee7b7?style=for-the-badge&logo=github)](https://chalwk.github.io/HALO-SCRIPT-PROJECTS)
 
 </div>
 

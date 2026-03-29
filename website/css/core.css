@@ -3,18 +3,17 @@ Copyright (c) 2016-2026. Jericho Crosby (Chalwk)
 */
 
 :root {
-    --primary: #0051CC;
-    --primary-dark: #003d99;
-    --accent: #0051CC;
-    --bg-dark: #0D0F14;
-    --bg-panel: #0D0F14;
-    --text-light: #FFFFFF;
-    --text-muted: #B3BAC3;
-    --soft-slate: #6F7A8A;
-    --border-glow: rgba(0, 81, 204, 0.4);
+    --primary: #6cace4;
+    --primary-dark: #4a8fc4;
+    --accent: #2c7cb0;
+    --bg-dark: #ffffff;
+    --bg-panel: #f0f4f8;
+    --text-light: #1e2a3a;
+    --text-muted: #5a6e7c;
+    --border-glow: rgba(108, 172, 228, 0.3);
     --font-header: 'Orbitron', sans-serif;
     --font-body: 'Rajdhani', sans-serif;
-    --shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     --transition: all 0.2s ease;
 }
 
@@ -27,8 +26,8 @@ Copyright (c) 2016-2026. Jericho Crosby (Chalwk)
 body {
     font-family: var(--font-body), sans-serif;
     background-color: var(--bg-dark);
-    background-image: linear-gradient(rgba(0, 81, 204, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 81, 204, 0.02) 1px, transparent 1px);
+    background-image: linear-gradient(rgba(108, 172, 228, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(108, 172, 228, 0.03) 1px, transparent 1px);
     background-size: 40px 40px;
     color: var(--text-light);
     line-height: 1.6;
@@ -54,7 +53,7 @@ h1 {
 
 h2 {
     font-size: 2rem;
-    color: var(--primary);
+    color: var(--accent);
     border-bottom: 2px solid var(--border-glow);
     padding-bottom: 0.5rem;
     margin: 2rem 0 1.5rem;
@@ -67,8 +66,7 @@ a {
 }
 
 a:hover {
-    color: var(--text-light);
-    text-shadow: 0 0 4px var(--primary);
+    color: var(--accent);
 }
 
 .header {
@@ -103,16 +101,16 @@ a:hover {
     padding: 0;
     margin: 0;
     font-family: var(--font-header), sans-serif;
-    color: var(--text-light);
 }
 
 .main-nav {
-    background: rgba(13, 15, 20, 0.9);
+    background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(5px);
     border: 1px solid var(--border-glow);
     border-radius: 50px;
     padding: 0.5rem 1rem;
     margin: 1.5rem 0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 .main-nav ul {
@@ -137,7 +135,7 @@ a:hover {
 
 .main-nav a:hover {
     border-color: var(--primary);
-    background: rgba(0, 81, 204, 0.1);
+    background: rgba(108, 172, 228, 0.1);
     transform: translateY(-2px);
     box-shadow: 0 0 8px var(--primary);
 }
@@ -149,7 +147,7 @@ a:hover {
 }
 
 main {
-    background: rgba(13, 15, 20, 0.8);
+    background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(3px);
     border: 1px solid var(--border-glow);
     border-radius: 30px;
@@ -188,7 +186,7 @@ footer {
     width: 44px;
     height: 44px;
     border-radius: 50%;
-    background: var(--bg-dark);
+    background: var(--bg-panel);
     color: var(--primary);
     border: 1px solid var(--border-glow);
     transition: var(--transition);
@@ -232,8 +230,8 @@ footer {
 }
 
 .scroll-to-top:hover {
-    background: var(--primary-dark);
-    box-shadow: 0 0 15px var(--primary);
+    background: var(--accent);
+    box-shadow: 0 0 15px var(--accent);
 }
 
 .nav-toggle {
@@ -257,9 +255,9 @@ footer {
 }
 
 .btn:hover {
-    background: var(--primary-dark);
+    background: var(--accent);
     color: white;
-    box-shadow: 0 0 15px var(--primary);
+    box-shadow: 0 0 15px var(--accent);
 }
 
 .table-responsive {
