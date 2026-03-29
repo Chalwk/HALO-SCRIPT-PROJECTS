@@ -52,7 +52,7 @@ free/shared VPNs. If you believe a ban was accidental (e.g., shared IP), contact
 
 Offenses are categorized by severity. Staff discretion applies.
 
-### **Tier 1: Severe Offenses – Permanent Ban**
+### **Tier 1: Severe Offenses - Permanent Ban**
 
 | Offense                           | Description                                       |
 |-----------------------------------|---------------------------------------------------|
@@ -64,7 +64,7 @@ Offenses are categorized by severity. Staff discretion applies.
 | **Privacy Violations**            | Sharing personal data without consent.            |
 | **NSFW/Illegal Content**          | Sharing sexually explicit or illegal material.    |
 
-### **Tier 2: Moderate Offenses – 1 to 2-Week Ban**
+### **Tier 2: Moderate Offenses - 1 to 2-Week Ban**
 
 | Offense                       | Description                                              |
 |-------------------------------|----------------------------------------------------------|
@@ -76,7 +76,7 @@ Offenses are categorized by severity. Staff discretion applies.
 | **Exploiting Bugs/Glitches**  | Using server/script bugs to gain unfair advantages.      |
 | **Discord Feature Misuse**    | Bot spam, reaction abuse, or irrelevant pings.           |
 
-### **Tier 3: Minor Offenses – Up to 1-Week Ban**
+### **Tier 3: Minor Offenses - Up to 1-Week Ban**
 
 | Offense                             | Description                                   |
 |-------------------------------------|-----------------------------------------------|

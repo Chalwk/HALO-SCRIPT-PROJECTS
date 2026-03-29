@@ -2,7 +2,7 @@ Sets the respawn time for a player - Writes the respawn time directly to the pla
 
 **Parameters:**
 
-* `playerIndex` `number` - Index of the player (1–16).
+* `playerIndex` `number` - Index of the player (1-16).
 * `respawnTime` `number` *(optional)* - Time in seconds before the player respawns. Defaults to 3 seconds.
 
 **Function Definition:**

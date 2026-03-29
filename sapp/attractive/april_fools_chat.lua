@@ -51,7 +51,7 @@ end
 function OnChat(playerId, message)
     if isChatCommand(message) then return true end
 
-    local chance = rand(1, 101 + 1) / 100 -- gives 0.01–1.00
+    local chance = rand(1, 101 + 1) / 100 -- gives 0.01-1.00
     if chance <= RANDOM_CHANCE then
         return alterChatMessage(playerId, message)
     end

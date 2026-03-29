@@ -6,7 +6,7 @@ See #"Get Player World Coordinates" for the `getPlayerPosition()` helper functio
 perspective, they remain on the map in a "spectator-like" state.
 **Parameters:**
 
-* `playerId` `number` - Index of the player (1–16).
+* `playerId` `number` - Index of the player (1-16).
   **Usage:**
 * Call this function every tick to maintain the hidden state.
 

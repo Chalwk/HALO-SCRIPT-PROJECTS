@@ -2,7 +2,7 @@ Sends a formatted message to all players (global) or a single player (private).
 
 **Parameters:**
 
-* `player_id` `number|nil` - Player index (1–16) to send a private message.
+* `player_id` `number|nil` - Player index (1-16) to send a private message.
     * If `nil`, the message is broadcast to all players.
 * `...` `varargs` - Arguments passed to `string.format` for message text.
 

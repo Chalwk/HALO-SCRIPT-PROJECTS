@@ -2,7 +2,7 @@ Determines if the specified player is currently invisible.
 
 **Parameters:**
 
-* `id` `number` - Player index (1–16).
+* `id` `number` - Player index (1-16).
 
 **Returns:**
 

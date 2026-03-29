@@ -10,7 +10,7 @@ For these members, I advise using the **Name/Password system** instead.
 
     * `<player_name>`: The exact in-game name the player uses to join the server.
     * `<password>`: A password you set for them.
-    * `<level>`: Their admin level (1–4).
+    * `<level>`: Their admin level (1-4).
       **Example:**
       `admin_add Chalwk mySecurePassword123 3`
 2. **Activating admin privileges**:
