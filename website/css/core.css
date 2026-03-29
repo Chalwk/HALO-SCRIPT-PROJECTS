@@ -164,7 +164,7 @@ footer {
 }
 
 .footer-copyright::before {
-    content: "© 2016-2026 Halo Script Projects (HSP) - Jericho Crosby (Chalwk)";
+    content: "© 2016-2026. Jericho Crosby (Chalwk)";
     display: block;
     color: var(--text-muted);
     font-size: 1.2rem;
