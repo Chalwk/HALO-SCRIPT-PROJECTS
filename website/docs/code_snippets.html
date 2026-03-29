@@ -83,9 +83,8 @@ Copyright (c) 2016-2026. Jericho Crosby (Chalwk)
 <header class="header"></header>
 
 <main>
-    <h1><i class="fas fa-code"></i> Utility Code Snippets</h1>
-    <p>Collection of ready‑to‑use Lua functions for SAPP scripting. Each snippet includes a description, parameters,
-        return values, and the function code.</p>
+    <h1><i class="fas fa-code"></i>Code Snippets</h1>
+    <p>Collection of ready‑to‑use Lua functions for SAPP scripting.</p>
 
     <div class="doc-section">
         <h2><i class="fas fa-comment-dots"></i> broadcast_excluding_player <span class="badge-doc">sendExclude</span>
@@ -200,9 +199,7 @@ end</code></pre>
         <p><strong>Parameters:</strong> <code>orig</code> <code>any</code> – The value or table to copy.</p>
         <p><strong>Returns:</strong> Fully independent copy.</p>
         <pre class="code-block"><code class="language-lua">local function deepCopy(orig)
-    if type(orig) ~= "table" then
-        return orig
-    end
+    if type(orig) ~= "table" then return orig end
     local copy = {}
     for key, value in pairs(orig) do
         copy[deepCopy(key)] = deepCopy(value)
@@ -246,9 +243,7 @@ local PLAYER_JOINED = "Player %s has joined the game."
 local PLAYER_SCORE = "%s scored %d points in %d minutes."
 
 local function formatMessage(message, ...)
-    if select('#', ...) > 0 then
-        return message:format(...)
-    end
+    if select('#', ...) > 0 then return message:format(...) end
     return message
 end</code></pre>
         <h3>Version 2: Placeholder‑based (<code>$name</code> style)</h3>
@@ -329,19 +324,23 @@ end</code></pre>
         <p>Checks if the player's currently held weapon is an objective (oddball, flag, or any).</p>
         <pre class="code-block"><code class="language-lua">local function hasObjective(dyn_player, objective_type)
     objective_type = objective_type or "any"
+
     local weapon_id = read_dword(dyn_player + 0x118)
     local weapon_obj = get_object_memory(weapon_id)
     if weapon_obj == nil or weapon_obj == 0 then return false end
+
     local tag_address = read_word(weapon_obj)
     local tag_data_base = read_dword(0x40440000)
     local tag_data = read_dword(tag_data_base + tag_address * 0x20 + 0x14)
     if read_bit(tag_data + 0x308, 3) ~= 1 then return false end
+
     local obj_byte = read_byte(tag_data + 2)
     local is_oddball = (obj_byte == 4)
     local is_flag = (obj_byte == 0)
-    if objective_type == "oddball" then return is_oddball
-    elseif objective_type == "flag" then return is_flag
-    else return is_oddball or is_flag end
+
+    return (objective_type == "oddball" and is_oddball) or
+           (objective_type == "flag" and is_flag) or
+           (objective_type == "any" and (is_oddball or is_flag))
 end</code></pre>
     </div>
 
@@ -374,15 +373,19 @@ end</code></pre>
                 class="badge-doc">getPlayerPosition</span></h2>
         <pre class="code-block"><code class="language-lua">local function getPlayerPosition(dyn_player)
     local crouch = read_float(dyn_player + 0x50C)
+
     local vehicle_id = read_dword(dyn_player + 0x11C)
     local vehicle_obj = get_object_memory(vehicle_id)
+
     local x, y, z
     if vehicle_id == 0xFFFFFFFF then
         x, y, z = read_vector3d(dyn_player + 0x5C)
     elseif vehicle_obj ~= 0 then
         x, y, z = read_vector3d(vehicle_obj + 0x5C)
     end
+
     local z_off = (crouch == 0) and 0.65 or 0.35 * crouch
+
     return x, y, z + z_off
 end</code></pre>
     </div>
@@ -488,13 +491,12 @@ end</code></pre>
     <div class="doc-section">
         <h2><i class="fas fa-shuffle"></i> shuffle_table_fisher_yates <span class="badge-doc">shuffleTable</span></h2>
         <pre class="code-block"><code class="language-lua">
-        local function shuffleTable(tbl)
-            for i = #tbl, 2, -1 do
-                local j = math.random(i)
-                tbl[i], tbl[j] = tbl[j], tbl[i]
-            end
-        end
-        </code></pre>
+local function shuffleTable(tbl)
+    for i = #tbl, 2, -1 do
+        local j = math.random(i)
+        tbl[i], tbl[j] = tbl[j], tbl[i]
+    end
+end</code></pre>
     </div>
 
     <div class="doc-section">
