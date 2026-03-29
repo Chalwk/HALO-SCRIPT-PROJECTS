@@ -105,7 +105,7 @@ function renderGrid() {
             const filename = viewBtn.dataset.filename;
             try {
                 const code = await getScriptContent(path);
-                modalTitle.textContent = `${title} — ${filename}`;
+                modalTitle.textContent = `${title}`;
                 modalCode.textContent = code;
                 Prism.highlightElement(modalCode);
                 const blob = new Blob([code], {type: "text/plain"});

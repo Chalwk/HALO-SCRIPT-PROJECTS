@@ -1,0 +1,523 @@
+<!--
+Copyright (c) 2016-2026. Jericho Crosby (Chalwk)
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Snippets – SAPP Lua Utilities</title>
+    <link href="../css/core.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Rajdhani:wght@300;400;500;600&display=swap"
+          rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-lua.min.js"></script>
+    <script src="../js/nav-menu.js"></script>
+    <style>
+        .doc-section {
+            background: var(--bg-panel);
+            border-radius: 24px;
+            padding: 1.8rem;
+            margin: 2rem 0;
+            border-left: 6px solid var(--primary);
+        }
+
+        .doc-section h2 {
+            border-bottom: none;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .doc-section h3 {
+            margin: 1.2rem 0 0.6rem 0;
+            color: var(--primary-light);
+        }
+
+        .doc-section ul, .doc-section ol {
+            padding-left: 1.8rem;
+            margin: 1rem 0;
+        }
+
+        .code-block {
+            background: #1e2a3a;
+            border-radius: 12px;
+            padding: 0;
+            margin: 1rem 0;
+            overflow-x: auto;
+            border: 1px solid var(--border-glow);
+        }
+
+        .code-block code {
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            white-space: pre;
+            display: block;
+            padding: 1rem;
+            background: #1e2a3a;
+            color: #eef2f7;
+        }
+
+        .badge-doc {
+            display: inline-block;
+            background: var(--primary-dark);
+            color: white;
+            font-size: 0.8rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            margin-left: 0.5rem;
+        }
+
+        @media (max-width: 600px) {
+            .doc-section {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<header class="header"></header>
+
+<main>
+    <h1><i class="fas fa-code"></i> Utility Code Snippets</h1>
+    <p>Collection of ready‑to‑use Lua functions for SAPP scripting. Each snippet includes a description, parameters,
+        return values, and the function code.</p>
+
+    <div class="doc-section">
+        <h2><i class="fas fa-comment-dots"></i> broadcast_excluding_player <span class="badge-doc">sendExclude</span>
+        </h2>
+        <p>Sends a chat message to all connected players except the specified one.</p>
+        <p><strong>Parameters:</strong></p>
+        <ul>
+            <li><code>message</code> <code>string</code> – Message to send.</li>
+            <li><code>exclude_player</code> <code>number</code> – Player index to exclude.</li>
+        </ul>
+        <pre class="code-block"><code class="language-lua">local function sendExclude(message, exclude_player)
+    for i = 1, 16 do
+        if player_present(i) and i ~= exclude_player then
+            say(i, message)
+        end
+    end
+end</code></pre>
+    </div>
+
+    <div class="doc-section">
+        <h2><i class="fas fa-car"></i> check_if_player_in_vehicle <span class="badge-doc">inVehicle</span></h2>
+        <p>Determines if the player is currently inside a vehicle.</p>
+        <p><strong>Parameters:</strong> <code>dyn_player</code> <code>number</code> – Dynamic player memory address.</p>
+        <p><strong>Returns:</strong> <code>boolean</code> – <code>true</code> if in vehicle, <code>false</code>
+            otherwise.</p>
+        <pre class="code-block"><code class="language-lua">local function inVehicle(dyn_player)
+    return read_dword(dyn_player + 0x11C) ~= 0xFFFFFFFF
+end</code></pre>
+    </div>
+
+    <div class="doc-section">
+        <h2><i class="fas fa-crosshairs"></i> check_if_player_is_in_range <span class="badge-doc">inRange</span></h2>
+        <p>Determines if two 3D points are within a specified radius. Uses squared distance comparison for
+            efficiency.</p>
+        <p><strong>Parameters:</strong> <code>x1,y1,z1</code>, <code>x2,y2,z2</code>, <code>radius</code>
+            <code>number</code>.</p>
+        <p><strong>Returns:</strong> <code>boolean</code> – <code>true</code> if within radius.</p>
+        <pre class="code-block"><code class="language-lua">local function inRange(x1, y1, z1, x2, y2, z2, radius)
+    local dx = x1 - x2
+    local dy = y1 - y2
+    local dz = z1 - z2
+    return (dx * dx + dy * dy + dz * dz) <= (radius * radius)
+end</code></pre>
+    </div>
+
+    <div class="doc-section">
+        <h2><i class="fas fa-users"></i> check_if_vehicle_occupied <span class="badge-doc">isVehicleOccupied</span></h2>
+        <p>Checks whether a specific vehicle object is currently occupied by any player.</p>
+        <p><strong>Parameters:</strong> <code>vehicleObject</code> <code>number</code> – Vehicle object memory address.
+        </p>
+        <p><strong>Returns:</strong> <code>boolean</code> – <code>true</code> if occupied.</p>
+        <pre class="code-block"><code class="language-lua">local function isVehicleOccupied(vehicleObject)
+    for i = 1, 16 do
+        local dyn = get_dynamic_player(i)
+        if player_present(i) and player_alive(i) and dyn ~= 0 then
+            local vehicle_id = read_dword(dyn + 0x11C)
+            if vehicle_id == 0xFFFFFFFF then goto next_player end
+            local vehicle_obj = get_object_memory(vehicle_id)
+            if vehicle_obj ~= 0 and vehicle_obj == vehicleObject then
+                return true
+            end
+            ::next_player::
+        end
+    end
+    return false
+end</code></pre>
+    </div>
+
+    <div class="doc-section">
+        <h2><i class="fas fa-eye-slash"></i> check_player_invisibility_state <span
+                class="badge-doc">isPlayerInvisible</span></h2>
+        <p>Determines if the specified player is currently invisible.</p>
+        <p><strong>Parameters:</strong> <code>id</code> <code>number</code> – Player index (1–16).</p>
+        <p><strong>Returns:</strong> <code>boolean</code> – <code>true</code> if invisible.</p>
+        <pre class="code-block"><code class="language-lua">local function isPlayerInvisible(id)
+    local dyn_player = get_dynamic_player(id)
+    local invisible = read_float(dyn_player + 0x37C)
+    return dyn_player ~= 0 and invisible == 1
+end</code></pre>
+    </div>
+
+    <div class="doc-section">
+        <h2><i class="fas fa-eraser"></i> clear_player_rcon_chat_buffer <span class="badge-doc">clearConsole</span></h2>
+        <p>Clears a player's RCON/Chat buffer by printing multiple blank lines.</p>
+        <p><strong>Parameters:</strong> <code>id</code> <code>number</code> – Player index (1-16).</p>
+        <pre class="code-block"><code class="language-lua">local function clearConsole(id)
+    for _ = 1, 25 do
+        rprint(id, " ")
+    end
+end</code></pre>
+    </div>
+
+    <div class="doc-section">
+        <h2><i class="fas fa-location-dot"></i> custom_spawn_with_rotation <span class="badge-doc">spawnObject</span>
+        </h2>
+        <p>Writes position and rotation data to the dynamic object in memory.</p>
+        <p><strong>Parameters:</strong> <code>dyn, px, py, pz, pR, z_off</code> (optional, default 0.3).</p>
+        <pre class="code-block"><code class="language-lua">local function spawnObject(dyn, px, py, pz, pR, z_off)
+    z_off = z_off or 0.3
+    local x = px
+    local y = py
+    local z = pz + z_off
+    local r = pR
+    write_vector3d(dyn + 0x5C, x, y, z)
+    write_vector3d(dyn + 0x74, math.cos(r), math.sin(r), 0)
+end</code></pre>
+    </div>
+
+    <div class="doc-section">
+        <h2><i class="fas fa-copy"></i> deep_copy_table <span class="badge-doc">deepCopy</span></h2>
+        <p>Creates a deep copy of a table, including nested tables and metatables.</p>
+        <p><strong>Parameters:</strong> <code>orig</code> <code>any</code> – The value or table to copy.</p>
+        <p><strong>Returns:</strong> Fully independent copy.</p>
+        <pre class="code-block"><code class="language-lua">local function deepCopy(orig)
+    if type(orig) ~= "table" then
+        return orig
+    end
+    local copy = {}
+    for key, value in pairs(orig) do
+        copy[deepCopy(key)] = deepCopy(value)
+    end
+    return setmetatable(copy, deepCopy(getmetatable(orig)))
+end</code></pre>
+    </div>
+
+    <div class="doc-section">
+        <h2><i class="fas fa-tag"></i> find_tag_by_name_substring <span class="badge-doc">findTagByNameSubstring</span>
+        </h2>
+        <p>Scans tag table for tags whose path/name contains substring. Optional class filter (e.g., 'weap',
+            'vehi').</p>
+        <pre class="code-block"><code class="language-lua">local function findTagByNameSubstring(substring, class_filter)
+    local base_tag_table = 0x40440000
+    substring = substring:lower()
+    local tag_array = read_dword(base_tag_table)
+    local tag_count = read_dword(base_tag_table + 0xC)
+    for i = 0, tag_count - 1 do
+        local tag = tag_array + 0x20 * i
+        local class = read_dword(tag)
+        if class_filter == nil or class == read_dword(lookup_tag(class_filter, "")) then
+            local name_ptr = read_dword(tag + 0x10)
+            if name_ptr ~= 0 then
+                local name = read_string(name_ptr)
+                if name and name:lower():find(substring, 1, true) then
+                    return read_dword(tag + 0xC)
+                end
+            end
+        end
+    end
+    return nil
+end</code></pre>
+    </div>
+
+    <div class="doc-section">
+        <h2><i class="fas fa-edit"></i> format_message_string <span class="badge-doc">Two approaches</span></h2>
+        <h3>Version 1: <code>string.format</code> based</h3>
+        <pre class="code-block"><code class="language-lua">local HELLO_MESSAGE = "Hello world!"
+local PLAYER_JOINED = "Player %s has joined the game."
+local PLAYER_SCORE = "%s scored %d points in %d minutes."
+
+local function formatMessage(message, ...)
+    if select('#', ...) > 0 then
+        return message:format(...)
+    end
+    return message
+end</code></pre>
+        <h3>Version 2: Placeholder‑based (<code>$name</code> style)</h3>
+        <pre class="code-block"><code class="language-lua">local SCORE_MESSAGE = "$name scored $points points in $minutes minutes."
+local JOIN_MESSAGE = "Player $name has joined the server."
+local LEAVE_MESSAGE = "Player $name has left the server."
+
+local function formatMessage(message, vars)
+    return (message:gsub("%$(%w+)", function(key)
+        return vars[key] or "$" .. key
+    end))
+end</code></pre>
+    </div>
+
+    <div class="doc-section">
+        <h2><i class="fas fa-bullseye"></i> get_aim_vector <span class="badge-doc">getAimVector</span></h2>
+        <p>Retrieves the desired aim vector from a dynamic object.</p>
+        <pre class="code-block"><code class="language-lua">local function getAimVector(dyn)
+    local aim_x = read_float(dyn + 0x230)
+    local aim_y = read_float(dyn + 0x234)
+    local aim_z = read_float(dyn + 0x238)
+    return aim_x, aim_y, aim_z
+end</code></pre>
+    </div>
+
+    <div class="doc-section">
+        <h2><i class="fas fa-folder-open"></i> get_base_directory_and_config_path <span class="badge-doc">paths</span>
+        </h2>
+        <pre class="code-block"><code class="language-lua">local function getConfigPath()
+    return read_string(read_dword(sig_scan('68??????008D54245468') + 0x1))
+end
+
+local function getBaseDir(folder)
+    folder = folder or ""
+    local exe_path = read_string(read_dword(sig_scan('0000BE??????005657C605') + 0x3))
+    local base_path = exe_path:match("(.*\\)")
+    return base_path .. folder
+end</code></pre>
+    </div>
+
+    <div class="doc-section">
+        <h2><i class="fas fa-flag-checkered"></i> get_flag_object_meta_and_tag_name <span
+                class="badge-doc">getFlagData</span></h2>
+        <pre class="code-block"><code class="language-lua">local function getFlagData()
+    local base_tag_table = 0x40440000
+    local tag_array = read_dword(base_tag_table)
+    local tag_count = read_dword(base_tag_table + 0xC)
+    for i = 0, tag_count - 1 do
+        local tag = tag_array + 0x20 * i
+        local tag_class = read_dword(tag)
+        if tag_class == 0x77656170 then -- "weap"
+            local tag_data = read_dword(tag + 0x14)
+            if read_bit(tag_data + 0x308, 3) == 1 then
+                if read_byte(tag_data + 2) == 0 then
+                    return read_dword(tag + 0xC), read_string(read_dword(tag + 0x10))
+                end
+            end
+        end
+    end
+    return nil, nil
+end</code></pre>
+    </div>
+
+    <div class="doc-section">
+        <h2><i class="fas fa-microchip"></i> get_object_tag_address <span class="badge-doc">getTag</span></h2>
+        <p>Retrieves the tag class and name of an object.</p>
+        <pre class="code-block"><code class="language-lua">local function getTag(object)
+    local tag_class = read_byte(object + 0xB4)
+    local tag_address = read_word(object) * 32 + 0x40440038
+    local tag_name = read_string(read_dword(tag_address))
+    return tag_class, tag_name
+end</code></pre>
+    </div>
+
+    <div class="doc-section">
+        <h2><i class="fas fa-hand-fist"></i> get_objective_flag_or_oddball <span class="badge-doc">hasObjective</span>
+        </h2>
+        <p>Checks if the player's currently held weapon is an objective (oddball, flag, or any).</p>
+        <pre class="code-block"><code class="language-lua">local function hasObjective(dyn_player, objective_type)
+    objective_type = objective_type or "any"
+    local weapon_id = read_dword(dyn_player + 0x118)
+    local weapon_obj = get_object_memory(weapon_id)
+    if weapon_obj == nil or weapon_obj == 0 then return false end
+    local tag_address = read_word(weapon_obj)
+    local tag_data_base = read_dword(0x40440000)
+    local tag_data = read_dword(tag_data_base + tag_address * 0x20 + 0x14)
+    if read_bit(tag_data + 0x308, 3) ~= 1 then return false end
+    local obj_byte = read_byte(tag_data + 2)
+    local is_oddball = (obj_byte == 4)
+    local is_flag = (obj_byte == 0)
+    if objective_type == "oddball" then return is_oddball
+    elseif objective_type == "flag" then return is_flag
+    else return is_oddball or is_flag end
+end</code></pre>
+    </div>
+
+    <div class="doc-section">
+        <h2><i class="fas fa-backpack"></i> get_player_inventory <span class="badge-doc">getInventory</span></h2>
+        <pre class="code-block"><code class="language-lua">local function getInventory(dyn_player)
+    local inventory = {}
+    for i = 0, 3 do
+        local weapon = read_dword(dyn_player + 0x2F8 + i * 4)
+        local object = get_object_memory(weapon)
+        if object ~= 0 then
+            inventory[i + 1] = {
+                id = read_dword(object),
+                ammo = read_word(object + 0x2B6),
+                clip = read_word(object + 0x2B8),
+                ammo2 = read_word(object + 0x2C6),
+                clip2 = read_word(object + 0x2C8),
+                heat = read_float(object + 0x240),
+                frags = read_byte(dyn_player + 0x31E),
+                plasmas = read_byte(dyn_player + 0x31F)
+            }
+        end
+    end
+    return inventory
+end</code></pre>
+    </div>
+
+    <div class="doc-section">
+        <h2><i class="fas fa-map-marker-alt"></i> get_player_world_coordinates <span
+                class="badge-doc">getPlayerPosition</span></h2>
+        <pre class="code-block"><code class="language-lua">local function getPlayerPosition(dyn_player)
+    local crouch = read_float(dyn_player + 0x50C)
+    local vehicle_id = read_dword(dyn_player + 0x11C)
+    local vehicle_obj = get_object_memory(vehicle_id)
+    local x, y, z
+    if vehicle_id == 0xFFFFFFFF then
+        x, y, z = read_vector3d(dyn_player + 0x5C)
+    elseif vehicle_obj ~= 0 then
+        x, y, z = read_vector3d(vehicle_obj + 0x5C)
+    end
+    local z_off = (crouch == 0) and 0.65 or 0.35 * crouch
+    return x, y, z + z_off
+end</code></pre>
+    </div>
+
+    <div class="doc-section">
+        <h2><i class="fas fa-table"></i> get_table_length <span class="badge-doc">tableLength</span></h2>
+        <p>Counts all key-value pairs in a table (works for both array and dictionary).</p>
+        <pre class="code-block"><code class="language-lua">local function tableLength(tbl)
+    local count = 0
+    for _ in pairs(tbl) do count = count + 1 end
+    return count
+end</code></pre>
+    </div>
+
+    <div class="doc-section">
+        <h2><i class="fas fa-link"></i> get_tag_referernce_address <span class="badge-doc">getTag</span></h2>
+        <p>Retrieves the memory address of a tag given its class and name.</p>
+        <pre class="code-block"><code class="language-lua">local function getTag(class, name)
+    local tag = lookup_tag(class, name)
+    return tag and read_dword(tag + 0xC) or nil
+end</code></pre>
+    </div>
+
+    <div class="doc-section">
+        <h2><i class="fas fa-gun"></i> get_weapon_slot <span class="badge-doc">getWeaponSlot</span></h2>
+        <pre class="code-block"><code class="language-lua">local function getWeaponSlot(dyn_player)
+    return read_byte(dyn_player + 0x2F2)
+end</code></pre>
+    </div>
+
+    <div class="doc-section">
+        <h2><i class="fas fa-radar"></i> map_object_scanner <span class="badge-doc">scanMapObjects</span></h2>
+        <pre class="code-block"><code class="language-lua">local function getClassName(class)
+    return class == 0x76656869 and "vehi"
+        or class == 0x77656170 and "weap"
+        or class == 1701931376 and "eqip"
+end
+
+local function scanMapObjects()
+    local base_tag_table = 0x40440000
+    local tag_array = read_dword(base_tag_table)
+    local tag_count = read_dword(base_tag_table + 0xC)
+    for i = 0, tag_count - 1 do
+        local tag = tag_array + 0x20 * i
+        local class = read_dword(tag)
+        local class_name = getClassName(class)
+        if class_name then
+            local name_ptr = read_dword(tag + 0x10)
+            local name = (name_ptr ~= 0) and read_string(name_ptr) or "no-name"
+            local meta = read_dword(tag + 0xC)
+            local tag_data = read_dword(tag + 0x14)
+            if tag_data ~= 0 then
+                local b2 = read_byte(tag_data + 0x2)
+                local b8 = read_byte(tag_data + 0x8)
+                local d0 = read_dword(tag_data + 0x0)
+                local d4 = read_dword(tag_data + 0x4)
+                cprint(class_name .. " meta=" .. meta .. " tag_data=0x" .. string.format("%X", tag_data) .. " name=" .. name .. " | b2=" .. b2 .. " b8=" .. b8 .. " d0=0x" .. string.format("%X", d0) .. " d4=0x" .. string.format("%X", d4), 12)
+            else
+                cprint(class_name .. " meta=" .. meta .. " tag_data=nil name=" .. name, 12)
+            end
+        end
+    end
+end</code></pre>
+    </div>
+
+    <div class="doc-section">
+        <h2><i class="fas fa-code-branch"></i> parse_args <span class="badge-doc">parseArgs</span></h2>
+        <p>Splits a string into substrings based on a delimiter.</p>
+        <pre class="code-block"><code class="language-lua">local function parseArgs(input, delimiter)
+    local result = {}
+    for substring in input:gmatch("([^" .. delimiter .. "]+)") do
+        result[#result + 1] = substring
+    end
+    return result
+end</code></pre>
+    </div>
+
+    <div class="doc-section">
+        <h2><i class="fas fa-envelope"></i> send_private_or_global_message <span class="badge-doc">send</span></h2>
+        <p>Sends a formatted message to all players (global) or a single player (private).</p>
+        <pre class="code-block"><code class="language-lua">local function send(player_id, ...)
+    if not player_id then
+        execute_command('msg_prefix ""')
+        say_all(string.format(...))
+        execute_command('msg_prefix "' .. MSG_PREFIX .. '"')
+        return
+    end
+    rprint(player_id, string.format(...))
+end</code></pre>
+    </div>
+
+    <div class="doc-section">
+        <h2><i class="fas fa-hourglass-half"></i> set_respawn_time <span class="badge-doc">setRespawnTime</span></h2>
+        <pre class="code-block"><code class="language-lua">local function setRespawnTime(playerIndex, respawnTime)
+    respawnTime = respawnTime or 3
+    local static_player = get_player(playerIndex)
+    if static_player then
+        write_dword(static_player + 0x2C, respawnTime * 33)
+    end
+end</code></pre>
+    </div>
+
+    <div class="doc-section">
+        <h2><i class="fas fa-shuffle"></i> shuffle_table_fisher_yates <span class="badge-doc">shuffleTable</span></h2>
+        <pre class="code-block"><code class="language-lua">
+        local function shuffleTable(tbl)
+            for i = #tbl, 2, -1 do
+                local j = math.random(i)
+                tbl[i], tbl[j] = tbl[j], tbl[i]
+            end
+        end
+        </code></pre>
+    </div>
+
+    <div class="doc-section">
+        <h2><i class="fas fa-user-astronaut"></i> vanish_player <span class="badge-doc">vanish</span></h2>
+        <p>Relocates a player off-map by modifying their world coordinates.</p>
+        <pre class="code-block"><code class="language-lua">
+local function vanish(playerId)
+    local static_player = get_player(playerId)
+    if not static_player then return end
+
+    local dyn_player = get_dynamic_player(playerId)
+    if dyn_player == 0 then return end
+
+    local x, y, z = getPlayerPosition(dyn_player)
+    if not x then return end
+
+    local x_off, y_off, z_off = -1000, -1000, -1000
+    write_float(static_player + 0xF8, x + x_off)
+    write_float(static_player + 0xFC, y + y_off)
+    write_float(static_player + 0x100, z + z_off)
+end</code></pre>
+    </div>
+
+</main>
+</body>
+</html>
