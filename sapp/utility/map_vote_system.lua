@@ -7,6 +7,7 @@ DESCRIPTION:      Advanced map voting system with the following features:
                   - Map repeat prevention
                   - Customizable vote timing and messaging
                   - Multiple game modes per map
+                  - Minimim Player Requirement per map (first element in each map's list)
 
 FEATURES:
                   - Players vote by typing numbers in chat
@@ -14,13 +15,16 @@ FEATURES:
                   - Dynamic map selection that prevents excessive repeats
                   - Customizable vote thresholds and timing controls
                   - Clear console option for better visibility
+                  - Maps only appear in vote if enough players are online
 
 USAGE:
                   - Configure settings in the MapVoteConfig table
+                  - For each map, set minimum players as the FIRST element, then list modes:
+                    Example: bloodgulch = { 8, 'ctf', 'slayer', 'koth' }
                   - System automatically activates at game end
                   - Players vote by typing the map number (1-8 by default)
 
-Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
+Copyright (c) 2022-2026 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
@@ -48,26 +52,32 @@ local MapVoteConfig = {
     },
     map_repeats_limit = 2,        -- Maximum number of times a map can be played consecutively.
 
+    --
+    -- Map List Settings:
+    -- Example: bloodgulch = { 8, 'ctf', 'slayer', 'koth' }  (needs at least 8 players)
+    -- If you don't want a minimum, set it to 0 or 1.
+    --
+
     map_list = {
-        ['bloodgulch'] = { 'ctf', 'slayer', 'koth' },
-        ['deathisland'] = { 'ctf', 'slayer' },
-        ['sidewinder'] = { 'ctf', 'slayer', 'race' },
-        ['icefields'] = { 'ctf' },
-        ['infinity'] = { 'ctf', 'slayer' },
-        ['timberland'] = { 'ctf', 'slayer' },
-        ['dangercanyon'] = { 'ctf' },
-        ['beavercreek'] = { 'ctf', 'slayer' },
-        ['boardingaction'] = { 'ctf' },
-        ['carousel'] = { 'ctf' },
-        ['chillout'] = { 'ctf', 'slayer' },
-        ['damnation'] = { 'ctf' },
-        ['gephyrophobia'] = { 'ctf' },
-        ['hangemhigh'] = { 'ctf', 'slayer' },
-        ['longest'] = { 'ctf' },
-        ['prisoner'] = { 'ctf', 'slayer' },
-        ['putput'] = { 'ctf' },
-        ['ratrace'] = { 'ctf' },
-        ['wizard'] = { 'ctf', 'slayer' }
+        bloodgulch = { 0, 'ctf', 'slayer', 'koth' },
+        deathisland = { 0, 'ctf', 'slayer' },
+        sidewinder = { 0, 'ctf', 'slayer', 'race' },
+        icefields = { 0, 'ctf' },
+        infinity = { 0, 'ctf', 'slayer' },
+        timberland = { 0, 'ctf', 'slayer' },
+        dangercanyon = { 0, 'ctf' },
+        beavercreek = { 0, 'ctf', 'slayer' },
+        boardingaction = { 0, 'ctf' },
+        carousel = { 0, 'ctf' },
+        chillout = { 0, 'ctf', 'slayer' },
+        damnation = { 0, 'ctf' },
+        gephyrophobia = { 0, 'ctf' },
+        hangemhigh = { 0, 'ctf', 'slayer' },
+        longest = { 0, 'ctf' },
+        prisoner = { 0, 'ctf', 'slayer' },
+        putput = { 0, 'ctf' },
+        ratrace = { 0, 'ctf' },
+        wizard = { 0, 'ctf', 'slayer' }
     }
 }
 
@@ -98,6 +108,10 @@ local function announce(msg)
     execute_command('msg_prefix "' .. server_prefix .. '"')
 end
 
+local function GetPlayerCount()
+    return tonumber(get_var(0, "$num")) or 0
+end
+
 local function BroadcastVoteOptions()
     for i = 1, 16 do
         if player_present(i) then
@@ -123,14 +137,43 @@ end
 
 local function GenerateMapOptions()
     local maps = MapVoteConfig.map_list
+    local player_count = GetPlayerCount()
     local vote_options = {}
     local count = 0
 
-    -- Create a flat list of all map-mode combinations
+    -- Create a flat list of all map-mode combinations that meet player requirements
     local all_options = {}
-    for map_name, modes in pairs(maps) do
-        for _, mode in ipairs(modes) do
-            table_insert(all_options, { map = map_name, mode = mode })
+    for map_name, entry in pairs(maps) do
+        local min_players
+        local modes
+
+        if type(entry[1]) == "number" then
+            min_players = entry[1]
+            modes = { table.unpack(entry, 2) }
+        else
+            min_players = 1
+            modes = entry
+        end
+
+        if player_count >= min_players then
+            for _, mode in ipairs(modes) do
+                table_insert(all_options, { map = map_name, mode = mode })
+            end
+        end
+    end
+
+    -- Fallback: if no maps meet the player requirement, include all maps (ignore minimum)
+    if #all_options == 0 then
+        for map_name, entry in pairs(maps) do
+            local modes
+            if type(entry[1]) == "number" then
+                modes = { table.unpack(entry, 2) }
+            else
+                modes = entry
+            end
+            for _, mode in ipairs(modes) do
+                table_insert(all_options, { map = map_name, mode = mode })
+            end
         end
     end
 
