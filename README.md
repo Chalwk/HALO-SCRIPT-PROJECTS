@@ -3,22 +3,18 @@
 
   <br>
 
+  <!-- Contact badges -->
+  <a href="mailto:chalwk.dev@gmail.com">
+    <img src="https://img.shields.io/badge/Email-chalwk.dev@gmail.com-c14438?style=for-the-badge&logo=gmail&logoColor=white" alt="Email">
+  </a>
+
+  <a href="https://discord.com/users/YOUR_DISCORD_ID">
+    <img src="https://img.shields.io/badge/Discord-chalwk-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Discord User">
+  </a>
+
   <a href="https://discord.gg/D76H7RVPC9">
-    <img src="https://img.shields.io/badge/Discord-Join_Our_Server-7289DA?style=for-the-badge&logo=discord" alt="Discord">
+    <img src="https://img.shields.io/badge/HSP_Discord-Join_Server-7289DA?style=for-the-badge&logo=discord&logoColor=white" alt="HSP Discord Server">
   </a>
-
-  <a href="https://chalwk.github.io/">
-    <img src="https://img.shields.io/badge/Chalwk-Portfolio-6ee7b7?style=for-the-badge&logo=github" alt="Portfolio">
-  </a>
-
----
-
-<strong>Contact Me:</strong>
-
-Email: `chalwk.dev@gmail.com`
-Discord: `chalwk`
-[HSP Discord Server](https://discord.gg/D76H7RVPC9)
-
 </div>
 
 **Educational Content Moved:** All my Halo guides, tutorials, Lua snippets, and reference materials have moved to my
@@ -41,7 +37,6 @@ port forwarding, memory offsets, and more.
 10. [Support My Work](#support-my-work)
 11. [Contributors](#contributors)
 12. [Code of Conduct](#contributors--community-guidelines)
-13. [Contact Me](#contact-me)
 
 ---
 
@@ -230,11 +225,5 @@ get involved.
 
 All community interactions are governed by
 our [Code of Conduct](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/CODE_OF_CONDUCT.md)
-
-## Contact Me
-
-- **Email:** `chalwk.dev@gmail.com`
-- **Discord:** `chalwk`
-- [HSP Discord Server](https://discord.gg/D76H7RVPC9)
 
 ---
