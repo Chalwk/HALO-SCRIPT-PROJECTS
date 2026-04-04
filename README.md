@@ -11,9 +11,14 @@
     <img src="https://img.shields.io/badge/Chalwk-Portfolio-6ee7b7?style=for-the-badge&logo=github" alt="Portfolio">
   </a>
 
-  <br>
+---
 
-<strong>chalwk.dev@gmail.com</strong>
+<strong>Contact Me:</strong>
+
+Email: `chalwk.dev@gmail.com`
+Discord: `chalwk`
+[HSP Discord Server](https://discord.gg/D76H7RVPC9)
+
 </div>
 
 **Educational Content Moved:** All my Halo guides, tutorials, Lua snippets, and reference materials have moved to my
@@ -36,6 +41,7 @@ port forwarding, memory offsets, and more.
 10. [Support My Work](#support-my-work)
 11. [Contributors](#contributors)
 12. [Code of Conduct](#contributors--community-guidelines)
+13. [Contact Me](#contact-me)
 
 ---
 
@@ -225,4 +231,10 @@ get involved.
 All community interactions are governed by
 our [Code of Conduct](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/CODE_OF_CONDUCT.md)
 
---
+## Contact Me
+
+- **Email:** `chalwk.dev@gmail.com`
+- **Discord:** `chalwk`
+- [HSP Discord Server](https://discord.gg/D76H7RVPC9)
+
+---
