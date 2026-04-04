@@ -268,7 +268,7 @@ function opairs(t)
             end)
     local count = 1
     return function()
-        if table.unpack(keys) then
+        if unpack(keys) then
             local key = keys[count]
             local value = t[key]
             count = count + 1
@@ -298,7 +298,7 @@ function rpairs(t)
             end)
     local count = 1
     return function()
-        if table.unpack(keys) then
+        if unpack(keys) then
             local key = keys[count]
             local value = t[key]
             count = count + 1
@@ -317,7 +317,7 @@ function expairs(t, fn)
     end
     local count = 1
     return function()
-        if table.unpack(keys) then
+        if unpack(keys) then
             local key = keys[count]
             local value = t[key]
             count = count + 1
@@ -333,7 +333,7 @@ function irand(min, max)
         table.insert(u, i)
     end
     return function()
-        if table.unpack(u) then
+        if unpack(u) then
             local rand = getrandomnumber(1, #u + 1)
             local value = u[rand]
             table.remove(u, rand)

@@ -2471,7 +2471,7 @@ function opairs(t)
             end)
     local count = 1
     return function()
-        if table.unpack(keys) then
+        if unpack(keys) then
             local key = keys[count]
             local value = t[key]
             count = count + 1
@@ -4930,7 +4930,7 @@ function opairs(t)
             end)
     local count = 1
     return function()
-        if table.unpack(keys) then
+        if unpack(keys) then
             local key = keys[count]
             local value = t[key]
             count = count + 1

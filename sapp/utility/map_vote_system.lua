@@ -149,7 +149,7 @@ local function GenerateMapOptions()
 
         if type(entry[1]) == "number" then
             min_players = entry[1]
-            modes = { table.unpack(entry, 2) }
+            modes = { unpack(entry, 2) }
         else
             min_players = 1
             modes = entry
@@ -167,7 +167,7 @@ local function GenerateMapOptions()
         for map_name, entry in pairs(maps) do
             local modes
             if type(entry[1]) == "number" then
-                modes = { table.unpack(entry, 2) }
+                modes = { unpack(entry, 2) }
             else
                 modes = entry
             end
