@@ -36,6 +36,12 @@
     * 〔🏆〕showcase
         * Highlight scripts you've written or customized from HSP.
 
+* ◉ COMMS
+    * 〔🎤〕General
+        * Voice chat for general conversation.
+    * 〔🎤〕In-Game
+        * Voice chat for live gameplay or server sessions.
+
 * ◉ HSP SERVERS
     * 〔🔔〕updates
         * Announcements and updates for HSP servers.
@@ -54,16 +60,8 @@
     * uber-racing _(only users with @HSP SERVERS can see this)_
     * zombies _(only users with @HSP SERVERS can see this)_
 
-* ◉ COMMS
-    * 〔🎤〕General
-        * Voice chat for general conversation.
-    * 〔🎤〕In-Game
-        * Voice chat for live gameplay or server sessions.
-
 * ◉ COUNCIL CHAMBERS (hidden to the public - admin channels)
     * 〔🛡️〕watchtower
         * Admin logs, moderation notes, and server oversight.
-    * 〔⌘〕halo_cmd_log
-        * Halo Server command logs (real-time)
-    * 〔🎤〕Court's Echo
+    * 〔🎤〕Admin Chat
         * Private staff voice channel for discussions and planning.

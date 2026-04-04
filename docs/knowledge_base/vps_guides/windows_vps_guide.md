@@ -1,1 +1,0 @@
-This guide is being reworked to provide a more reliable solution.

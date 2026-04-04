@@ -1,10 +1,24 @@
-<div align="center">
-  <img src="misc/hsp-logo2.png" alt="Halo Script Projects" width="250">
+<div style="text-align: center;">
+  <img src="misc/hsp-logo.jpg" alt="Halo Script Projects" style="width: 250px;">
 
-[![Discord](https://img.shields.io/badge/Discord-Join_Our_Server-7289DA?style=for-the-badge&logo=discord)](https://discord.gg/D76H7RVPC9)
-[![Website](https://img.shields.io/badge/Chalwk-Portfolio-6ee7b7?style=for-the-badge&logo=github)](https://chalwk.github.io/)
+<br>
 
+  <a href="https://discord.gg/D76H7RVPC9">
+    <img src="https://img.shields.io/badge/Discord-Join_Our_Server-7289DA?style=for-the-badge&logo=discord" alt="Discord">
+  </a>
+
+  <a href="https://chalwk.github.io/">
+    <img src="https://img.shields.io/badge/Chalwk-Portfolio-6ee7b7?style=for-the-badge&logo=github" alt="Portfolio">
+  </a>
+
+<strong>chalwk.dev@gmail.com</strong>
 </div>
+
+**Educational Content Moved:** All my Halo guides, tutorials, Lua snippets, and reference materials have moved to my
+personal website. Visit [chalwk.github.io](https://chalwk.github.io/blog) for articles on SAPP scripting, VPS hosting,
+port forwarding, memory offsets, and more.
+
+---
 
 ## Table of Contents
 
@@ -20,7 +34,6 @@
 10. [Support My Work](#support-my-work)
 11. [Contributors](#contributors)
 12. [Code of Conduct](#contributors--community-guidelines)
-13. [Contact](#contact)
 
 ---
 
@@ -56,7 +69,7 @@ compatible with many scripts and still sees use in some legacy setups.
 | [**SAPP Scripts**](./sapp)                                              | Attractive, Custom Games, Utilities                                      |
 | [**Phasor Scripts**](./phasor)                                          | Phasor Scripts                                                           |
 | [**Releases**](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases) | Larger SAPP projects with advanced functionality beyond standard scripts |
-| [Knowledge Base (docs)](docs/knowledge_base)                            | Documentation and community knowledge base                               |
+| [**Knowledge Base (docs)**](https://chalwk.github.io/blog/#page-1)      | Documentation and community knowledge base                               |
 
 ---
 
@@ -158,7 +171,13 @@ Have an idea for a new feature or script?
 
 ## Shoutout to Clans (Past and Present)
 
-> \- YAS -, -db-, «§», «Ag~, «Ð²Ä», «MAD», [Aķ], [CV], [GTV], [HGE], [IG], [IS], [K2], [McK], [Nbk], [VR], [WFFF], ]ZTA[. VSA, {ATP}, {BK}, {CK}, {CRG}, {HWS}, {LoH}, {NR}, {OTH}, {ØZ}, {PWH}, {SK}, {SSC}, {V3}, {X}, {XF} = SL =, {XG}, = EP =, = NcS =, = XA=, =DN=, =RDA=, £V», ÄÄÄ, AOD, AR, BR, BZ, C#w, CAF, CB, CES, CGD, CHr, CK, ÇM, CODE, CSI, CST, DFS, DR, Ðu¥, EK, ev, FCM, Fem1, Fez`, FIG, FooK, GDS, GoD, GRO, HH, HSF, HTK3, IR, KB, KMT, KoD, KoF, LaG, LF, LIB, LNZ, LP, LTD2, M5, MR, MVL, ňc, ÑE», ñuß, OSR, OWV, P§ycho, PÕQ, PRO, RC, RSF, SAR, SB, SDR, ßE, TBR, TCS, TFT, TM, ToR, X¬, xOSHx, xT
+> \- YAS -, -db-, «§», «Ag~, «Ð²Ä», «MAD», [Aķ], [CV], [GTV], [HGE], [IG], [IS], [K2], [McK], [Nbk], [VR], [WFFF], ]
+> ZTA[. VSA, {ATP}, {BK}, {CK}, {CRG}, {HWS}, {LoH}, {NR}, {OTH}, {ØZ}, {PWH}, {SK}, {SSC}, {V3}, {X}, {XF} = SL =,
+> {XG}, = EP =, = NcS =, = XA=, =DN=, =RDA=, £V», ÄÄÄ, AOD, AR, BR, BZ, C#w, CAF, CB, CES, CGD, CHr, CK, ÇM, CODE, CSI,
+> CST, DFS, DR, Ðu¥, EK, ev, FCM, Fem1, Fez`, FIG, FooK, GDS, GoD, GRO, HH, HSF, HTK3, IR, KB, KMT, KoD, KoF, LaG, LF,
+> LIB, LNZ, LP, LTD2, M5, MR, MVL, ňc, ÑE», ñuß, OSR, OWV, P§ycho, PÕQ, PRO, RC, RSF, SAR, SB, SDR, ßE, TBR, TCS, TFT,
+> TM,
+> ToR, X¬, xOSHx, xT
 
 If you would like your clan tag added to this list, please [contact me](#contact).
 
@@ -204,9 +223,4 @@ get involved.
 All community interactions are governed by
 our [Code of Conduct](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/CODE_OF_CONDUCT.md)
 
----
-
-## Contact
-
-- Primary Contact (email): `chalwk.dev@gmail.com`
-- Discord: (**chalwk**)
+--
