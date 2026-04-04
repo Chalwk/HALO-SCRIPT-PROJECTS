@@ -17,7 +17,7 @@
 
 **Educational Content Moved:** All my Halo guides, tutorials, Code snippets, and reference materials have moved to my
 personal website. Visit [chalwk.github.io](https://chalwk.github.io/blog) for articles on SAPP scripting, VPS hosting,
-port forwarding, memory offsets, and more. **All SAPP/Phasor scripts and resources are still available here.**
+port forwarding, memory offsets, and more. **All SAPP/Phasor Lua scripts are still available here.**
 
 ---
 
