@@ -1,7 +1,7 @@
-<div style="text-align: center;">
-  <img src="misc/hsp-logo.jpg" alt="Halo Script Projects" style="width: 250px;">
+<div align="center">
+  <img src="misc/hsp-logo.jpg" alt="Halo Script Projects" width="250">
 
-<br>
+  <br>
 
   <a href="https://discord.gg/D76H7RVPC9">
     <img src="https://img.shields.io/badge/Discord-Join_Our_Server-7289DA?style=for-the-badge&logo=discord" alt="Discord">
@@ -10,6 +10,8 @@
   <a href="https://chalwk.github.io/">
     <img src="https://img.shields.io/badge/Chalwk-Portfolio-6ee7b7?style=for-the-badge&logo=github" alt="Portfolio">
   </a>
+
+  <br>
 
 <strong>chalwk.dev@gmail.com</strong>
 </div>
