@@ -8,16 +8,14 @@
     <img src="https://img.shields.io/badge/Email-chalwk.dev@gmail.com-c14438?style=for-the-badge&logo=gmail&logoColor=white" alt="Email">
   </a>
 
-  <a href="https://discord.com/users/YOUR_DISCORD_ID">
-    <img src="https://img.shields.io/badge/Discord-chalwk-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Discord User">
-  </a>
-
   <a href="https://discord.gg/D76H7RVPC9">
     <img src="https://img.shields.io/badge/HSP_Discord-Join_Server-7289DA?style=for-the-badge&logo=discord&logoColor=white" alt="HSP Discord Server">
   </a>
 </div>
 
-**Educational Content Moved:** All my Halo guides, tutorials, Lua snippets, and reference materials have moved to my
+<br>
+
+**Educational Content Moved:** All my Halo guides, tutorials, Code snippets, and reference materials have moved to my
 personal website. Visit [chalwk.github.io](https://chalwk.github.io/blog) for articles on SAPP scripting, VPS hosting,
 port forwarding, memory offsets, and more.
 
