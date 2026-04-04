@@ -11,6 +11,10 @@
   <a href="https://discord.gg/D76H7RVPC9">
     <img src="https://img.shields.io/badge/HSP_Discord-Join_Server-7289DA?style=for-the-badge&logo=discord&logoColor=white" alt="HSP Discord Server">
   </a>
+
+  <a href="https://chalwk.github.io/">
+    <img src="https://img.shields.io/badge/Portfolio-Visit_Site-0A66C2?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Portfolio Website">
+  </a>
 </div>
 
 <br>
