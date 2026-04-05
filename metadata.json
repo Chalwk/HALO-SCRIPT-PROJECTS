@@ -342,8 +342,8 @@
       "description": "Monitors player crouching near corpses and triggers humorous announcements when tea-bagging is detected. Features configurable detection radius, required crouch count, cooldown periods, and a variety of customizable taunt messages. Includes admin toggle functionality.",
       "filename": "tea_bagging.lua"
     },
-    "truce_system": {
-      "truce": "Truce System",
+    "truce": {
+      "title": "Truce",
       "shortDescription": "Allows players to establish temporary peace agreements",
       "description": "Enables players to request, accept, or deny truces with opponents, preventing mutual damage while active. Features request management, configurable privilege levels, persistent truce data across maps, and comprehensive status tracking. Includes commands for managing active truces and pending requests.",
       "filename": "truce.lua"
