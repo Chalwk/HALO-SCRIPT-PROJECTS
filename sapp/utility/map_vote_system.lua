@@ -7,7 +7,8 @@ DESCRIPTION:      Advanced map voting system with the following features:
                   - Map repeat prevention
                   - Customizable vote timing and messaging
                   - Multiple game modes per map
-                  - Minimim Player Requirement per map (first element in each map's list)
+                  - Minimum Player Requirement per map (first element in each map's list)
+                  - Periodic re-display of vote options (fixes the "flash" issue)
 
 FEATURES:
                   - Players vote by typing numbers in chat
@@ -48,7 +49,7 @@ local MapVoteConfig = {
     timers = {
         time_to_show_votes = 7,   -- Time to show votes after game ends.
         time_to_tally_votes = 13, -- Time to tally votes after voting period ends.
-        re_show_interval = 3,     -- Time interval to re-show vote options.
+        re_show_interval = 4.2,   -- Time interval to re-show vote options.
     },
     map_repeats_limit = 2,        -- Maximum number of times a map can be played consecutively.
 
@@ -270,6 +271,14 @@ local function ProcessPlayerVote(id, vote_id)
     end
 end
 
+function RedisplayVoteOptions()
+    if vote_active and #current_vote_options > 0 then
+        BroadcastVoteOptions()
+        return true
+    end
+    return false
+end
+
 function DisplayVoteOptions()
     current_vote_options = GenerateMapOptions()
     map_results = {}
@@ -284,7 +293,13 @@ function DisplayVoteOptions()
         end
     end
 
+    -- Show vote options immediately, then schedule periodic re-display
     BroadcastVoteOptions()
+    if MapVoteConfig.timers.re_show_interval > 0 then
+        timer(MapVoteConfig.timers.re_show_interval * 1000, "RedisplayVoteOptions")
+    end
+
+    -- Schedule the final tally
     timer(MapVoteConfig.timers.time_to_tally_votes * 1000, "TallyVotesAndSelectMap")
 end
 
@@ -305,7 +320,7 @@ local function load_map(map, mode)
 end
 
 function TallyVotesAndSelectMap()
-    vote_active = false
+    vote_active = false -- this stops any further RedisplayVoteOptions calls
 
     local highest_vote = 0
     local winning_index = 1
@@ -347,7 +362,7 @@ end
 
 function OnStart()
     if get_var(0, '$gt') == 'n/a' then return end
-    vote_active = false
+    vote_active = false -- ensure no stray redisplay timers continue
     map_results = {}
     current_vote_options = {}
 
