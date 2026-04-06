@@ -33,13 +33,11 @@ port forwarding, memory offsets, and more. **All SAPP/Phasor Lua scripts are sti
 3. [Scripts, Releases and Knowledge Base](#scripts-releases-and-knowledge-base)
 4. [Community Favorites](#community-favorites)
 5. [Integration Tools](#integration-tools)
-6. [Contribute & Request Features](#contribute--request-features)
-7. [Community Hubs](#community-hubs)
-8. [Shoutout to Clans (Past and Present)](#shoutout-to-clans-past-and-present)
-9. [Halo Custom Edition Installer](#halo-custom-edition-installer)
+6. [Contributors, Community Guidelines & Request Features](#contributors-community-guidelines--request-features)
+7. [Halo Custom Edition Installer](#halo-custom-edition-installer)
+8. [Community Hubs](#community-hubs)
+9. [Shoutout to Clans (Past and Present)](#shoutout-to-clans-past-and-present)
 10. [Support My Work](#support-my-work)
-11. [Contributors](#contributors)
-12. [Code of Conduct](#contributors--community-guidelines)
 
 ---
 
@@ -145,7 +143,13 @@ Discord, providing real-time alerts, structured embeds, and a GUI interface for 
 
 ---
 
-## Contribute & Request Features
+## Contributors, Community Guidelines & Request Features
+
+See our [Contributing Guide](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/CONTRIBUTING.md) to learn how to
+get involved.
+
+All community interactions are governed by
+our [Code of Conduct](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/CODE_OF_CONDUCT.md)
 
 ### Submit Ideas
 
@@ -156,6 +160,22 @@ Have an idea for a new feature or script?
 
 - [Bug Report Form](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/issues/new?assignees=Chalwk&labels=Bug%2CNeeds+Triage&projects=&template=BUG_REPORT.yaml&title=%5BBUG%5D+%3Ctitle%3E)
 - [Feature Request Form](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/issues/new?assignees=Chalwk&labels=Feature%2CNeeds+Review&projects=&template=FEATURE_REQUEST.yaml&title=%5BFEATURE%5D+%3Ctitle%3E)
+
+---
+
+## Halo Custom Edition Installer:
+
+**Note:** You need your own CD Key to install this.
+
+[halo_ce_installer.zip](https://drive.google.com/file/d/1TTiBYhO9JS5Js0exRlygH9pAC2yV1KsV/view?usp=sharing)  
+[haloce-patch-1.0.10.zip](https://drive.google.com/file/d/1CIPg3XZ3VIm4ngUnDqLCRNSn9x-jxD6W/view?usp=drive_link)
+
+### LAA Patched Executables
+
+These are Large Address Aware (LAA) patched versions of Halo executables, allowing the game to use more than 2 GB of RAM
+on 64-bit systems:
+
+- [Download Page](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/laa_patched)
 
 ---
 
@@ -183,26 +203,7 @@ Have an idea for a new feature or script?
 > {XG}, = EP =, = NcS =, = XA=, =DN=, =RDA=, £V», ÄÄÄ, AOD, AR, BR, BZ, C#w, CAF, CB, CES, CGD, CHr, CK, ÇM, CODE, CSI,
 > CST, DFS, DR, Ðu¥, EK, ev, FCM, Fem1, Fez`, FIG, FooK, GDS, GoD, GRO, HH, HSF, HTK3, IR, KB, KMT, KoD, KoF, LaG, LF,
 > LIB, LNZ, LP, LTD2, M5, MR, MVL, ňc, ÑE», ñuß, OSR, OWV, P§ycho, PÕQ, PRO, RC, RSF, SAR, SB, SDR, ßE, TBR, TCS, TFT,
-> TM,
-> ToR, X¬, xOSHx, xT
-
-If you would like your clan tag added to this list, please [contact me](#contact).
-
----
-
-## Halo Custom Edition Installer:
-
-**Note:** You need your own CD Key to install this.
-
-[halo_ce_installer.zip](https://drive.google.com/file/d/1TTiBYhO9JS5Js0exRlygH9pAC2yV1KsV/view?usp=sharing)  
-[haloce-patch-1.0.10.zip](https://drive.google.com/file/d/1CIPg3XZ3VIm4ngUnDqLCRNSn9x-jxD6W/view?usp=drive_link)
-
-### LAA Patched Executables
-
-These are Large Address Aware (LAA) patched versions of Halo executables, allowing the game to use more than 2 GB of RAM
-on 64-bit systems:
-
-- [Download Page](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/laa_patched)
+> TM, ToR, X¬, xOSHx, xT
 
 ---
 
@@ -212,15 +213,5 @@ Enjoy these projects? Help me continue development:
 
 - ☕ [Donate via PayPal](https://www.paypal.com/ncp/payment/XUPTKDU6LKM3G)
 - **Star ⭐ this repository** to show appreciation and stay updated!
-
----
-
-## Contributors & Community Guidelines
-
-See our [Contributing Guide](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/CONTRIBUTING.md) to learn how to
-get involved.
-
-All community interactions are governed by
-our [Code of Conduct](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/CODE_OF_CONDUCT.md)
 
 ---
