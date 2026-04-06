@@ -3,7 +3,6 @@
 
   <br>
 
-  <!-- Contact badges -->
   <a href="mailto:chalwk.dev@gmail.com">
     <img src="https://img.shields.io/badge/Email-chalwk.dev@gmail.com-c14438?style=for-the-badge&logo=gmail&logoColor=white" alt="Email">
   </a>
@@ -13,7 +12,7 @@
   </a>
 
   <a href="https://chalwk.github.io/">
-    <img src="https://img.shields.io/badge/Portfolio-Visit_Site-0A66C2?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Portfolio Website">
+    <img src="https://img.shields.io/badge/Chalwk's Website-Visit-0A66C2?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Portfolio Website">
   </a>
 </div>
 
