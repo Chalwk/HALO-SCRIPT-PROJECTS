@@ -18,7 +18,9 @@
 
 <br>
 
-**Educational Content Moved:** All my Halo guides, tutorials, Code snippets, and reference materials have moved to my
+---
+
+**Educational Content Moved:** All my Halo guides, tutorials, code snippets, and reference materials have moved to my
 personal website. Visit [chalwk.github.io](https://chalwk.github.io/blog) for articles on SAPP scripting, VPS hosting,
 port forwarding, memory offsets, and more. **All SAPP/Phasor Lua scripts are still available here.**
 
@@ -209,13 +211,6 @@ Enjoy these projects? Help me continue development:
 
 - ☕ [Donate via PayPal](https://www.paypal.com/ncp/payment/XUPTKDU6LKM3G)
 - **Star ⭐ this repository** to show appreciation and stay updated!
-
----
-
-## Contributors
-
-Special thanks to all contributors!  
-See our [Contributing Guide](https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/CONTRIBUTING.md)
 
 ---
 
