@@ -28,22 +28,20 @@ port forwarding, memory offsets, and more. **All SAPP/Phasor Lua scripts are sti
 
 ## Table of Contents
 
-## Table of Contents
-
-1. [Overview](#overview)
-2. [What are SAPP & Phasor?](#what-are-sapp--phasor)
-3. [Scripts, Releases and Knowledge Base](#scripts-releases-and-knowledge-base)
-4. [Community Favorites](#community-favorites)
-5. [Integration Tools](#integration-tools)
-   5.1 [SAPPDiscordBot](#sappdiscordbot)
-6. [Contributors, Community Guidelines & Request Features](#contributors-community-guidelines--request-features)
-   6.1 [Submit Ideas](#submit-ideas)
-   6.2 [Report Issues](#report-issues)
-7. [Halo Custom Edition Installer](#halo-custom-edition-installer)
-   7.1 [LAA Patched Executables](#laa-patched-executables)
-8. [Community Hubs](#community-hubs)
-9. [Shoutout to Clans (Past and Present)](#shoutout-to-clans-past-and-present)
-10. [Support My Work](#support-my-work)
+* [1. Overview](#overview)
+* [2. What are SAPP & Phasor?](#what-are-sapp--phasor)
+* [3. Scripts, Releases and Knowledge Base](#scripts-releases-and-knowledge-base)
+* [4. Community Favorites](#community-favorites)
+* [5. Integration Tools](#integration-tools)
+    * [5.1 SAPPDiscordBot](#sappdiscordbot)
+* [6. Contributors, Community Guidelines & Request Features](#contributors-community-guidelines--request-features)
+    * [6.1 Submit Ideas](#submit-ideas)
+    * [6.2 Report Issues](#report-issues)
+* [7. Halo Custom Edition Installer](#halo-custom-edition-installer)
+    * [7.1 LAA Patched Executables](#laa-patched-executables)
+* [8. Community Hubs](#community-hubs)
+* [9. Shoutout to Clans (Past and Present)](#shoutout-to-clans-past-and-present)
+* [10. Support My Work](#support-my-work)
 
 ---
 
