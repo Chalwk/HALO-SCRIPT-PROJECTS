@@ -47,9 +47,8 @@ port forwarding, memory offsets, and more. **All SAPP/Phasor Lua scripts are sti
 
 ## Overview
 
-Welcome to the **Halo Script Projects (HSP)** repository! This repository contains a personally curated collection of
-Lua scripts, utilities, and resources for Halo: Combat Evolved (PC) and Halo: Custom Edition (CE) dedicated servers,
-created and maintained by me.
+This repository serves as the largest public archive of Lua scripts and resources for the SAPP and Phasor dedicated
+server applications for Halo: PC and CE. All [Lua scripts](./sapp) here are created and maintained by me (Chalwk).
 
 If you are a server administrator or operator using SAPP or Phasor, you will find a wide range of scripts, guides, and
 insights to enhance, customize, and extend your multiplayer server experience.
@@ -59,14 +58,16 @@ insights to enhance, customize, and extend your multiplayer server experience.
 ## What are SAPP & Phasor?
 
 **SAPP** and **Phasor** are server-side extensions that provide advanced scripting and customization capabilities for
-**Halo: PC** and **Halo: CE** dedicated servers.
+dedicated servers.
 
-**SAPP**, developed and maintained by **sehé** ([halo.isimaginary.com](http://halo.isimaginary.com)), is the most
-feature-rich and widely used extension. It provides powerful Lua scripting support, anti-cheat tools, event hooks,
-command handling, player management, logging, and numerous under-the-hood features.
+**SAPP** was developed by sehé and is the most feature-rich and widely used extension. It provides powerful Lua
+scripting support, anti-cheat tools, event hooks, command handling, player management, logging, and numerous
+under-the-hood features.
 
-**Phasor** was an earlier server extension with similar goals. Though no longer actively maintained, it remains
-compatible with many scripts and still sees use in some legacy setups.
+**Phasor** was an earlier server extension with similar goals.
+
+Both SAPP and Phasor are no longer actively maintained. While development has ceased, both are considered stable and
+complete in their final released versions.
 
 ---
 
