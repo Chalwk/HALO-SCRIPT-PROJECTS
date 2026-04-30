@@ -1,6 +1,6 @@
 --[[
 =====================================================================================
-SCRIPT NAME:      vehicle-speedometer.lua
+SCRIPT NAME:      vehicle_speedometer.lua
 DESCRIPTION:      Displays the player's current vehicle speed in km/h on the HUD.
                   The script calculates speed using the vehicle's velocity vector
                   and updates it at a configurable interval.
@@ -20,14 +20,14 @@ LICENSE:          MIT License
 =====================================================================================
 ]]
 
--- Config Start --
+-- CONFIG --
 clua_version = 2.056
 
 local enabled = true            -- enable the script
 local custom_command = "speedo" -- command to toggle the script
 local interval = 15             -- update every 15 ticks (~0.25 sec)
 local factor = 30 * 3.6         -- 108: ticks/sec * world_units_to_kmh
--- Config End --
+-- END CONFIG --
 
 local timer = 0
 

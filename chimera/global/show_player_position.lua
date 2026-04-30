@@ -1,6 +1,6 @@
 --[[
 =====================================================================================
-SCRIPT NAME:      player_position.lua
+SCRIPT NAME:      show_player_position.lua
 DESCRIPTION:      Real-time coordinate display with customizable output.
 
                   Features:
@@ -18,13 +18,13 @@ LICENSE:          MIT License
 =====================================================================================
 ]]
 
--- Config Start --
+-- CONFIG --
 clua_version = 2.056
 
 local enabled = true                                           -- enable the script
 local custom_command = "show_pos"                              -- command to toggle the script
 local output_format = "Player position is X={x}, Y={y}, Z={z}" -- message format
--- Config End --
+-- END CONFIG --
 
 local fmt = string.format
 

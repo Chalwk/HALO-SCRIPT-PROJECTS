@@ -1,6 +1,6 @@
 --[[
 =====================================================================================
-SCRIPT NAME:      low-ammo-warning.lua
+SCRIPT NAME:      low_ammo_warning.lua
 DESCRIPTION:      A simple script that displays a warning message when your weapon's
                   ammo is running low.
 
@@ -16,7 +16,7 @@ LICENSE:          MIT License
 =====================================================================================
 ]]
 
--- Config Start --
+-- CONFIG --
 clua_version = 2.056
 
 local enabled = true               -- enable the script
@@ -24,7 +24,7 @@ local custom_command = "ammo_warn" -- command to toggle the script
 local ammo_threshold = 5           -- ammo count below which warning triggers
 local warning_interval = 30        -- ticks between warning repetitions
 local flash_duration = 5           -- how long the warning message flashes on screen (in ticks)
--- Config End --
+-- END CONFIG --
 
 local timer, flash_timer, warning_active = 0, 0, false
 
