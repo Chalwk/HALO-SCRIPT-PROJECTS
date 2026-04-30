@@ -28,6 +28,9 @@ local output_format = "Player position is X={x}, Y={y}, Z={z}" -- message format
 
 local fmt = string.format
 
+set_callback("tick", "OnTick")
+set_callback("command", "OnCommand")
+
 function OnTick()
     if not enabled then return end
 
@@ -58,6 +61,3 @@ function OnCommand(command)
         return false
     end
 end
-
-set_callback("tick", "OnTick")
-set_callback("command", "OnCommand")
