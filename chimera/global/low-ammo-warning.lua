@@ -63,7 +63,7 @@ end
 function OnCommand(command)
     if command:lower() == custom_command then
         enabled = not enabled -- set to the opposite of current state
-        console_out("Speedometer " .. (enabled and "enabled" or "disabled") .. ".")
+        console_out("Low Ammo Warning " .. (enabled and "enabled" or "disabled") .. ".")
         return false
     end
 end
