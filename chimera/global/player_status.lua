@@ -1,0 +1,91 @@
+--[[
+=====================================================================================
+SCRIPT NAME:      player_status_monitor.lua
+DESCRIPTION:      Displays a HUD overlay of all players with their team,
+                  health, shields, weapon, and ammo.
+                  Updates every 15 ticks.
+
+                  Command: /pstatus - Toggles display
+
+Copyright (c) 2026 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+=====================================================================================
+]]
+
+-- CONFIG --
+clua_version = 2.056
+
+local enabled = true
+local command = "pstatus"
+local interval = 15
+local max_players = 16
+-- END CONFIG --
+
+local timer = 0
+local floor = math.floor
+local concat = table.concat
+local char, format = string.char, string.format
+
+set_callback("tick", "OnTick")
+set_callback("command", "OnCommand")
+
+local function read_string(addr)
+    if not addr or addr == 0 or addr == 0xFFFFFFFF then return nil end
+    local bytes = {}
+    for i = 0, 127 do
+        local b = read_byte(addr + i)
+        if b == 0 then break end
+        bytes[#bytes + 1] = char(b)
+    end
+    return concat(bytes)
+end
+
+local function get_object_name(obj)
+    if not obj then return "N/A" end
+    local tag = get_tag(read_dword(obj))
+    if not tag then return "???" end
+    local path = read_string(read_dword(tag + 0x10)) or "unknown"
+    return path:match(".*\\([^\\]+)$") or path
+end
+
+function OnTick()
+    if not enabled then return end
+
+    timer = timer + 1
+    if timer < interval then return end
+    timer = 0
+
+    execute_script("cls")
+    console_out("PLAYER STATUS ::")
+
+    for i = 0, max_players - 1 do
+        local player_obj = get_dynamic_player(i)
+        if player_obj then
+            local p = get_player(i)
+            local team = read_byte(p + 0x20)
+            local team_str = (team == 0) and "R" or "B"
+
+            local health = read_float(player_obj + 0xE0) or 0
+            local shields = read_float(player_obj + 0xE4) or 0
+
+            local hp = floor(health * 100)
+            local sh = floor(shields * 100)
+
+            local pid = i + 1
+
+            local weapon = get_object(read_dword(player_obj + 0x118))
+            local wname = get_object_name(weapon)
+            local ammo = weapon and read_word(weapon + 0x2B6) or 0
+
+            console_out(format("[%s] P%d | HP:%d SH:%i | %s (%d)", team_str, pid, hp, sh, wname or "none", ammo or 0))
+        end
+    end
+end
+
+function OnCommand(cmd)
+    if cmd:lower() == command then
+        enabled = not enabled
+        console_out("Player status monitor " .. (enabled and "enabled" or "disabled") .. ".")
+        return false
+    end
+end
