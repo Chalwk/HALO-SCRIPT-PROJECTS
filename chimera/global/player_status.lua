@@ -1,6 +1,6 @@
 --[[
 =====================================================================================
-SCRIPT NAME:      player_status_monitor.lua
+SCRIPT NAME:      player_status.lua
 DESCRIPTION:      Displays a HUD overlay of all players with their team,
                   health, shields, weapon, and ammo.
                   Updates every 15 ticks.
