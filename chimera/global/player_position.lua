@@ -18,13 +18,15 @@ LICENSE:          MIT License
 =====================================================================================
 ]]
 
+-- Config Start --
 clua_version = 2.056
 
-local custom_command = "show_pos"
-local enabled = true
+local enabled = true                                           -- enable the script
+local custom_command = "show_pos"                              -- command to toggle the script
+local output_format = "Player position is X={x}, Y={y}, Z={z}" -- message format
+-- Config End --
 
 local fmt = string.format
-local output_format = "Player position is X={x}, Y={y}, Z={z}"
 
 function OnTick()
     if not enabled then return end

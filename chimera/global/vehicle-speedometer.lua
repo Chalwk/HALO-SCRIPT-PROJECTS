@@ -1,4 +1,3 @@
----@diagnostic disable: undefined-global
 --[[
 =====================================================================================
 SCRIPT NAME:      vehicle-speedometer.lua
@@ -21,12 +20,13 @@ LICENSE:          MIT License
 =====================================================================================
 ]]
 
+-- Config Start --
 clua_version = 2.056
 
--- Config Start --
-local enabled = true
-local interval = 15 	 -- update every 15 ticks (~0.25 sec)
-local factor = 30 * 3.6  -- 108: ticks/sec * world_units_to_kmh
+local enabled = true            -- enable the script
+local custom_command = "speedo" -- command to toggle the script
+local interval = 15             -- update every 15 ticks (~0.25 sec)
+local factor = 30 * 3.6         -- 108: ticks/sec * world_units_to_kmh
 -- Config End --
 
 local timer = 0
@@ -44,7 +44,7 @@ function OnTick()
     if not player then return end
 
     local vehicle_id = read_dword(player + 0x11C)
-    if vehicle_id == 0xFFFFFFFF then return end   -- not in a vehicle
+    if vehicle_id == 0xFFFFFFFF then return end -- not in a vehicle
 
     local vehicle = get_object(vehicle_id)
     if not vehicle then return end
@@ -53,7 +53,7 @@ function OnTick()
     local vy = read_float(vehicle + 0x6C)
     local vz = read_float(vehicle + 0x70)
 
-    local raw_speed = math.sqrt(vx*vx + vy*vy + vz*vz)
+    local raw_speed = math.sqrt(vx * vx + vy * vy + vz * vz)
     local kmh = raw_speed * factor
 
     -- Clear previous HUD messages (prevents spam)
@@ -63,7 +63,7 @@ function OnTick()
 end
 
 function OnCommand(command)
-    if command:lower() == "speedo" then
+    if command:lower() == custom_command then
         enabled = not enabled -- set to the opposite of current state
         console_out("Speedometer " .. (enabled and "enabled" or "disabled") .. ".")
         return false
