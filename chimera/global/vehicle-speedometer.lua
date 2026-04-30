@@ -1,7 +1,7 @@
 ---@diagnostic disable: undefined-global
 --[[
 =====================================================================================
-SCRIPT NAME:      speedometer.lua
+SCRIPT NAME:      vehicle-speedometer.lua
 DESCRIPTION:      Displays the player's current vehicle speed in km/h on the HUD.
                   The script calculates speed using the vehicle's velocity vector
                   and updates it at a configurable interval.
