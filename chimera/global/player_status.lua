@@ -48,6 +48,22 @@ local function get_object_name(obj)
     return path:match(".*\\([^\\]+)$") or path
 end
 
+local function get_player_name(index)
+    local obj = get_player(index)
+    local address = obj + 0x4
+    local length = 12
+
+    local bytes = {}
+
+    for i = 1, length do
+        local byte = read_byte(address + (i - 1) * 2)
+        if byte == 0 then break end
+        bytes[#bytes + 1] = char(byte)
+    end
+
+    return concat(bytes)
+end
+
 function OnTick()
     if not enabled then return end
 
@@ -56,12 +72,13 @@ function OnTick()
     timer = 0
 
     execute_script("cls")
-    console_out("PLAYER STATUS ::")
+    console_out("PLAYER STATUS:")
 
     for i = 0, max_players - 1 do
         local player_obj = get_dynamic_player(i)
         if player_obj then
             local p = get_player(i)
+
             local team = read_byte(p + 0x20)
             local team_str = (team == 0) and "R" or "B"
 
@@ -71,13 +88,22 @@ function OnTick()
             local hp = floor(health * 100)
             local sh = floor(shields * 100)
 
-            local pid = i + 1
-
             local weapon = get_object(read_dword(player_obj + 0x118))
             local wname = get_object_name(weapon)
             local ammo = weapon and read_word(weapon + 0x2B6) or 0
 
-            console_out(format("[%s] P%d | HP:%d SH:%i | %s (%d)", team_str, pid, hp, sh, wname or "none", ammo or 0))
+            local name = get_player_name(i)
+
+            console_out(format(
+                "[%s] %s (%d) | HP:%d SH:%i | %s (%d)",
+                team_str,
+                name,
+                i + 1,
+                hp,
+                sh,
+                wname or "none",
+                ammo or 0
+            ))
         end
     end
 end
