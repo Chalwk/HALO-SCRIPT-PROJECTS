@@ -15,9 +15,9 @@ LICENSE:          MIT License
 =====================================================================================
 ]]
 
+-- CONFIG --
 clua_version = 2.056
 
--- CONFIG --
 local enabled = true
 local idle_seconds = 2   -- 3 minutes
 local move_radius = 0.01 -- movement below this is considered still

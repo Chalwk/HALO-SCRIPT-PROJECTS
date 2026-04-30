@@ -14,9 +14,9 @@ LICENSE:          MIT License
 =====================================================================================
 ]]
 
+-- CONFIG --
 clua_version = 2.056
 
--- CONFIG --
 local enabled = true
 local command = "wpninfo"
 local update_interval = 5 -- ticks between refreshes
