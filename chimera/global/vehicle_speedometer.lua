@@ -5,14 +5,7 @@ DESCRIPTION:      Displays the player's current vehicle speed in km/h on the HUD
                   The script calculates speed using the vehicle's velocity vector
                   and updates it at a configurable interval.
 
-                  Features:
-                  - Real-time vehicle speed calculation (km/h)
-                  - HUD-based speed display
-                  - Toggle on/off via command
-                  - Adjustable update interval and conversion factor
-
-                  Command:
-                  /speedo - Toggle speed display on/off
+                  Command: /speedo - Toggle speed display on/off
 
 Copyright (c) 2026 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

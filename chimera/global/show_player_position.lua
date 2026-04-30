@@ -1,16 +1,9 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      show_player_position.lua
-DESCRIPTION:      Real-time coordinate display with customizable output.
+DESCRIPTION:      Display your map coordinates with customizable output.
 
-                  Features:
-                  - Live XYZ position tracking
-                  - Configurable message format
-                  - Console toggle command
-                  - Multi-client compatibility
-
-                  Command:
-                  /show_pos - Toggle coordinate display
+                  Command: /show_pos - Toggle coordinate display
 
 Copyright (c) 2025 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

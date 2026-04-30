@@ -4,11 +4,7 @@ SCRIPT NAME:      low_ammo_warning.lua
 DESCRIPTION:      A simple script that displays a warning message when your weapon's
                   ammo is running low.
 
-                  Features:
-                  - Configurable command, ammo threshold, warning interval & flash duration
-
-                  Command:
-                  /ammo_warn - Toggle low ammo display
+                  Command: /ammo_warn - Toggle low ammo display
 
 Copyright (c) 2026 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

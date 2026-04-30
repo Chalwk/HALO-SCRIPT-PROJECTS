@@ -3,8 +3,7 @@
 SCRIPT NAME:      mini_compass.lua
 DESCRIPTION:      Displays a compass on the HUD using cardinal and intercardinal points.
 
-                  Command:
-                  /compass - Toggle compass display
+                  Command: /compass - Toggle compass display
 
 Copyright (c) 2026 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
