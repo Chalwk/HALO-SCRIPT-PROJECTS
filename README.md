@@ -57,8 +57,8 @@ insights to enhance, customize, and extend your multiplayer server experience.
 
 ## What are SAPP & Phasor?
 
-**SAPP** and **Phasor** are server-side extensions that provide advanced scripting and customization capabilities for
-dedicated servers.
+**SAPP** and **Phasor** are server-side extensions for `haloded.exe`/`haloceded.exe` that provide advanced scripting and
+customization capabilities for dedicated servers.
 
 **SAPP** was developed by sehé and is the most feature-rich and widely used extension. It provides powerful Lua
 scripting support, anti-cheat tools, event hooks, command handling, player management, logging, and numerous
@@ -66,8 +66,7 @@ under-the-hood features.
 
 **Phasor** was an earlier server extension with similar goals.
 
-Both SAPP and Phasor are no longer actively maintained. While development has ceased, both are considered stable and
-complete in their final released versions.
+SAPP and Phasor are no longer actively maintained, but stable and complete in their final released versions.
 
 ---
 
