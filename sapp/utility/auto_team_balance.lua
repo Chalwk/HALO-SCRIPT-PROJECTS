@@ -21,13 +21,11 @@ LICENSE:          MIT License
 -- CONFIG START --
 api_version = "1.12.0.0"
 
-local CONFIG = {
-    DELAY = 300,          -- seconds between check-ins
-    MIN_PLAYERS = 4,      -- total players needed before anything happens
-    MAX_DIFF = 2,         -- team size gap that triggers a move
-    PRIORITY = "smaller", -- "smaller" = fill the small team; "larger" = fill the large team
-    MOVE_COOLDOWN = 120   -- seconds before a player can be moved again
-}
+local DELAY = 300          -- seconds between check-ins
+local MIN_PLAYERS = 4      -- total players needed before anything happens
+local MAX_DIFF = 2         -- team size gap that triggers a move
+local PRIORITY = "smaller" -- "smaller" = fill the small team; "larger" = fill the large team
+local MOVE_COOLDOWN = 120  -- seconds before a player can be moved again
 -- END CONFIG --
 
 local os_time = os.time
@@ -64,7 +62,7 @@ local function try_switch(id, from_team, to_team)
     if get_var(id, "$team") ~= from_team then return false end
 
     local now = os_time()
-    if last_move_time[id] and now - last_move_time[id] < CONFIG.MOVE_COOLDOWN then return false end
+    if last_move_time[id] and now - last_move_time[id] < MOVE_COOLDOWN then return false end
 
     execute_command("st " .. id .. " " .. to_team)
     last_move_time[id] = now
@@ -83,10 +81,10 @@ local function balance()
     local reds, blues = team_counts()
     local total = reds + blues
 
-    if total < CONFIG.MIN_PLAYERS or math_abs(reds - blues) <= CONFIG.MAX_DIFF then return end
+    if total < MIN_PLAYERS or math_abs(reds - blues) <= MAX_DIFF then return end
 
     local from, to
-    if CONFIG.PRIORITY == "smaller" then
+    if PRIORITY == "smaller" then
         if reds > blues then
             from, to = "red", "blue"
         else
@@ -139,7 +137,7 @@ function OnTick()
     if last_tick == nil then return end
 
     local now = os_time()
-    if now - last_tick >= CONFIG.DELAY then
+    if now - last_tick >= DELAY then
         last_tick = now
         balance()
     end
@@ -183,7 +181,7 @@ function OnCommand(id, command)
         if setting == "delay" then
             local v = tonumber(value)
             if v and v > 0 then
-                CONFIG.DELAY = v
+                DELAY = v
                 rprint(id, "DELAY set to " .. v)
             else
                 rprint(id, "Invalid delay (positive number)")
@@ -191,7 +189,7 @@ function OnCommand(id, command)
         elseif setting == "min_players" then
             local v = tonumber(value)
             if v and v > 0 and v <= 16 then
-                CONFIG.MIN_PLAYERS = v
+                MIN_PLAYERS = v
                 rprint(id, "MIN_PLAYERS set to " .. v)
             else
                 rprint(id, "Invalid min_players (1-16)")
@@ -199,14 +197,14 @@ function OnCommand(id, command)
         elseif setting == "max_diff" then
             local v = tonumber(value)
             if v and v >= 0 then
-                CONFIG.MAX_DIFF = v
+                MAX_DIFF = v
                 rprint(id, "MAX_DIFF set to " .. v)
             else
                 rprint(id, "Invalid max_diff (0 or more)")
             end
         elseif setting == "priority" then
             if value == "smaller" or value == "larger" then
-                CONFIG.PRIORITY = value
+                PRIORITY = value
                 rprint(id, "PRIORITY set to " .. value)
             else
                 rprint(id, "Priority must be 'smaller' or 'larger'")
@@ -214,7 +212,7 @@ function OnCommand(id, command)
         elseif setting == "move_cooldown" then
             local v = tonumber(value)
             if v and v >= 0 then
-                CONFIG.MOVE_COOLDOWN = v
+                MOVE_COOLDOWN = v
                 rprint(id, "MOVE_COOLDOWN set to " .. v)
             else
                 rprint(id, "Invalid cooldown (0 or more seconds)")
