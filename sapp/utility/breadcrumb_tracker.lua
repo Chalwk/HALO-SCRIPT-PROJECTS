@@ -14,6 +14,11 @@ FEATURES:
                   - Admin command: /crumbs <player_id> [page]
                     Shows all known linked identities, paginated (15 per page).
                   - Automatic stale record cleanup.
+                  - Composite risk score (0-100%) based on IP, subnet, hash & VPN.
+                  - VPN IP cross-referencing: shows all names that used a flagged IP.
+                  - Caching for IPQS lookups (24h TTL) to save quota.
+                  - Optional user_agent param for better fraud scoring.
+                  - Differentiates alerts for pirated hashes.
 
 REQUIREMENTS:     Install in the same folder as sapp.dll.
                   - Lua JSON Parser:  http://regex.info/blog/lua/json
@@ -91,7 +96,7 @@ local config = {
     vpn_detection = {
 
         -- GLOBAL SWITCH
-        -- true  -> query IPQS on every join
+        -- true  -> query IPQS on every join (cache saves quota)
         -- false -> skip all VPN lookups
         enabled = true,
 
@@ -99,10 +104,9 @@ local config = {
         api_key = "PASTE_API_KEY_HERE",
 
         -- SCORING STRICTNESS (0-3)
-        --  0 = lowest strictness (default), expands tests as value increases.
-        --  Levels 2+ carry a higher risk of false positives.
-        --  It is recommended to start at 0 and increase only if necessary.
-        --  Ref: strictness=0: Uses the lowest strictness (0-3) for Fraud Scoring.
+        -- 0 = lowest strictness (default), expands tests as value increases.
+        -- Levels 2+ carry a higher risk of false positives.
+        -- It is recommended to start at 0 and increase only if necessary.
         strictness = 1,
 
         -- SPEED VS ACCURACY
@@ -135,7 +139,6 @@ local config = {
         --   75-84 = suspicious (often proxy/VPN/Tor, but not necessarily fraudulent) - flag, don't block.
         --   85-89 = high confidence of abusive/malicious behavior.
         --   90+   = very high confidence; strongly recommended to block.
-        -- Ref: Fraud Scores >= 75 are suspicious, but not necessarily fraudulent. Scores >= 85 indicate suspicious activity.
         fraud_score_threshold = 85,
 
         -- INDIVIDUAL CHECK FLAGS
@@ -150,7 +153,23 @@ local config = {
         -- IP belongs to a crawler.
         check_crawler = false,
         -- This setting is for premium accounts only; IP recently used by bots/non-human traffic.
-        bot_status = false
+        bot_status = false,
+        -- Optional user-agent string to improve scoring accuracy.
+        -- Leave empty to not send any.
+        user_agent = "SAPP/10.2.1 (HaloPC/CE)",
+
+        -- Cache TTL (seconds) for IPQS responses to avoid duplicate lookups.
+        -- Default 24 hours
+        cache_ttl = 86400
+    },
+
+    -- Weights for the composite risk score (0-100).
+    risk_weights = {
+        ip_match = 30,
+        subnet_match = 10,
+        hash_match = 5,
+        vpn_flag = 20,
+        pirated_hash = 5 -- extra weight if the hash is a known pirated one
     },
 
     -- Days before unused records are deleted.
@@ -168,7 +187,7 @@ local os_time, os_date = os.time, os.date
 local pairs, ipairs = pairs, ipairs
 local tonumber, tostring = tonumber, tostring
 local table_insert, table_concat = table.insert, table.concat
-local math_ceil, math_min = math.ceil, math.min
+local math_ceil, math_min, math_floor = math.ceil, math.min, math.floor
 local fmt = string.format
 local pcall = pcall
 
@@ -189,6 +208,9 @@ db.ip_records = {}
 db.subnet_records = {}
 db.hash_records = {}
 
+-- Cache for IPQS results: vpn_cache[ip] = { timestamp = ..., data = ... }
+local vpn_cache = {}
+
 local ffi, client
 if config.vpn_detection.enabled then
     ffi = require('ffi')
@@ -202,6 +224,16 @@ if config.vpn_detection.enabled then
         const char *http_read_response(const http_response *);
     ]]
     client = ffi.load('lua_http_client')
+end
+
+-- Super duper simple URL encoder (just replaces spaces and a few common chars)
+local function url_encode(str)
+    if not str or str == '' then return '' end
+    str = str:gsub(" ", "%%20")
+    str = str:gsub(":", "%%3A")
+    str = str:gsub("/", "%%2F")
+    -- add more if needed, but this is enough for basic user agents
+    return str
 end
 
 -- turn a simple * and ? wildcard into a Lua pattern, then anchor it
@@ -281,8 +313,35 @@ local function vpn_should_block(data)
     return failed >= cfg.min_checks
 end
 
+-- Check the VPN cache first; return true if we used the cache and already handled everything (no HTTP needed)
+local function check_vpn_cache(ip, player_id)
+    local cached = vpn_cache[ip]
+    if cached and (os_time() - cached.timestamp) < config.vpn_detection.cache_ttl then
+        local data = cached.data
+        local suspicious = vpn_should_block(data)
+        -- update db with cached result
+        if db.ip_records[ip] then
+            db.ip_records[ip].vpn = suspicious
+            db.ip_records[ip].vpn_details = data
+            db.ip_records[ip].vpn_checked = os_time()
+            save_db()
+        end
+        if suspicious then
+            local name = get_var(player_id, '$name') or 'Unknown'
+            cprint(fmt('[Breadcrumb] %s joined with VPN/proxy (IP: %s, fraud: %d)', name, ip, data.fraud_score or 0), 12)
+            log_event(fmt('VPN_DETECTED player=%s ip=%s fraud=%d vpn=%s proxy=%s tor=%s', name, ip, data.fraud_score or 0,
+                tostring(data.vpn), tostring(data.proxy), tostring(data.tor)))
+        end
+        return true
+    end
+    return false
+end
+
 -- fire off an async HTTP request and set up a repeating timer to poll for the result
 local function vpn_check_async(player_id, ip)
+    -- try the cache first
+    if check_vpn_cache(ip, player_id) then return end
+
     local cfg = config.vpn_detection
     local url = 'https://www.ipqualityscore.com/api/json/ip/' .. cfg.api_key .. '/' .. ip ..
         '?strictness=' .. cfg.strictness ..
@@ -290,6 +349,9 @@ local function vpn_check_async(player_id, ip)
         '&lighter_penalties=' .. tostring(cfg.lighter_penalties) ..
         '&fast=' .. tostring(cfg.fast) ..
         '&mobile=' .. tostring(cfg.mobile)
+    if cfg.user_agent and cfg.user_agent ~= '' then
+        url = url .. '&user_agent=' .. url_encode(cfg.user_agent)
+    end
     local response = client.http_get(url, true)
     async_requests[tostring(player_id)] = { response, ip, player_id }
     timer(1000, 'ProcessVPNResponse', player_id)
@@ -308,6 +370,9 @@ function ProcessVPNResponse(id)
             local result_str = ffi.string(client.http_read_response(response))
             local ok, data = pcall(json.decode, json, result_str)
             if ok and data then
+                -- cache the response
+                vpn_cache[ip] = { timestamp = os_time(), data = data }
+
                 local suspicious = vpn_should_block(data)
                 if db.ip_records[ip] then
                     db.ip_records[ip].vpn = suspicious
@@ -317,10 +382,11 @@ function ProcessVPNResponse(id)
                 end
                 if suspicious then
                     local name = get_var(pid, '$name') or 'Unknown'
-                    cprint(fmt('[Breadcrumb] %s joined with VPN/proxy (IP: %s, fraud: %d)',
-                        name, ip, data.fraud_score or 0), 12)
-                    log_event(fmt('VPN_DETECTED player=%s ip=%s fraud=%d vpn=%s proxy=%s tor=%s',
-                        name, ip, data.fraud_score or 0, tostring(data.vpn), tostring(data.proxy), tostring(data.tor)))
+                    cprint(
+                        fmt('[Breadcrumb] %s joined with VPN/proxy (IP: %s, fraud: %d)', name, ip, data.fraud_score or 0),
+                        12)
+                    log_event(fmt('VPN_DETECTED player=%s ip=%s fraud=%d vpn=%s proxy=%s tor=%s', name, ip,
+                        data.fraud_score or 0, tostring(data.vpn), tostring(data.proxy), tostring(data.tor)))
                 end
             end
         end
@@ -368,6 +434,43 @@ local function update_records(name, ip, hash)
     end
 end
 
+-- Compute a simple risk score based on found aliases and VPN status.
+-- Called after check_for_alias has identified links.
+local function calculate_risk_score(name, ip, hash, alerts)
+    local w = config.risk_weights
+    local score = 0
+    local max = 0
+
+    -- Check which categories we have alerts for
+    local has_ip, has_subnet, has_hash, has_vpn = false, false, false, false
+
+    for _, alert in ipairs(alerts) do
+        if alert:find('same IP') and not alert:find('subnet') then has_ip = true end
+        if alert:find('subnet') then has_subnet = true end
+        if alert:find('same hash') then has_hash = true end
+    end
+
+    -- VPN flag
+    if ip and not is_ignored_ip(ip) and db.ip_records[ip] and db.ip_records[ip].vpn then
+        has_vpn = true
+    end
+
+    -- Accumulate weighted score
+    if has_ip then score = score + w.ip_match end
+    if has_subnet then score = score + w.subnet_match end
+    if has_hash then score = score + w.hash_match end
+    if has_vpn then score = score + w.vpn_flag end
+    -- Bonus for pirated hash if the alert includes it (hash alert + pirated)
+    if has_hash and config.pirated_hashes[hash] then
+        score = score + w.pirated_hash
+    end
+
+    max = w.ip_match + w.subnet_match + w.hash_match + w.vpn_flag + w.pirated_hash
+    if max == 0 then return 0 end
+    local percent = math_floor((score / max) * 100 + 0.5)
+    return math_min(percent, 100)
+end
+
 -- see if this player has shown up before under a different name or on a nearby IP
 local function check_for_alias(name, ip, hash, id)
     local alerts = {}
@@ -375,7 +478,9 @@ local function check_for_alias(name, ip, hash, id)
     if not is_ignored_ip(ip) and db.ip_records[ip] then
         for prev_name in pairs(db.ip_records[ip].names) do
             if prev_name ~= name then
-                table_insert(alerts, fmt('Seen as "%s" from same IP (%s)', prev_name, ip))
+                local extra = ''
+                if db.ip_records[ip].vpn then extra = ' (VPN IP)' end
+                table_insert(alerts, fmt('Seen as "%s" from same IP (%s)%s', prev_name, ip, extra))
             end
         end
     end
@@ -403,15 +508,41 @@ local function check_for_alias(name, ip, hash, id)
     if db.hash_records[hash] then
         for prev_name in pairs(db.hash_records[hash].names) do
             if prev_name ~= name then
-                table_insert(alerts, fmt('Seen as "%s" with same hash (%s)', prev_name, hash))
+                local extra = ''
+                if config.pirated_hashes[hash] then extra = ' [PIRATED shared hash]' end
+                table_insert(alerts, fmt('Seen as "%s" with same hash (%s)%s', prev_name, hash, extra))
+            end
+        end
+    end
+
+    -- If VPN wasn't in the alerts already from IP match, add a note if more than one name used this VPN IP
+    if ip and not is_ignored_ip(ip) and db.ip_records[ip] and db.ip_records[ip].vpn then
+        local ip_record = db.ip_records[ip]
+        local other_names = {}
+        for n in pairs(ip_record.names) do
+            if n ~= name then table_insert(other_names, n) end
+        end
+        if #other_names > 0 then
+            -- but avoid duplicate if we already have an IP alert
+            local already_alerted = false
+            for _, a in ipairs(alerts) do
+                if a:find('same IP') and not a:find('subnet') then
+                    already_alerted = true; break
+                end
+            end
+            if not already_alerted then
+                local list = table_concat(other_names, ', ')
+                table_insert(alerts, fmt('VPN IP also used by: %s', list))
             end
         end
     end
 
     if #alerts > 0 then
-        local msg = fmt('[Breadcrumb] %s (ID %d) entered with IP %s, hash %s%s. Previous names: %s',
+        local risk = calculate_risk_score(name, ip, hash, alerts)
+        local msg = fmt('[Breadcrumb] %s (ID %d) entered with IP %s, hash %s%s. Risk: %d%%. Aliases: %s',
             name, id, ip, hash,
             config.pirated_hashes[hash] and ' [PIRATED]' or '',
+            risk,
             table_concat(alerts, '; '))
         cprint(msg, 10)
         log_event(msg)
@@ -477,6 +608,32 @@ local function show_player_crumbs(admin_id, target_id, page)
             rprint(admin_id, '  ' .. aliases[i])
         end
     end
+
+    -- Show risk score for this player based on current data
+    local temp_alerts = {}
+    if ip and not is_ignored_ip(ip) and db.ip_records[ip] then
+        for prev_name in pairs(db.ip_records[ip].names) do
+            if prev_name ~= name then
+                table_insert(temp_alerts, 'IP alias ' .. prev_name)
+            end
+        end
+    end
+    if subnet and not is_ignored_ip(ip) and db.subnet_records[subnet] then
+        for prev_name in pairs(db.subnet_records[subnet].names) do
+            if prev_name ~= name then
+                table_insert(temp_alerts, 'subnet alias ' .. prev_name)
+            end
+        end
+    end
+    if db.hash_records[hash] then
+        for prev_name in pairs(db.hash_records[hash].names) do
+            if prev_name ~= name then
+                table_insert(temp_alerts, 'hash alias ' .. prev_name)
+            end
+        end
+    end
+    local risk = calculate_risk_score(name, ip, hash, temp_alerts)
+    rprint(admin_id, 'Composite risk score: ' .. risk .. '%')
 
     -- VPN / proxy info
     if ip and not is_ignored_ip(ip) and db.ip_records[ip] and db.ip_records[ip].vpn ~= nil then
@@ -585,10 +742,19 @@ function CleanStaleRecords()
         end
     end
 
+    -- also clean up vpn cache entries older than TTL
+    local cache_ttl = config.vpn_detection.cache_ttl
+    for ip, entry in pairs(vpn_cache) do
+        if now - entry.timestamp > cache_ttl then
+            vpn_cache[ip] = nil
+        end
+    end
+
     if deleted > 0 then
         save_db()
         cprint('[Breadcrumb] Cleared ' .. deleted .. ' stale records.', 8)
     end
+
     -- SAPP expects a truthy return to keep a repeating timer going
     return true
 end
