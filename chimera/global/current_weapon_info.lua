@@ -2,7 +2,7 @@
 =====================================================================================
 SCRIPT NAME:      current_weapon_info.lua
 DESCRIPTION:      Displays the current weapon name, primary ammo, and (if present)
-                  secondary ammo in the upper‑left corner of the HUD.
+                  secondary ammo in the upper-left corner of the HUD.
 
                   Command: /wpninfo - Toggle the display
 

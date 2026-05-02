@@ -52,7 +52,7 @@ local config = {
     -- Names to ignore
     ignore_names = { "Player", "sapp*", "halo*" },
 
-    -- Known pirated CD‑key hashes - players using these are flagged.
+    -- Known pirated CD-key hashes - players using these are flagged.
     -- Set to nil or false to disable.
     pirated_hashes = {
         ['388e89e69b4cc08b3441f25959f74103'] = true,
@@ -398,7 +398,7 @@ function ProcessVPNResponse(id)
     end
 end
 
--- stash this player's info to cross‑reference later
+-- stash this player's info to cross-reference later
 local function update_records(name, ip, hash)
     local now = os_time()
     if is_ignored_name(name) then return end

@@ -51,7 +51,7 @@ function OnTick()
     local player = get_dynamic_player()
     if not player then return end
 
-    -- Read the two forward‑vector components
+    -- Read the two forward-vector components
     local forward_x = read_float(player + 0x230)  -- X component of forward
     local forward_y = read_float(player + 0x234)  -- Y component of forward
 
