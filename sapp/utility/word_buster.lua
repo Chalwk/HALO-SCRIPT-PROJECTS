@@ -1,4 +1,3 @@
----@diagnostic disable: need-check-nil
 --[[
 =====================================================================================
 SCRIPT NAME:      word_buster.lua
