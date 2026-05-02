@@ -52,24 +52,23 @@ end
 
 local function notify_admins(msg)
     for i = 1, 16 do
-        if player_present(i) and is_admin(i) then
-            rprint(i, msg)
-        end
+        if player_present(i) and is_admin(i) then rprint(i, msg) end
     end
 end
 
-local function try_switch(id, from_team, to_team)
+local function try_switch(id, from_team)
     if get_var(id, "$team") ~= from_team then return false end
 
     local now = os_time()
     if last_move_time[id] and now - last_move_time[id] < MOVE_COOLDOWN then return false end
 
-    execute_command("st " .. id .. " " .. to_team)
+    execute_command("st " .. id)
     last_move_time[id] = now
 
     local name = get_var(id, "$name")
-    local msg = "[AutoBalance] " .. name .. " moved from " .. from_team .. " to " .. to_team
+    local to_team = (from_team == "red" and "blue" or "red")
     rprint(id, "You were moved to the " .. to_team .. " team to balance teams.")
+    local msg = "[AutoBalance] " .. name .. " moved from " .. from_team .. " to " .. to_team
     notify_admins(msg)
 
     return true
@@ -83,55 +82,49 @@ local function balance()
 
     if total < MIN_PLAYERS or math_abs(reds - blues) <= MAX_DIFF then return end
 
-    local from, to
+    local from
     if PRIORITY == "smaller" then
-        if reds > blues then
-            from, to = "red", "blue"
-        else
-            from, to = "blue", "red"
-        end
+        if reds > blues then from = "red" else from = "blue" end
     else
-        -- move from smaller to larger
-        if reds < blues then
-            from, to = "red", "blue"
-        else
-            from, to = "blue", "red"
-        end
+        if reds < blues then from = "red" else from = "blue" end
     end
 
     -- try dead players first
     for i = 1, 16 do
         if player_present(i) and not player_alive(i) then
-            if try_switch(i, from, to) then return end
+            if try_switch(i, from) then return end
         end
     end
 
     -- fallback to any living player
     for i = 1, 16 do
         if player_present(i) then
-            if try_switch(i, from, to) then return end
+            if try_switch(i, from) then return end
         end
     end
 end
 
 function OnScriptLoad()
-    register_callback(cb["EVENT_TICK"], "OnTick")
-    register_callback(cb["EVENT_GAME_END"], "OnEnd")
     register_callback(cb["EVENT_GAME_START"], "OnStart")
-    register_callback(cb["EVENT_COMMAND"], "OnCommand")
-    OnStart()
+    OnStart() -- just in case script is loaded mid-game
 end
 
 function OnStart()
+    unregister_callback(cb['EVENT_TICK'])
+    unregister_callback(cb['EVENT_COMMAND'])
+    unregister_callback(cb['EVENT_GAME_END'])
+
     if get_var(0, "$gt") == "n/a" then return end
-    last_tick = 0
-    last_move_time = {}
+    if get_var(0, "$ffa") == "0" then
+        register_callback(cb["EVENT_TICK"], "OnTick")
+        register_callback(cb["EVENT_GAME_END"], "OnEnd")
+        register_callback(cb["EVENT_COMMAND"], "OnCommand")
+        last_tick = 0
+        last_move_time = {}
+    end
 end
 
-function OnEnd()
-    last_tick = nil
-    last_move_time = {}
-end
+function OnEnd() last_move_time = {} end
 
 function OnTick()
     if last_tick == nil then return end
@@ -143,11 +136,20 @@ function OnTick()
     end
 end
 
+local function respond(id)
+    if id == 0 then
+        return function(msg) cprint(msg) end
+    else
+        return function(msg) rprint(id, msg) end
+    end
+end
+
 function OnCommand(id, command)
     local args = parse_args(command)
     if #args == 0 then return end
 
     local cmd = args[1]:lower()
+    local tell = respond(id)
 
     if cmd == "balance" then
         if not is_admin(id) then return false end
@@ -155,13 +157,13 @@ function OnCommand(id, command)
         local sub = args[2] and args[2]:lower()
         if sub == "on" or sub == "1" then
             balancer_enabled = true
-            rprint(id, "Auto-balancer turned ON")
+            tell("Auto-balancer turned ON")
         elseif sub == "off" or sub == "0" then
             balancer_enabled = false
-            rprint(id, "Auto-balancer turned OFF")
+            tell("Auto-balancer turned OFF")
         else
             last_tick = 0
-            rprint(id, "Forcing immediate balance check...")
+            tell("Balance check...")
             balance()
         end
         return false
@@ -170,8 +172,8 @@ function OnCommand(id, command)
     if cmd == "bal_set" then
         if not is_admin(id) then return false end
         if #args < 3 then
-            rprint(id, "Usage: /bal_set <setting> <value>")
-            rprint(id, "Settings: delay, min_players, max_diff, priority, move_cooldown")
+            tell("Usage: /bal_set <setting> <value>")
+            tell("Settings: delay, min_players, max_diff, priority, move_cooldown")
             return false
         end
 
@@ -182,43 +184,43 @@ function OnCommand(id, command)
             local v = tonumber(value)
             if v and v > 0 then
                 DELAY = v
-                rprint(id, "DELAY set to " .. v)
+                tell("DELAY set to " .. v)
             else
-                rprint(id, "Invalid delay (positive number)")
+                tell("Invalid delay (positive number)")
             end
         elseif setting == "min_players" then
             local v = tonumber(value)
             if v and v > 0 and v <= 16 then
                 MIN_PLAYERS = v
-                rprint(id, "MIN_PLAYERS set to " .. v)
+                tell("MIN_PLAYERS set to " .. v)
             else
-                rprint(id, "Invalid min_players (1-16)")
+                tell("Invalid min_players (1-16)")
             end
         elseif setting == "max_diff" then
             local v = tonumber(value)
             if v and v >= 0 then
                 MAX_DIFF = v
-                rprint(id, "MAX_DIFF set to " .. v)
+                tell("MAX_DIFF set to " .. v)
             else
-                rprint(id, "Invalid max_diff (0 or more)")
+                tell("Invalid max_diff (0 or more)")
             end
         elseif setting == "priority" then
             if value == "smaller" or value == "larger" then
                 PRIORITY = value
-                rprint(id, "PRIORITY set to " .. value)
+                tell("PRIORITY set to " .. value)
             else
-                rprint(id, "Priority must be 'smaller' or 'larger'")
+                tell("Priority must be 'smaller' or 'larger'")
             end
         elseif setting == "move_cooldown" then
             local v = tonumber(value)
             if v and v >= 0 then
                 MOVE_COOLDOWN = v
-                rprint(id, "MOVE_COOLDOWN set to " .. v)
+                tell("MOVE_COOLDOWN set to " .. v)
             else
-                rprint(id, "Invalid cooldown (0 or more seconds)")
+                tell("Invalid cooldown (0 or more seconds)")
             end
         else
-            rprint(id, "Unknown setting. Available: delay, min_players, max_diff, priority, move_cooldown")
+            tell("Unknown setting. Available: delay, min_players, max_diff, priority, move_cooldown")
         end
         return false
     end
