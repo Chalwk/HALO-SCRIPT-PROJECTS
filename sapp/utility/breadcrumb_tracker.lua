@@ -96,7 +96,7 @@ local config = {
         enabled = true,
 
         -- AUTHENTICATION
-        api_key = "sA0EwWtPH1f7vaK9uahve6Rn5eUehFlX",
+        api_key = "PASTE_API_KEY_HERE",
 
         -- SCORING STRICTNESS (0-3)
         --  0 = lowest strictness (default), expands tests as value increases.
