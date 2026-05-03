@@ -1,12 +1,11 @@
 --[[
 ===============================================================================
 SCRIPT NAME:      dynamic_score_limit.lua
-DESCRIPTION:      Automatically adjusts score limits based on player count with:
-                  - Custom configurations for each game type
-                  - Team vs FFA mode differentiation
-                  - Dynamic message formatting
+DESCRIPTION:      Automatically adjusts score limits based on player count with
+                  cstom configurations for each game type, team vs FFA mode
+                  differentiation and dynamic message formatting.
 
-Copyright (c) 2022-2025 Jericho Crosby (Chalwk)
+Copyright (c) 2022-2026 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 ===============================================================================
@@ -83,7 +82,67 @@ local config = {
 
 api_version = "1.12.0.0"
 
+local fmt = string.format
+local game_modes = config.game_modes
+local default_modes = config.default_modes
+
 local score_table, current_limit
+
+local function announce_change(limit)
+    local message = score_table and score_table[#score_table] or 'Score limit changed to: %s'
+
+    local msg = fmt(message, limit, limit ~= 1 and 's' or '')
+    say_all(msg); cprint(msg)
+end
+
+local function resolve_default_rules(game_type, ffa)
+    local modes = default_modes[game_type]
+    if not modes then return nil end
+
+    return modes[2] and (ffa and modes[1] or modes[2]) or modes[1]
+end
+
+local function resolve_rules()
+    local mode = get_var(0, '$mode')
+    local rules = game_modes[mode]
+    if rules then return rules end
+
+    local game_type = get_var(0, '$gt')
+    if game_type == 'n/a' then return nil end
+
+    return resolve_default_rules(game_type, get_var(0, '$ffa') == '1')
+end
+
+local function get_player_count(quit_flag)
+    local count = tonumber(get_var(0, '$pn')) or 0
+    if quit_flag then count = count - 1 end
+    return count > 0 and count or 0
+end
+
+local function find_limit(player_count)
+    if not score_table then return nil end
+
+    for i = 1, #score_table - 1 do
+        local range = score_table[i]
+        local min_players, max_players, limit = unpack(range)
+        if player_count >= min_players and player_count <= max_players then
+            return limit
+        end
+    end
+end
+
+local function change_score_limit(quit_flag)
+    if not score_table then return end
+
+    local player_count = get_player_count(quit_flag)
+    local limit = find_limit(player_count)
+
+    if limit and limit ~= current_limit then
+        current_limit = limit
+        execute_command('scorelimit ' .. limit)
+        announce_change(limit)
+    end
+end
 
 function OnScriptLoad()
     register_callback(cb['EVENT_JOIN'], 'OnJoin')
@@ -93,48 +152,15 @@ function OnScriptLoad()
     OnStart()
 end
 
-local function announceChange(limit)
-    local message = score_table[#score_table]
-    say_all(string.format(message, limit, limit ~= 1 and 's' or ''))
-end
-
-local function changeScoreLimit(quitFlag)
-    if not score_table then return end
-
-    local player_count = tonumber(get_var(0, '$pn'))
-    player_count = quitFlag and player_count - 1 or player_count
-
-    for i = 1, #score_table - 1 do
-        local limit_data = score_table[i]
-        local min, max, limit = unpack(limit_data)
-        if player_count >= min and player_count <= max and limit ~= current_limit then
-            current_limit = limit
-            execute_command('scorelimit ' .. limit)
-            announceChange(limit)
-            return
-        end
-    end
-end
-
 function OnStart()
-    local game_type = get_var(0, '$gt')
-    if game_type == 'n/a' then return end
-
-    score_table, current_limit = nil, nil
-    local mode = get_var(0, '$mode')
-    local ffa = get_var(0, '$ffa') == '1'
-
-    score_table = config.game_modes[mode]
-    if not score_table then
-        score_table = (ffa and config.default_modes[game_type][1]) or config.default_modes[game_type][2]
-    end
-    changeScoreLimit()
+    score_table, current_limit = resolve_rules(), nil
+    change_score_limit()
 end
 
 function OnEnd() score_table, current_limit = nil, nil end
 
-function OnJoin() changeScoreLimit() end
+function OnJoin() change_score_limit() end
 
-function OnQuit() changeScoreLimit(true) end
+function OnQuit() change_score_limit(true) end
 
 function OnScriptUnload() end

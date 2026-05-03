@@ -1,47 +1,31 @@
 --[[
 ===============================================================================
 SCRIPT NAME:      custom_loadouts.lua
-DESCRIPTION:      Custom weapon loadout system with:
-                  - Multiple pre-configured weapon sets
-                  - Automatic loadout application on spawn
-                  - Player loadout selection
-                  - Admin override capabilities
+DESCRIPTION:      Custom weapon loadout system with multiple pre-configured
+                  weapon sets, automatic application on spawn, player selection,
+                  admin override capabilities, custom ammo, grenade counts, a
+                  selection menu, and persistent player preferences.
 
-FEATURES:
-                  - Weapon combinations with custom ammo
-                  - Grenade count configuration
-                  - In-game loadout selection menu
-                  - Persistent player preferences
-
-CONFIGURATION:    Edit the CFG table to:
-                  - Add/remove loadout presets
-                  - Configure weapons and ammo
-                  - Set default loadout
-                  - Customize command names
-
-Copyright (c) 2024-2025 Jericho Crosby (Chalwk)
+Copyright (c) 2024-2026 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 ===============================================================================
 ]]
 
--- CONFIG START ---------------------------------------------------------------
-local CFG = {
-    -- Whether to show the loadout menu automatically when a player dies
-    death_messages = true,
+-- CONFIG START -----------------------------------------------------
 
-    -- The ID of the loadout players start with by default
+local CFG = {
+    show_loadouts_on_death = true,
     default_loadout = 1,
 
-    -- Command names used to interact with the loadout system via chat
     commands = {
-        base = "loadout", -- Base command players type to access the system (e.g. "/loadout")
-        list = "list",    -- Subcommand to display available loadouts (e.g. "/loadout list")
-        set = "set"       -- Subcommands to assign loadouts to other players (e.g. "/loadout set <id> <loadout_id>")
+        base = "loadout",
+        list = "list",
+        set  = "set"
     },
 
-    -- Weapon tag paths to identify weapons in the game for loadouts
     weapon_tags = {
+        -- default map tags --
         pistol = 'weapons\\pistol\\pistol',
         sniper_rifle = 'weapons\\sniper rifle\\sniper rifle',
         plasma_cannon = 'weapons\\plasma_cannon\\plasma_cannon',
@@ -51,18 +35,18 @@ local CFG = {
         assault_rifle = 'weapons\\assault rifle\\assault rifle',
         flamethrower = 'weapons\\flamethrower\\flamethrower',
         needler = 'weapons\\needler\\mp_needler',
-        shotgun = 'weapons\\shotgun\\shotgun'
+        shotgun = 'weapons\\shotgun\\shotgun',
+        -- Place custom map tags here --
     },
 
-    -- Define player loadouts: weapons, ammo, and grenade counts
     loadouts = {
         {
-            id = 1,           -- Unique loadout ID
-            name = "Default", -- Loadout display name
-            frags = 1,        -- Number of frag grenades given
-            plasmas = 3,      -- Number of plasma grenades given
-            weapons = {       -- Weapons included with clip & ammo counts
-                ['weapons\\assault rifle\\assault rifle'] = { label = 'Assault Rifle', clip = 60, ammo = 120 },
+            id = 1,
+            name = "Default",
+            frags = 1,
+            plasmas = 3,
+            weapons = {
+                ['weapons\\assault rifle\\assault rifle'] = { label = 'ARifle', clip = 60, ammo = 120 },
                 ['weapons\\pistol\\pistol'] = { label = 'Pistol', clip = 12, ammo = 48 }
             }
         },
@@ -72,7 +56,7 @@ local CFG = {
             frags = 0,
             plasmas = 0,
             weapons = {
-                ['weapons\\sniper rifle\\sniper rifle'] = { label = 'Sniper Rifle', clip = 4, ammo = 8 }
+                ['weapons\\sniper rifle\\sniper rifle'] = { label = 'Sniper', clip = 4, ammo = 8 }
             }
         },
         {
@@ -82,7 +66,7 @@ local CFG = {
             plasmas = 0,
             weapons = {
                 ['weapons\\shotgun\\shotgun'] = { label = 'Shotgun', clip = 12, ammo = 24 },
-                ['weapons\\sniper rifle\\sniper rifle'] = { label = 'Sniper Rifle', clip = 4, ammo = 8 }
+                ['weapons\\sniper rifle\\sniper rifle'] = { label = 'Sniper', clip = 4, ammo = 8 }
             }
         },
         {
@@ -91,28 +75,48 @@ local CFG = {
             frags = 2,
             plasmas = 0,
             weapons = {
-                ['weapons\\rocket launcher\\rocket launcher'] = { label = 'Rocket Launcher', clip = 2, ammo = 4 },
-                ['weapons\\plasma_cannon\\plasma_cannon'] = { label = 'Plasma Cannon', clip = 100, ammo = 200 },
+                ['weapons\\rocket launcher\\rocket launcher'] = { label = 'RLauncher', clip = 2, ammo = 4 },
+                ['weapons\\plasma_cannon\\plasma_cannon'] = { label = 'PCannon', clip = 100, ammo = 200 },
                 ['weapons\\pistol\\pistol'] = { label = 'Pistol', clip = 12, ammo = 48 }
             }
         }
-        -- Add other loadouts here using the same structure as above
     }
 }
--- CONFIG END -----------------------------------------------------------------
+-- CONFIG ENDS -----------------------------------------------------
 
 api_version = '1.12.0.0'
+
+local get_var = get_var
+local write_byte = write_byte
+local write_word = write_word
+local lookup_tag = lookup_tag
+local read_dword = read_dword
+local spawn_object = spawn_object
+local get_object_memory = get_object_memory
+local sync_ammo = sync_ammo
+local execute_command = execute_command
+local timer = timer
+local rprint = rprint
+local register_callback = register_callback
+local player_present = player_present
+local get_dynamic_player = get_dynamic_player
+
+local str_lower = string.lower
+local str_format = string.format
+local str_match = string.match
+local str_gmatch = string.gmatch
+local tbl_concat = table.concat
+local tbl_sort = table.sort
 
 local weapon_datums = {}
 local players = {}
 local loadouts_by_id = {}
 local player_data = {}
-
-local function get_player_name(id) return get_var(id, '$name') end
+local default_loadout_id = CFG.default_loadout
 
 local function set_grenades(dyn_player, frags, plasmas)
-    write_byte(dyn_player + 0x31E, frags)
-    write_byte(dyn_player + 0x31F, plasmas)
+    write_byte(dyn_player + 0x31E, frags or 0)
+    write_byte(dyn_player + 0x31F, plasmas or 0)
 end
 
 local function get_tag(class, name)
@@ -130,22 +134,48 @@ function AssignWeapon(id, weapon)
     if weapon then assign_weapon(weapon, id) end
 end
 
+local function build_loadout_indexes()
+    loadouts_by_id = {}
+
+    for i = 1, #CFG.loadouts do
+        local loadout = CFG.loadouts[i]
+        loadouts_by_id[loadout.id] = loadout
+
+        local labels = {}
+        for tag_string, weapon in pairs(loadout.weapons) do
+            labels[#labels + 1] = weapon.label or tag_string
+        end
+        tbl_sort(labels)
+        loadout._weapon_text = tbl_concat(labels, ", ")
+    end
+
+    default_loadout_id = loadouts_by_id[CFG.default_loadout] and CFG.default_loadout or
+        (CFG.loadouts[1] and CFG.loadouts[1].id or 1)
+end
+
 local function spawn_weapon(id, tag_string, attributes, slot)
     local tag_datum = weapon_datums[tag_string]
     if not tag_datum then return end
 
     local weapon = spawn_object('', '', 0, 0, 0, 0, tag_datum)
+    if weapon == 0 then return end
+
     local weapon_mem = get_object_memory(weapon)
-    if weapon_mem ~= 0 then
-        write_word(weapon_mem + 0x2B6, attributes.ammo)
-        write_word(weapon_mem + 0x2B8, attributes.clip)
-        sync_ammo(weapon)
-        if slot <= 2 then
-            AssignWeapon(id, weapon)               -- Primary and secondary weapons
-        else
-            timer(250, 'AssignWeapon', id, weapon) -- tertiary/quaternary
-        end
+    if weapon_mem == 0 then return end
+
+    write_word(weapon_mem + 0x2B6, attributes.ammo or 0)
+    write_word(weapon_mem + 0x2B8, attributes.clip or 0)
+    sync_ammo(weapon)
+
+    if slot <= 2 then
+        AssignWeapon(id, weapon)
+    else
+        timer(250, 'AssignWeapon', id, weapon)
     end
+end
+
+local function get_player_loadout_id(id)
+    return players[id] or default_loadout_id
 end
 
 local function apply_loadout(id)
@@ -154,8 +184,7 @@ local function apply_loadout(id)
 
     execute_command('wdel ' .. id)
 
-    local loadout_id = players[id] or CFG.default_loadout
-    local loadout = loadouts_by_id[loadout_id] or loadouts_by_id[CFG.default_loadout]
+    local loadout = loadouts_by_id[get_player_loadout_id(id)] or loadouts_by_id[default_loadout_id]
     if not loadout then return end
 
     local slot = 0
@@ -168,66 +197,74 @@ local function apply_loadout(id)
 end
 
 local function show_current_loadout(id)
-    local loadout_id = players[id] or CFG.default_loadout
-    local loadout = loadouts_by_id[loadout_id]
-    if loadout then
-        rprint(id, "Current Loadout: #" .. loadout_id .. " - " .. loadout.name)
+    local loadout_id = get_player_loadout_id(id)
+    local loadout = loadouts_by_id[loadout_id] or loadouts_by_id[default_loadout_id]
+    if not loadout then
+        rprint(id, "No loadout configured.")
+        return
     end
+
+    rprint(id, "Current Loadout: #" .. loadout_id .. " - " .. loadout.name)
 end
 
 local function show_available_loadouts(id)
     rprint(id, "Available Loadouts:")
-    for _, loadout in ipairs(CFG.loadouts) do
-        local weapon_list = ""
-        for _, weapon in pairs(loadout.weapons) do
-            weapon_list = weapon_list .. weapon.label .. ", "
-        end
-        weapon_list = weapon_list:sub(1, -3)
 
-        local status = (players[id] == loadout.id) and "[CURRENT] " or ""
-        rprint(id, status .. "/" .. loadout.id .. ": " .. loadout.name ..
-            " | Weapons: " .. weapon_list ..
-            " | Frags: " .. loadout.frags ..
-            " | Plasmas: " .. loadout.plasmas)
+    --local current_id = get_player_loadout_id(id)
+    for i = 1, #CFG.loadouts do
+        local loadout = CFG.loadouts[i]
+        --local status = current_id == loadout.id and "[CURRENT] " or ""
+        --rprint(id, status)
+        rprint(id, "[" .. loadout.id .. "]: " .. loadout.name)
+        rprint(id, "Weaps: " .. (loadout._weapon_text or ""))
+        rprint(id, "Grenades: " .. (loadout.frags or 0) .. "/" .. (loadout.plasmas or 0))
+        rprint(id, " ")
     end
-    rprint(id, "Use /loadout [number] to select")
+
+    rprint(id, "Use /" .. CFG.commands.base .. " [number] to select")
 end
 
 local function process_loadout_command(id, selected_id)
-    if loadouts_by_id[selected_id] then
-        players[id] = selected_id
-        player_data[get_player_name(id)] = selected_id
-        rprint(id, "Loadout #" .. selected_id .. " selected. Will apply on respawn.")
-        return true
-    end
-    return false
+    if not loadouts_by_id[selected_id] then return false end
+
+    players[id] = selected_id
+    player_data[id] = selected_id
+    rprint(id, "Loadout #" .. selected_id .. " selected. Will apply on respawn.")
+    return true
 end
 
 local function process_admin_command(id, args)
-    if tonumber(get_var(id, "$lvl")) < 1 then return false end
+    local level = tonumber(get_var(id, "$lvl")) or 0
+    if level < 1 then
+        rprint(id, "You do not have permission to use this command.")
+        return false
+    end
 
-    local target_id = tonumber(args[3])
-    local loadout_id = tonumber(args[4])
+    local target_id = tonumber(args[3] or "")
+    local loadout_id = tonumber(args[4] or "")
 
     if not target_id or not player_present(target_id) then
         rprint(id, "Invalid player ID.")
         return false
     end
+
     if not loadouts_by_id[loadout_id] then
         rprint(id, "Invalid loadout ID.")
         return false
     end
 
     players[target_id] = loadout_id
-    local target_name = get_player_name(target_id)
-    player_data[target_name] = loadout_id
-    rprint(id, string.format("Set player ID %d (%s) loadout to #%d", target_id, target_name, loadout_id))
+
+    local target_name = get_var(target_id, '$name')
+    player_data[target_id] = loadout_id
+    rprint(id, str_format("Set player ID %d (%s) loadout to #%d", target_id, target_name, loadout_id))
+    return true
 end
 
-local function stringSplit(s)
+local function parse_cmd(s)
     local args = {}
-    for arg in s:gmatch('([^%s]+)') do
-        args[#args + 1] = arg:lower()
+    for w in str_gmatch(s, '([^%s]+)') do
+        args[#args + 1] = str_lower(w)
     end
     return args
 end
@@ -235,21 +272,22 @@ end
 function OnCommand(id, command)
     if id == 0 then return true end
 
-    command = command:lower()
-    local args = stringSplit(command)
+    local args = parse_cmd(str_lower(command or ""))
     if args[1] ~= CFG.commands.base then return true end
 
     if #args == 1 then
         show_current_loadout(id)
-    elseif args[2] == CFG.commands.list then
+        return false
+    end
+
+    local sub = args[2]
+    if sub == CFG.commands.list then
         show_available_loadouts(id)
-    elseif args[2] == CFG.commands.set then
+    elseif sub == CFG.commands.set then
         process_admin_command(id, args)
-    elseif args[2]:match('^%d+$') then
-        local selected_id = tonumber(args[2])
-        if selected_id then
-            process_loadout_command(id, selected_id)
-        else
+    elseif sub and str_match(sub, '^%d+$') then
+        local selected_id = tonumber(sub)
+        if not process_loadout_command(id, selected_id) then
             rprint(id, "Unknown loadout ID. Use /" .. CFG.commands.base .. " " .. CFG.commands.list .. " to see options.")
         end
     else
@@ -260,47 +298,38 @@ function OnCommand(id, command)
 end
 
 function OnScriptLoad()
-    for _, loadout in ipairs(CFG.loadouts) do
-        loadouts_by_id[loadout.id] = loadout
-    end
+    build_loadout_indexes()
 
     register_callback(cb['EVENT_JOIN'], 'OnJoin')
     register_callback(cb['EVENT_LEAVE'], 'OnQuit')
     register_callback(cb['EVENT_DIE'], 'OnDeath')
     register_callback(cb['EVENT_SPAWN'], 'OnSpawn')
     register_callback(cb['EVENT_COMMAND'], 'OnCommand')
-    register_callback(cb['EVENT_GAME_START'], 'OnGameStart')
+    register_callback(cb['EVENT_GAME_START'], 'OnStart')
 
-    OnGameStart()
+    OnStart() -- in case script is loaded mid-game
 end
 
-function OnGameStart()
+function OnStart()
     if get_var(0, '$gt') == 'n/a' then return end
-    cache_weapon_datums() -- import to do this here (not in OnScriptLoad)
+
+    cache_weapon_datums()
 
     for i = 1, 16 do
-        if player_present(i) then
-            OnJoin(i)
-        end
+        if player_present(i) then OnJoin(i) end
     end
 end
 
 function OnJoin(id)
-    local player_name = get_player_name(id)
-    players[id] = player_data[player_name] or CFG.default_loadout
+    players[id] = player_data[id] or default_loadout_id
 end
 
-function OnSpawn(id)
-    apply_loadout(id)
-end
+function OnSpawn(id) apply_loadout(id) end
 
 function OnDeath(id)
-    if not CFG.death_messages then return end
-    show_available_loadouts(id)
+    if CFG.show_loadouts_on_death then show_available_loadouts(id) end
 end
 
-function OnQuit(id)
-    players[id] = nil
-end
+function OnQuit(id) players[id] = nil end
 
 function OnScriptUnload() end
