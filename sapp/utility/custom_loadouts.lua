@@ -103,11 +103,7 @@ local lookup_tag = lookup_tag
 local read_dword = read_dword
 local spawn_object = spawn_object
 local get_object_memory = get_object_memory
-local sync_ammo = sync_ammo
-local execute_command = execute_command
-local timer = timer
 local rprint = rprint
-local register_callback = register_callback
 local player_present = player_present
 local get_dynamic_player = get_dynamic_player
 
