@@ -102,7 +102,7 @@ local CONFIG = {
         -- What characters can sit between letters inside a word
         separator = "[-*_. ]*",
 
-        -- Letter -> regex class with common leet‑speak substitutions
+        -- Letter -> regex class with common leet-speak substitutions
         leet_map = {
             a = "[aA@*#]",
             b = "[bB]",

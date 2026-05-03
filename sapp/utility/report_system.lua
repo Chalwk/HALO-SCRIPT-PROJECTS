@@ -7,7 +7,7 @@ DESCRIPTION:      In-game player reporting.
                   - /reports [page]          - view current reports (admins)
                   - /report_clear <id>       - clear a report by index
                   - /players /list           - show online players with IDs (all players)
-                  Auto‑expires old reports, prevents spam.
+                  Auto-expires old reports, prevents spam.
 
 Copyright (c) 2025-2026 Jericho Crosby (Chalwk)
 LICENSE:          MIT License

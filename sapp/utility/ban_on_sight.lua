@@ -1,7 +1,7 @@
 --[[
 ====================================================================================
 SCRIPT NAME:      ban_on_sight.lua
-DESCRIPTION:      Instant IP bans with a pirate‑hash safety net.
+DESCRIPTION:      Instant IP bans with a pirate-hash safety net.
                   /bos <id> drops the hammer, /bos <id> -h ignores the warning.
                   /unbos <index> removes a ban, 'cause everyone deserves a second chance.
 
