@@ -9,7 +9,7 @@ DESCRIPTION:      In-game player reporting.
                   - /players /list           - show online players with IDs (all players)
                   Auto‑expires old reports, prevents spam.
 
-Copyright (c) 2025 Jericho Crosby (Chalwk)
+Copyright (c) 2025-2026 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
@@ -35,7 +35,7 @@ local page_size = 8
 -- Log reports to server console
 local console_log = true
 
--- Log reports to file (reports.txt)
+-- Log reports to file
 local file_log = true
 local log_file_path = "reports.txt"
 -- CONFIG END -----------------------------------------------------------------
