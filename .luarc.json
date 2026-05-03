@@ -21,6 +21,7 @@
     "lookup_tag",
     "player_alive",
     "player_present",
+    "powerup_interact",
     "rand",
     "read_bit",
     "read_byte",
