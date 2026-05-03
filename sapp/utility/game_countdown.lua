@@ -10,24 +10,19 @@ LICENSE:          MIT License
 ]]
 
 -- CONFIG START --
-
 api_version = "1.12.0.0"
 
 local DISPLAY_INTERVAL = 1
 local OUTPUT = "%s"
 local TIME_FORMAT = "%02d:%02d:%02d"
 local TOGGLE_COMMAND = "countdown"
-
 -- END CONFIG --
 
 local floor, format = math.floor, string.format
-local register_callback, sig_scan, read_dword = register_callback, sig_scan, read_dword
 local get_var, timer = get_var, timer
 local player_present, rprint = player_present, rprint
 
-local timelimit_address
-local tick_counter_address
-local sv_map_reset_tick_address
+local timelimit_address, tick_counter_address, sv_map_reset_tick_address
 local game_started
 local disabled = {}
 
