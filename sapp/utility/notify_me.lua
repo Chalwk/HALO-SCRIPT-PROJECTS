@@ -1,22 +1,19 @@
 --[[
 =====================================================================================
 SCRIPT NAME:      notify_me.lua
-DESCRIPTION:      Enhanced console notification system for SAPP servers that provides:
+DESCRIPTION:      Advanced console notification system.
                   - Color-coded event notifications (joins, quits, deaths, etc.)
                   - Customizable timestamp formatting
-                  - Optional ASCII art logo display
+                  - ASCII art logo display
                   - Support for all major server events
-
-FEATURES:
-                  - 16-color support using SAPP's color codes
                   - Dynamic message templates with placeholder substitution
                   - Configurable output for each event type
                   - First blood detection
                   - Detailed death cause reporting
 
-LAST UPDATED:     23/09/2025
+LAST UPDATED:     3/05/2026
 
-Copyright (c) 2025 Jericho Crosby (Chalwk)
+Copyright (c) 2025-2026 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
                   https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
 =====================================================================================
@@ -67,7 +64,6 @@ local CONFIG = {
     --
     -- Event message templates | Format: { "Message", notify? }
     --
-
     EVENTS = {
         OnStart = { "[START] New game on $map - $mode", true },
         OnEnd = { "[END] Game ended", true },
@@ -92,9 +88,9 @@ local CONFIG = {
         },
 
         -- Death Type:  1 = first blood, 2 = from the grave,
-        --              3 = run over, 4 = killed, 5 = suicide,
-        --              6 = betrayed, 7 = squashed, 8 = fall,
-        --              9 = server, 10 = died
+        --              3 = run over,    4 = killed,   5 = suicide,
+        --              6 = betrayed,    7 = squashed, 8 = fall,
+        --              9 = server,      10 = died
         OnDeath = {
             [1] = { "$killerName drew first blood on $victimName", true },
             [2] = { "$victimName was killed from the grave by $killerName", true },
@@ -148,9 +144,8 @@ local CONFIG = {
     --
     -- Logo settings
     --
-
     LOGO = {
-        true, -- set to false to disable logo
+        true,
         {
             { "================================================================================", 'green' },
             { "$timeStamp",                                                                       'yellow' },
@@ -174,84 +169,61 @@ api_version = '1.12.0.0'
 -- Configuration ends here -----------------------------------------------------------------------
 
 local players = {}
-local tick_rate = 1 / 30 -- for race lap times
-local score_limit
-local gametype_base
-local gametype, mode, map
+local tick_rate = 1 / 30
+local score_limit, gametype_base, gametype, mode, map
 local ffa, falling, distance, first_blood
 
-local command_type = {
-    [0] = "RCON",
-    [1] = "CONSOLE",
-    [2] = "CHAT",
-    [3] = "UNKNOWN",
+local command_type = { [0] = "RCON", [1] = "CONSOLE", [2] = "CHAT", [3] = "UNKNOWN" }
+local chat_type = { [0] = "GLOBAL", [1] = "TEAM", [2] = "VEHICLE", [3] = "UNKNOWN" }
+local score_event = {
+    ctf = function() return 1 end,
+    race = function() return ffa and 3 or 2 end,
+    slayer = function() return ffa and 5 or 4 end
 }
 
-local chat_type = {
-    [0] = "GLOBAL",
-    [1] = "TEAM",
-    [2] = "VEHICLE",
-    [3] = "UNKNOWN",
-}
-
-local os_date = os.date
-local tonumber = tonumber
+local os_date, tonumber, ipairs, tostring = os.date, tonumber, ipairs, tostring
 local string_format, string_char, table_concat = string.format, string.char, table.concat
 local math_huge, math_floor = math.huge, math.floor
-local read_byte, read_dword = read_byte, read_dword
+local read_byte, read_word, read_dword = read_byte, read_word, read_dword
 local get_var, player_present, player_alive = get_var, player_present, player_alive
-
 local get_dynamic_player = get_dynamic_player
 
+local COLORS, EVENTS, PIRATED = CONFIG.CONSOLE_COLORS, CONFIG.EVENTS, CONFIG.KNOWN_PIRATED_HASHES
+
 local function getColor(color)
-    return CONFIG.CONSOLE_COLORS[color] or CONFIG.CONSOLE_COLORS.white
+    return COLORS[color] or COLORS.white
 end
 
-local function readWideString(Address, Length)
-    local count = 0
-    local byte_table = {}
-    for i = 1, Length do
-        if (read_byte(Address + count) ~= 0) then
-            byte_table[i] = string_char(read_byte(Address + count))
+local function readWideString(address, length)
+    local t, j = {}, 1
+    for i = 0, (length - 1) * 2, 2 do
+        local b = read_byte(address + i)
+        if b ~= 0 then
+            t[j], j = string_char(b), j + 1
         end
-        count = count + 2
     end
-    return table_concat(byte_table)
+    return table_concat(t)
 end
-
 
 local function getServerName()
-    local network_struct = read_dword(sig_scan("F3ABA1????????BA????????C740??????????E8????????668B0D") + 3)
-    return readWideString(network_struct + 0x8, 0x42)
+    local addr = sig_scan("F3ABA1????????BA????????C740??????????E8????????668B0D")
+    return readWideString(read_dword(addr + 3) + 0x8, 0x42)
 end
 
-local function formatLog(log, args)
-    return (log:gsub("($[%w_]+)", function(placeholder)
-        return args[placeholder] or placeholder
-    end))
+local function formatLog(msg, args)
+    return (msg:gsub("($[%w_]+)", args))
 end
 
-local function getEvent(event_name, ...)
-    local args = { ... }
-    if next(args) then
-        return CONFIG.EVENTS[event_name][args[1]]
-    else
-        return CONFIG.EVENTS[event_name]
-    end
+local function getEvent(name, event_type)
+    local event = EVENTS[name]
+    return event_type and event[event_type] or event
 end
 
 local function log(event_name, args)
     local event = getEvent(event_name, args and args.event_type)
-    if not event or not event[2] then return end
-
-    local formatted = formatLog(event[1], args)
-
-    -- Get color for this event type
-    local event_color = CONFIG.EVENT_COLORS[event_name] or "white"
-    local color_value = getColor(event_color)
-
-    -- Output to console with color
-    cprint(formatted, color_value)
+    if event and event[2] then
+        cprint(formatLog(event[1], args), getColor(CONFIG.EVENT_COLORS[event_name] or "white"))
+    end
 end
 
 local function getTag(class, name)
@@ -268,15 +240,12 @@ local function getscorelimit()
 end
 
 local function isPirated(hash)
-    return CONFIG.KNOWN_PIRATED_HASHES[hash] and 'YES' or 'NO'
+    return PIRATED[hash] and 'YES' or 'NO'
 end
 
 local function getPlayerData(player, quit)
-    local total = tonumber(get_var(0, '$pn'))
-    total = (quit and total - 1) or total
-
     return {
-        ["$total"] = total,
+        ["$total"] = tonumber(get_var(0, '$pn')) - (quit and 1 or 0),
         ["$name"] = player.name,
         ["$ip"] = player.ip,
         ["$hash"] = player.hash,
@@ -296,59 +265,48 @@ local function newPlayer(id)
         name = get_var(id, '$name'),
         team = get_var(id, '$team'),
         hash = get_var(id, '$hash'),
-        level = function() -- dynamically get level (can change mid-game)
-            return tonumber(get_var(id, '$lvl'))
-        end
+        level = function() return tonumber(get_var(id, '$lvl')) end
     }
 end
 
 local function formatTime(lap_time)
     if gametype ~= "race" then return nil end
-    if lap_time == 0 or lap_time == math_huge then
-        return "00:00.000"
-    end
+    if lap_time == 0 or lap_time == math_huge then return "00:00.000" end
 
-    local total_ms = math_floor(lap_time * 1000 + 0.5)
+    local ms = math_floor(lap_time * 1000 + 0.5)
+    local m = math_floor(ms / 60000)
+    ms = ms - m * 60000
+    local s = math_floor(ms / 1000)
 
-    local minutes = math_floor(total_ms / 60000)
-    total_ms = total_ms - minutes * 60000
-
-    local seconds = math_floor(total_ms / 1000)
-    local millis = total_ms - seconds * 1000
-
-    return string_format("%02d:%02d.%03d", minutes, seconds, millis)
+    return string_format("%02d:%02d.%03d", m, s, ms - s * 1000)
 end
 
-local function roundToHundredths(num)
-    return math_floor(num * 100 + 0.5) / 100
+local function roundToHundredths(n)
+    return math_floor(n * 100 + 0.5) / 100
 end
 
 local function getLapTicks(address)
-    if address == 0 then return 0 end
-    return read_word(address)
+    return address ~= 0 and read_word(address) or 0
 end
 
 local function isCommand(str)
-    return str:sub(1, 1) == "/" or str:sub(1, 1) == "\\"
+    local c = str:sub(1, 1)
+    return c == "/" or c == "\\"
 end
 
 local function inVehicle(id)
-    local dyn_player = get_dynamic_player(id)
-    if dyn_player == 0 then return false end
-    return read_dword(dyn_player + 0x11C) ~= 0xFFFFFFFF
+    local dyn = get_dynamic_player(id)
+    return dyn ~= 0 and read_dword(dyn + 0x11C) ~= 0xFFFFFFFF
 end
 
 function DisplayASCIIArt()
     local logo = CONFIG.LOGO
     if not logo[1] then return end
 
+    local stamp = os_date('!%a %d %b %Y %H:%M:%S')
+    local server = getServerName()
     for _, line in ipairs(logo[2]) do
-        local message, color = line[1], getColor(line[2])
-        if message then
-            message = message:gsub("$timeStamp", os_date('!%a %d %b %Y %H:%M:%S'))
-                :gsub("$serverName", getServerName())
-            cprint(message, color)
-        end
+        cprint((line[1]:gsub("$timeStamp", stamp):gsub("$serverName", server)), getColor(line[2]))
     end
 end
 
@@ -358,11 +316,9 @@ function OnStart(notifyFlag)
 
     DisplayASCIIArt()
 
-    players = {}
-    first_blood = true
+    players, first_blood = {}, true
     ffa = get_var(0, '$ffa') == '1'
-    mode = get_var(0, "$mode")
-    map = get_var(0, "$map")
+    mode, map = get_var(0, "$mode"), get_var(0, "$map")
     falling = getTag('jpt!', 'globals\\falling')
     distance = getTag('jpt!', 'globals\\distance')
     score_limit = getscorelimit()
@@ -377,9 +333,7 @@ function OnStart(notifyFlag)
     end
 
     for i = 1, 16 do
-        if player_present(i) then
-            OnJoin(i, notifyFlag)
-        end
+        if player_present(i) then OnJoin(i, notifyFlag) end
     end
 end
 
@@ -394,7 +348,6 @@ end
 
 function OnJoin(id, notifyFlag)
     players[id] = newPlayer(id)
-
     if not notifyFlag or notifyFlag == 0 then
         log("OnJoin", getPlayerData(players[id]))
     end
@@ -402,35 +355,31 @@ end
 
 function OnQuit(id)
     local player = players[id]
-    if not player then return end
-
-    log("OnQuit", getPlayerData(player, true))
-    players[id] = nil
+    if player then
+        log("OnQuit", getPlayerData(player, true))
+        players[id] = nil
+    end
 end
 
 function OnSpawn(id)
     local player = players[id]
-    if not player then return end
-
-    player.last_damage = 0
-    player.switched = nil
-    log("OnSpawn", { ["$name"] = player.name })
+    if player then
+        player.last_damage, player.switched = 0, nil
+        log("OnSpawn", { ["$name"] = player.name })
+    end
 end
 
 function OnSwitch(id)
     local player = players[id]
-    if not player then return end
-
-    player.team = get_var(id, '$team')
-    player.switched = true
-    log("OnSwitch", { ["$name"] = player.name, ["$team"] = player.team })
+    if player then
+        player.team, player.switched = get_var(id, '$team'), true
+        log("OnSwitch", { ["$name"] = player.name, ["$team"] = player.team })
+    end
 end
 
 function OnWarp(id)
     local player = players[id]
-    if not player then return end
-
-    log("OnWarp", { ["$name"] = player.name })
+    if player then log("OnWarp", { ["$name"] = player.name }) end
 end
 
 function OnReset()
@@ -444,16 +393,12 @@ end
 
 function OnLogin(id)
     local player = players[id]
-    if not player then return end
-
-    log("OnLogin", { ["$name"] = player.name })
+    if player then log("OnLogin", { ["$name"] = player.name }) end
 end
 
 function OnSnap(id)
     local player = players[id]
-    if not player then return end
-
-    log("OnSnap", { ["$name"] = player.name })
+    if player then log("OnSnap", { ["$name"] = player.name }) end
 end
 
 function OnCommand(id, command, environment)
@@ -471,7 +416,6 @@ end
 
 function OnChat(id, message, environment)
     local player = players[id]
-
     if player and not isCommand(message) then
         log("OnChat", {
             ["$type"] = chat_type[environment],
@@ -486,28 +430,19 @@ function OnScore(id)
     local player = players[id]
     if not player then return end
 
-    local event_type = ({
-        ctf = 1,
-        race = not ffa and 2 or 3,
-        slayer = not ffa and 4 or 5
-    })[gametype]
-
-    local score = get_var(id, "$score")
-    local blue_score = get_var(0, "$bluescore")
     local red_score = get_var(0, "$redscore")
-
+    local blue_score = get_var(0, "$bluescore")
     local lap_time = 0
+
     if gametype == "race" then
-        local static_player = get_player(id)
-        local lap_ticks = getLapTicks(static_player + 0xC4)
-        lap_time = roundToHundredths(lap_ticks * tick_rate)
+        lap_time = roundToHundredths(getLapTicks(get_player(id) + 0xC4) * tick_rate)
     end
 
     log("OnScore", {
-        event_type = event_type,
+        event_type = score_event[gametype](),
         ["$lap_time"] = formatTime(lap_time),
         ["$totalTeamLaps"] = player.team == "red" and red_score or blue_score,
-        ["$score"] = score,
+        ["$score"] = get_var(id, "$score"),
         ["$name"] = player.name,
         ["$team"] = player.team or "FFA",
         ["$redScore"] = red_score,
@@ -527,34 +462,26 @@ function OnDeath(victimIndex, killerIndex)
     if not victim_data then return end
 
     local killer = tonumber(killerIndex)
-    local killer_data = players[killer]
-
-    local event_type = 10 -- fallback event type
+    local killer_data = killer and players[killer]
+    local event_type = 10
 
     if killer == -1 and not victim_data.switched then
-        if victim_data.last_damage == falling or victim_data.last_damage == distance then
-            event_type = 8 -- fall damage
-        else
-            event_type = 9 -- server
-        end
+        event_type = (victim_data.last_damage == falling or victim_data.last_damage == distance) and 8 or 9
     elseif killer == 0 then
-        event_type = 7  -- squashed
-    elseif killer == nil then
-        event_type = 10 -- unknown/guardians
-    elseif killer > 0 then
+        event_type = 7
+    elseif killer and killer > 0 then
         if killer == victim then
-            event_type = 5 -- suicide
+            event_type = 5
         elseif not ffa and killer_data and victim_data.team == killer_data.team then
-            event_type = 6 -- betrayal
+            event_type = 6
         elseif first_blood then
-            first_blood = false
-            event_type = 1 -- first blood
+            first_blood, event_type = false, 1
         elseif not player_alive(killer) then
-            event_type = 2 -- killed from the grave
+            event_type = 2
         elseif inVehicle(victim) then
-            event_type = 3 -- vehicle kill
+            event_type = 3
         else
-            event_type = 4 -- pvp
+            event_type = 4
         end
     end
 
@@ -580,10 +507,10 @@ function OnScriptLoad()
     register_callback(cb['EVENT_SNAP'], 'OnSnap')
     register_callback(cb['EVENT_SPAWN'], 'OnSpawn')
     register_callback(cb['EVENT_LOGIN'], 'OnLogin')
-    register_callback(cb['EVENT_MAP_RESET'], "OnReset")
+    register_callback(cb['EVENT_MAP_RESET'], 'OnReset')
     register_callback(cb['EVENT_TEAM_SWITCH'], 'OnSwitch')
 
-    OnStart(1) -- in case script is loaded mid-game
+    OnStart(1)
 end
 
 function OnScriptUnload() end

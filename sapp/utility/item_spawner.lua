@@ -14,7 +14,7 @@ COMMANDS:
 /itemlist [page]               - List available items
 /spawn <alias> [amount]        - Spawn object at position
 
-Copyright (c) 2025 Jericho Crosby (Chalwk)
+Copyright (c) 2025-2026 Jericho Crosby (Chalwk)
 LICENSE:          MIT License
 ================================================================================
 ]] --
@@ -29,19 +29,19 @@ local MAX_RESULTS_PER_PAGE = 25
 local MAX_ITEMS_PER_ROW = 4
 local DESTROY_ON_QUIT = true
 local COMMANDS = {
-    ["clean"] = true,
-    ["enter"] = true,
-    ["give"] = true,
-    ["itemlist"] = true,
-    ["spawn"] = true
+    clean = true,
+    enter = true,
+    give = true,
+    itemlist = true,
+    spawn = true
 }
 
 local ITEMS = {
-    ["bipd"] = {
+    bipd = {
         { "characters\\cyborg_mp\\cyborg_mp", "Cyborg", { "cyborg" } }
     },
 
-    ["eqip"] = {
+    eqip = {
         { "powerups\\full-spectrum vision",          "Vision Spectrum Cube", { "vscube" } },
         { "powerups\\health pack",                   "Health Pack",          { "health", "hp" } },
         { "powerups\\active camouflage",             "Camouflage",           { "camo", "camouflage" } },
@@ -50,7 +50,7 @@ local ITEMS = {
         { "weapons\\plasma grenade\\plasma grenade", "Plasma Grenade",       { "plasma", "plasmagrenade" } }
     },
 
-    ["vehi"] = {
+    vehi = {
         { "vehicles\\ghost\\ghost_mp",               "Ghost",   { "ghost" },                 1 },
         { "vehicles\\rwarthog\\rwarthog",            "R-Hog",   { "rhog" },                  3 },
         { "vehicles\\banshee\\banshee_mp",           "Banshee", { "banshee", "banshee_mp" }, 1 },
@@ -59,7 +59,7 @@ local ITEMS = {
         { "vehicles\\scorpion\\scorpion_mp",         "Tank",    { "tank", "scorpion" },      5 }
     },
 
-    ["weap"] = {
+    weap = {
         { "weapons\\gravity rifle\\gravity rifle",     "Gravity Gun",     { "gravitygun" } },
         { "weapons\\flag\\flag",                       "Flag",            { "flag" } },
         { "weapons\\ball\\ball",                       "Skull",           { "skull" } },
@@ -75,7 +75,7 @@ local ITEMS = {
         { "weapons\\rocket launcher\\rocket launcher", "Rocket Launcher", { "rocketl", "rocketlauncher" } }
     },
 
-    ["proj"] = {
+    proj = {
         { "weapons\\flamethrower\\flame",           "Flames",                    { "flames", "flameproj" } },
         { "weapons\\needler\\mp_needle",            "Needler Needle",            { "needle", "needlerproj" } },
         { "weapons\\rocket launcher\\rocket",       "Rocket",                    { "rocket", "rocketproj" } },
@@ -100,111 +100,86 @@ local ITEMS = {
 
 api_version = '1.12.0.0'
 
-local get_var = get_var
-local player_present = player_present
-local player_alive = player_alive
-local rprint = rprint
-local cprint = cprint
+local get_var, player_present, player_alive = get_var, player_present, player_alive
+local rprint, cprint = rprint, cprint
+local get_dynamic_player, get_object_memory = get_dynamic_player, get_object_memory
+local lookup_tag, read_dword, spawn_object = lookup_tag, read_dword, spawn_object
+local assign_weapon, destroy_object, enter_vehicle = assign_weapon, destroy_object, enter_vehicle
+local read_float, read_vector3d = read_float, read_vector3d
+local powerup_interact = powerup_interact
 
-local get_dynamic_player = get_dynamic_player
-local get_object_memory = get_object_memory
-local lookup_tag = lookup_tag
-local read_dword = read_dword
-local spawn_object = spawn_object
-
-local assign_weapon = assign_weapon
-local destroy_object = destroy_object
-local enter_vehicle = enter_vehicle
-local read_float = read_float
-local read_vector3d = read_vector3d
-
-local ipairs = ipairs
-local table_concat = table.concat
-local table_insert = table.insert
-local table_sort = table.sort
+local pairs = pairs
+local t_remove, t_concat, t_sort = table.remove, table.concat, table.sort
 local tonumber = tonumber
 
-local math_atan = math.atan
-local math_ceil = math.ceil
-local math_max = math.max
-local math_min = math.min
-local math_pi = math.pi
-
-local string_lower = string.lower
-local string_match = string.match
+local atan, ceil, max, min, pi = math.atan, math.ceil, math.max, math.min, math.pi
+local find, lower = string.find, string.lower
 
 local players = {}
 local catalog = { items = {}, aliases = {} }
+
 local OBJECT_TYPES = {
-    ["vehi"] = { name = "vehi", display = "Vehicles" },
-    ["weap"] = { name = "weap", display = "Weapons" },
-    ["eqip"] = { name = "eqip", display = "Equipment" },
-    ["bipd"] = { name = "bipd", display = "Bipeds" },
-    ["proj"] = { name = "proj", display = "Projectiles" },
-    ["all"] = { name = "all", display = "Everything" }
+    vehi = { name = "vehi", display = "Vehicles" },
+    weap = { name = "weap", display = "Weapons" },
+    eqip = { name = "eqip", display = "Equipment" },
+    bipd = { name = "bipd", display = "Bipeds" },
+    proj = { name = "proj", display = "Projectiles" },
+    all = { name = "all", display = "Everything" }
+}
+
+local SEAT_MAP = { ["-"] = 0, ["*"] = 1, ["^"] = 2 }
+local ITEM_FLAGS = {
+    vehi = { is_vehicle = true },
+    weap = { is_weapon = true },
+    eqip = { is_equipment = true }
 }
 
 local function respond(id)
-    if id == 0 then
-        return function(msg) cprint(msg) end
-    else
-        return function(msg) rprint(id, msg) end
-    end
+    return id == 0 and cprint or function(msg) rprint(id, msg) end
 end
 
 local function atan2(y, x)
-    return math_atan(y / x) + ((x < 0) and math_pi or 0)
+    return atan(y / x) + (x < 0 and pi or 0)
 end
 
 local function create_player(id)
-    players[id] = {
+    local player = {
         id = id,
         name = get_var(id, '$name'),
         cached_objects = {},
         object_count = 0
     }
-    return players[id]
+    players[id] = player
+    return player
 end
 
 local function destroy_oldest_object(player)
-    if #player.cached_objects > 0 then
-        local object_id = table.remove(player.cached_objects, 1)
-        destroy_object(object_id)
+    local objects = player.cached_objects
+    if objects[1] then
+        destroy_object(t_remove(objects, 1))
         player.object_count = player.object_count - 1
         return true
     end
-    return false
 end
 
 local function cache_object(player, object_id)
     if player.object_count >= MAX_OBJECTS then
         destroy_oldest_object(player)
     end
-
-    table_insert(player.cached_objects, object_id)
+    local objects = player.cached_objects
+    objects[#objects + 1] = object_id
     player.object_count = player.object_count + 1
     return true
 end
 
-local function clean_objects(player, object_type)
-    local cleaned = 0
-
-    if object_type == "all" then
-        for _, object_id in ipairs(player.cached_objects) do
-            destroy_object(object_id)
-            cleaned = cleaned + 1
-        end
-        player.cached_objects = {}
-        player.object_count = 0
-    else
-        for _, object_id in ipairs(player.cached_objects) do
-            destroy_object(object_id)
-            cleaned = cleaned + 1
-        end
-        player.cached_objects = {}
-        player.object_count = 0
+local function clean_objects(player)
+    local objects = player.cached_objects
+    local cleaned = #objects
+    for i = 1, cleaned do
+        destroy_object(objects[i])
     end
-
+    player.cached_objects = {}
+    player.object_count = 0
     return cleaned
 end
 
@@ -214,27 +189,31 @@ local function get_tag(class, name)
 end
 
 local function initialize_catalog()
+    local items, aliases = catalog.items, catalog.aliases
     for tag_class, entries in pairs(ITEMS) do
-        for _, item_data in ipairs(entries) do
-            local tag_path, display_name, aliases, seats =
-                item_data[1], item_data[2], item_data[3], item_data[4]
-
+        local flags = ITEM_FLAGS[tag_class] or false
+        for i = 1, #entries do
+            local data = entries[i]
+            local tag_path, display_name, item_aliases, seats = data[1], data[2], data[3], data[4]
             local tag_id = get_tag(tag_class, tag_path)
+
             if tag_id then
                 local item = {
                     tag_id = tag_id,
                     display_name = display_name,
-                    aliases = aliases or {},
+                    aliases = item_aliases or {},
                     seats = seats or 1,
-                    is_vehicle = (tag_class == "vehi"),
-                    is_weapon = (tag_class == "weap"),
-                    is_equipment = (tag_class == "eqip")
+                    is_vehicle = flags and flags.is_vehicle or false,
+                    is_weapon = flags and flags.is_weapon or false,
+                    is_equipment = flags and flags.is_equipment or false
                 }
 
-                table_insert(catalog.items, item)
-                table_insert(catalog.aliases, { name = display_name:lower(), item = item })
-                for _, alias in ipairs(aliases or {}) do
-                    table_insert(catalog.aliases, { name = alias:lower(), item = item })
+                items[#items + 1] = item
+                aliases[#aliases + 1] = { name = lower(display_name), item = item }
+                if item_aliases then
+                    for j = 1, #item_aliases do
+                        aliases[#aliases + 1] = { name = lower(item_aliases[j]), item = item }
+                    end
                 end
             else
                 cprint("Warning: Could not find tag " .. tag_class .. ", " .. tag_path, 12)
@@ -242,60 +221,43 @@ local function initialize_catalog()
         end
     end
 
-    cprint("ItemSpawner: Loaded " .. #catalog.items .. " items with " .. #catalog.aliases .. " aliases", 6)
+    cprint("ItemSpawner: Loaded " .. #items .. " items with " .. #aliases .. " aliases", 6)
 end
 
 local function find_item(search_term)
-    search_term = string_lower(search_term)
-
-    -- Exact match first
-    for _, alias in ipairs(catalog.aliases) do
+    search_term = lower(search_term)
+    for i = 1, #catalog.aliases do
+        local alias = catalog.aliases[i]
         if alias.name == search_term then
             return alias.item
         end
     end
 
     -- Partial match
-    for _, alias in ipairs(catalog.aliases) do
-        if string.find(alias.name, search_term, 1, true) then
+    for i = 1, #catalog.aliases do
+        local alias = catalog.aliases[i]
+        if find(alias.name, search_term, 1, true) then
             return alias.item
         end
     end
-
-    return nil
 end
 
-local function get_all_items() return catalog.items end
-
 local function hasPermission(id)
-    local level = tonumber(get_var(id, '$lvl'))
-    return id == 0 or level >= ADMIN_LEVEL
+    return id == 0 or (tonumber(get_var(id, '$lvl')) or 0) >= ADMIN_LEVEL
 end
 
 local function parse_seat_option(seat_str, max_seats)
-    if not seat_str then return 0 end
-
-    if seat_str == "*" then
-        return 1 -- Gunner seat
-    elseif seat_str == "^" then
-        return 2 -- Passenger seat
-    elseif seat_str == "-" then
-        return 0 -- Driver seat (default)
-    else
-        local seat_num = tonumber(seat_str)
-        if seat_num and seat_num >= 0 and seat_num < max_seats then
-            return seat_num
-        end
+    local seat = SEAT_MAP[seat_str]
+    if seat then
+        return seat < max_seats and seat or 0
     end
 
-    return 0 -- Default to driver
+    seat = tonumber(seat_str)
+    return seat and seat >= 0 and seat < max_seats and seat or 0
 end
 
 local function getCam(dyn)
-    local cam_x = read_float(dyn + 0x230)
-    local cam_y = read_float(dyn + 0x234)
-    local cam_z = read_float(dyn + 0x238)
-    return cam_x, cam_y, cam_z
+    return read_float(dyn + 0x230), read_float(dyn + 0x234), read_float(dyn + 0x238)
 end
 
 local function get_position(id)
@@ -303,34 +265,22 @@ local function get_position(id)
     if dyn == 0 then return end
 
     local vehicle_id = read_dword(dyn + 0x11C)
-    local vehicle_obj = get_object_memory(vehicle_id)
+    local object = vehicle_id == 0xFFFFFFFF and dyn or get_object_memory(vehicle_id)
+    if object == 0 then return end
 
-    local x, y, z
-    if vehicle_id == 0xFFFFFFFF then
-        x, y, z = read_vector3d(dyn + 0x5C)
-    elseif vehicle_obj ~= 0 then
-        x, y, z = read_vector3d(vehicle_obj + 0x5C)
-    end
-
+    local x, y, z = read_vector3d(object + 0x5C)
     local cam_x, cam_y, cam_z = getCam(dyn)
+    local d = DISTANCE_FROM_PLAYER
 
-    local distance = DISTANCE_FROM_PLAYER
-    local spawn_x = x + (distance * cam_x)
-    local spawn_y = y + (distance * cam_y)
-    local spawn_z = z + (distance * cam_z)
-
-    local yaw = atan2(cam_y, cam_x)
-
-    return spawn_x, spawn_y, spawn_z, yaw
+    return x + d * cam_x, y + d * cam_y, z + d * cam_z, atan2(cam_y, cam_x)
 end
 
 local function spawn_item(id, item, options)
     local player = players[id]
     if not player then return {} end
 
-    local quantity = options.amount or ITEM_QUANTITY
-    local seat = options.seat
-    local spawned_objects = {}
+    local spawned, quantity = {}, options.amount or ITEM_QUANTITY
+    local enter, seat = options.enter, options.seat
 
     for _ = 1, quantity do
         local x, y, z, yaw = get_position(id)
@@ -339,251 +289,204 @@ local function spawn_item(id, item, options)
         local object_id = spawn_object('', '', x, y, z, yaw, item.tag_id)
         if object_id then
             cache_object(player, object_id)
-            table_insert(spawned_objects, object_id)
+            spawned[#spawned + 1] = object_id
 
-            if item.is_vehicle and options.enter then
-                local seat_index = parse_seat_option(seat, item.seats)
-                enter_vehicle(object_id, id, seat_index)
+            if item.is_vehicle and enter then
+                enter_vehicle(object_id, id, parse_seat_option(seat, item.seats))
             elseif item.is_weapon then
                 assign_weapon(object_id, id)
             elseif item.is_equipment then
                 local dyn = get_dynamic_player(id)
-                if dyn ~= 0 then
-                    local vehicle_id = read_dword(dyn + 0x11C)
-                    if vehicle_id == 0xFFFFFFFF then
-                        powerup_interact(object_id, id)
-                    end
+                if dyn ~= 0 and read_dword(dyn + 0x11C) == 0xFFFFFFFF then
+                    powerup_interact(object_id, id)
                 end
             end
         end
     end
 
-    return spawned_objects
-end
-
-local function clean_player_objects(id, object_type)
-    local player = players[id]
-    if not player then return {} end
-    return clean_objects(player, object_type)
+    return spawned
 end
 
 local function remove_player(id)
-    if DESTROY_ON_QUIT and players[id] then
-        clean_objects(players[id], "all")
+    local player = players[id]
+    if player and DESTROY_ON_QUIT then
+        clean_objects(player)
     end
     players[id] = nil
 end
 
 local function parse_options(args, start_index)
-    local options = { amount = ITEM_QUANTITY, seat = nil }
+    local options = { amount = ITEM_QUANTITY }
     for i = start_index, #args do
         local arg = args[i]
         local num = tonumber(arg)
         if num then
             options.amount = num
-        elseif arg == "*" or arg == "^" or arg == "-" then
+        elseif SEAT_MAP[arg] ~= nil then
             options.seat = arg
         end
     end
-
     return options
 end
 
 local function handle_clean_command(id, args, tell)
-    local type_str = args[2] or "all"
-
+    local type_str = args[2] or 'all'
     if not OBJECT_TYPES[type_str] then
-        tell("Invalid object type. Use: vehi, weap, eqip, bipd, proj, or all")
-        return
+        return tell('Invalid object type. Use: vehi, weap, eqip, bipd, proj, or all')
     end
-
-    local cleaned = clean_player_objects(id, type_str)
-    tell("Cleaned " .. cleaned .. " objects")
+    tell('Cleaned ' .. clean_objects(players[id]) .. ' objects')
 end
 
 local function handle_enter_command(id, args, tell)
     local vehicle_name = args[2]
-
     if not vehicle_name then
-        tell("Usage: /enter <vehicle> [seat] [amount]")
-        return
+        return tell('Usage: /enter <vehicle> [seat] [amount]')
+    end
+
+    local vehicle_item = find_item(vehicle_name)
+    if not vehicle_item or not vehicle_item.is_vehicle then
+        return tell('Vehicle not found: ' .. vehicle_name)
+    end
+
+    if not player_alive(id) then
+        return tell('You must be alive to enter a vehicle')
     end
 
     local options = parse_options(args, 3)
     options.enter = true
-
-    local vehicle_item = find_item(vehicle_name)
-    if not vehicle_item or not vehicle_item.is_vehicle then
-        tell("Vehicle not found: " .. vehicle_name)
-        return
-    end
-
-    if not player_alive(id) then
-        tell("You must be alive to enter a vehicle")
-        return
-    end
-
-    local vehicles = spawn_item(id, vehicle_item, options)
-    tell("Entered " .. #vehicles .. " " .. vehicle_item.display_name .. "(s)")
+    tell('Entered ' .. #spawn_item(id, vehicle_item, options) .. ' ' .. vehicle_item.display_name .. '(s)')
 end
 
 local function handle_give_command(id, args, tell)
     local item_name = args[2]
-
     if not item_name then
-        tell("Usage: /give <item> [amount]")
-        return
+        return tell('Usage: /give <item> [amount]')
     end
-
-    local options = parse_options(args, 3)
 
     local item = find_item(item_name)
     if not item then
-        tell("Item not found: " .. item_name)
-        return
+        return tell('Item not found: ' .. item_name)
     end
-
     if not item.is_weapon and not item.is_equipment then
-        tell("Cannot give " .. item.display_name .. ". Use /spawn instead.")
-        return
+        return tell('Cannot give ' .. item.display_name .. '. Use /spawn instead.')
     end
 
-    local items = spawn_item(id, item, options)
-    tell("Gave " .. #items .. " " .. item.display_name .. "(s)")
+    tell('Gave ' .. #spawn_item(id, item, parse_options(args, 3)) .. ' ' .. item.display_name .. '(s)')
 end
 
-local function format_items_page(items, page, total_pages, items_per_row)
-    local result = {}
+local function format_items_page(items, page, total_pages)
+    local result, row = {}, {}
     local start_index = (page - 1) * MAX_RESULTS_PER_PAGE + 1
-    local end_index = math_min(start_index + MAX_RESULTS_PER_PAGE - 1, #items)
+    local end_index = min(start_index + MAX_RESULTS_PER_PAGE - 1, #items)
 
-    table_insert(result,
-        "Page " .. page .. "/" .. total_pages .. " - Showing " .. (end_index - start_index + 1) .. " items")
+    result[1] = 'Page ' .. page .. '/' .. total_pages .. ' - Showing ' .. (end_index - start_index + 1) .. ' items'
 
-    local current_row = {}
+    local n = 1
     for i = start_index, end_index do
         local item = items[i]
-        local display_text = item.display_name
-        if item.is_vehicle then
-            display_text = display_text .. " (" .. item.seats .. " seats)"
-        end
-
-        table_insert(current_row, display_text)
-
-        if #current_row >= items_per_row then
-            table_insert(result, table_concat(current_row, ", "))
-            current_row = {}
+        row[#row + 1] = item.is_vehicle and (item.display_name .. ' (' .. item.seats .. ' seats)') or item.display_name
+        if #row == MAX_ITEMS_PER_ROW then
+            n = n + 1
+            result[n] = t_concat(row, ', ')
+            row = {}
         end
     end
 
-    if #current_row > 0 then
-        table_insert(result, table_concat(current_row, ", "))
+    if row[1] then
+        result[#result + 1] = t_concat(row, ', ')
     end
 
     return result
 end
 
 local function sort(items)
-    table_sort(items, function(a, b) return a.display_name < b.display_name end)
+    t_sort(items, function(a, b) return a.display_name < b.display_name end)
     return items
 end
 
-local function handle_itemlist_command(id, args, tell)
-    local page_str = args[2]
-
-    local items = get_all_items()
-    if #items == 0 then
-        tell("No items found")
-        return
+local function handle_itemlist_command(_, args, tell)
+    local items = catalog.items
+    if not items[1] then
+        return tell('No items found')
     end
 
-    items = sort(items)
+    sort(items)
 
-    local total_pages = math_ceil(#items / MAX_RESULTS_PER_PAGE)
-    local page = tonumber(page_str) or 1
-    page = math_max(1, math_min(page, total_pages))
+    local total_pages = ceil(#items / MAX_RESULTS_PER_PAGE)
+    local page = max(1, min(tonumber(args[2]) or 1, total_pages))
 
-    tell("=== Available Items (" .. #items .. " items) ===")
-
-    local output_lines = format_items_page(items, page, total_pages, MAX_ITEMS_PER_ROW)
-    for _, line in ipairs(output_lines) do
-        tell(line)
+    tell('=== Available Items (' .. #items .. ' items) ===')
+    local lines = format_items_page(items, page, total_pages)
+    for i = 1, #lines do
+        tell(lines[i])
     end
 
-    if total_pages > 1 then
+    if total_pages > 1 and page < total_pages then
         tell("Use '/itemlist " .. (page + 1) .. "' for next page")
     end
 end
 
 local function handle_spawn_command(id, args, tell)
     local item_name = args[2]
-
     if not item_name then
-        tell("Usage: /spawn <item> [amount]")
-        return
+        return tell('Usage: /spawn <item> [amount]')
     end
 
-    local options = parse_options(args, 3)
     local item = find_item(item_name)
     if not item then
-        tell("Item not found: " .. item_name)
-        return
+        return tell('Item not found: ' .. item_name)
     end
 
-    local player = players[id]
-    if not player then
-        tell("Player data not initialized")
-    else
-        local objects = spawn_item(id, item, options)
-        tell("Spawned " .. #objects .. " " .. item.display_name .. "(s)")
+    if not players[id] then
+        return tell('Player data not initialized')
     end
+
+    tell('Spawned ' .. #spawn_item(id, item, parse_options(args, 3)) .. ' ' .. item.display_name .. '(s)')
 end
 
 local function parse_command_args(command)
-    local args = {}
-    for substring in command:gmatch("([^%s]+)") do
-        table_insert(args, substring)
+    local args, n = {}, 0
+    for arg in command:gmatch('%S+') do
+        n = n + 1
+        args[n] = arg
     end
     return args
 end
 
-function OnScriptLoad()
-    register_callback(cb['EVENT_JOIN'], "OnJoin")
-    register_callback(cb['EVENT_LEAVE'], "OnQuit")
-    register_callback(cb['EVENT_COMMAND'], "OnCommand")
-    register_callback(cb['EVENT_GAME_START'], "OnStart")
+local handlers = {
+    clean = handle_clean_command,
+    enter = handle_enter_command,
+    give = handle_give_command,
+    itemlist = handle_itemlist_command,
+    spawn = handle_spawn_command
+}
 
+function OnScriptLoad()
+    register_callback(cb.EVENT_JOIN, 'OnJoin')
+    register_callback(cb.EVENT_LEAVE, 'OnQuit')
+    register_callback(cb.EVENT_COMMAND, 'OnCommand')
+    register_callback(cb.EVENT_GAME_START, 'OnStart')
     OnStart() -- in case script is loaded mid-game
 end
 
 function OnCommand(id, Command)
     local args = parse_command_args(Command)
-    if #args == 0 then return true end
+    local cmd = args[1] and lower(args[1])
+    if not cmd or not COMMANDS[cmd] then return true end
 
-    local cmd = args[1]:lower()
     local tell = respond(id)
-
-    if COMMANDS[cmd] then
-        if not hasPermission(id) then
-            tell("Insufficient permissions")
-        elseif cmd == "itemlist" or cmd == "clean" then
-            if cmd == "clean" then
-                handle_clean_command(id, args, tell)
-            elseif cmd == "itemlist" then
-                handle_itemlist_command(id, args, tell)
-            end
-        elseif not player_alive(id) then
-            tell("You need to be alive to use this command")
-        elseif cmd == "enter" then
-            handle_enter_command(id, args, tell)
-        elseif cmd == "give" then
-            handle_give_command(id, args, tell)
-        elseif cmd == "spawn" then
-            handle_spawn_command(id, args, tell)
-        end
-
+    if not hasPermission(id) then
+        tell('Insufficient permissions')
         return false
     end
+
+    if cmd ~= 'itemlist' and cmd ~= 'clean' and not player_alive(id) then
+        tell('You need to be alive to use this command')
+        return false
+    end
+
+    handlers[cmd](id, args, tell)
+    return false
 end
 
 function OnJoin(id) create_player(id) end
@@ -593,10 +496,12 @@ function OnQuit(id) remove_player(id) end
 function OnStart()
     if get_var(0, '$gt') == 'n/a' then return end
 
+    catalog.items, catalog.aliases = {}, {}
     initialize_catalog()
+
     for i = 1, 16 do
         if player_present(i) then
-            OnJoin(i)
+            create_player(i)
         end
     end
 end
