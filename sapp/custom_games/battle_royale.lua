@@ -1,0 +1,2 @@
+-- DOWNLOAD FROM:
+-- https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/releases/tag/battle_royale
