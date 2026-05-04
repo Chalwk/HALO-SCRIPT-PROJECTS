@@ -23,7 +23,7 @@ LICENSE:          MIT License
 --
 
 local EVENTS = {
-    OnStart = { "[START] New game on $map - $mode $gt ($ffa)", true },
+    OnStart = { "[START] New game on $map - $mode $gt ($ffa) $scorelimit", true },
     OnEnd = { "[END] Game ended", true },
     OnJoin = { "[JOIN] $name ($id) | $ip | $hash | Pirated: $pirated | $total/16", true },
     OnQuit = { "[QUIT] $name ($id) | $ip | $hash | Pirated: $pirated | $total/16", true },
@@ -109,8 +109,7 @@ local ffa = false
 local gametype = ""
 local mode, map = "", ""
 local score_limit = 0
-local falling_tag, distance_tag
-local gametype_base, oddball_globals, slayer_globals
+local gametype_base
 
 local os_date = os.date
 local tostring, tonumber = tostring, tonumber
@@ -198,15 +197,7 @@ local function get_player(player)
 end
 
 function OnScriptLoad(_, game, _)
-    if game == "PC" then
-        gametype_base = 0x671340
-        oddball_globals = 0x639E18
-        slayer_globals = 0x63A0E8
-    else
-        gametype_base = 0x5F5498
-        oddball_globals = 0x5BDEB8
-        slayer_globals = 0x5BE108
-    end
+    gametype_base = (game == "PC" and 0x671340) or 0x5F5498
     show_ASCII_art()
 end
 
@@ -214,20 +205,17 @@ function OnNewGame(map_name, unknown_var)
     first_blood = true
     players = {}
     ffa = (readbyte(gametype_base + 0x34) == 0) -- 0 = FFA, 1 = Team
-    gametype = parse_gametype()
     mode = readstring(gametype_base, 0x2C)
-    map = map_name
+    gametype = parse_gametype()
     score_limit = get_scorelimit()
-
-    -- Load tags for fall damage detection
-    falling_tag = gettagid("jpt!", "globals\\falling")
-    distance_tag = gettagid("jpt!", "globals\\distance")
+    map = map_name
 
     log("OnStart", {
         map = map,
         mode = mode,
         gt = gametype,
-        ffa = get_team_play()
+        ffa = get_team_play(),
+        scorelimit = score_limit
     })
 
     -- Notify about players already present after game load
