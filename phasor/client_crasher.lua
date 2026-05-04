@@ -1,66 +1,49 @@
--- Name: client_crasher.lua
--- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
+--[[
+=====================================================================================
+SCRIPT NAME:      client_crasher.lua
+DESCRIPTION:      Crashes the client of a player when they join the server.
+                  Configure the VICTIM_NAMES and VICTIM_HASHES tables to specify
+                  the names and hashes of the players you want to crash.
 
-function GetRequiredVersion()
-    return 200
-end
+Copyright (c) 2016-2026 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
 
-function OnScriptLoad()
+-- CONFIG START --
+local VICTIM_NAMES = {
+    "billybob"
+    -- add more names as needed
+}
 
-    --  Load Name/Hash tables
-    InitiateTables()
-    printCRnotice()
-end
+local VICTIM_HASHES = {
+    "4d102436ecc0621415e81d21d5a39361"
+    -- add more hashes as needed
+}
+-- CONFIG END --
 
-function OnScriptUnload()
+function GetRequiredVersion() return 200 end
 
-    --  Unload Name/Hash tables
-    Victim_Name_Table = { }
-    Victim_Hash_Table = { }
-end
+function OnScriptLoad() end
 
-function InitiateTables()
+function OnScriptUnload() end
 
-    --  Player names have a maximum of 10 Characters
-    Victim_Name_Table = {
-        "billybob",
-        "name-not-used",
-        "name-not-used",
-        "name-not-used"
-    }
+function OnPlayerJoin(id)
+    local name = getname(id)
+    local hash = gethash(id)
 
-    Victim_Hash_Table = {
-        "4d102436ecc0621415e81d21d5a39361", -- Example Hash
-        "hash-not-used",
-        "hash-not-used",
-        "hash-not-used"
-    }
-end
-
-function OnPlayerJoin(player)
-
-    local VictimName = getname(player)
-    local VictimHash = gethash(player)
-
-    for i = 0, 15 do
-        if getplayer(i) ~= nil then
-            if table.HasValue(Victim_Name_Table, VictimName) and table.HasValue(Victim_Hash_Table, VictimHash) then
-                svcmd("sv_crash " .. resolveplayer(i))
-            end
+    for i = 1, #VICTIM_NAMES do
+        if name == VICTIM_NAMES[i] then
+            svcmd("sv_crash " .. resolveplayer(id))
+            return
         end
     end
-end
 
-function OnGameEnd()
-
-    --  Unload Name/Hash tables
-    InitiateTables()
-end
-
-function table.HasValue(table, value)
-    for k, v in pairs(table) do
-        if v == value then
-            return k
+    for i = 1, #VICTIM_HASHES do
+        if hash == VICTIM_HASHES[i] then
+            svcmd("sv_crash " .. resolveplayer(id))
+            return
         end
     end
 end
