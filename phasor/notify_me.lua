@@ -114,7 +114,7 @@ local gametype_base
 local os_date = os.date
 local tostring, tonumber = tostring, tonumber
 
-local function fmt_log(template, args)
+local function format(template, args)
     if not args then return template end
 
     return (template:gsub("%$(%w+)", function(key)
@@ -122,6 +122,8 @@ local function fmt_log(template, args)
         return value ~= nil and tostring(value) or "$" .. key
     end))
 end
+
+local fmt_log = format
 
 function show_ASCII_art()
     if not LOGO[1] then return end
@@ -132,10 +134,7 @@ function show_ASCII_art()
     }
 
     for _, line in ipairs(LOGO[2]) do
-        hprintf((line[1]:gsub("%$(%w+)", function(key)
-            local value = args[key:lower()]
-            return value ~= nil and tostring(value) or "$" .. key
-        end)))
+        hprintf(format(line[1], args))
     end
 end
 
