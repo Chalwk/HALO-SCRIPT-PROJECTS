@@ -1,30 +1,40 @@
--- Name: on_game_end_messages.lua
--- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
+--[[
+=====================================================================================
+SCRIPT NAME:      end_game_messages.lua
+DESCRIPTION:      Sends messages to players when the game ends.
+
+Copyright (c) 2016-2026 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
+
+-- Config start ------------------------------------------------
+local DEFAULT_MSG = "Well, you've got more than 4 kills... #AchievingTheImpossible"
+local MESSAGES = {
+    [0] = "You have no kills... noob alert!",
+    [1] = "One kill? You must be new at this...",
+    [2] = "Eh, two kills... not bad. But you still suck.",
+    [3] = "Relax sonny! 3 kills, and you be like... mad bro?",
+    [4] = "Dun dun dun... them 4 kills though!"
+}
+-- Config end --------------------------------------------------
 
 function OnGameEnd(stage)
-    -- 	stage 1: F1 Screen
-    -- 	stage 2: PGCR Appears
-    -- 	stage 3: Players may quit
-    if stage == 2 then
-        for i = 0, 15 do
-            if readword(getplayer(i) + 0x9C) == 0 then
-                privatesay(i, "You have no kills... noob alert!")
-            end
-            if readword(getplayer(i) + 0x9C) == 1 then
-                privatesay(i, "One kill? You must be new at this...")
-            end
-            if readword(getplayer(i) + 0x9C) == 2 then
-                privatesay(i, "Eh, two kills... not bad. But you still suck.")
-            end
-            if readword(getplayer(i) + 0x9C) == 3 then
-                privatesay(i, "Relax sonny! 3 kills, and you be like... mad bro?")
-            end
-            if readword(getplayer(i) + 0x9C) == 4 then
-                privatesay(i, "Dun dun dun... them 4 kills though!")
-            end
-            if readword(getplayer(i) + 0x9C) > 4 then
-                privatesay(i, "Well, you've got more than 4 kills... #AchievingTheImpossible")
-            end
+    if stage ~= 2 then return end
+
+    for i = 0, 15 do
+        local player = getplayer(i)
+        if player then
+            local kills = readword(player + 0x9C)
+            local msg = MESSAGES[kills] or DEFAULT_MSG
+            privatesay(i, msg)
         end
     end
 end
+
+function GetRequiredVersion() return 200 end
+
+function OnScriptLoad() end
+
+function OnScriptUnload() end

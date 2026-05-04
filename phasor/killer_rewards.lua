@@ -48,7 +48,9 @@ function GetRequiredVersion() return 200 end
 
 function OnScriptLoad() end
 
-local function get_kill_count(killer)
+function OnScriptUnload() end
+
+local function get_multi_kills(killer)
     local player = getplayer(killer)
     if not player then return nil end
     return readword(player + 0x98)
@@ -75,7 +77,7 @@ end
 function OnPlayerKill(killer, _, mode)
     if #tags == 0 or mode ~= 4 then return end
 
-    local kills = get_kill_count(killer)
+    local kills = get_multi_kills(killer)
     if not kills then return end
 
     if REWARD_KILLS[kills] or kills >= MIN_REWARD then
