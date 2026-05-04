@@ -42,16 +42,16 @@ local MIN_REWARD = 100 -- 100+ also triggers
 
 -- CONFIG END --------------------------------------------------
 
-local tags, locations = {}, {}
+local tags = {}
 
 function GetRequiredVersion() return 200 end
 
-function OnScriptLoad() locations = {} end
+function OnScriptLoad() end
 
 local function get_kill_count(killer)
-    local p = getplayer(killer)
-    if not p then return nil end
-    return readword(p + 0x98)
+    local player = getplayer(killer)
+    if not player then return nil end
+    return readword(player + 0x98)
 end
 
 local function get_pos(id)
@@ -69,15 +69,11 @@ local function reward_killer(id)
     local x, y, z = get_pos(id)
     if not x then return end
 
-    locations[id][1] = x
-    locations[id][2] = y
-    locations[id][3] = z
-
     drop_powerup(x, y, z)
 end
 
 function OnPlayerKill(killer, _, mode)
-    if mode ~= 4 then return end
+    if #tags == 0 or mode ~= 4 then return end
 
     local kills = get_kill_count(killer)
     if not kills then return end
@@ -90,8 +86,7 @@ end
 function OnNewGame()
     tags = {}
     for i = 1, #EQUIPMENT do
-        tags[i] = gettagid("eqip", EQUIPMENT[i])
+        local tag = gettagid("eqip", EQUIPMENT[i])
+        if tag then tags[i] = tag end
     end
 end
-
-function OnPlayerLeave(id, query) locations[id] = nil end
