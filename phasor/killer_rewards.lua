@@ -1,109 +1,97 @@
--- Name: killer_rewards.lua
--- Copyright (c) 2016-2018 Jericho Crosby (Chalwk)
+--[[
+=====================================================================================
+SCRIPT NAME:      killer_rewards.lua
+DESCRIPTION:      Rewards players with random equipment when they reach a killstreak.
 
-players = { }
-EQUIPMENT = { }
-EQUIPMENT_TAGS = { }
-KILL_LOCATION = { }
-EQUIPMENT[1] = { "powerups\\active camouflage" }
-EQUIPMENT[2] = { "powerups\\health pack" }
-EQUIPMENT[3] = { "powerups\\over shield" }
-EQUIPMENT[4] = { "powerups\\assault rifle ammo\\assault rifle ammo" }
-EQUIPMENT[5] = { "powerups\\needler ammo\\needler ammo" }
-EQUIPMENT[6] = { "powerups\\pistol ammo\\pistol ammo" }
-EQUIPMENT[7] = { "powerups\\rocket launcher ammo\\rocket launcher ammo" }
-EQUIPMENT[8] = { "powerups\\shotgun ammo\\shotgun ammo" }
-EQUIPMENT[9] = { "powerups\\sniper rifle ammo\\sniper rifle ammo" }
-EQUIPMENT[10] = { "powerups\\flamethrower ammo\\flamethrower ammo" }
-EQUIPMENT[11] = { "powerups\\double speed" }
-EQUIPMENT[12] = { "powerups\\full-spectrum vision" }
-for i = 0, 15 do
-    KILL_LOCATION[i] = { }
+Copyright (c) 2016-2026 Jericho Crosby (Chalwk)
+LICENSE:          MIT License
+                  https://github.com/Chalwk/HALO-SCRIPT-PROJECTS/blob/master/LICENSE
+=====================================================================================
+]]
+
+-- CONFIG START ------------------------------------------------
+local EQUIPMENT = {
+    "powerups\\active camouflage",
+    "powerups\\health pack",
+    "powerups\\over shield",
+    "powerups\\assault rifle ammo\\assault rifle ammo",
+    "powerups\\needler ammo\\needler ammo",
+    "powerups\\pistol ammo\\pistol ammo",
+    "powerups\\rocket launcher ammo\\rocket launcher ammo",
+    "powerups\\shotgun ammo\\shotgun ammo",
+    "powerups\\sniper rifle ammo\\sniper rifle ammo",
+    "powerups\\flamethrower ammo\\flamethrower ammo",
+    "powerups\\double speed",
+    "powerups\\full-spectrum vision"
+}
+
+-- Player killstreaks that trigger a reward
+local REWARD_KILLS = {
+    [10] = true,
+    [20] = true,
+    [30] = true,
+    [40] = true,
+    [50] = true,
+    [60] = true,
+    [70] = true,
+    [80] = true,
+    [90] = true
+}
+
+local MIN_REWARD = 100 -- 100+ also triggers
+
+-- CONFIG END --------------------------------------------------
+
+local tags, locations = {}, {}
+
+function GetRequiredVersion() return 200 end
+
+function OnScriptLoad() locations = {} end
+
+local function get_kill_count(killer)
+    local p = getplayer(killer)
+    if not p then return nil end
+    return readword(p + 0x98)
 end
-function GetRequiredVersion()
-    return 200
+
+local function get_pos(id)
+    local obj = getplayerobjectid(id)
+    if not obj then return end
+    return getobjectcoords(obj)
 end
-function OnScriptLoad(processId, game, persistent)
+
+local function drop_powerup(x, y, z)
+    local tag = EQUIPMENT_TAGS[getrandomnumber(1, #EQUIPMENT_TAGS)]
+    createobject(tag, 0, 10, false, x, y, z + 0.5)
 end
-function OnPlayerKill(killer, victim, mode)
-    if mode == 4 then
-        local kills = readword(getplayer(killer) + 0x98)
-        local kills = readword(getplayer(killer) + 0x96)
-        if tonumber(kills) then
-            if kills == 10 then
-                local x, y, z = getobjectcoords(getplayerobjectid(killer))
-                KILL_LOCATION[killer][1] = x
-                KILL_LOCATION[killer][2] = y
-                KILL_LOCATION[killer][3] = z
-                DropPowerUp(x, y, z)
-            elseif kills == 20 then
-                local x, y, z = getobjectcoords(getplayerobjectid(killer))
-                KILL_LOCATION[killer][1] = x
-                KILL_LOCATION[killer][2] = y
-                KILL_LOCATION[killer][3] = z
-                DropPowerUp(x, y, z)
-            elseif kills == 30 then
-                local x, y, z = getobjectcoords(getplayerobjectid(killer))
-                KILL_LOCATION[killer][1] = x
-                KILL_LOCATION[killer][2] = y
-                KILL_LOCATION[killer][3] = z
-                DropPowerUp(x, y, z)
-            elseif kills == 40 then
-                local x, y, z = getobjectcoords(getplayerobjectid(killer))
-                KILL_LOCATION[killer][1] = x
-                KILL_LOCATION[killer][2] = y
-                KILL_LOCATION[killer][3] = z
-                DropPowerUp(x, y, z)
-            elseif kills == 50 then
-                local x, y, z = getobjectcoords(getplayerobjectid(killer))
-                KILL_LOCATION[killer][1] = x
-                KILL_LOCATION[killer][2] = y
-                KILL_LOCATION[killer][3] = z
-                DropPowerUp(x, y, z)
-            elseif kills == 60 then
-                local x, y, z = getobjectcoords(getplayerobjectid(killer))
-                KILL_LOCATION[killer][1] = x
-                KILL_LOCATION[killer][2] = y
-                KILL_LOCATION[killer][3] = z
-                DropPowerUp(x, y, z)
-            elseif kills == 70 then
-                local x, y, z = getobjectcoords(getplayerobjectid(killer))
-                KILL_LOCATION[killer][1] = x
-                KILL_LOCATION[killer][2] = y
-                KILL_LOCATION[killer][3] = z
-                DropPowerUp(x, y, z)
-            elseif kills == 80 then
-                local x, y, z = getobjectcoords(getplayerobjectid(killer))
-                KILL_LOCATION[killer][1] = x
-                KILL_LOCATION[killer][2] = y
-                KILL_LOCATION[killer][3] = z
-                DropPowerUp(x, y, z)
-            elseif kills == 90 then
-                local x, y, z = getobjectcoords(getplayerobjectid(killer))
-                KILL_LOCATION[killer][1] = x
-                KILL_LOCATION[killer][2] = y
-                KILL_LOCATION[killer][3] = z
-                DropPowerUp(x, y, z)
-            elseif kills >= 100 then
-                local x, y, z = getobjectcoords(getplayerobjectid(killer))
-                KILL_LOCATION[killer][1] = x
-                KILL_LOCATION[killer][2] = y
-                KILL_LOCATION[killer][3] = z
-                DropPowerUp(x, y, z)
-            end
-        end
+
+local function reward_killer(id)
+    local x, y, z = get_pos(id)
+    if not x then return end
+
+    locations[id][1] = x
+    locations[id][2] = y
+    locations[id][3] = z
+
+    drop_powerup(x, y, z)
+end
+
+function OnPlayerKill(killer, _, mode)
+    if mode ~= 4 then return end
+
+    local kills = get_kill_count(killer)
+    if not kills then return end
+
+    if REWARD_KILLS[kills] or kills >= MIN_REWARD then
+        reward_killer(killer)
     end
 end
 
-function DropPowerUp(x, y, z)
-    local num = getrandomnumber(1, #EQUIPMENT_TAGS)
-    createobject(EQUIPMENT_TAGS[num], 0, 10, false, x, y, z + 0.5)
+function OnNewGame()
+    tags = {}
+    for i = 1, #EQUIPMENT do
+        tags[i] = gettagid("eqip", EQUIPMENT[i])
+    end
 end
 
-function OnNewGame(map)
-    for k, v in pairs(EQUIPMENT) do
-        local tag_id = gettagid("eqip", v[1])
-        table.insert(EQUIPMENT_TAGS, tag_id)
-    end
-    map_name = tostring(map)
-end
+function OnPlayerLeave(id, query) locations[id] = nil end
